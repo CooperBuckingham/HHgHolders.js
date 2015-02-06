@@ -5,7 +5,7 @@ function HHgVector2(x,y){
 	this.findPointAtDisNTowardsOtherPoint = function(vB, dis){
 		var vAB = new HHgVector2(this.x - vB.x, this.y - vB.y );
 		var finalVector = new HHgVector2(vAB.unitVector.x * dis, vAB.unitVector.y * dis );
-		return this.returnVectorOfThisPlusB(finalVector);
+		return this.returnVectorPlusVector(finalVector);
 		
 
 	}
@@ -19,7 +19,13 @@ function HHgVector2(x,y){
 		x ? this.x = +x :;
 		y ? this.y = +y :;
 	}
-	this.returnVectorOfThisPlusB = function(vB){
+	this.returnVectorPlusVector = function(vB){
 		return new HHgVector2(this.x + vB.x, this.y + vB.y);
+	}
+	this.returnVectorScaledBy = function(val){
+		return new HHgVector2(this.x * val, this.y * val);
+	}
+	this.returnVectorScaledByInverse = function(val){
+		return new HHgVector2(this.x / val, this.y / val);
 	}
 }
