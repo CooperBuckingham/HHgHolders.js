@@ -1,4 +1,4 @@
-function S2DAction(owner, subType, args){
+function HHgAction(owner, subType, args){
 	this.owner = owner;
 	this.subType = subType;
 	this.args = args;
@@ -6,7 +6,7 @@ function S2DAction(owner, subType, args){
 	this.whatShouldIDoThisFrame = function(deltaT, now){
 		switch(this.subType){
 			case "move":
-			
+				
 			break;
 
 		}

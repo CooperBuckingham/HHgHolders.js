@@ -1,9 +1,9 @@
 
 
-var S2DScene = function (){
+var HHgScene = function (){
 
 
 
-	return
+	return;
 
 }();
