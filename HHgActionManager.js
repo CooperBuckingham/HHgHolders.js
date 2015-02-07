@@ -26,11 +26,15 @@ var paused = false;
 })( window, Date );
 
 
-function start(){
+function startHHgActionManager(){
   window.HHgActionManager.actionLoop(function( deltaT, now ) {
     // rendering code goes here
     // return false; will stop the loop
-    console.log("Time: " + deltaT/1000);
+    //console.log("Time: " + deltaT/1000);
+
+
+
+
     return true;
 
   } );
