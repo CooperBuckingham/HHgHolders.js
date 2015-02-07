@@ -1,12 +1,13 @@
 function HHgNode(h, w, parent, xyPos, zIndex, xyOffset, scale, xyScaleOffset){
 
-	xyScaleOffset ? : xyScaleOffset = new Vector2(1,1);
-	xyOffset ? : xyOffset = new Vector2(0,0);
-	scale ? : scale = 1.0;
-	zIndex ? : zIndex = 0;
-	parent ? : parent = HHgScene;
-	w ? : w = HHgScene.myWidth;
-	h ? : w = HHgScene.myHeight;
+	xyScaleOffset =  xyScaleOffset || new Vector2(1,1);
+	xyOffset =  xyOffset || new Vector2(0,0);
+	scale = scale || 1.0;
+	zIndex = zIndex || 0;
+	parent = parent || HHgScene;
+	w = w || HHgScene.myWidth;
+	h = h || HHgScene.myHeight;
+	xyScaleOffset = xyScaleOffset || new Vector2(1,1);
 
 
 	this.myHeight = h;
@@ -23,6 +24,7 @@ function HHgNode(h, w, parent, xyPos, zIndex, xyOffset, scale, xyScaleOffset){
 
 	this.myChildren;
 	this.myActions;
+	this.myScaleOffset = xyScaleOffset;
 
 	this.setPositionInScreen = function(xyPos, shouldAddTo){
 		if(shouldAddTo === true){
@@ -42,12 +44,12 @@ function HHgNode(h, w, parent, xyPos, zIndex, xyOffset, scale, xyScaleOffset){
 	}
 
 	this.setPositionInParent = function(parXYPos){
-		var scaledV = parent.
+		
 
 	}
 
 	this.getPositionInParent = function(){
-		return this.myPPos
+		return this.myPPos;
 	}
 
 	this.setScaleOriginal = function(val, shouldMultiplyBy){
@@ -65,7 +67,7 @@ function HHgNode(h, w, parent, xyPos, zIndex, xyOffset, scale, xyScaleOffset){
 
 	}
 	this.getScaleNet = function(){
-		return this.myScaleNet
+		return this.myScaleNet;
 	}
 
 	this.udpateScaleNet = function(){
@@ -74,16 +76,16 @@ function HHgNode(h, w, parent, xyPos, zIndex, xyOffset, scale, xyScaleOffset){
 	}
 
 
-	this.addChildren: function (){
+	this.addChildren = function (){
 		this.myChildren = this.myChildren || [];
 
 		//add holders, add sprites
 	}
-	this.removeChildren: function(){
+	this.removeChildren = function(){
 
 	}
 
-	this.myStuffUpdated: function(){
+	this.myStuffUpdated = function(){
 		//add thing to list of stuff to udpate;
 	}
 }

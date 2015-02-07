@@ -4,7 +4,7 @@ var HHg = {
 		var returnArr = [];
 		var count = 0;
 			for(var i = 0; i < arr.length; i++){
-				test ? returnArr.push(arr[i]): ;
+				test(arr[i]) ? returnArr.push(arr[i]): false ;
 				if(count >= n){
 					break;
 				}
@@ -13,7 +13,7 @@ var HHg = {
 		return returnArr;
 	}
 
-	
+
 }
 
 

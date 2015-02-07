@@ -1,6 +1,6 @@
 function HHgVector2(x,y){
-	this.x = +x;
-	this.y = +y;
+	this.myX = +x;
+	this.myY = +y;
 
 	this.findPointAtDisNTowardsOtherPoint = function(vB, dis){
 		var vAB = new HHgVector2(this.x - vB.x, this.y - vB.y );
@@ -9,23 +9,29 @@ function HHgVector2(x,y){
 		
 
 	}
-	this.length = function(){
-		return Math.sqrt(this.x * this.x + this.y * this.y);
+	this.myLength = function(){
+		return Math.sqrt(this.myX * this.myX + this.myY * this.myY);
 	}
 	this.unitVector = function(){
-		return new HHgVector2(this.x / this.length, this.y / this.length);
+		return new HHgVector2(this.myX / this.myLength, this.myY / this.myLength);
 	}
-	this.xy = function(x,y){
-		x ? this.x = +x :;
-		y ? this.y = +y :;
+	this.myXY = function(x,y){
+		if(typeof x === "HHgVector2"){
+			this.myX = x.myX;
+			this.myY = x.myY;
+		}else{
+			this.myX = +x;
+		this.myY = +y;
+		}
+		
 	}
 	this.returnVectorPlusVector = function(vB){
-		return new HHgVector2(this.x + vB.x, this.y + vB.y);
+		return new HHgVector2(this.myX + vB.myX, this.myY + vB.myY);
 	}
 	this.returnVectorScaledBy = function(val){
-		return new HHgVector2(this.x * val, this.y * val);
+		return new HHgVector2(this.myX * val, this.myY * val);
 	}
 	this.returnVectorScaledByInverse = function(val){
-		return new HHgVector2(this.x / val, this.y / val);
+		return new HHgVector2(this.myX / val, this.myY / val);
 	}
 }

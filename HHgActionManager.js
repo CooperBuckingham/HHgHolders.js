@@ -1,22 +1,15 @@
-var S2DActionManager = {
-  listOfActions: [];
-  addActionToHolder: function(actionObj,holder){
-
-  }
-
-}
 
 
-
-
+window.HHgActionManager = {};
+var paused = false;
 
 (function( window, Date ) {
 
-  window.S2DActionManager.actionLoop = function( animateActions ) {
+  window.HHgActionManager.actionLoop = function( animateActions ) {
     var shouldContinueLoop = true;
     var lastFrameTime = +new Date;
     function recurse( thisFrameTime ) {
-      if ( shouldContinueLoop !== false ) {
+      if ( shouldContinueLoop !== false || paused === true ) {
         window.requestAnimationFrame(recurse);
         thisFrameTime = thisFrameTime && thisFrameTime > 500 ? thisFrameTime : +new Date;
         var deltaT = thisFrameTime - lastFrameTime;
@@ -34,7 +27,7 @@ var S2DActionManager = {
 
 
 function start(){
-  window.S2DActionManager.actionLoop(function( deltaT, now ) {
+  window.HHgActionManager.actionLoop(function( deltaT, now ) {
     // rendering code goes here
     // return false; will stop the loop
     console.log("Time: " + deltaT/1000);
@@ -42,6 +35,8 @@ function start(){
 
   } );
 }
+
+
 
 
 
