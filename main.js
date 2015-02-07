@@ -2,8 +2,11 @@
 
 //init action manager
 
+
 //main loop
-start();
+
+startHHgActionManager();
+startHHgScene();
 
 /*
 function(){
