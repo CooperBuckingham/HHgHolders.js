@@ -1,4 +1,4 @@
-var HHgVector2 = function(x,y){
+	function HHgVector2(x,y){
 	var _x = +x;
 	var _y = +y;
 
@@ -9,9 +9,6 @@ var HHgVector2 = function(x,y){
 	var unitVector = function(){
 		return new HHgVector2(_x / myLength(), _y / myLength());
 	}
-
-
-return function(){
 
 	this.getX = function(){
 		return _x;
@@ -58,6 +55,5 @@ return function(){
 	this.returnVectorSubtractedFromVector = function(vB){
 		return new HHgVector2(vB.getX() - _x, vB.getY() - _y);
 	}
-}
 
 }
