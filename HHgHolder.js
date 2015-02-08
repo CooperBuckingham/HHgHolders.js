@@ -1,6 +1,7 @@
 var holderHashCount = 0;
 
 var HHgHolder = function(w, h, parent, zIndex, xyOffset, scale, xyScaleOffset){
+	holderHashCount++;
 
 	xyScaleOffset =  xyScaleOffset || new HHgVector2(1,1);
 	xyOffset =  xyOffset || new HHgVector2(0,0);
@@ -11,127 +12,226 @@ var HHgHolder = function(w, h, parent, zIndex, xyOffset, scale, xyScaleOffset){
 	h = h || HHgScene.myHeight;
 	xyScaleOffset = xyScaleOffset || new HHgVector2(1,1);
 
-	this.myWidth = w;
-	this.myHeight = h;
+	var _width = w;
+	var _height = h;
 	
-	this.myParent = parent;
-
-	
-	this.myScaleOriginal = scale;
-	this.myScaleNet = scale;
-
-	this.myZIndex = zIndex;
-	this.myXYOffset = xyOffset;
-	this.mySPos = new HHgVector2(0,0);
-	this.myPPos  = new HHgVector2(0,0);
-
-	this.myChildren;
-	this.myActions;
-	this.myScaleOffset = xyScaleOffset;
-	this.myDiv;
-	holderHashCount++;
-	this.myHash = holderHashCount;
-	this.myTimeStamp = +new Date();
+	var _parent = parent;
 
 	
-	this.updateToParent = function(){
-		this.setPositionInParent(new HHgVector2(0,0) );
-		console.log("before update scale");
-		this.updateScaleNet();
-		console.log("after console log");
+	var _scaleOriginal = scale;
+	var _scaleNet = _parent.getScaleNet() * scale;
 
-	}
+	var _zIndex = zIndex;
+	var _xyOffset = xyOffset;
+	var _positionInScreen = new HHgVector2(0,0);
+	var _positionInParent  = new HHgVector2(0,0);
 
-	this.setPositionInScreen = function(xyPos, shouldAddTo){
-		if(this.myParent === "stop"){
-			return;
-		}
-		if(shouldAddTo === true){
-			this.mySPos = this.mySPos.returnVectorPlusVector(xyPos);
-		}else{
-			this.mySPos = xyPos;
-		}
+	var _children;
+	var _actions;
+	var _xyScaleOffset = xyScaleOffset;
+	var _div;
+	
+	var _hash = holderHashCount;
+	var _timeStamp = +new Date();
 
-		this.myPPos = this.mySPos.returnVectorPlusVector(this.myParent.getPositionInScreen()).returnVectorScaledByInverse(this.parent.getScaleNet);
-		
-		this.myStuffUpdated();
-	}
+	var _doUpdateToParent = function(){
+			this.setPositionInParent(new HHgVector2(0,0) );
+			this.doUpdateScaleNet();
+			
 
-
-	this.getPositionInScreen = function(){
-		return this.mySPos;
-	}
-
-	this.setPositionInParent = function(parXYPos, shouldAddTo){
-		
-		if(this.myParent === "stop"){
-			return;
 		}
 
-		if(shouldAddTo === true){
-			this.myPPos = this.myPPos.returnVectorPlusVector(parXYPos);
-		}else{
-			this.myPPos = parXYPos;
+
+	return function(){
+		//do we want these to be calculations if the holder is holding things?
+		this.getWidth = function(){
+			return _width;
 		}
 
-		var parScreenPos = this.myParent.getPositionInScreen();
-		var parNetScale = this.myParent.getScaleNet();
-		var thisPlusThat = parScreenPos.returnVectorPlusVector(this.myPPos);
-		this.mySPos = thisPlusThat.returnVectorScaledBy(parNetScale);
-
-		
-		this.myStuffUpdated();
-
-	}
-
-	this.getPositionInParent = function(){
-		return this.myPPos;
-	}
-
-	this.setScaleOriginal = function(val, shouldMultiplyBy){
-		if(shouldMultiplyBy === true){
-			this.myScaleOriginal *= val;
-		}else{
-			this.myScaleOriginal = val;
+		this.setWidth = function(){
+			//***likely needs some more complicated logic here
+			//do we want to scale, do we even all manual width setting?
+			//maybe width and height are relavent to scale?
 		}
-		
-		this.updateNetScale();
 
-	}
-
-	this.getScaleOriginal = function(val){
-		return this.myScaleOriginal;
-	}
-	this.getScaleNet = function(){
-		return this.myScaleNet;
-	}
-
-	this.updateScaleNet = function(){
-		console.log("here 0");
-		if(this.myParent === "stop"){
-			return;
+		this.getHeight = function(){
+			return _height;
 		}
-		console.log("here 1");
-		this.myScaleNet = this.myParent.myScaleNet * this.myScaleOriginal;
-		this.myStuffUpdated();
-	}
+
+		this.setHeight = function(){
+			//same questions as width
+		}
+
+		this.getParent = function(){
+			return _parent;
+		}
+
+		this.getZ = function(){
+			return _zIndex;
+		}
+
+		this.setZ = function(z){
+			//***this needs more logic, like regarding children
+			_zIndex = z;
+			this.doUpdatedNotify();
+		}
+
+		this.setXYOffset =function(xy){
+			_xyOffset = xy;
+			this.doUpdatedNotify();
+		}
+
+		this.getXYOffset = function(){
+			return _xyOffset;
+		}
+
+		this.setDiv = function(div){
+			_div = div;
+		}
+
+		this.getDiv = function(){
+			return _div;
+		}
+
+		this.setXYScaleOffset = function(xyScaleOffset){
+			_xyScaleOffset = xyScaleOffset;
+			this.doUpdateNotify();
+		}
+
+		this.getXYScaleOffset = function(){
+			return _xyScaleOffset;
+		}
+
+		this.setPositionInScreen = function(xyPos, shouldAddTo){
+			if(_parent === "stop"){
+				return;
+			}
+			if(shouldAddTo === true){
+				_positionInScreen = _positionInScreen.returnVectorPlusVector(xyPos);
+			}else{
+				_positionInScreen = xyPos;
+			}
+
+			var posOfParentInScreen = _parent.getPositionInScreen();
+			var diffOfVectorsInScreen = _positionInScreen.returnVectorSubtractedFromVector(posOfParentInScreen);
+			var diffOfVectorTimesScale = diffOfVectorsInScreen.returnVectorScaledByInverse(_parent.getScaleNet());
+
+			_positionInParent = diffOfVectorTimesScale;
 
 
-	this.addChildren = function (){
-		this.myChildren = this.myChildren || [];
+			this.doUpdatedNotify();
+		}
+
+
+		this.getPositionInScreen = function(){
+			return _positionInScreen;
+		}
+
+		this.setX = function(x, shouldAddTo){
+			this.setPositionInScreen(new HHgVector2(x,_positionInScreen.getY(), shouldAddTo);
+		}
+
+		this.setY = function(y, shouldAddTo){
+			this.setPositionInScreen(new HHgVector2(_x,y), shouldAddTo);
+		}
+
+		this.setXInParent = function(x, shouldAddTo){
+			this.setPositionInParent(new HHgVector2(x,_y), shouldAddTo);
+		}
+
+		this.setYInParent = function(y, shouldAddTo){
+			this.setPositionInParent(new HHgVector2(_x,y), shouldAddTo);
+		}
+
+		this.getX = function(){
+			return _positionInScreen.getX();
+		}
+		this.getY = function(){
+			return _positionInScreen.getY();
+		}
+		this.getXInParent = function(){
+			return _positionInParent.getX();
+		}
+		this.getYInParent = function(){
+			return _positionInParent.getY();
+		}
+
+		this.setPositionInParent = function(parXYPos, shouldAddTo){
+
+			if(this._parent === "stop"){
+				return;
+			}
+
+			if(shouldAddTo === true){
+				_positionInParent = _positionInParent.returnVectorPlusVector(parXYPos);
+			}else{
+				_positionInParent = parXYPos;
+			}
+
+			var posOfParentInScreen = _parent.getPositionInScreen();
+			var diffOfVectorsInScreen = _positionInParent.returnVectorSubtractedFromVector(posOfParentInScreen);
+			_positionInScreen = diffOfVectorsInScreen.returnVectorScaledBy(_parent.getScaleNet());
+
+
+			this.myStuffUpdated();
+
+		}
+
+		this.getPositionInParent = function(){
+			return _positionInParent;
+		}
+
+		this.setScaleOriginal = function(val, shouldMultiplyBy){
+			if(shouldMultiplyBy === true){
+				_scaleOriginal *= val;
+			}else{
+				_scaleOriginal = val;
+			}
+
+			this.updateNetScale();
+
+		}
+
+		this.getScaleOriginal = function(val){
+			return _scaleOriginal;
+		}
+		this.getScaleNet = function(){
+			return _scaleNet;
+		}
+
+		this.doUpdateScaleNet = function(){
+			
+			if(_parent === "stop"){
+				return;
+			}
+			
+			_scaleNet *= _parent.getScaleNet();
+
+			this.doUpdateNotify();
+		}
+
+
+		this.doAddChildren = function (){
+			_children = _children || [];
 
 		//call update to parent on each
 
 		//add holders, add sprites
 	}
-	this.removeChildren = function(){
+	this.doRemoveChildren = function(){
 
 	}
 
-	this.myStuffUpdated = function(){
+	this.doUpdatedNotify = function(){
 		//add thing to list of stuff to udpate;
 	}
 
-	this.updateToParent();
+	this.doMoveToNewParent = function(newParent){
+		_doUpdateToParent();
+	}
+
+};
+
+
 
 }
