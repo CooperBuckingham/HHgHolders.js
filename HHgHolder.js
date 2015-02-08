@@ -1,25 +1,27 @@
 var holderHashCount = 0;
 
-var HHgHolder = function(w, h, parent, zIndex, xyOffset, scale, xyScaleOffset){
+function HHgHolder(w, h, zIndex, xyOffset, scale, xyScaleOffset){
 	holderHashCount++;
+	if(holderHashCount > 10000){
+		holderHashCount = 0;
+		console.log("HASH passed 10000");
+	}
 
 	xyScaleOffset =  xyScaleOffset || new HHgVector2(1,1);
 	xyOffset =  xyOffset || new HHgVector2(0,0);
 	scale = scale || 1.0;
 	zIndex = zIndex || 0;
-	parent = parent || HHgScene;
-	w = w || HHgScene.myWidth;
-	h = h || HHgScene.myHeight;
+	w = w || HHgScene.getWidth();
+	h = h || HHgScene.getHeight();
 	xyScaleOffset = xyScaleOffset || new HHgVector2(1,1);
 
 	var _width = w;
 	var _height = h;
 	
-	var _parent = parent;
+	var _parent;
 
-	
 	var _scaleOriginal = scale;
-	var _scaleNet = _parent.getScaleNet() * scale;
+	var _scaleNet = scale;
 
 	var _zIndex = zIndex;
 	var _xyOffset = xyOffset;
@@ -33,16 +35,14 @@ var HHgHolder = function(w, h, parent, zIndex, xyOffset, scale, xyScaleOffset){
 	
 	var _hash = holderHashCount;
 	var _timeStamp = +new Date();
+	var _finalHash = "" + _hash + "_" + _timeStamp;
 
-	var _doUpdateToParent = function(){
-			this.setPositionInParent(new HHgVector2(0,0) );
-			this.doUpdateScaleNet();
-			
+	
 
-		}
-
-
-	return function(){
+this.getHash = function(){
+	return _finalHash;
+}
+	
 		//do we want these to be calculations if the holder is holding things?
 		this.getWidth = function(){
 			return _width;
@@ -128,7 +128,7 @@ var HHgHolder = function(w, h, parent, zIndex, xyOffset, scale, xyScaleOffset){
 		}
 
 		this.setX = function(x, shouldAddTo){
-			this.setPositionInScreen(new HHgVector2(x,_positionInScreen.getY(), shouldAddTo);
+			this.setPositionInScreen(new HHgVector2(x,_positionInScreen.getY(), shouldAddTo));
 		}
 
 		this.setY = function(y, shouldAddTo){
@@ -199,7 +199,7 @@ var HHgHolder = function(w, h, parent, zIndex, xyOffset, scale, xyScaleOffset){
 			return _scaleNet;
 		}
 
-		this.doUpdateScaleNet = function(){
+		 var doUpdateScaleNet = function(){
 			
 			if(_parent === "stop"){
 				return;
@@ -211,24 +211,59 @@ var HHgHolder = function(w, h, parent, zIndex, xyOffset, scale, xyScaleOffset){
 		}
 
 
-		this.doAddChildren = function (){
+		this.doAddChild = function (child){
 			_children = _children || [];
+			if(typeof child !== "HHgHolder"){
+				throw("Tried to add a child not of HHgHolder Class");
+				return;
+			}
+
+			_children.push(child);
+			
 
 		//call update to parent on each
 
 		//add holders, add sprites
 	}
-	this.doRemoveChildren = function(){
+	this.doRemoveChild = function(child){
+		return _children.doRemoveThing(child);
 
 	}
 
-	this.doUpdatedNotify = function(){
+	var doUpdatedNotify = function(){
 		//add thing to list of stuff to udpate;
 	}
 
-	this.doMoveToNewParent = function(newParent){
-		_doUpdateToParent();
-	}
+	this.doMoveToNewParent = function(newParent, pos, isScreenPos){
+		if(_parent === "stop"){
+			return;
+		}
+
+		if(newParent === "stop"){
+			HHgScene.addThisHolder(this);
+			return;
+		}
+
+		if(_div === undefined){
+			HHgScene.addThisHolder(this);
+			_parent.doRemoveChild(this);
+		}
+
+		if(typeof newParent !== "HHgHolder"){
+			throw("tried to add child to a parent not of HHgHolder Class");
+		}
+
+
+
+		_parent = newParent || HHgScene;
+		_parent.doAddChild(this);
+		
+		this.doUpdateScaleNet();
+		pos = pos || new HHgVector2(0,0);
+		isScreenPos ? this.setPositionInScreen(pos) : this.setPositionInParent(pos);
+			
+	
+
 
 };
 
