@@ -16,10 +16,10 @@ var HHg = {
 
 }
 
-Array.prototype.doRemoveThing = function(thing){
-	for(var i = 0; i < this.length; i++){
-		if(this[i] === thing){
-			this.splice(i,1);
+doRemoveThingFromArray = function(arr,thing){
+	for(var i = 0; i < arr.length; i++){
+		if(arr[i] === arr){
+			arr.splice(i,1);
 			return true;
 		}
 	}
