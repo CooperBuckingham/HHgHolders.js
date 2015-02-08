@@ -37,6 +37,7 @@ function HHgHolder(w, h, zIndex, xyOffset, scale, xyScaleOffset){
 	var _timeStamp = +new Date();
 	var _finalHash = "" + _hash + "_" + _timeStamp;
 
+var that = this;
 	
 
 this.getHash = function(){
@@ -73,12 +74,12 @@ this.getHash = function(){
 		this.setZ = function(z){
 			//***this needs more logic, like regarding children
 			_zIndex = z;
-			this.doUpdatedNotify();
+			that.doUpdatedNotify();
 		}
 
 		this.setXYOffset =function(xy){
 			_xyOffset = xy;
-			this.doUpdatedNotify();
+			that.doUpdatedNotify();
 		}
 
 		this.getXYOffset = function(){
@@ -95,7 +96,7 @@ this.getHash = function(){
 
 		this.setXYScaleOffset = function(xyScaleOffset){
 			_xyScaleOffset = xyScaleOffset;
-			this.doUpdateNotify();
+			that.doUpdatedNotify();
 		}
 
 		this.getXYScaleOffset = function(){
@@ -128,19 +129,19 @@ this.getHash = function(){
 		}
 
 		this.setX = function(x, shouldAddTo){
-			this.setPositionInScreen(new HHgVector2(x,_positionInScreen.getY(), shouldAddTo));
+			that.setPositionInScreen(new HHgVector2(x,_positionInScreen.getY(), shouldAddTo));
 		}
 
 		this.setY = function(y, shouldAddTo){
-			this.setPositionInScreen(new HHgVector2(_x,y), shouldAddTo);
+			that.setPositionInScreen(new HHgVector2(_x,y), shouldAddTo);
 		}
 
 		this.setXInParent = function(x, shouldAddTo){
-			this.setPositionInParent(new HHgVector2(x,_y), shouldAddTo);
+			that.setPositionInParent(new HHgVector2(x,_y), shouldAddTo);
 		}
 
 		this.setYInParent = function(y, shouldAddTo){
-			this.setPositionInParent(new HHgVector2(_x,y), shouldAddTo);
+			that.setPositionInParent(new HHgVector2(_x,y), shouldAddTo);
 		}
 
 		this.getX = function(){
@@ -173,7 +174,7 @@ this.getHash = function(){
 			_positionInScreen = diffOfVectorsInScreen.returnVectorScaledBy(_parent.getScaleNet());
 
 
-			this.myStuffUpdated();
+			that.doUpdatedNotify();
 
 		}
 
@@ -188,7 +189,7 @@ this.getHash = function(){
 				_scaleOriginal = val;
 			}
 
-			this.updateNetScale();
+			that.updateNetScale();
 
 		}
 
@@ -199,7 +200,7 @@ this.getHash = function(){
 			return _scaleNet;
 		}
 
-		 var doUpdateScaleNet = function(){
+		this.doUpdateScaleNet = function(){
 			
 			if(_parent === "stop"){
 				return;
@@ -207,13 +208,13 @@ this.getHash = function(){
 			
 			_scaleNet *= _parent.getScaleNet();
 
-			this.doUpdateNotify();
+			that.doUpdatedNotify();
 		}
 
 
 		this.doAddChild = function (child){
 			_children = _children || [];
-			if(typeof child !== "HHgHolder"){
+			if(child instanceof HHgHolder !== true){
 				throw("Tried to add a child not of HHgHolder Class");
 				return;
 			}
@@ -226,11 +227,11 @@ this.getHash = function(){
 		//add holders, add sprites
 	}
 	this.doRemoveChild = function(child){
-		return _children.doRemoveThing(child);
+		return HHg.doRemoveThingFromArray(_children, child);
 
 	}
 
-	var doUpdatedNotify = function(){
+	this.doUpdatedNotify = function(){
 		//add thing to list of stuff to udpate;
 	}
 
@@ -244,23 +245,23 @@ this.getHash = function(){
 			return;
 		}
 
-		if(_div === undefined){
+		if(_parent === undefined){
 			HHgScene.addThisHolder(this);
+		}else{
 			_parent.doRemoveChild(this);
 		}
 
-		if(typeof newParent !== "HHgHolder"){
+		_parent = newParent || HHgScene;
+
+		if(_parent instanceof HHgHolder !== true){
 			throw("tried to add child to a parent not of HHgHolder Class");
 		}
 
-
-
-		_parent = newParent || HHgScene;
 		_parent.doAddChild(this);
 		
-		this.doUpdateScaleNet();
+		that.doUpdateScaleNet();
 		pos = pos || new HHgVector2(0,0);
-		isScreenPos ? this.setPositionInScreen(pos) : this.setPositionInParent(pos);
+		isScreenPos ? that.setPositionInScreen(pos) : that.setPositionInParent(pos);
 			
 	
 

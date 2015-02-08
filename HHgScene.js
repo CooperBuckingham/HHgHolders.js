@@ -29,14 +29,15 @@ function startHHgScene(){
 		theAll.appendChild(div);
 	};
 
-console.log();
+
 HHgScene.doMoveToNewParent("stop");
+console.log("added scene");
 
 	var testBlock = new HHgHolder(50,50);
 	
 
 testBlock.doMoveToNewParent();
-
+console.log("added test");
 }
 
 
