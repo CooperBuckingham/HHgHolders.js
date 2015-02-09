@@ -227,10 +227,11 @@ this.getHash = function(){
 			}
 
 			if(_parent !== undefined){
-			_positionInScreen = _parent.getPositionInScreen();
-			_positionInScreen = _positionInScreen.returnVectorPlusVector(_positionInParent);
-			_positionInScreen = _positionInScreen.returnVectorScaledBy(_parent.getScaleNet());
-			_positionInScreen = _positionInScreen.returnVectorPlusVector(_parent.returnHalfSizeVector());
+			var parentPositionInScreen = _parent.getPositionInScreen();
+			var myScaledPosition = _positionInParent.returnVectorScaledBy(_parent.getScaleNet());
+			var finalVector = parentPositionInScreen.returnVectorPlusVector(myScaledPosition);
+
+			_positionInScreen = finalVector.returnVectorPlusVector(_parent.returnHalfSizeVector());
 			_positionInScreen = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreen);
 			_positionInScreen = _positionInScreen.returnVectorPlusVector(that.getPositionXYOffsetNet());
 

@@ -49,7 +49,7 @@ function doStartHHgScene(){
 //==================
 
 var testContainer = new HHgHolder(100,100);
-testContainer.doMoveToNewParent(HHgScene, new HHgVector2(0, 0));
+testContainer.doMoveToNewParent(HHgScene, new HHgVector2(-150, 0));
 testContainer.setBackgroundColor(120,.75,.75,.5);
 
 	var testBlock = new HHgHolder(50,50);
@@ -72,9 +72,9 @@ testContainer.setBackgroundColor(120,.75,.75,.5);
 	//=====
 
 	var testContainer = new HHgHolder(100,100);
-testContainer.doMoveToNewParent(HHgScene, new HHgVector2(0, 0));
+testContainer.doMoveToNewParent(HHgScene, new HHgVector2(150, 0));
 testContainer.setBackgroundColor(120,.75,.75,.5);
-testContainer.setScaleXYOffset(.75,.75);
+testContainer.setScaleXYOffset(2,2);
 
 	var testBlock = new HHgHolder(50,50);
 	testBlock.doMoveToNewParent(testContainer, new HHgVector2(0,0));
@@ -92,10 +92,6 @@ testContainer.setScaleXYOffset(.75,.75);
 
 	var testBlock = new HHgHolder(50,50);
 	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,-100));
-
-
-
-
 
 }
 
