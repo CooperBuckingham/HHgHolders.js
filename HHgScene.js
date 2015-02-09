@@ -17,19 +17,20 @@ function doStartHHgScene(){
 
 	HHgScene.doMoveToNewParent("stop");
 	var sceneDiv = HHgScene.getDiv();
-	console.log(sceneDiv.style.left);
-	console.log(HHgScene.getHalfWidth());
+	
 	sceneDiv.style.left = parseInt(sceneDiv.style.left) - HHgScene.getHalfWidth();
 	sceneDiv.style.bottom = parseInt(sceneDiv.style.bottom) - HHgScene.getHalfHeight();
 	sceneDiv.style.backgroundColor = "blue";
-	console.log("added scene");
+	
+
+var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(-100,100));
+	testBlock.setBackgroundColor(60,.75,.75,1);
 
 	var testBlock = new HHgHolder(50,50);
 	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(0,0));
 
-	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(-100,100));
-
+	
 	var testBlock = new HHgHolder(50,50);
 	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(100,100));
 
@@ -41,11 +42,50 @@ function doStartHHgScene(){
 	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(-100,-100));
 
 
+var testContainer = new HHgHolder(100,100);
+testContainer.doMoveToNewParent(HHgScene, new HHgVector2(-300, 67));
+testContainer.setBackgroundColor(120,.75,.75,.5);
+
+	var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(testContainer, new HHgVector2(0,0));
+
+	var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,100));
+	testBlock.setBackgroundColor(60,.75,.75,1);
+
+	var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(testContainer, new HHgVector2(100,100));
+
+	var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(testContainer, new HHgVector2(100,-100));
+
+
+	var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,-100));
+
+
+
 
 }
 
 function doAddFunctionsToScene(scene){
-		scene.doAddThisHolder = function(holder){
+		
+	scene.doUpdateThisHolder = function(holder){
+		var div = holder.getDiv();
+		div.style.backgroundColor = holder.getBackgroundColor();
+		div.style.width = "" + holder.getWidthOriginal() + "px";
+		div.style.height ="" + holder.getHeightOriginal() + "px";
+		var centricConversion = scene.doAnyScreenConversion(holder.getPositionInScreen());
+		div.style.left ="" + centricConversion.getX() +"px";
+		div.style.bottom ="" + centricConversion.getY() + "px";
+	}
+
+
+	scene.doAddThisHolder = function(holder){
+		if(holder.getDiv()){
+			scene.doUpdateThisHolder(holder);
+			return;
+		}
 		
 		var div = document.createElement("div");
 		holder.setDiv(div);
@@ -53,28 +93,18 @@ function doAddFunctionsToScene(scene){
 		div.style.position = "absolute";
 		div.style.backgroundColor ="red";
 		div.style.border = "2px solid black";
-		div.style.width = "" + holder.getWidth() + "px";
-		div.style.height ="" + holder.getHeight() + "px";
-		var centricConversion = this.doConvertTo00Centric( holder.getPositionInScreen() );
-		div.style.left ="" + centricConversion.getX() +"px";
-		div.style.bottom ="" + centricConversion.getY() + "px";
 		div.id = holder.getHash();
+
+		scene.doUpdateThisHolder(holder);
 		
 		theAll.appendChild(div);
 	};
 
-	scene.doUpdateThisHolder = function(holder){
-		var div = holder.getDiv();
-		div.style.width = "" + holder.getWidth() + "px";
-		div.style.height ="" + holder.getHeight() + "px";
-		var centricConversion = this.doConvertTo00Centric(holder.getPositionInScreen());
-		div.style.left ="" + centricConversion.getX() +"px";
-		div.style.bottom ="" + centricConversion.getY() + "px";
-	}
+	
 
-	scene.doConvertTo00Centric = function(xyPos){
-		//return xyPos;
-		return new HHgVector2(xyPos.getX() + this.getHalfWidth(), xyPos.getY() + this.getHalfHeight());
+	scene.doAnyScreenConversion = function(xyPos){
+		return xyPos;
+		//return new HHgVector2(xyPos.getX() + this.getHalfWidth(), xyPos.getY() + this.getHalfHeight());
 	}
 }
 

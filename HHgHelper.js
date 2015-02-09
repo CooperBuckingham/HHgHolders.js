@@ -1,4 +1,5 @@
 var HHg = {
+
 	returnNTestedObjects:function(arr, test, n){
 		n ? n : n = arr.length;
 		var returnArr = [];
@@ -11,12 +12,17 @@ var HHg = {
 			}
 
 		return returnArr;
-	}
+	},
 
+	returnRandomFloatLowIncHighExcl : function(lowInc, highExcl){
+		return Math.Random() * (highExcl - lowInc) + lowInc;
+	},
 
-}
+	returnRandomIntLowIncHighExcl : function(lowInc, highExcl){
+		return Math.floor(Math.Random() * (highExcl - lowInc) + lowInc);
+	},
 
-doRemoveThingFromArray = function(arr,thing){
+	doRemoveThingFromArray: function(arr,thing){
 	for(var i = 0; i < arr.length; i++){
 		if(arr[i] === arr){
 			arr.splice(i,1);
@@ -24,6 +30,7 @@ doRemoveThingFromArray = function(arr,thing){
 		}
 	}
 	return false;
+	}
 }
 
 

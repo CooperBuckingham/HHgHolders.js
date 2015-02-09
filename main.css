@@ -108,7 +108,7 @@ html body #xy11{
 	display: inline-block;
 	width: 10px;
 	height: 10px;
-	background-color: green;
+	background-color: hsla(120,75%,75%,.5);
 	position: absolute;
 	left: 75%;
 	bottom: 75%;
