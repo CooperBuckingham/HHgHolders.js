@@ -15,12 +15,18 @@ function HHgHolder(w, h, zIndex, xyOffset, scale, xyScaleOffset){
 	h = h || HHgScene.getHeight();
 	xyScaleOffset = xyScaleOffset || new HHgVector2(1,1);
 
-	var _width = w;
-	var _height = h;
+	var _widthOriginal = w;
+	var _heightOriginal = h;
+
+	var _widthNet = w;
+	var _heightNet = h;
 	
 	var _parent;
+	
+	var _backgroundHue, _backgroundSaturation, _backgroundLightness, _backgroundAlpha;
 
 	var _scaleOriginal = scale;
+	var _scaleXYOffset = xyScaleOffset;
 	var _scaleNet = scale;
 
 	var _zIndex = zIndex;
@@ -30,7 +36,7 @@ function HHgHolder(w, h, zIndex, xyOffset, scale, xyScaleOffset){
 
 	var _children;
 	var _actions;
-	var _xyScaleOffset = xyScaleOffset;
+	
 	var _div;
 	
 	var _hash = holderHashCount;
@@ -43,36 +49,58 @@ function HHgHolder(w, h, zIndex, xyOffset, scale, xyScaleOffset){
 this.getHash = function(){
 	return _finalHash;
 }
+
+		this.setBackgroundColor = function(H, S, L, A, shouldMultiplyBy){
+		
+			H = H > 360 ? H % 360 : H;
+			S = S > 1 ? 1 : S;
+			L = L > 1 ? 1 : L;
+			A = A > 1 ? 1 : A;
+			
+			var mult = shouldMultiplyBy || 1;
+
+			_backgroundHue = H * mult || _backgroundHue;
+			_backgroundSaturation = S * mult || _backgroundSaturation;
+			_backgroundLightness = L * mult || _backgroundLightness;
+			_backgroundAlpha = A * mult || _backgroundLightness;
+
+
+			that.doUpdatedNotify();
+		}
+
+		this.getBackgroundColor= function(){
+			return "hsla(" + _backgroundHue + ", " + (100 * _backgroundSaturation) + "%, " + (100 * _backgroundLightness) + "%, " + _backgroundAlpha +")";
+		}
 	
 		//do we want these to be calculations if the holder is holding things?
-		this.getWidth = function(){
-			return _width;
+		this.getWidthOriginal = function(){
+			return _widthOriginal;
 		}
 
-		this.setWidth = function(){
-			//***likely needs some more complicated logic here
-			//do we want to scale, do we even all manual width setting?
-			//maybe width and height are relavent to scale?
+
+		this.getHeightOriginal = function(){
+			return _heightOriginal;
 		}
 
-		this.getHeight = function(){
-			return _height;
+		this.getWidthNet = function(){
+			return _widthNet;
 		}
 
-		this.setHeight = function(){
-			//same questions as width
+		this.getHeightNet = function(){
+			return _heightNet;
 		}
+
 
 		this.getParent = function(){
 			return _parent;
 		}
 
 		this.getHalfWidth = function(){
-			return _width / 2;
+			return _widthNet / 2;
 		}
 
 		this.getHalfHeight = function(){
-			return _height / 2;
+			return _heightNet / 2;
 		}
 
 		this.getZ = function(){
@@ -87,6 +115,7 @@ this.getHash = function(){
 
 		this.setXYOffset =function(xy){
 			_xyOffset = xy;
+			//need to update both screen and parent position
 			that.doUpdatedNotify();
 		}
 
@@ -104,7 +133,9 @@ this.getHash = function(){
 
 		this.setXYScaleOffset = function(xyScaleOffset){
 			_xyScaleOffset = xyScaleOffset;
-			that.doUpdatedNotify();
+			//have to update stuff here
+			that.doUpdateScaleNet();
+			
 		}
 
 		this.getXYScaleOffset = function(){
@@ -122,11 +153,10 @@ this.getHash = function(){
 			}
 
 			var posOfParentInScreen = _parent.getPositionInScreen();
-			var diffOfVectorsInScreen = _positionInScreen.returnVectorSubtractedFromVector(posOfParentInScreen);
-			var diffOfVectorTimesScale = diffOfVectorsInScreen.returnVectorScaledByInverse(_parent.getScaleNet());
-
-			_positionInParent = diffOfVectorTimesScale;
-
+			var diffOfVectorsInScreen = posOfParentInScreen.returnVectorSubtractedFromVector(_positionInScreen);
+			_positionInParent = diffOfVectorsInScreen.returnVectorScaledByInverse(_parent.getScaleNet());
+			_positionInParent = _positionInParent.returnVectorPlusVector(_parent.returnHalfSizeVector());
+			_positionInParent = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInParent);
 
 			this.doUpdatedNotify();
 		}
@@ -178,12 +208,20 @@ this.getHash = function(){
 			}
 
 			var posOfParentInScreen = _parent.getPositionInScreen();
-			var diffOfVectorsInScreen = _positionInParent.returnVectorSubtractedFromVector(posOfParentInScreen);
-			_positionInScreen = diffOfVectorsInScreen.returnVectorScaledBy(_parent.getScaleNet());
+			_positionInScreen = posOfParentInScreen.returnVectorPlusVector(_positionInParent);
+			_positionInScreen = _positionInScreen.returnVectorScaledBy(_parent.getScaleNet());
+			_positionInScreen = _positionInScreen.returnVectorPlusVector(_parent.returnHalfSizeVector());
+			_positionInScreen = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreen);
 
 
 			that.doUpdatedNotify();
 
+			//return new HHgVector2(xyPos.getX() + this.getHalfWidth(), xyPos.getY() + this.getHalfHeight());
+
+		}
+
+		this.returnHalfSizeVector = function(){
+			return new HHgVector2(_widthNet / 2, _heightNet / 2);
 		}
 
 		this.getPositionInParent = function(){
@@ -240,6 +278,7 @@ this.getHash = function(){
 	}
 
 	this.doUpdatedNotify = function(){
+		console.log("updatedNotify");
 		//add thing to list of stuff to udpate;
 		HHgScene.doUpdateThisHolder(that);
 	}
