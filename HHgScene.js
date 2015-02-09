@@ -5,7 +5,7 @@ var HHgSceneInternal = function(){
 
 
 
-var HHgScene;
+var HHgScene, HHgStable;
 var theAll = document.getElementById("all");
 
 function doStartHHgScene(){
@@ -21,30 +21,60 @@ function doStartHHgScene(){
 	sceneDiv.style.left = parseInt(sceneDiv.style.left) - HHgScene.getHalfWidth();
 	sceneDiv.style.bottom = parseInt(sceneDiv.style.bottom) - HHgScene.getHalfHeight();
 	sceneDiv.style.backgroundColor = "blue";
-	
 
-var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(-100,100));
+	HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
+	HHgStable.doMoveToNewParent(HHgScene, HHgScene.getWidthNet() * 3, HHgScene.getHeightNet() * 3, true);
+
+
+	/*var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(-100,100), true);
 	testBlock.setBackgroundColor(60,.75,.75,1);
 
 	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(0,0));
+	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(0,0), true);
 
 	
 	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(100,100));
+	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(100,100), true);
 
 	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(100,-100));
+	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(100,-100), true);
 
 
 	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(-100,-100));
+	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(-100,-100), true);
+*/
+//==================
 
+//==================
 
 var testContainer = new HHgHolder(100,100);
-testContainer.doMoveToNewParent(HHgScene, new HHgVector2(-300, 67));
+testContainer.doMoveToNewParent(HHgScene, new HHgVector2(0, 0));
 testContainer.setBackgroundColor(120,.75,.75,.5);
+
+	var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(testContainer, new HHgVector2(0,0));
+
+	var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,100));
+	testBlock.setBackgroundColor(60,.75,.75,1);
+
+	var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(testContainer, new HHgVector2(100,100));
+
+	var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(testContainer, new HHgVector2(100,-100));
+
+
+	var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,-100));
+
+	//=====
+
+	var testContainer = new HHgHolder(100,100);
+testContainer.doMoveToNewParent(HHgScene, new HHgVector2(0, 0));
+testContainer.setBackgroundColor(120,.75,.75,.5);
+testContainer.setScaleXYOffset(.75,.75);
 
 	var testBlock = new HHgHolder(50,50);
 	testBlock.doMoveToNewParent(testContainer, new HHgVector2(0,0));
@@ -66,6 +96,7 @@ testContainer.setBackgroundColor(120,.75,.75,.5);
 
 
 
+
 }
 
 function doAddFunctionsToScene(scene){
@@ -73,8 +104,8 @@ function doAddFunctionsToScene(scene){
 	scene.doUpdateThisHolder = function(holder){
 		var div = holder.getDiv();
 		div.style.backgroundColor = holder.getBackgroundColor();
-		div.style.width = "" + holder.getWidthOriginal() + "px";
-		div.style.height ="" + holder.getHeightOriginal() + "px";
+		div.style.width = "" + holder.getWidthNet() + "px";
+		div.style.height ="" + holder.getHeightNet() + "px";
 		var centricConversion = scene.doAnyScreenConversion(holder.getPositionInScreen());
 		div.style.left ="" + centricConversion.getX() +"px";
 		div.style.bottom ="" + centricConversion.getY() + "px";

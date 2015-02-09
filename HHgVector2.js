@@ -50,10 +50,13 @@
 		return new HHgVector2(_x + vB.getX(), _y + vB.getY());
 	}
 	this.returnVectorScaledBy = function(val){
-		return new HHgVector2(_x * val, _y * val);
+		if(val instanceof HHgVector2 === false){
+			val = new HHgVector2(val, val);
+		}
+		return new HHgVector2(_x * val.getX(), _y * val.getY());
 	}
 	this.returnVectorScaledByInverse = function(val){
-		return new HHgVector2(_x / val, _y / val);
+		return new HHgVector2(_x / val.getX(), _y / val.getY());
 	}
 	this.returnVectorSubtractedFromVector = function(vB){
 		return new HHgVector2(vB.getX() - _x, vB.getY() - _y);
