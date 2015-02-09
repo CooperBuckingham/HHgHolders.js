@@ -9,8 +9,8 @@ function HHgHolder(w, h, zIndex, xyOffset, scale){
 
 	xyOffset =  xyOffset || new HHgVector2(0,0);
 	zIndex = zIndex || 0;
-	w = w || HHgScene.getWidth();
-	h = h || HHgScene.getHeight();
+	w = w || HHgScene.getWidthOriginal();
+	h = h || HHgScene.getHeightOriginal();
 
 	if(scale instanceof HHgVector2){
 		//scale is fine
@@ -24,9 +24,6 @@ function HHgHolder(w, h, zIndex, xyOffset, scale){
 	var _widthOriginal = w;
 	var _heightOriginal = h;
 
-	var _widthNet = w;
-	var _heightNet = h;
-	
 	var _parent;
 	
 	var _backgroundHue, _backgroundSaturation, _backgroundLightness, _backgroundAlpha;
@@ -102,11 +99,11 @@ this.getHash = function(){
 		}
 
 		this.getHalfWidth = function(){
-			return _widthNet / 2;
+			return that.getWidthNet() / 2;
 		}
 
 		this.getHalfHeight = function(){
-			return _heightNet / 2;
+			return that.getHeightNet() / 2;
 		}
 
 		this.getZIndex = function(){
@@ -252,7 +249,7 @@ this.getHash = function(){
 		}
 
 		this.returnHalfSizeVector = function(){
-			return new HHgVector2(_widthNet / 2, _heightNet / 2);
+			return new HHgVector2(that.getHalfWidth(), that.getHalfHeight());
 		}
 
 		
@@ -313,7 +310,10 @@ this.getHash = function(){
 			}
 
 			//scale changes have to notify for position changes
-			that.doRecalcPosition();
+			
+			 that.doRecalcPosition();
+
+			
 			
 		}
 
