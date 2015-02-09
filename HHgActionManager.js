@@ -26,7 +26,7 @@ var paused = false;
 })( window, Date );
 
 
-function startHHgActionManager(){
+function doStartHHgActionManager(){
   window.HHgActionManager.actionLoop(function( deltaT, now ) {
     // rendering code goes here
     // return false; will stop the loop

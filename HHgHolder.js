@@ -37,7 +37,7 @@ function HHgHolder(w, h, zIndex, xyOffset, scale, xyScaleOffset){
 	var _timeStamp = +new Date();
 	var _finalHash = "" + _hash + "_" + _timeStamp;
 
-var that = this;
+	var that = this;
 	
 
 this.getHash = function(){
@@ -65,6 +65,14 @@ this.getHash = function(){
 
 		this.getParent = function(){
 			return _parent;
+		}
+
+		this.getHalfWidth = function(){
+			return _width / 2;
+		}
+
+		this.getHalfHeight = function(){
+			return _height / 2;
 		}
 
 		this.getZ = function(){
@@ -233,6 +241,7 @@ this.getHash = function(){
 
 	this.doUpdatedNotify = function(){
 		//add thing to list of stuff to udpate;
+		HHgScene.doUpdateThisHolder(that);
 	}
 
 	this.doMoveToNewParent = function(newParent, pos, isScreenPos){
@@ -241,12 +250,12 @@ this.getHash = function(){
 		}
 
 		if(newParent === "stop"){
-			HHgScene.addThisHolder(this);
+			HHgScene.doAddThisHolder(this);
 			return;
 		}
 
 		if(_parent === undefined){
-			HHgScene.addThisHolder(this);
+			HHgScene.doAddThisHolder(this);
 		}else{
 			_parent.doRemoveChild(this);
 		}
