@@ -1,4 +1,7 @@
-function HHgAction(owner, subType, args){
+
+
+
+var HHgAction = function (owner){
 	this.owner = owner;
 	this.subType = subType;
 	this.args = args;
@@ -11,4 +14,26 @@ function HHgAction(owner, subType, args){
 
 		}
 	} ;
+}
+
+
+
+function HHgActionMoveTo(owner, pos args){
+	HHgAction.call(this, owner);
+
+	this.pos = pos;
+}
+HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
+
+
+
+
+
+
+var HHgActionCommands = {
+	makeChildOfAction : function(subclass){
+		subclass.prototype = Object.create(HHgAction.prototype);
+		subclass.prototype.constructor = subclass;
+
+	}
 }

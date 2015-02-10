@@ -72,7 +72,7 @@ testContainer.setBackgroundColor(120,.75,.75,.5);
 	//=====
 	//testContainer.setRotationOriginal(30);
 	testContainer.setPositionXYOffsetOriginal(100,-50);
-	testBlock.setPositionXYOffsetOriginal(100,-50);
+	testBlock.setPositionXYOffsetOriginal(100,0);
 
 	var testContainer2 = new HHgHolder(200,200);
 testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, -250));
@@ -148,10 +148,15 @@ function doAddFunctionsToScene(scene){
 	};
 
 var lastRotate = 0;
+
 	scene.test = function(delta, holder){
+	
+	
 		lastRotate += delta/100;
 		if(lastRotate > 30) lastRotate = 0;
 		holder.setRotationOriginal(lastRotate);
+		holder.setPositionInParent(new HHgVector2(0,.1), true);
+		holder.setScaleXYOffsetMultiplied(.999,.999);
 		//holder.setRotationOriginal(90);
 	}
 

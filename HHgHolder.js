@@ -1,6 +1,6 @@
 var holderHashCount = 0;
 
-function HHgHolder(w, h, zIndex, xyOffset, scale){
+var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	holderHashCount++;
 	if(holderHashCount > 10000){
 		holderHashCount = 0;
@@ -254,12 +254,12 @@ this.getHash = function(){
 			var finalVector = parentPositionInScreen.returnVectorPlusVector( myScaledPosition );
 
 			_positionInScreen = finalVector.returnVectorPlusVector( _parent.returnHalfSizeVector() );
-			
+			_positionInScreen = _positionInScreen.returnVectorPlusVector(that.getPositionXYOffsetNet());
 			//note, I kept moving this after the follow two lines and screwing things up
 			that.setPositionInScreenForParentRotation();
 
 			_positionInScreen = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreen);
-			_positionInScreen = _positionInScreen.returnVectorPlusVector(that.getPositionXYOffsetNet());
+			
 
 						
 
@@ -322,7 +322,7 @@ this.getHash = function(){
 			if(xy instanceof HHgVector2 === false){
 				xy = new HHgVector2(xy, y);
 			}
-				_scaleXYOffset.returnVectorScaledBy(xy);
+				_scaleXYOffset = _scaleXYOffset.returnVectorScaledBy(xy);
 			
 			that.doRecalcScaleNet();
 			
@@ -487,11 +487,31 @@ this.getHash = function(){
 		
 		isScreenPos ? that.setPositionInScreen(xy) : that.setPositionInParent(xy);
 			
-	
-
-
 };
 
+//============= ACTIONS ================
+	this.actionMoveInScreen = function(xy,y,time,shouldAddTo){
+		if(xy instanceof HHgVector2 === false){
+			xy = xy || that.getX();
+			yOrTime = yOrTime || that.getY();
+			xy = new HHgVector2(xy, yOrTime);
+		}else{
+			time = y;
+			shouldAddTo = time;
+		}
 
+
+
+
+
+	}
 
 }
+
+
+
+
+
+
+
+
