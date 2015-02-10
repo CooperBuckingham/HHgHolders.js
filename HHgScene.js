@@ -3,7 +3,7 @@ var HHgSceneInternal = function(){
 	
 }
 
-
+var testContainer;
 
 var HHgScene, HHgStable;
 var theAll = document.getElementById("all");
@@ -48,7 +48,7 @@ function doStartHHgScene(){
 
 //==================
 
-var testContainer = new HHgHolder(60,60);
+testContainer = new HHgHolder(200,200);
 testContainer.doMoveToNewParent(HHgScene, new HHgVector2(-100, 300));
 testContainer.setBackgroundColor(120,.75,.75,.5);
 
@@ -70,12 +70,15 @@ testContainer.setBackgroundColor(120,.75,.75,.5);
 	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,-100));
 
 	//=====
-	testContainer.setRotationOriginal(90);
+	//testContainer.setRotationOriginal(30);
+	testContainer.setPositionXYOffsetOriginal(100,-50);
+	testBlock.setPositionXYOffsetOriginal(100,-50);
 
 	var testContainer2 = new HHgHolder(200,200);
 testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, -250));
 testContainer2.setBackgroundColor(120,.75,.75,.5);
 testContainer2.setScaleXYOffset(2,2);
+
 
 	var testBlock = new HHgHolder(50,50);
 	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(0,0));
@@ -100,7 +103,12 @@ testContainer2.setScaleXYOffset(2,2);
 	testBlock2.setBackgroundColor(300,.5,.5,1);
 	testBlock2.setScaleXYOffset(.5,.5);
 	
-	testContainer2.setRotationOriginal(45);
+	testContainer2.setRotationOriginal(30);
+	
+	testBlock2.getDiv().addEventListener("click", function(){
+		console.log("clicked");
+		testContainer.setScaleXYOffset(1.25, 1.25, true);
+		}, true);
 
 
 }
@@ -138,6 +146,14 @@ function doAddFunctionsToScene(scene){
 
 		theAll.appendChild(div);
 	};
+
+var lastRotate = 0;
+	scene.test = function(delta, holder){
+		lastRotate += delta/100;
+		if(lastRotate > 30) lastRotate = 0;
+		holder.setRotationOriginal(lastRotate);
+		//holder.setRotationOriginal(90);
+	}
 
 	
 

@@ -2,6 +2,8 @@
 	var _x = +x;
 	var _y = +y;
 
+	var that = this;
+
 	var myLength = function(){
 		return Math.sqrt(_x * _x + _y * _y);
 	}
@@ -31,17 +33,26 @@
 
 	}
 
+	this.returnVectorRotatedAroundVectorAtAngle = function(vB, angle){
+		var rads = HHg.doDegreesToRads(angle),
+			vBx = vB.getX(),
+			vBy = vB.getY();
+		
+		return new HHgVector2( (Math.cos(rads) * (_x - vBx) - Math.sin(rads) * (_y - vBy) + vBx),
+								(Math.sin(rads) * (_x - vBx) + Math.cos(rads) * (_y - vBy) + vBy) );
+	}
+
 	this.returnPretty = function(){
 		return ("HHgVector2: x: " + _x + " y: " + _y);
 	}
 	
 	
-	this.setXY = function(x,y){
-		if(typeof x === "HHgVector2"){
-			_x = x.getX();
-			_y = x.getY();
+	this.setXY = function(xy,y){
+		if(xy instanceof HHgVector2){
+			_x = xy.getX();
+			_y = xy.getY();
 		}else{
-			_x = +x;
+			_x = +xy;
 			_y = +y;
 		}
 		
