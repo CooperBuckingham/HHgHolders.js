@@ -1,4 +1,4 @@
-	function HHgVector2(x,y){
+	var HHgVector2 = function (x,y){
 	var _x = +x;
 	var _y = +y;
 
