@@ -1,9 +1,20 @@
 
 
-window.HHgActionManager = {};
+HHgMain.HHgActionManager = {
+  actionList: [],
+  addAction: function(action){
+      this.actionList.push(action);
+  },
+
+  removeAction: function(action){
+    HHg.doRemoveThingFromArray(this.actionList, action);
+  },
+
+};
+
 var paused = false;
 
-HHgActionManager.actionLoop = function( animateActions ) {
+HHgMain.HHgActionManager.actionLoop = function( animateActions ) {
     var shouldContinueLoop = true;
     var lastFrameTime = +new Date;
     function recurse( thisFrameTime ) {
@@ -24,17 +35,19 @@ HHgActionManager.actionLoop = function( animateActions ) {
 
 
 function doStartHHgActionManager(){
-  window.HHgActionManager.actionLoop(function( deltaT, now ) {
+  var i;
+  var theActionList = HHgActionManager.actionList;
+  HHgMain.HHgActionManager.actionLoop(function( deltaT, now ) {
     
-    HHgScene.test(deltaT, testContainer);
-
-
-
+    for(i = 0; i < theActionList.length; i++){
+      theActionList[i].whatShouldIDoThisFrame(deltaT, now);
+    }
 
     return true;
 
   } );
 }
+
 
 
 

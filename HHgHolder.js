@@ -164,38 +164,41 @@ this.getHash = function(){
 				}
 			}
 
-		// this.setPositionInScreen = function(xyPos, shouldAddTo){
-		// 	if(_parent === "stop"){
-		// 		return;
-		// 	}
-		// 	if(shouldAddTo === true){
-		// 		_positionInScreen = _positionInScreen.returnVectorPlusVector(xyPos);
-		// 	}else{
-		// 		_positionInScreen = xyPos;
-		// 	}
-
-		// 	if(_parent !== undefined){
-		// 		_positionInParent = _parent.getPositionInScreen();
-		// 		_positionInParent = _positionInParent.returnVectorSubtractedFromVector(_positionInScreen);
-		// 		_positionInParent = _positionInParent.returnVectorScaledByInverse(_parent.getScaleNet());
-		// 		_positionInParent = _positionInParent.returnVectorPlusVector(_parent.returnHalfSizeVector());
+		this.setPositionInScreen = function(xyPos, shouldAddTo){
+			if(this._parent === "stop"){
+				return;
+			}
 
 
-		// 		_positionInParent = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInParent);
-		// 		_positionInParent = _positionInParent.returnVectorPlusVector(that.getPositionXYOffsetNet());
+			if(shouldAddTo === true){
+				_positionInParent = _positionInParent.returnVectorPlusVector(parXYPos);
+			}else{
+				_positionInParent = parXYPos;
+			}
+
+			if(_parent !== undefined){
+				var parentPositionInScreen = _parent.getPositionInScreen();
+				var myScaledPosition = _positionInParent.returnVectorScaledBy( _parent.getScaleNet() );
+				var finalVector = parentPositionInScreen.returnVectorPlusVector( myScaledPosition );
+
+				_positionInScreen = finalVector.returnVectorPlusVector( _parent.returnHalfSizeVector() );
+				_positionInScreen = _positionInScreen.returnVectorPlusVector(that.getPositionXYOffsetNet());
+				//note, I kept moving this after the follow two lines and screwing things up
+				that.setPositionInScreenForParentRotation();
+
+				_positionInScreen = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreen);
 			
-		// 		that.setPositionInScreenForParentRotation();
+			}
 
-		// 	}
+			if(_children){
+				HHg.doForEach(_children, function(child){
+					child.doRecalcPosition();
+				});
+			}
 
-		// 	if(_children){
-		// 		HHg.doForEach(_children, function(child){
-		// 			child.doRecalcPosition();
-		// 		});
-		// 	}
+			that.doNotifySceneOfUpdates();
 
-		// 	that.doNotifySceneOfUpdates();
-		// }
+		}
 
 
 		this.getPositionInScreen = function(){
@@ -490,20 +493,21 @@ this.getHash = function(){
 };
 
 //============= ACTIONS ================
-	this.actionMoveInScreen = function(xy,y,time,shouldAddTo){
+	this.actionMoveInScreen = function(xy,y,time,shouldAddTo, onComplete, ease){
 		if(xy instanceof HHgVector2 === false){
 			xy = xy || that.getX();
-			yOrTime = yOrTime || that.getY();
-			xy = new HHgVector2(xy, yOrTime);
+			y = y || that.getY();
+			xy = new HHgVector2(xy, y);
 		}else{
 			time = y;
 			shouldAddTo = time;
 		}
 
+		_actions = _actions || [];
 
-
-
-
+		var theAction;
+		theAction = shouldAddTo ? (new HHgActionMoveBy(this, xy, time, onComplete, ease)) : (new HHgActionMoveTo(this, xy, time, onComplete, ease));
+		HHgMain.HHgActionManager.addAction(theAction);
 	}
 
 }

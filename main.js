@@ -8,6 +8,7 @@ doStartHHgScene();
 doStartHHgActionManager();
 
 
+
 /*
 function(){
 	var paused = true;
