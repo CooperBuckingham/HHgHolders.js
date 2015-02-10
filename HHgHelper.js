@@ -36,7 +36,12 @@ var HHg = {
 		for(var i = 0; i < arr.length; i++){
 			func(arr[i]);
 		}
+	},
+
+	doDegreesToRads: function(degrees){
+		return degrees*Math.PI/180;
 	}
+	
 }
 
 

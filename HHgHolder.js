@@ -24,6 +24,9 @@ function HHgHolder(w, h, zIndex, xyOffset, scale){
 	var _widthOriginal = w;
 	var _heightOriginal = h;
 
+	var _rotationOriginal = 0;
+	var _rotationNet = 0;
+
 	var _parent;
 	
 	var _backgroundHue, _backgroundSaturation, _backgroundLightness, _backgroundAlpha;
@@ -67,8 +70,10 @@ this.getHash = function(){
 			_backgroundLightness = L * mult || _backgroundLightness;
 			_backgroundAlpha = A * mult || _backgroundAlpha;
 
-
-			that.doNotifySceneOfUpdates("color");
+			if(_parent !== undefined){
+				that.doNotifySceneOfUpdates("color");
+			}
+			
 		}
 
 		this.getBackgroundColor= function(){
@@ -145,35 +150,58 @@ this.getHash = function(){
 		}
 
 
+//will establish this once set in parent is done and working
 
-		this.setPositionInScreen = function(xyPos, shouldAddTo){
-			if(_parent === "stop"){
-				return;
-			}
-			if(shouldAddTo === true){
-				_positionInScreen = _positionInScreen.returnVectorPlusVector(xyPos);
-			}else{
-				_positionInScreen = xyPos;
-			}
-
-			if(_parent !== undefined){
-				_positionInParent = _parent.getPositionInScreen();
-				_positionInParent = _positionInParent.returnVectorSubtractedFromVector(_positionInScreen);
-				_positionInParent = _positionInParent.returnVectorScaledByInverse(_parent.getScaleNet());
-				_positionInParent = _positionInParent.returnVectorPlusVector(_parent.returnHalfSizeVector());
-				_positionInParent = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInParent);
-				_positionInParent = _positionInParent.returnVectorPlusVector(that.getPositionXYOffsetNet());
+		this.setPositionInScreenForParentRotation = function(){
 			
+			if( parRot % 360 !== 0){
+				var parRot = _parent.getRotationNet();
+			var parentPositionInScreen = _parent.returnHalfSizeVector().returnVectorPlusVector(_parent.getPositionInScreen());
+					var myPositionInScreen = _positionInScreen;
+					var myPosX = myPositionInScreen.getX();
+					var myPosY = myPositionInScreen.getY();
+					var parentPosX = parentPositionInScreen.getX();
+					var parentPosY = parentPositionInScreen.getY();
+					//for now we hack this to do all the positioning over again
+					var rads = HHg.doDegreesToRads(parRot);
+					var	xR = Math.cos(rads) * (myPosX - parentPosX) - Math.sin(rads) * (myPosY - parentPosY) + parentPosX;
+					var	yR = Math.sin(rads) * (myPosX - parentPosX) + Math.cos(rads) * (myPosY - parentPosY) + parentPosY;
+					_positionInScreen.setXY(xR,yR);
+				}
 			}
 
-			if(_children){
-				HHg.doForEach(_children, function(child){
-					child.doRecalcPosition();
-				});
-			}
+		// this.setPositionInScreen = function(xyPos, shouldAddTo){
+		// 	if(_parent === "stop"){
+		// 		return;
+		// 	}
+		// 	if(shouldAddTo === true){
+		// 		_positionInScreen = _positionInScreen.returnVectorPlusVector(xyPos);
+		// 	}else{
+		// 		_positionInScreen = xyPos;
+		// 	}
 
-			that.doNotifySceneOfUpdates();
-		}
+		// 	if(_parent !== undefined){
+		// 		_positionInParent = _parent.getPositionInScreen();
+		// 		_positionInParent = _positionInParent.returnVectorSubtractedFromVector(_positionInScreen);
+		// 		_positionInParent = _positionInParent.returnVectorScaledByInverse(_parent.getScaleNet());
+		// 		_positionInParent = _positionInParent.returnVectorPlusVector(_parent.returnHalfSizeVector());
+
+
+		// 		_positionInParent = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInParent);
+		// 		_positionInParent = _positionInParent.returnVectorPlusVector(that.getPositionXYOffsetNet());
+			
+		// 		that.setPositionInScreenForParentRotation();
+
+		// 	}
+
+		// 	if(_children){
+		// 		HHg.doForEach(_children, function(child){
+		// 			child.doRecalcPosition();
+		// 		});
+		// 	}
+
+		// 	that.doNotifySceneOfUpdates();
+		// }
 
 
 		this.getPositionInScreen = function(){
@@ -232,8 +260,14 @@ this.getHash = function(){
 			var finalVector = parentPositionInScreen.returnVectorPlusVector(myScaledPosition);
 
 			_positionInScreen = finalVector.returnVectorPlusVector(_parent.returnHalfSizeVector());
+			
+			//note, I kept moving this after the follow two lines and screwing things up
+			that.setPositionInScreenForParentRotation();
+
 			_positionInScreen = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreen);
 			_positionInScreen = _positionInScreen.returnVectorPlusVector(that.getPositionXYOffsetNet());
+
+						
 
 			}
 
@@ -245,7 +279,6 @@ this.getHash = function(){
 
 			that.doNotifySceneOfUpdates();
 
-			//return new HHgVector2(xyPos.getX() + this.getHalfWidth(), xyPos.getY() + this.getHalfHeight());
 
 		}
 
@@ -278,7 +311,6 @@ this.getHash = function(){
 				_scaleXYOffset = new HHgVector2(xy, y);
 			}
 			
-			//have to update stuff here
 			that.doRecalcScaleNet();
 			
 			
@@ -316,6 +348,41 @@ this.getHash = function(){
 
 			
 			
+		}
+
+		this.setRotationOriginal = function(val){
+			
+			val = val % 360;
+			_rotationOriginal = val;
+			that.doRecalcRotation();
+		}
+
+		this.getRotationOriginal = function(){
+			return _rotationOriginal;
+		}
+
+		this.getRotationNet = function(){
+			return _rotationNet;
+		}
+
+		this.doRecalcRotation = function(){
+			if(_parent === "stop") return;
+
+			_rotationNet = _rotationOriginal;
+
+			if(_parent !== undefined){
+				_rotationNet = _rotationNet + _parent.getRotationNet();
+			}
+
+
+			if(_children){
+				HHg.doForEach(_children, function(child){
+					child.doRecalcRotation();
+				});
+			}
+
+			that.doRecalcPosition();
+
 		}
 
 		this.doRecalcPosition = function(){
@@ -386,11 +453,14 @@ this.getHash = function(){
 		}
 
 		_parent.doAddChild(this);
-		
+
+		that.doRecalcRotation();
 		that.doRecalcScaleNet();
 		xy = xy || _positionInParent;
 		xy = xy || _positionInScreen;
 		xy = xy || new HHgVector2(0,0);
+
+		
 		isScreenPos ? that.setPositionInScreen(xy) : that.setPositionInParent(xy);
 			
 	

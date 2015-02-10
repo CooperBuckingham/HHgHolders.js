@@ -10,7 +10,7 @@ var theAll = document.getElementById("all");
 
 function doStartHHgScene(){
 	console.log("scene setup start");
-	HHgScene = new HHgHolder(960,540);
+	HHgScene = new HHgHolder(540,960);
 
 	//we add all the custom functions to the scene here
 	doAddFunctionsToScene(HHgScene);
@@ -23,7 +23,7 @@ function doStartHHgScene(){
 	sceneDiv.style.backgroundColor = "blue";
 
 	HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
-	HHgStable.doMoveToNewParent(HHgScene, HHgScene.getWidthNet() * 3, HHgScene.getHeightNet() * 3, true);
+	HHgStable.doMoveToNewParent(HHgScene, HHgScene.getWidthNet() * 3, HHgScene.getHeightNet() * 3, false);
 
 
 	/*var testBlock = new HHgHolder(50,50);
@@ -48,50 +48,60 @@ function doStartHHgScene(){
 
 //==================
 
-var testContainer = new HHgHolder(100,100);
-testContainer.doMoveToNewParent(HHgScene, new HHgVector2(-150, 0));
+var testContainer = new HHgHolder(60,60);
+testContainer.doMoveToNewParent(HHgScene, new HHgVector2(-100, 300));
 testContainer.setBackgroundColor(120,.75,.75,.5);
 
-	var testBlock = new HHgHolder(50,50);
+	var testBlock = new HHgHolder(20,50);
 	testBlock.doMoveToNewParent(testContainer, new HHgVector2(0,0));
 
-	var testBlock = new HHgHolder(50,50);
+	var testBlock = new HHgHolder(20,50);
 	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,100));
 	testBlock.setBackgroundColor(60,.75,.75,1);
 
-	var testBlock = new HHgHolder(50,50);
+	var testBlock = new HHgHolder(20,50);
 	testBlock.doMoveToNewParent(testContainer, new HHgVector2(100,100));
 
-	var testBlock = new HHgHolder(50,50);
+	var testBlock = new HHgHolder(20,50);
 	testBlock.doMoveToNewParent(testContainer, new HHgVector2(100,-100));
 
 
-	var testBlock = new HHgHolder(50,50);
+	var testBlock = new HHgHolder(20,50);
 	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,-100));
 
 	//=====
+	testContainer.setRotationOriginal(90);
 
-	var testContainer = new HHgHolder(100,100);
-testContainer.doMoveToNewParent(HHgScene, new HHgVector2(150, 0));
-testContainer.setBackgroundColor(120,.75,.75,.5);
-testContainer.setScaleXYOffset(2,2);
-
-	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(testContainer, new HHgVector2(0,0));
+	var testContainer2 = new HHgHolder(200,200);
+testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, -250));
+testContainer2.setBackgroundColor(120,.75,.75,.5);
+testContainer2.setScaleXYOffset(2,2);
 
 	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,100));
+	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(0,0));
+
+	var testBlock = new HHgHolder(50,50);
+	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(-100,100));
 	testBlock.setBackgroundColor(60,.75,.75,1);
 
 	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(testContainer, new HHgVector2(100,100));
+	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(100,100));
 
 	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(testContainer, new HHgVector2(100,-100));
+	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(100,-100));
 
 
 	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,-100));
+	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(-100,-100));
+	testBlock.setBackgroundColor(150,1,1,1);
+
+	var testBlock2 = new HHgHolder(50,50);
+	testBlock2.doMoveToNewParent(testBlock, new HHgVector2(12.5,12.5));
+	testBlock2.setBackgroundColor(300,.5,.5,1);
+	testBlock2.setScaleXYOffset(.5,.5);
+	
+	testContainer2.setRotationOriginal(45);
+
 
 }
 
@@ -105,6 +115,7 @@ function doAddFunctionsToScene(scene){
 		var centricConversion = scene.doAnyScreenConversion(holder.getPositionInScreen());
 		div.style.left ="" + centricConversion.getX() +"px";
 		div.style.bottom ="" + centricConversion.getY() + "px";
+		div.style.transform="rotate(" + (holder.getRotationNet()) +"deg" +")";
 	}
 
 
@@ -124,6 +135,7 @@ function doAddFunctionsToScene(scene){
 
 		scene.doUpdateThisHolder(holder);
 		
+
 		theAll.appendChild(div);
 	};
 
