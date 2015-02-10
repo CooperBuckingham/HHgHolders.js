@@ -154,19 +154,13 @@ this.getHash = function(){
 
 		this.setPositionInScreenForParentRotation = function(){
 			
-			if( parRot % 360 !== 0){
-				var parRot = _parent.getRotationNet();
-			var parentPositionInScreen = _parent.returnHalfSizeVector().returnVectorPlusVector(_parent.getPositionInScreen());
-					var myPositionInScreen = _positionInScreen;
-					var myPosX = myPositionInScreen.getX();
-					var myPosY = myPositionInScreen.getY();
-					var parentPosX = parentPositionInScreen.getX();
-					var parentPosY = parentPositionInScreen.getY();
-					//for now we hack this to do all the positioning over again
-					var rads = HHg.doDegreesToRads(parRot);
-					var	xR = Math.cos(rads) * (myPosX - parentPosX) - Math.sin(rads) * (myPosY - parentPosY) + parentPosX;
-					var	yR = Math.sin(rads) * (myPosX - parentPosX) + Math.cos(rads) * (myPosY - parentPosY) + parentPosY;
-					_positionInScreen.setXY(xR,yR);
+			if( _parent.getRotationNet() % 360 !== 0){
+				
+				var parentPositionInScreen = _parent.returnHalfSizeVector().returnVectorPlusVector( _parent.getPositionInScreen() );
+
+				//I pass in the - value for the parent angle, who knows
+				_positionInScreen = _positionInScreen.returnVectorRotatedAroundVectorAtAngle( parentPositionInScreen, -1 * _parent.getRotationNet() );
+
 				}
 			}
 
@@ -256,10 +250,10 @@ this.getHash = function(){
 
 			if(_parent !== undefined){
 			var parentPositionInScreen = _parent.getPositionInScreen();
-			var myScaledPosition = _positionInParent.returnVectorScaledBy(_parent.getScaleNet());
-			var finalVector = parentPositionInScreen.returnVectorPlusVector(myScaledPosition);
+			var myScaledPosition = _positionInParent.returnVectorScaledBy( _parent.getScaleNet() );
+			var finalVector = parentPositionInScreen.returnVectorPlusVector( myScaledPosition );
 
-			_positionInScreen = finalVector.returnVectorPlusVector(_parent.returnHalfSizeVector());
+			_positionInScreen = finalVector.returnVectorPlusVector( _parent.returnHalfSizeVector() );
 			
 			//note, I kept moving this after the follow two lines and screwing things up
 			that.setPositionInScreenForParentRotation();
@@ -287,12 +281,23 @@ this.getHash = function(){
 		}
 
 		
-		this.setScaleOriginal = function(val, shouldMultiplyBy){
-			if(shouldMultiplyBy === true){
-				_scaleOriginal *= val;
-			}else{
-				_scaleOriginal = val;
+		this.setScaleOriginal = function(xy, y){
+
+			if(xy instanceof HHgVector2 === false){
+				xy = new HHgVector2(xy, y);
 			}
+				_scaleOriginal = xy;
+
+			that.doRecalcScaleNet();
+
+		}
+
+		this.setScaleOriginalMultiplied = function(xy, y){
+
+			if(xy instanceof HHgVector2 === false){
+				xy = new HHgVector2(xy, y);
+			}
+				_scaleOriginal = _scaleOriginal.returnVectorScaledBy(xy);
 
 			that.doRecalcScaleNet();
 
@@ -303,13 +308,21 @@ this.getHash = function(){
 		}
 
 		this.setScaleXYOffset = function(xy, y){
-			if(xy instanceof HHgVector2){
-				_scaleXYOffset = xy;
-			}else{
-				xy = xy || _scaleXYOffset.getX();
-				y = y || _scaleXYOffset.getY();
-				_scaleXYOffset = new HHgVector2(xy, y);
+			if(xy instanceof HHgVector2 === false){
+				xy = new HHgVector2(xy, y);
 			}
+				_scaleXYOffset = xy;
+			
+			that.doRecalcScaleNet();
+			
+			
+		}
+
+		this.setScaleXYOffsetMultiplied = function(xy, y){
+			if(xy instanceof HHgVector2 === false){
+				xy = new HHgVector2(xy, y);
+			}
+				_scaleXYOffset.returnVectorScaledBy(xy);
 			
 			that.doRecalcScaleNet();
 			
@@ -354,6 +367,17 @@ this.getHash = function(){
 			
 			val = val % 360;
 			_rotationOriginal = val;
+			that.doRecalcRotation();
+		}
+
+		this.setRotationOriginalAdd = function(val){
+			val = val % 360;
+			_rotationOriginal += val;
+			that.doRecalcRotation();
+		}
+		this.setRotationOriginalMultiply = function(val){
+			val = val %360;
+			_rotationOriginal += val;
 			that.doRecalcRotation();
 		}
 

@@ -31,6 +31,7 @@ function doStartHHgActionManager(){
     // rendering code goes here
     // return false; will stop the loop
     //console.log("Time: " + deltaT/1000);
+    HHgScene.test(deltaT, testContainer);
 
 
 

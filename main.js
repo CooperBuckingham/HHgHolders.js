@@ -4,9 +4,9 @@
 
 
 //main loop
-
-doStartHHgActionManager();
 doStartHHgScene();
+doStartHHgActionManager();
+
 
 /*
 function(){
