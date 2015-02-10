@@ -26,6 +26,7 @@
 		_y = newY;
 	}
 
+
 	this.returnVectorAtDistanceToVector = function(vB, dis){
 		var vAB = new HHgVector2(_x - vB.getX(), _y - vB.getY() );
 		var finalVector = new HHgVector2(vAB.unitVector.getX() * dis, vAB.unitVector.getY() * dis );

@@ -3,6 +3,8 @@ var HHgSceneInternal = function(){
 	
 }
 
+var HHgMain = window;
+
 var testContainer;
 
 var HHgScene, HHgStable;
@@ -103,12 +105,13 @@ testContainer2.setScaleXYOffset(2,2);
 	testBlock2.setBackgroundColor(300,.5,.5,1);
 	testBlock2.setScaleXYOffset(.5,.5);
 	
-	testContainer2.setRotationOriginal(30);
 	
 	testBlock2.getDiv().addEventListener("click", function(){
 		console.log("clicked");
 		testContainer.setScaleXYOffset(1.25, 1.25, true);
 		}, true);
+
+	testContainer2.actionMoveInScreen(7,7,7);
 
 
 }
