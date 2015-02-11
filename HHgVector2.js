@@ -4,12 +4,17 @@
 
 	var that = this;
 
-	var myLength = function(){
+	this.returnVectorLength = function(){
 		return Math.sqrt(_x * _x + _y * _y);
 	}
 
-	var unitVector = function(){
-		return new HHgVector2(_x / myLength(), _y / myLength());
+	this.returnUnitVector = function(){
+		return new HHgVector2(_x / this.returnVectorLength(), _y / this.returnVectorLength());
+	}
+
+	this.returnDistanceToVector = function(vB){
+		
+		return Math.sqrt( (_x-vB.getX())*(_x-vB.getX()) + (_y-vB.getY())*(_y-vB.getY()) );
 	}
 
 	this.getX = function(){
@@ -28,8 +33,9 @@
 
 
 	this.returnVectorAtDistanceToVector = function(vB, dis){
+
 		var vAB = new HHgVector2(_x - vB.getX(), _y - vB.getY() );
-		var finalVector = new HHgVector2(vAB.unitVector.getX() * dis, vAB.unitVector.getY() * dis );
+		var finalVector = new HHgVector2(vAB.returnUnitVector().getX() * dis, vAB.returnUnitVector().getY() * dis );
 		return this.returnVectorPlusVector(finalVector);
 
 	}

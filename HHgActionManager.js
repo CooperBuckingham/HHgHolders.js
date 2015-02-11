@@ -17,14 +17,13 @@ var paused = false;
 HHgMain.HHgActionManager.actionLoop = function( animateActions ) {
     var shouldContinueLoop = true;
     var lastFrameTime = +new Date;
+    var deltaT;
     function recurse( thisFrameTime ) {
       if ( shouldContinueLoop !== false && paused === false ) {
-        window.requestAnimationFrame(recurse);
+        HHgMain.requestAnimationFrame(recurse);
         thisFrameTime = thisFrameTime && thisFrameTime > 480 ? thisFrameTime : +new Date;
-        var deltaT = thisFrameTime - lastFrameTime;
-      // do not render frame when deltaT is too high
-      if ( deltaT < 160 ) {
-
+        deltaT = thisFrameTime - lastFrameTime;
+      if ( deltaT < 160 && deltaT > 1 ) {
         shouldContinueLoop = animateActions(deltaT, thisFrameTime);
       }
       lastFrameTime = thisFrameTime;
