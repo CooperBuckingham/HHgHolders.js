@@ -215,10 +215,14 @@ var lastRotate = 0;
 
 	scene.doesDivContainPoint = function(div, x, y){
 		console.log("Does Div Have: " + x + "," + y);
-			if(+div.style.left <= x ) return false;
-			if(+div.style.bottom <= y) return false;
-			if(+div.style.left + (+div.style.width) > x) return false;
-			if(+div.style.bottom + (+div.style.height) > y) return false;
+			var divW = parseInt(div.style.width);
+			var divH = parseInt(div.style.height);
+
+			
+			if(parseInt(div.style.left) + divW < x ) return false;
+			if(HHgScreen.h - (parseInt(div.style.bottom) + divH) > y) return false;
+			if(parseInt(div.style.left) > x) return false;
+			if(HHgScreen.h - parseInt(div.style.bottom) < y) return false;
 
 			return true;
 	};
