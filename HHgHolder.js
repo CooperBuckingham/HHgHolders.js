@@ -480,7 +480,7 @@ this.getHash = function(){
 };
 
 //============= ACTIONS ================
-	this.actionMoveInScreen = function(xy,y,time,shouldAddTo, onComplete, ease){
+	this.doActionMoveInScreen = function(xy,y,time,shouldAddTo, onComplete, ease){
 		if(xy instanceof HHgVector2 === false){
 			xy = xy || that.getPositionInScreenOriginal().getX();
 			y = y || that.getPositionInScreenOriginal().getY();
@@ -495,7 +495,7 @@ this.getHash = function(){
 		var theAction;
 		theAction = shouldAddTo ? (new HHgActionMoveBy(that, xy, time, onComplete, ease)) : (new HHgActionMoveTo(that, xy, time, onComplete, ease));
 		_actions.push(theAction);
-		HHgMain.HHgActionManager.addAction(theAction);
+		HHgMain.HHgActionManager.doAddAction(theAction);
 		
 	};
 

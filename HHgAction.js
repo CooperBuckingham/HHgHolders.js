@@ -16,15 +16,18 @@ var HHgAction = function (owner, totalTime, ease, onComplete){
 	this.totalTime = totalTime;
 	this.startTime = +new Date;
 	this.timeSoFar = 0;
-	
+
 
 	this.whatShouldIDoThisFrame = function(deltaT, now){
 
 	};
-	this.finalFrame = function(){
-		this.onComplete();
-		this.owner.removeAction(this);
-		HHgActionManager.removeAction(this);
+	this.finalFrame = function(action){
+		if(action.onComplete){
+			action.onComplete();
+		}
+		
+		action.owner.doRemoveAction(action);
+		HHgActionManager.doRemoveAction(action);
 
 
 	};
@@ -54,12 +57,12 @@ function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
 
 	this.whatShouldIDoThisFrame = function(deltaT, now){
 		this.timeSoFar += deltaT/1000;
-		console.log(this.timeSoFar);
+		
 		if(this.timeSoFar >= this.totalTime){
-			console.log("action removed");
+			
 			owner.setPositionInScreen(that.vB);
-			that.finalFrame();
-			console.log("action removed");
+			that.finalFrame(that);
+
 			return;
 		}
 

@@ -24,7 +24,7 @@ var HHg = {
 
 	doRemoveThingFromArray: function(arr,thing){
 	for(var i = 0; i < arr.length; i++){
-		if(arr[i] === arr){
+		if(arr[i] === thing){
 			arr.splice(i,1);
 			return true;
 		}
