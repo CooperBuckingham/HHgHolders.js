@@ -77,15 +77,15 @@ testContainer.setBackgroundColor(120,.75,.75,.5);
 	
 	testBlock.setPositionXYOffsetOriginal(100,0);
 */
-var testContainer2 = new HHgHolder(500,500);
-testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, 0), false);
+var testContainer2 = new HHgHolder(250,500);
+testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, 200), true);
 testContainer2.setBackgroundColor(120,.75,.75,.5);
 //testContainer2.setScaleOriginal(2,2);
 
 
 
 	var testBlock = new HHgHolder(100,100);
-	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(100,100), false);
+	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(159,100), false);
 	
 	var testBlock = new HHgHolder(100,100);
 	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(-100,-100), false);
@@ -94,17 +94,19 @@ testContainer2.setBackgroundColor(120,.75,.75,.5);
 	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(-100,100), false);
 	
 	var testBlock = new HHgHolder(100,100);
-	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(100,-100), false);
+	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(100,-445), false);
 	testBlock.setBackgroundColor(356,.75,.75,.5);
 	
 
 	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
 	testContainer2.setScaleOriginal(2,2);
 	testContainer2.setScaleOriginal(1,1);
-	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
+	testContainer2.setScaleOriginal(1.25,1.25);
+	testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
 	//testBlock.setPositionInScreen(testBlock.getPositionInScreenOriginal());
 	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
-	//testBlock.setPositionInScreen(testBlock.getPositionInScreenOriginal());
+	testBlock.setPositionInScreen(testBlock.getPositionInScreenOriginal());
+	testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
 	//testContainer2.setRotationOriginal(180);
 
 
@@ -113,9 +115,14 @@ testContainer2.setBackgroundColor(120,.75,.75,.5);
 	
 	HHgScene.doAddMouseClick(testContainer2, function(){
 		this.setRotationOriginalAdd(22.5);
+		testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
+	//testBlock.setPositionInScreen(testBlock.getPositionInScreenOriginal());
+	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
+	testBlock.setPositionInScreen(testBlock.getPositionInScreenOriginal());
+	testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
 	}, false);
 
-	
+	testContainer2.actionMoveInScreen(0, -400, 25 );
 
 
 }
