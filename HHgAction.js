@@ -16,6 +16,7 @@ var HHgAction = function (owner, totalTime, ease, onComplete){
 	this.totalTime = totalTime;
 	this.startTime = +new Date;
 	this.timeSoFar = 0;
+	
 
 	this.whatShouldIDoThisFrame = function(deltaT, now){
 
@@ -53,9 +54,12 @@ function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
 
 	this.whatShouldIDoThisFrame = function(deltaT, now){
 		this.timeSoFar += deltaT/1000;
-		if(this.timeSoFar >= this.totaTime){
+		console.log(this.timeSoFar);
+		if(this.timeSoFar >= this.totalTime){
+			console.log("action removed");
 			owner.setPositionInScreen(that.vB);
 			that.finalFrame();
+			console.log("action removed");
 			return;
 		}
 
