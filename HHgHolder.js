@@ -52,10 +52,19 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	var _finalHash = "" + _hash + "_" + _timeStamp;
 
 	var that = this;
+
+	var _mouseable = true;
 	
 
 this.getHash = function(){
 	return _finalHash;
+}
+this.setMouseable = function(mouseable){
+	_mouseable = mouseable;
+	HHgScene.doUpdateMouseable(this);
+}
+this.getMouseable = function(){
+	return _mouseable;
 }
 
 		this.setBackgroundColor = function(H, S, L, A, shouldMultiplyBy){

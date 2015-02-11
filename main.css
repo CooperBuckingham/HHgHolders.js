@@ -69,83 +69,28 @@ table {
 
 }
 
-html body #testgrid{
-	display: inline-block;
-	position: absolute;
-	width: 75px;
-	height: 75px;
-	background-color: blue;
-	left: 50px;
-	top: 50px;
+html body {
+	
+	background-color: black;
+
+	
+
 }
 
+
+
 html body #all{
+
+
+  
+
 	display: inline-block;
-	text-align: center;
-	vertical-align: center;
+	
 	position: relative;
-	margin-left: auto;
-	margin-right: auto;
-	width: 540px;
-	height: 960px;
+	
 	background-color: purple;
+	overflow: hidden;
+  	
 	
 }
 
-html body #xy00{
-	text-align: center;
-	color: white;
-	display: inline-block;
-	width: 10px;
-	height: 10px;
-	background-color: green;
-	position: absolute;
-	left: 50%;
-	bottom: 50%;
-}
-
-html body #xy11{
-	display: inline-block;
-	width: 10px;
-	height: 10px;
-	background-color: hsla(120,75%,75%,.5);
-	position: absolute;
-	left: 75%;
-	bottom: 75%;
-}
-
-html body #xy-11{
-	display: inline-block;
-	width: 10px;
-	height: 10px;
-	background-color: green;
-	position: absolute;
-	left: 25%;
-	bottom: 75%;
-}
-
-html body #xy1-1{
-	display: inline-block;
-	width: 10px;
-	height: 10px;
-	background-color: green;
-	position: absolute;
-	left: 75%;
-	bottom: 25%;
-}
-
-html body #xy-1-1{
-	display: inline-block;
-	width: 10px;
-	height: 10px;
-	background-color: green;
-	position: absolute;
-	left: 25%;
-	bottom: 25%;
-}
-
-html body{
-
-	text-align: center;
-	vertical-align: center;
-}

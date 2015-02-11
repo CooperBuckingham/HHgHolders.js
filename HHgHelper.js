@@ -40,7 +40,15 @@ var HHg = {
 
 	doDegreesToRads: function(degrees){
 		return degrees*Math.PI/180;
-	}
+	},
+
+	doVectorCheck: function(xy, y){
+		if(xy instanceof HHgVector2 === false){
+			return new HHgVector2(xy, y);
+		}
+
+		return xy;
+	},
 
 }
 
