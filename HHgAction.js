@@ -8,11 +8,11 @@ HHgMain.HHgActionCommands = {
 	}
 }
 
-var HHgAction = function (owner, time, ease, onComplete){
+var HHgAction = function (owner, totalTime, ease, onComplete){
 	this.owner = owner;
 	this.onComplete = onComplete;
 	this.ease = ease;
-	this.time = time;
+	this.totalTime = totalTime;
 	this.startTime = +new Date;
 	this.whatShouldIDoThisFrame = function(deltaT, now){
 
@@ -24,21 +24,29 @@ var HHgAction = function (owner, time, ease, onComplete){
 
 
 
-function HHgActionMoveTo(owner, targetPos, time, ease, onComplete){
-	HHgAction.call(this, owner, time, ease, onComplete);
+function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
+	
+	HHgAction.call(this, owner, totalTime, ease, onComplete);
 
 	this.vB = targetPos;
-	this.time = time;
-	this.vA = owner.getPositionInScreen();
-	this.currentPosition = this.vA;
-	this.totalDistance = this.vA.returnVectorSubtractedFromVector(this.vB);
+	this.vA = owner.getPositionInScreenOriginal();
 
-var deltaDistance = 0;
+	
+	this.currentPosition = this.vA;
+	this.totalDistance = this.vA.returnDistanceToVector(this.vB);
+	var that = this;
+
+	var deltaDistance = 0;
+
+	console.log(this.vA.returnPretty() + " TO " + this.vB.returnPretty());
 
 	this.whatShouldIDoThisFrame = function(deltaT, now){
-		deltaDistance = this.totalDistance * (deltaT / this.time );
-		this.currentPosition.returnVectorAtDistanceToVector(this.vB, deltaDistance);
-		owner.setPositionInScreen(this.currentPosition);
+		
+		deltaDistance = that.totalDistance * ( (deltaT / 1000) / that.totalTime );
+
+		that.currentPosition = that.currentPosition.returnVectorAtDistanceToVector(that.vB, deltaDistance);
+		console.log(that.currentPosition.returnPretty());
+		owner.setPositionInScreen(that.currentPosition);
 	}
 
 	
@@ -49,7 +57,7 @@ function HHgActionMoveBy(owner, deltaPos, time, ease, onComplete){
 	HHgAction.call(this, owner, time, ease, onComplete);
 
 	this.pos = deltaPos;
-	this.time = time;
+	
 	
 }
 HHgMain.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);

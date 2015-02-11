@@ -25,7 +25,8 @@ function doStartHHgScene(){
 	sceneDiv.style.backgroundColor = "blue";
 
 	HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
-	HHgStable.doMoveToNewParent(HHgScene, HHgScene.getWidthNet() * 3, HHgScene.getHeightNet() * 3, false);
+
+	HHgStable.doMoveToNewParent(HHgScene, HHgScene.getWidthNet() * 3, HHgScene.getHeightNet() * 3, true);
 
 
 	/*var testBlock = new HHgHolder(50,50);
@@ -49,7 +50,7 @@ function doStartHHgScene(){
 //==================
 
 //==================
-
+/*
 testContainer = new HHgHolder(200,200);
 testContainer.doMoveToNewParent(HHgScene, new HHgVector2(-100, 300));
 testContainer.setBackgroundColor(120,.75,.75,.5);
@@ -73,45 +74,48 @@ testContainer.setBackgroundColor(120,.75,.75,.5);
 
 	//=====
 	//testContainer.setRotationOriginal(30);
-	testContainer.setPositionXYOffsetOriginal(100,-50);
+	
 	testBlock.setPositionXYOffsetOriginal(100,0);
-
-	var testContainer2 = new HHgHolder(200,200);
-testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, -250));
+*/
+var testContainer2 = new HHgHolder(500,500);
+testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, 0), false);
 testContainer2.setBackgroundColor(120,.75,.75,.5);
-testContainer2.setScaleXYOffset(2,2);
+//testContainer2.setScaleOriginal(2,2);
 
 
-	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(0,0));
 
-	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(-100,100));
-	testBlock.setBackgroundColor(60,.75,.75,1);
-
-	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(100,100));
-
-	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(100,-100));
-
-
-	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(-100,-100));
-	testBlock.setBackgroundColor(150,1,1,1);
-
-	var testBlock2 = new HHgHolder(50,50);
-	testBlock2.doMoveToNewParent(testBlock, new HHgVector2(12.5,12.5));
-	testBlock2.setBackgroundColor(300,.5,.5,1);
-	testBlock2.setScaleXYOffset(.5,.5);
+	var testBlock = new HHgHolder(100,100);
+	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(100,100), false);
 	
+	var testBlock = new HHgHolder(100,100);
+	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(-100,-100), false);
 	
-	testBlock2.getDiv().addEventListener("click", function(){
-		console.log("clicked");
-		testContainer.setScaleXYOffset(1.25, 1.25, true);
-		}, true);
+	var testBlock = new HHgHolder(100,100);
+	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(-100,100), false);
+	
+	var testBlock = new HHgHolder(100,100);
+	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(100,-100), false);
+	testBlock.setBackgroundColor(356,.75,.75,.5);
+	
 
-	testContainer2.actionMoveInScreen(7,7,7);
+	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
+	testContainer2.setScaleOriginal(2,2);
+	testContainer2.setScaleOriginal(1,1);
+	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
+	//testBlock.setPositionInScreen(testBlock.getPositionInScreenOriginal());
+	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
+	//testBlock.setPositionInScreen(testBlock.getPositionInScreenOriginal());
+	//testContainer2.setRotationOriginal(180);
+
+
+	//testContainer2.setScaleOriginal(1,1);
+	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
+	
+	HHgScene.doAddMouseClick(testContainer2, function(){
+		this.setRotationOriginalAdd(22.5);
+	}, false);
+
+	
 
 
 }
@@ -123,7 +127,7 @@ function doAddFunctionsToScene(scene){
 		div.style.backgroundColor = holder.getBackgroundColor();
 		div.style.width = "" + holder.getWidthNet() + "px";
 		div.style.height ="" + holder.getHeightNet() + "px";
-		var centricConversion = scene.doAnyScreenConversion(holder.getPositionInScreen());
+		var centricConversion = scene.doAnyScreenConversion(holder.getPositionInScreenNet());
 		div.style.left ="" + centricConversion.getX() +"px";
 		div.style.bottom ="" + centricConversion.getY() + "px";
 		div.style.transform="rotate(" + (holder.getRotationNet()) +"deg" +")";
@@ -161,6 +165,10 @@ var lastRotate = 0;
 		holder.setPositionInParent(new HHgVector2(0,.1), true);
 		holder.setScaleXYOffsetMultiplied(.999,.999);
 		//holder.setRotationOriginal(90);
+	}
+
+	scene.doAddMouseClick = function(holder, func, shouldBubble){
+		holder.getDiv().addEventListener("click", func.bind(holder), shouldBubble);
 	}
 
 	

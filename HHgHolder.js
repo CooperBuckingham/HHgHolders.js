@@ -37,8 +37,10 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 
 	var _zIndex = zIndex;
 	var _positionXYOffset = xyOffset;
-	var _positionInScreen = new HHgVector2(0,0);
-	var _positionInParent  = new HHgVector2(0,0);
+	var _positionInScreenOriginal = new HHgVector2(0,0);
+	var _positionInParentOriginal  = new HHgVector2(0,0);
+	var _positionInScreenNet = _positionInScreenOriginal;
+	
 
 	var _children;
 	var _actions;
@@ -152,42 +154,40 @@ this.getHash = function(){
 
 //will establish this once set in parent is done and working
 
-		this.setPositionInScreenForParentRotation = function(){
-			
-			if( _parent.getRotationNet() % 360 !== 0){
-				
-				var parentPositionInScreen = _parent.returnHalfSizeVector().returnVectorPlusVector( _parent.getPositionInScreen() );
-
-				//I pass in the - value for the parent angle, who knows
-				_positionInScreen = _positionInScreen.returnVectorRotatedAroundVectorAtAngle( parentPositionInScreen, -1 * _parent.getRotationNet() );
-
-				}
-			}
+		
 
 		this.setPositionInScreen = function(xyPos, shouldAddTo){
 			if(this._parent === "stop"){
 				return;
 			}
-
+	
 
 			if(shouldAddTo === true){
-				_positionInParent = _positionInParent.returnVectorPlusVector(parXYPos);
+				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorPlusVector(xyPos);
 			}else{
-				_positionInParent = parXYPos;
+				_positionInScreenOriginal = xyPos;
 			}
 
+				_positionInScreenNet = _positionInScreenOriginal;
+
+
+
+
 			if(_parent !== undefined){
-				var parentPositionInScreen = _parent.getPositionInScreen();
-				var myScaledPosition = _positionInParent.returnVectorScaledBy( _parent.getScaleNet() );
-				var finalVector = parentPositionInScreen.returnVectorPlusVector( myScaledPosition );
 
-				_positionInScreen = finalVector.returnVectorPlusVector( _parent.returnHalfSizeVector() );
-				_positionInScreen = _positionInScreen.returnVectorPlusVector(that.getPositionXYOffsetNet());
-				//note, I kept moving this after the follow two lines and screwing things up
-				that.setPositionInScreenForParentRotation();
-
-				_positionInScreen = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreen);
+				
+				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(that.getPositionXYOffsetNet());
 			
+				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(_parent.returnHalfSizeVector());
+				
+				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
+				//position in screen is done and fixed
+				//now what if it's rotated?
+				//to figure out the original parent positoin, we have to rotate it back
+				_positionInParentOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(),  _parent.getRotationNet() );
+				//_positionInParentOriginal = _parent.getPositionInScreenNet().returnVectorSubtractedFromVector(_positionInScreenOriginal);
+				//_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse( _parent.getScaleNet() );
+				//_positionInParentOriginal = _parent.returnHalfSizeVector().returnVectorSubtractedFromVector( _positionInParentOriginal );
 			}
 
 			if(_children){
@@ -201,42 +201,21 @@ this.getHash = function(){
 		}
 
 
-		this.getPositionInScreen = function(){
-			return _positionInScreen;
+		this.getPositionInScreenOriginal = function(){
+			
+			return _positionInScreenOriginal;
 		}
 
-		this.setX = function(x, shouldAddTo){
-			that.setPositionInScreen(new HHgVector2(x,_positionInScreen.getY(), shouldAddTo));
+
+		this.getPositionInParentOriginal = function(){
+			return _positionInParentOriginal;
 		}
 
-		this.setY = function(y, shouldAddTo){
-			that.setPositionInScreen(new HHgVector2(_x,y), shouldAddTo);
+		this.getPositionInScreenNet = function(){
+			
+			return _positionInScreenNet;
 		}
 
-		this.setXInParent = function(x, shouldAddTo){
-			that.setPositionInParent(new HHgVector2(x,_y), shouldAddTo);
-		}
-
-		this.setYInParent = function(y, shouldAddTo){
-			that.setPositionInParent(new HHgVector2(_x,y), shouldAddTo);
-		}
-
-		this.getX = function(){
-			return _positionInScreen.getX();
-		}
-		this.getY = function(){
-			return _positionInScreen.getY();
-		}
-		this.getXInParent = function(){
-			return _positionInParent.getX();
-		}
-		this.getYInParent = function(){
-			return _positionInParent.getY();
-		}
-
-		this.getPositionInParent = function(){
-			return _positionInParent;
-		}
 
 		this.setPositionInParent = function(parXYPos, shouldAddTo){
 
@@ -244,27 +223,37 @@ this.getHash = function(){
 				return;
 			}
 
+			//only problem left is screen original getting set inside of position in parent
 
 			if(shouldAddTo === true){
-				_positionInParent = _positionInParent.returnVectorPlusVector(parXYPos);
+				_positionInParentOriginal = _positionInParentOriginal.returnVectorPlusVector(parXYPos);
 			}else{
-				_positionInParent = parXYPos;
+				_positionInParentOriginal = parXYPos;
 			}
 
+
+
+			_positionInScreenOriginal = _positionInParentOriginal;
+
 			if(_parent !== undefined){
-			var parentPositionInScreen = _parent.getPositionInScreen();
-			var myScaledPosition = _positionInParent.returnVectorScaledBy( _parent.getScaleNet() );
-			var finalVector = parentPositionInScreen.returnVectorPlusVector( myScaledPosition );
 
-			_positionInScreen = finalVector.returnVectorPlusVector( _parent.returnHalfSizeVector() );
-			_positionInScreen = _positionInScreen.returnVectorPlusVector(that.getPositionXYOffsetNet());
-			//note, I kept moving this after the follow two lines and screwing things up
-			that.setPositionInScreenForParentRotation();
+				_positionInScreenOriginal = _positionInParentOriginal.returnVectorScaledBy(_parent.getScaleNet());
+				_positionInScreenOriginal = _parent.getPositionInScreenNet().returnVectorPlusVector(_positionInScreenOriginal);
 
-			_positionInScreen = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreen);
-			
 
-						
+				_positionInScreenNet = _positionInScreenOriginal.returnVectorPlusVector( _parent.returnHalfSizeVector() );
+				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(that.getPositionXYOffsetNet());
+				
+				var stuffToSub = _parent.returnHalfSizeVector();
+				_positionInScreenNet = _positionInScreenNet.returnVectorRotatedAroundVectorAtAngle( stuffToSub.returnVectorPlusVector( _parent.getPositionInScreenNet()), -1 * _parent.getRotationNet() );
+				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
+
+				//that is actually the final net, I think
+				
+				
+				//_positionInScreenOriginal = _parent.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
+				//_positionInScreenOriginal = that.getPositionXYOffsetNet().returnVectorSubtractedFromVector(_positionInScreenOriginal);
+				//_positionInScreenOriginal = _positionInScreenOriginal.returnVectorPlusVector(that.returnHalfSizeVector());
 
 			}
 
@@ -419,8 +408,8 @@ this.getHash = function(){
 				return;
 			}
 
-			that.setPositionInParent(_positionInParent);
-
+			//that.setPositionInParent(_positionInParentOriginal);
+			that.setPositionInParent(_positionInParentOriginal);
 			
 		}
 
@@ -465,6 +454,7 @@ this.getHash = function(){
 			HHgScene.doAddThisHolder(this);
 		}else{
 			_parent.doRemoveChild(this);
+
 		}
 
 		_parent = newParent || HHgScene;
@@ -478,13 +468,14 @@ this.getHash = function(){
 		}else{
 			xy = new HHgVector2(xy, yOrIsScreenPos);
 		}
+		
 
 		_parent.doAddChild(this);
 
 		that.doRecalcRotation();
 		that.doRecalcScaleNet();
-		xy = xy || _positionInParent;
-		xy = xy || _positionInScreen;
+
+		xy = xy || _positionInScreenOriginal;
 		xy = xy || new HHgVector2(0,0);
 
 		
@@ -506,8 +497,9 @@ this.getHash = function(){
 		_actions = _actions || [];
 
 		var theAction;
-		theAction = shouldAddTo ? (new HHgActionMoveBy(this, xy, time, onComplete, ease)) : (new HHgActionMoveTo(this, xy, time, onComplete, ease));
+		theAction = shouldAddTo ? (new HHgActionMoveBy(that, xy, time, onComplete, ease)) : (new HHgActionMoveTo(that, xy, time, onComplete, ease));
 		HHgMain.HHgActionManager.addAction(theAction);
+		_actions.push(theAction);
 	}
 
 }
