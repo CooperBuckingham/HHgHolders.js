@@ -181,13 +181,9 @@ this.getHash = function(){
 				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(_parent.returnHalfSizeVector());
 				
 				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
-				//position in screen is done and fixed
-				//now what if it's rotated?
-				//to figure out the original parent positoin, we have to rotate it back
+				
 				_positionInParentOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(),  _parent.getRotationNet() );
-				//_positionInParentOriginal = _parent.getPositionInScreenNet().returnVectorSubtractedFromVector(_positionInScreenOriginal);
-				//_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse( _parent.getScaleNet() );
-				//_positionInParentOriginal = _parent.returnHalfSizeVector().returnVectorSubtractedFromVector( _positionInParentOriginal );
+				
 			}
 
 			if(_children){
@@ -486,8 +482,8 @@ this.getHash = function(){
 //============= ACTIONS ================
 	this.actionMoveInScreen = function(xy,y,time,shouldAddTo, onComplete, ease){
 		if(xy instanceof HHgVector2 === false){
-			xy = xy || that.getX();
-			y = y || that.getY();
+			xy = xy || that.getPositionInScreenOriginal().getX();
+			y = y || that.getPositionInScreenOriginal().getY();
 			xy = new HHgVector2(xy, y);
 		}else{
 			time = y;
@@ -498,8 +494,13 @@ this.getHash = function(){
 
 		var theAction;
 		theAction = shouldAddTo ? (new HHgActionMoveBy(that, xy, time, onComplete, ease)) : (new HHgActionMoveTo(that, xy, time, onComplete, ease));
-		HHgMain.HHgActionManager.addAction(theAction);
 		_actions.push(theAction);
+		HHgMain.HHgActionManager.addAction(theAction);
+		
+	};
+
+	this.doRemoveAction = function(action){
+		HHg.doRemoveThingFromArray(_actions, action);
 	}
 
 }

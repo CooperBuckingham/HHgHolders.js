@@ -34,7 +34,7 @@
 
 	this.returnVectorAtDistanceToVector = function(vB, dis){
 
-		var vAB = new HHgVector2(_x - vB.getX(), _y - vB.getY() );
+		var vAB = new HHgVector2(vB.getX() - _x,vB.getY() - _y );
 		var finalVector = new HHgVector2(vAB.returnUnitVector().getX() * dis, vAB.returnUnitVector().getY() * dis );
 		return this.returnVectorPlusVector(finalVector);
 
