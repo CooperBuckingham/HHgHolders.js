@@ -78,7 +78,7 @@ testContainer.setBackgroundColor(120,.75,.75,.5);
 	testBlock.setPositionXYOffsetOriginal(100,0);
 */
 var testContainer2 = new HHgHolder(250,500);
-testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, 0), false);
+testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, 200), false);
 testContainer2.setBackgroundColor(120,.75,.75,.5);
 //testContainer2.setScaleOriginal(2,2);
 
@@ -120,7 +120,7 @@ testContainer2.setBackgroundColor(120,.75,.75,.5);
 	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
 	}, false);
 
-	//testContainer2.actionMoveInScreen(0, -400, 10 );
+	testContainer2.doActionMoveInScreen(0, -400, 10 );
 
 
 }

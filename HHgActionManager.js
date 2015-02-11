@@ -2,12 +2,17 @@
 
 HHgMain.HHgActionManager = {
   actionList: [],
-  addAction: function(action){
+  doAddAction: function(action){
       this.actionList.push(action);
   },
 
-  removeAction: function(action){
-    HHg.doRemoveThingFromArray(this.actionList, action);
+  doRemoveAction: function(action){
+    console.log("action manager remove start");
+    if(HHg.doRemoveThingFromArray(this.actionList, action)){
+      console.log("action removed");
+    }else{
+      console.log("failed to find action to be removed");
+    };
   },
 
 };
