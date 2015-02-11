@@ -5,28 +5,33 @@ var HHgSceneInternal = function(){
 
 var HHgMain = window;
 
+var HHgScreen = {
+	w : 540,
+	h : 960,
+};
+
 var testContainer;
 
-var HHgScene, HHgStable;
-var theAll = document.getElementById("all");
+var HHgScene, HHgSceneDiv, HHgStable;
+var HHgTopHolder = document.getElementById("all");
+HHgTopHolder.style.width = "" + HHgScreen.w +"px";
+HHgTopHolder.style.height = "" + HHgScreen.h +"px";
 
 function doStartHHgScene(){
 	console.log("scene setup start");
-	HHgScene = new HHgHolder(540,960);
+	HHgScene = new HHgHolder(HHgScreen.w,HHgScreen.h);
 
 	//we add all the custom functions to the scene here
 	doAddFunctionsToScene(HHgScene);
 
-	HHgScene.doMoveToNewParent("stop");
-	var sceneDiv = HHgScene.getDiv();
+	HHgScene.doAddScene();
+	HHgSceneDiv = HHgScene.getDiv();
 	
-	sceneDiv.style.left = parseInt(sceneDiv.style.left) - HHgScene.getHalfWidth();
-	sceneDiv.style.bottom = parseInt(sceneDiv.style.bottom) - HHgScene.getHalfHeight();
-	sceneDiv.style.backgroundColor = "blue";
+	
 
 	HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
 
-	HHgStable.doMoveToNewParent(HHgScene, HHgScene.getWidthNet() * 3, HHgScene.getHeightNet() * 3, true);
+	//HHgStable.doMoveToNewParent(HHgScene, HHgScene.getWidthNet() * 3, HHgScene.getHeightNet() * 3, true);
 
 
 	/*var testBlock = new HHgHolder(50,50);
@@ -98,27 +103,10 @@ testContainer2.setBackgroundColor(120,.75,.75,.5);
 	testBlock.setBackgroundColor(356,.75,.75,.5);
 	
 
-	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
 	testContainer2.setScaleOriginal(1.4,1.4);
 	
-	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
-	//testBlock.setPositionInScreen(testBlock.getPositionInScreenOriginal());
-	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
+	
 	testBlock.setPositionInScreen(new HHgVector2(0,200));
-	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
-	//testContainer2.setRotationOriginal(180);
-
-
-	//testContainer2.setScaleOriginal(1,1);
-	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
-	
-	HHgScene.doAddMouseClick(testContainer2, function(){
-		this.setRotationOriginalAdd(22.5);
-		//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
-	
-	//testBlock.setPositionInScreen(new HHgVector2(0,200));
-	//testBlock.setPositionInParent(testBlock.getPositionInParentOriginal());
-	}, false);
 
 	testContainer2.doActionMoveInScreen(0, -400, 10 );
 
@@ -126,7 +114,12 @@ testContainer2.setBackgroundColor(120,.75,.75,.5);
 }
 
 function doAddFunctionsToScene(scene){
-		
+	
+	scene._holders = {
+
+	}
+	
+
 	scene.doUpdateThisHolder = function(holder){
 		var div = holder.getDiv();
 		div.style.backgroundColor = holder.getBackgroundColor();
@@ -136,8 +129,37 @@ function doAddFunctionsToScene(scene){
 		div.style.left ="" + centricConversion.getX() +"px";
 		div.style.bottom ="" + centricConversion.getY() + "px";
 		div.style.transform="rotate(" + (holder.getRotationNet()) +"deg" +")";
+
+		scene.doUpdateMouseable(holder);
 	}
 
+	scene.doUpdateMouseable = function(holder){
+		holder.getMouseable() ? holder.getDiv().classList.add("mouseable") : holder.getDiv().classList.remove("mouseable");
+		
+	}
+	scene.doAddScene = function(){
+		if(scene.getDiv()){
+			scene.doUpdateThisHolder(scene);
+			return;
+		}
+		
+		var div = document.createElement("div");
+		scene.setDiv(div);
+		div.style.display ="inline-block";
+		div.style.position = "absolute";
+		div.style.backgroundColor ="blue";
+		//div.style.border = "2px solid black";
+		div.id = scene.getHash();
+
+		scene.doUpdateThisHolder(scene);
+		scene._holders[div.id] = scene;
+
+		div.style.left = parseInt(div.style.left) - HHgScene.getHalfWidth();
+		div.style.bottom = parseInt(div.style.bottom) - HHgScene.getHalfHeight();
+	
+
+		HHgTopHolder.appendChild(div);
+	};
 
 	scene.doAddThisHolder = function(holder){
 		if(holder.getDiv()){
@@ -154,9 +176,9 @@ function doAddFunctionsToScene(scene){
 		div.id = holder.getHash();
 
 		scene.doUpdateThisHolder(holder);
-		
+		scene._holders[div.id] = holder;
 
-		theAll.appendChild(div);
+		HHgSceneDiv.appendChild(div);
 	};
 
 var lastRotate = 0;
@@ -170,19 +192,77 @@ var lastRotate = 0;
 		holder.setPositionInParent(new HHgVector2(0,.1), true);
 		holder.setScaleXYOffsetMultiplied(.999,.999);
 		//holder.setRotationOriginal(90);
-	}
-
-	scene.doAddMouseClick = function(holder, func, shouldBubble){
-		holder.getDiv().addEventListener("click", func.bind(holder), shouldBubble);
-	}
-
+	};
 	
 
 	scene.doAnyScreenConversion = function(xyPos){
 		return xyPos;
-		//return new HHgVector2(xyPos.getX() + this.getHalfWidth(), xyPos.getY() + this.getHalfHeight());
-	}
+		
+	};
+
+	
+	scene.doAddMouseDownAndUpListeners = function(){
+		var wOffset = 0;
+		var hOffset = 0;
+		console.log("HHG, Top" + HHgTopHolder.style.marginLeft);
+		HHgTopHolder.addEventListener("mousedown", function(e){
+			HHgMouse.doMouseDown(scene.returnHoldersUnderPoint( e.pageX + wOffset, e.pageY - hOffset));
+		}, false);
+		HHgTopHolder.addEventListener("mouseup", function(e){
+			HHgMouse.doMouseUp(scene.returnHoldersUnderPoint( e.pageX + wOffset, e.pageY - hOffset))
+		}, false);
+	};
+
+	scene.doesDivContainPoint = function(div, x, y){
+		console.log("Does Div Have: " + x + "," + y);
+			if(+div.style.left <= x ) return false;
+			if(+div.style.bottom <= y) return false;
+			if(+div.style.left + (+div.style.width) > x) return false;
+			if(+div.style.bottom + (+div.style.height) > y) return false;
+
+			return true;
+	};
+
+	scene.returnHoldersUnderPoint = function(xy, y){
+		console.log("return holders under: " + xy +"," + y);
+		if(xy instanceof HHgVector2 === true ){
+			y = xy.getY();
+			var x = xy.getX();
+		}else{
+			var x = xy;
+		}
+		var arr = document.getElementsByClassName("mouseable");
+		
+	
+	
+		var mArr = [];
+		for(var i = 0; i < arr.length; i++ ){
+			if(scene.doesDivContainPoint(arr[i],x,y)){
+				mArr.push(scene.getHolderFromDiv(arr[i]));
+			}
+		}
+
+		return mArr;
+
+	};
+
+	scene.getHolderFromDiv = function (div){
+		return scene._holders[div.id];
+	};
+
+	
 }
+
+//random code findings
+//draw image to canvas, maybe good for per pixel mouse click checking
+/*
+var canvas = document.createElement("canvas");
+canvas.width = yourImageElement.width;
+canvas.height = yourImageElement.height;
+canvas.getContext('2d').drawImage(yourImageElement, 0, 0);
+*/
+//and then get the pixel of that image:
+//canvasElement.getContext('2d').getImageData(x, y, 1, 1).data
 
 
 
