@@ -178,12 +178,15 @@ this.getHash = function(){
 				
 				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(that.getPositionXYOffsetNet());
 			
-				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(_parent.returnHalfSizeVector());
+				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgScene.returnHalfSizeVector());
 				
 				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
 				
-				_positionInParentOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(),  _parent.getRotationNet() );
-				
+
+				_positionInParentOriginal = _positionInScreenOriginal.returnVectorScaledByInverse(_parent.getScaleNet());
+				_positionInParentOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(),  _parent.getRotationNet() );
+			
+			
 			}
 
 			if(_children){
@@ -219,7 +222,7 @@ this.getHash = function(){
 				return;
 			}
 
-			//only problem left is screen original getting set inside of position in parent
+			
 
 			if(shouldAddTo === true){
 				_positionInParentOriginal = _positionInParentOriginal.returnVectorPlusVector(parXYPos);
@@ -247,10 +250,7 @@ this.getHash = function(){
 				//that is actually the final net, I think
 				
 				
-				//_positionInScreenOriginal = _parent.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
-				//_positionInScreenOriginal = that.getPositionXYOffsetNet().returnVectorSubtractedFromVector(_positionInScreenOriginal);
-				//_positionInScreenOriginal = _positionInScreenOriginal.returnVectorPlusVector(that.returnHalfSizeVector());
-
+				
 			}
 
 			if(_children){
