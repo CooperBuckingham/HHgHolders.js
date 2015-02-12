@@ -1,9 +1,9 @@
-var holderHashCount = 0;
+var HHgHolderHashCont = 0;
 
 var HHgHolder = function(w, h, zIndex, xyOffset, scale){
-	holderHashCount++;
-	if(holderHashCount > 10000){
-		holderHashCount = 0;
+	HHgHolderHashCont++;
+	if(HHgHolderHashCont > 10000){
+		HHgHolderHashCont = 0;
 		console.log("HASH passed 10000");
 	}
 
@@ -47,7 +47,7 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	
 	var _div;
 	
-	var _hash = holderHashCount;
+	var _hash = HHgHolderHashCont;
 	var _timeStamp = +new Date();
 	var _finalHash = "" + _hash + "_" + _timeStamp;
 
@@ -68,7 +68,18 @@ this.getMouseable = function(){
 }
 
 		this.setBackgroundColor = function(H, S, L, A, shouldMultiplyBy){
-		
+		if(H === true){
+			H = _backgroundHue;
+		}
+		if(S === true){
+			L = _backgroundSaturation;
+		}
+		if(L === true){
+			L = _backgroundLightness;
+		}
+		if(A === true){
+			A = _backgroundAlpha;
+		}
 			H = H > 360 ? H % 360 : H;
 			S = S > 1 ? 1 : S;
 			L = L > 1 ? 1 : L;
@@ -133,6 +144,14 @@ this.getMouseable = function(){
 		}
 
 		this.setPositionXYOffsetOriginal =function(xy, y){
+			if(xy === true){
+				xy = _positionXYOffset.getX();
+			}
+			if(y === true){
+				y = _positionXYOffset.getY();
+			}
+
+
 			if(xy instanceof HHgVector2){
 				_positionXYOffset = xy;
 			}else{
@@ -166,6 +185,14 @@ this.getMouseable = function(){
 		
 
 		this.setPositionInScreen = function(xy, y){
+
+			if(xy === true){
+				xy = _positionInScreenOriginal.getX();
+			}
+			if(y === true){
+				y = _positionInScreenOriginal.getY();
+			}
+
 			xy = HHg.doVectorCheck(xy,y);
 
 			if(this._parent === "stop"){
@@ -227,6 +254,13 @@ this.getMouseable = function(){
 
 		this.setPositionInParent = function(xy, y ){
 
+			if(xy === true){
+				xy = _positionInParentOriginal.getX();
+			}
+			if(y === true){
+				y = _positionInParentOriginal.getY();
+			}
+
 			xy = HHg.doVectorCheck(xy,y);
 
 			if(this._parent === "stop"){
@@ -279,6 +313,13 @@ this.getMouseable = function(){
 		
 		this.setScaleOriginal = function(xy, y){
 
+			if(xy === true){
+				xy = _scaleOriginal.getX();
+			}
+			if(y === true){
+				y = scaleOriginal.getY();
+			}
+
 			if(xy instanceof HHgVector2 === false){
 				xy = new HHgVector2(xy, y);
 			}
@@ -289,6 +330,13 @@ this.getMouseable = function(){
 		}
 
 		this.setScaleOriginalMultiplied = function(xy, y){
+
+			if(xy === true){
+				xy = _scaleOriginal.getX();
+			}
+			if(y === true){
+				y = scaleOriginal.getY();
+			}
 
 			if(xy instanceof HHgVector2 === false){
 				xy = new HHgVector2(xy, y);
@@ -304,6 +352,14 @@ this.getMouseable = function(){
 		}
 
 		this.setScaleXYOffset = function(xy, y){
+
+			if(xy === true){
+				xy = _scaleXYOffset.getX();
+			}
+			if(y === true){
+				y = _scaleXYOffet.getY();
+			}
+
 			if(xy instanceof HHgVector2 === false){
 				xy = new HHgVector2(xy, y);
 			}
@@ -315,6 +371,14 @@ this.getMouseable = function(){
 		}
 
 		this.setScaleXYOffsetMultiplied = function(xy, y){
+
+			if(xy === true){
+				xy = _scaleXYOffset.getX();
+			}
+			if(y === true){
+				y = _scaleXYOffet.getY();
+			}
+
 			if(xy instanceof HHgVector2 === false){
 				xy = new HHgVector2(xy, y);
 			}
@@ -485,10 +549,18 @@ this.getMouseable = function(){
 		
 		isScreenPos ? that.setPositionInScreen(xy) : that.setPositionInParent(xy);
 			
-};
+}
 
 //============= ACTIONS ================
 	this.doActionMoveInScreen = function(xy,y,time,shouldAddTo, onComplete, ease){
+
+		if(xy === true){
+				xy = _positionInScreenOriginal.getX();
+			}
+			if(y === true){
+				y = _positionInScreenOriginal.getY();
+			}
+
 		if(xy instanceof HHgVector2 === false){
 			xy = xy || that.getPositionInScreenOriginal().getX();
 			y = y || that.getPositionInScreenOriginal().getY();
@@ -503,27 +575,31 @@ this.getMouseable = function(){
 		var theAction;
 		theAction = shouldAddTo ? (new HHgActionMoveBy(that, xy, time, onComplete, ease)) : (new HHgActionMoveTo(that, xy, time, onComplete, ease));
 		_actions.push(theAction);
-		HHgMain.HHgActionManager.doAddAction(theAction);
+		HHgActionManager.doAddAction(theAction);
 		
-	};
+	}
+
+//============= MOUSE =================
 
 	this.doRemoveAction = function(action){
 		HHg.doRemoveThingFromArray(_actions, action);
 	}
 
-}//============= MOUSE =================
-
 	this.doMouseDown = function(){
-
-	};
+		this.setBackgroundColor(true, true, true, .4);
+	}
 
 	this.doMouseUp = function(){
 
-	};
+	}
 
 	this.doMouseMove = function(){
 
-	};
+	}
+
+}
+
+
 
 
 

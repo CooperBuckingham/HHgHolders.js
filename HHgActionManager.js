@@ -1,14 +1,14 @@
 
 
-HHgMain.HHgActionManager = {
-  actionList: [],
+var HHgActionManager = {
+  _actionList: [],
   doAddAction: function(action){
-      this.actionList.push(action);
+      this._actionList.push(action);
   },
 
   doRemoveAction: function(action){
     console.log("action manager remove start");
-    if(HHg.doRemoveThingFromArray(this.actionList, action)){
+    if(HHg.doRemoveThingFromArray(this._actionList, action)){
       console.log("action removed");
     }else{
       console.log("failed to find action to be removed");
@@ -19,7 +19,7 @@ HHgMain.HHgActionManager = {
 
 var paused = false;
 
-HHgMain.HHgActionManager.actionLoop = function( animateActions ) {
+HHgActionManager.actionLoop = function( animateActions ) {
     var shouldContinueLoop = true;
     var lastFrameTime = +new Date;
     var deltaT;
@@ -35,21 +35,28 @@ HHgMain.HHgActionManager.actionLoop = function( animateActions ) {
     }
   }
   recurse();
+
 };
 
-
-function doStartHHgActionManager(){
+HHgActionManager.doStart = function(){
   var i;
-  var theActionList = HHgActionManager.actionList;
-  HHgMain.HHgActionManager.actionLoop(function( deltaT, now ) {
+ 
+  this.actionLoop(function( deltaT, now ) {
     
-    for(i = 0; i < theActionList.length; i++){
-      theActionList[i].whatShouldIDoThisFrame(deltaT, now);
+    for(i = 0; i < HHgActionManager._actionList.length; i++){
+      HHgActionManager._actionList[i].whatShouldIDoThisFrame(deltaT, now);
     }
 
     return true;
 
   } );
+
+
+
+
+
+
+
 }
 
 

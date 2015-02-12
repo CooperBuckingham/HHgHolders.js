@@ -1,2 +1,2 @@
-var HHgMain = {};
-window.HHgMain = HHgMain;
+var HHgMain;
+HHgMain = window;

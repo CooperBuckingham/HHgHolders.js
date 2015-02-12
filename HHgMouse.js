@@ -1,13 +1,12 @@
 
 
-var doStartHHgMouse = function(){
-
-		HHgScene.doAddMouseDownAndUpListeners();
-
-};
 
 
-window.HHgMouse = function(){
+var HHgMouse = function HHgMouse(){
+	if(HHgMouse.singleton){
+		return HHgMouse.singleton;
+	}
+	HHgMouse.singleton = this;
 
 	var clickedDownOn;
 	var lastMousePosX;
@@ -19,6 +18,11 @@ window.HHgMouse = function(){
 
 	var that = this;
 	
+	this.doStart = function(){
+
+		HHgScene.doAddMouseDownAndUpListeners();
+
+	}
 
 	this.doResetVars = function(){
 		clickedDownOn = undefined;
@@ -28,7 +32,7 @@ window.HHgMouse = function(){
 		thisMousePosX = undefined;
 		lastFrameTime = undefined;
 		thisFrameTime = undefined;
-	};
+	}
 
 	this.doSetVars = function(holder, x, y){
 		clickedDownOn = holder;
@@ -40,9 +44,16 @@ window.HHgMouse = function(){
 		thisFrameTime = +new Date;
 		lastFrameTime = lastFrameTime || thisFrameTime;
 		
-	};
+	}
 
-		this.doMouseDown = function (holders, x, y){
+	this.doMouseMove = function (holders, x, y){
+		if(!holders || holders.length < 1){
+			return;
+		}
+		holders[0].doMouseMove();
+	}
+
+	this.doMouseDown = function (holders, x, y){
 		console.log("mousedown");
 		if(!holders || holders.length < 1){
 			return;
@@ -55,15 +66,15 @@ window.HHgMouse = function(){
 			
 		});
 		*/
-		
-	};
-
-
-
+	}
 
 	this.doMouseUp = function (holders, x, y){
 		console.log("mouseup");
+
 		if(clickedDownOn === undefined){
+			return;
+		}
+		if(!holders || holders.length < 1){
 			return;
 		}
 
@@ -75,13 +86,12 @@ window.HHgMouse = function(){
 			}
 		}
 		
-		
-		
-		
-	};
+	}
 
-	this.doMouseMove = function (holders, x, y){
-		holders[0].doMouseMove();
-	};
+	
 
-};
+	return this; //for singleton
+
+
+
+}();
