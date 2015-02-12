@@ -35,7 +35,7 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	var _scaleXYOffset = new HHgVector2(1,1);
 	var _scaleNet = scale;
 
-	var _zIndex = zIndex;
+	var _zIndex = zIndex || 1;
 	var _positionXYOffset = xyOffset;
 	var _positionInScreenOriginal = new HHgVector2(0,0);
 	var _positionInParentOriginal  = new HHgVector2(0,0);
@@ -165,17 +165,17 @@ this.getMouseable = function(){
 
 		
 
-		this.setPositionInScreen = function(xyPos, shouldAddTo){
+		this.setPositionInScreen = function(xy, y){
+			xy = HHg.doVectorCheck(xy,y);
+
 			if(this._parent === "stop"){
 				return;
 			}
 	
 
-			if(shouldAddTo === true){
-				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorPlusVector(xyPos);
-			}else{
-				_positionInScreenOriginal = xyPos;
-			}
+			
+				_positionInScreenOriginal = xy;
+			
 
 				_positionInScreenNet = _positionInScreenOriginal;
 
@@ -225,7 +225,9 @@ this.getMouseable = function(){
 		}
 
 
-		this.setPositionInParent = function(parXYPos, shouldAddTo){
+		this.setPositionInParent = function(xy, y ){
+
+			xy = HHg.doVectorCheck(xy,y);
 
 			if(this._parent === "stop"){
 				return;
@@ -233,11 +235,8 @@ this.getMouseable = function(){
 
 			
 
-			if(shouldAddTo === true){
-				_positionInParentOriginal = _positionInParentOriginal.returnVectorPlusVector(parXYPos);
-			}else{
-				_positionInParentOriginal = parXYPos;
-			}
+			
+				_positionInParentOriginal = xy;
 
 
 
@@ -512,7 +511,19 @@ this.getMouseable = function(){
 		HHg.doRemoveThingFromArray(_actions, action);
 	}
 
-}
+}//============= MOUSE =================
+
+	this.doMouseDown = function(){
+
+	};
+
+	this.doMouseUp = function(){
+
+	};
+
+	this.doMouseMove = function(){
+
+	};
 
 
 
