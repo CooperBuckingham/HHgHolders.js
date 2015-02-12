@@ -8,57 +8,72 @@ var HHgMouse = function HHgMouse(){
 	}
 	HHgMouse.singleton = this;
 
-	var clickedDownOn;
-	var lastMousePosX;
-	var lastMousePosY;
-	var thisMousePosX;
-	var thisMousePosY;
-	var lastFrameTime;
-	var thisFrameTime;
+	this.clickedDownOn;
+	this.lastMousePosX;
+	this.lastMousePosY;
+	this.thisMousePosX;
+	this.thisMousePosY;
+	this.lastFrameTime;
+	this.thisFrameTime;
+	this.mouseCircle;
 
 	var that = this;
 	
 	this.doStart = function(){
+
+
+		that.mouseCircle = new HHgHolder(10,10, 100);
+	/*
+	that.mouseCircle.doShow = function(){
+
+	}
+	that.mouseCircle.doHide = function(){
+
+	}
+	*/	
+		that.mouseCircle.doMoveToNewParent();
+		that.mouseCircle.setVisible(false);
+		
+
 
 		HHgScene.doAddMouseDownAndUpListeners();
 
 	}
 
 	this.doResetVars = function(){
-		clickedDownOn = undefined;
-		lastMousePosY = undefined;
-		lastMousePosX = undefined;
-		thisMousePosY = undefined;
-		thisMousePosX = undefined;
-		lastFrameTime = undefined;
-		thisFrameTime = undefined;
+		that.clickedDownOn = undefined;
+		that.lastMousePosY = undefined;
+		that.lastMousePosX = undefined;
+		that.thisMousePosY = undefined;
+		that.thisMousePosX = undefined;
+		that.lastFrameTime = undefined;
+		that.thisFrameTime = undefined;
 	}
 
 	this.doSetVars = function(holder, x, y){
-		clickedDownOn = holder;
-		lastMousePosX = lastMousePosX || x;
-		lastMousePosY = lastMousePosY || y;
+		that.clickedDownOn = holder;
+		that.lastMousePosX = that.lastMousePosX || x;
+		that.lastMousePosY = that.lastMousePosY || y;
 		
-		thisMousePosX = x;
-		thisMousePosY = y;
-		thisFrameTime = +new Date;
-		lastFrameTime = lastFrameTime || thisFrameTime;
+		that.thisMousePosX = x;
+		that.thisMousePosY = y;
+		that.thisFrameTime = +new Date;
+		that.lastFrameTime = that.lastFrameTime || that.thisFrameTime;
 		
 	}
 
-	this.doMouseMove = function (holders, x, y){
-		if(!holders || holders.length < 1){
-			return;
-		}
-		holders[0].doMouseMove();
+	this.doMouseMove = function (x, y){
+		//more logic here to determine dragging later
+		that.clickedDownOn.doMouseMove();
 	}
 
 	this.doMouseDown = function (holders, x, y){
+		that.mouseCircle.doShow(x,y);
 		console.log("mousedown");
 		if(!holders || holders.length < 1){
 			return;
 		}
-
+		
 		that.doSetVars(holder[0], x, y);
 		that.clickedDownOn.doMouseDown();
 		/*
@@ -66,12 +81,16 @@ var HHgMouse = function HHgMouse(){
 			
 		});
 		*/
+
+		
+
 	}
 
 	this.doMouseUp = function (holders, x, y){
 		console.log("mouseup");
+		that.mouseCircle.doHide();
 
-		if(clickedDownOn === undefined){
+		if(that.clickedDownOn === undefined){
 			return;
 		}
 		if(!holders || holders.length < 1){
@@ -80,11 +99,13 @@ var HHgMouse = function HHgMouse(){
 
 		for(var i = 0; i < holders.length; i++){
 			if(holders[i] === clickedDownOn){
-				clickedDownOn.doMouseUp();
-				that.doResetVars();
+				that.clickedDownOn.doMouseUp();
+				
 				return;
 			}
 		}
+		
+		that.doResetVars();
 		
 	}
 

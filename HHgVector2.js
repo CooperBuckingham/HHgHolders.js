@@ -22,6 +22,7 @@ var HHgVector2 = function (x,y){
 	}
 	this.setX = function(newX){
 		_x = newX;
+		//_x = Math.round( newX * 10) / 10;
 	}
 
 	this.getY = function(){
@@ -29,6 +30,7 @@ var HHgVector2 = function (x,y){
 	}
 	this.setY = function(newY){
 		_y = newY;
+		//_y =   Math.round( newY * 10) / 10;
 	}
 
 
@@ -79,5 +81,7 @@ var HHgVector2 = function (x,y){
 	this.returnVectorSubtractedFromVector = function(vB){
 		return new HHgVector2(vB.getX() - _x, vB.getY() - _y);
 	}
+
+	
 
 }
