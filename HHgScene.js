@@ -1,9 +1,4 @@
 
-var HHgSceneInternal = function(){
-	
-}
-
-var HHgMain = window;
 
 var HHgScreen = {
 	w : 540,
@@ -27,8 +22,6 @@ function doStartHHgScene(){
 	HHgScene.doAddScene();
 	HHgSceneDiv = HHgScene.getDiv();
 	
-	
-
 	HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
 
 	//HHgStable.doMoveToNewParent(HHgScene, HHgScene.getWidthNet() * 3, HHgScene.getHeightNet() * 3, true);
@@ -197,19 +190,19 @@ var lastRotate = 0;
 		HHgTopHolder.addEventListener("mousedown", function(e){
 			var relX = e.pageX + wOffset;
 			var relY = HHgScreen.h - (e.pageY + hOffset);
-			HHgMouse.doMouseDown( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
+			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
 		}, false);
 
 		HHgTopHolder.addEventListener("mouseup", function(e){
 			var relX = e.pageX + wOffset;
 			var relY = HHgScreen.h - (e.pageY + hOffset);
-			HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
+			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
 		}, false);
 
 		HHgTopHolder.addEventListener("mousedown", function(e){
 			var relX = e.pageX + wOffset;
 			var relY = HHgScreen.h - (e.pageY + hOffset);
-			HHgMouse.doMouseMouse( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
+			HHgMain.HHgMouse.doMouseMove( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
 		}, false);
 
 

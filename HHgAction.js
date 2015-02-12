@@ -1,12 +1,5 @@
 
 
-HHgMain.HHgActionCommands = {
-	makeChildOfAction : function(subclass){
-		subclass.prototype = Object.create(HHgAction.prototype);
-		subclass.prototype.constructor = subclass;
-
-	}
-}
 
 var HHgAction = function (owner, totalTime, ease, onComplete){
 	this.owner = owner;
@@ -35,8 +28,15 @@ var HHgAction = function (owner, totalTime, ease, onComplete){
 	
 }
 
+HHg.HHgActionCommands = {
+	makeChildOfAction : function(subclass){
+		subclass.prototype = Object.create(HHgAction.prototype);
+		subclass.prototype.constructor = subclass;
 
+	}
+}
 
+//======= MOVEMENT
 
 function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
 	
@@ -79,7 +79,7 @@ function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
 
 	
 }
-HHgMain.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
+HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
 
 function HHgActionMoveBy(owner, deltaPos, time, ease, onComplete){
 	HHgAction.call(this, owner, time, ease, onComplete);
@@ -88,7 +88,18 @@ function HHgActionMoveBy(owner, deltaPos, time, ease, onComplete){
 	
 	
 }
-HHgMain.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
+HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
+
+
+
+
+
+//=======================
+
+
+
+
+//====Helper Function for above
 
 
 
