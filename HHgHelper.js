@@ -42,12 +42,30 @@ var HHg = {
 		return degrees*Math.PI/180;
 	},
 
-	doVectorCheck: function(xy, y){
+	returnVectorFilter: function(xy, y, defaultXY){
+		if(xy === undefined) return undefined;
+
+		if(xy === true){
+			xy = defaultXY.getX();
+		}
+		if(y === true){
+			y = defualtXY.getY();
+		}
+
+
 		if(xy instanceof HHgVector2 === false){
 			return new HHgVector2(xy, y);
 		}
 
 		return xy;
+	},
+
+	zValues : {
+		scene: 0,
+		gameplay: 100,
+		gameUI: 200,
+		menus: 300,
+		mouse: 400,
 	},
 
 }

@@ -1,4 +1,4 @@
-
+//scene will need pixel multiplier for retina, etc
 
 var HHgScreen = {
 	w : 540,
@@ -9,12 +9,14 @@ var testContainer;
 
 var HHgScene, HHgSceneDiv, HHgStable;
 var HHgTopHolder = document.getElementById("all");
+
 HHgTopHolder.style.width = "" + HHgScreen.w +"px";
 HHgTopHolder.style.height = "" + HHgScreen.h +"px";
 
 function doStartHHgScene(){
 	console.log("scene setup start");
 	HHgScene = new HHgHolder(HHgScreen.w,HHgScreen.h);
+	HHgScene.setMouseable(false);
 
 	//we add all the custom functions to the scene here
 	doAddFunctionsToScene(HHgScene);
@@ -24,72 +26,9 @@ function doStartHHgScene(){
 	
 	HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
 
-	//HHgStable.doMoveToNewParent(HHgScene, HHgScene.getWidthNet() * 3, HHgScene.getHeightNet() * 3, true);
-
-
-	/*var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(-100,100), true);
-	testBlock.setBackgroundColor(60,.75,.75,1);
-
-	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(0,0), true);
-
-	
-	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(100,100), true);
-
-	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(100,-100), true);
-
-
-	var testBlock = new HHgHolder(50,50);
-	testBlock.doMoveToNewParent(HHgScene, new HHgVector2(-100,-100), true);
-*/
-//==================
-
-//==================
-var testBlock = new HHgHolder(50,50,4);
-testBlock.doMoveToNewParent(HHgScene, 0,0, false);
-
-var testBlock = new HHgHolder(100,100,2);
-testBlock.doMoveToNewParent(HHgScene, 10,10, false);
-
-var testBlock = new HHgHolder(150,150,3);
-testBlock.doMoveToNewParent(HHgScene, 20,20, false);
-
-var testBlock = new HHgHolder(200,200,5);
-testBlock.doMoveToNewParent(HHgScene, 30,30, false);
-
-
-//--------------
-var testContainer2 = new HHgHolder(250,500);
-testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, 0), false);
-testContainer2.setBackgroundColor(120,.75,.75,.5);
-//testContainer2.setScaleOriginal(2,2);
-
-
-
-	var testBlock = new HHgHolder(100,100);
-	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(159,100), false);
-	
-	var testBlock = new HHgHolder(100,100);
-	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(-100,-100), false);
-	
-	var testBlock = new HHgHolder(100,100);
-	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(-100,100), false);
-	
-	var testBlock = new HHgHolder(100,100);
-	testBlock.doMoveToNewParent(testContainer2, new HHgVector2(100,-445), false);
-	testBlock.setBackgroundColor(356,.75,.75,.5);
-	
-
-	testContainer2.setScaleOriginal(1.4,1.4);
-	
-	
-	testBlock.setPositionInScreen(new HHgVector2(0,200));
-
-	testContainer2.doActionMoveInScreen(0, -400, 10 );
-
+	var testBlock = new HHgHolder(10,10);
+	testBlock.doMoveToNewParent(HHgScene, 0,0, true);
+	testBlock.setPositionInScreen(-100,0);
 
 }
 
@@ -98,9 +37,28 @@ function doAddFunctionsToScene(scene){
 	scene._holders = {
 
 	}
+
+	//==== specific 1 off updates ====//
+
+
+	scene.doUpdateHolderMouseable = function(holder){
+		holder.getMouseable() ? holder.getDiv().classList.add("mouseable") : holder.getDiv().classList.remove("mouseable");
+		
+	}
+	scene.doUpdateHolderVisible = function(holder){
+		
+		if(holder.getVisible()){
+			holder.getDiv().style.display = "inline-block";
+		}else{
+			holder.getDiv().style.display = "none";
+		}
+		
+	}
 	
 
 	scene.doUpdateThisHolder = function(holder){
+		if(holder.getDiv() === undefined) return;
+
 		var div = holder.getDiv();
 		div.style.backgroundColor = holder.getBackgroundColor();
 		div.style.width = "" + holder.getWidthNet() + "px";
@@ -110,13 +68,15 @@ function doAddFunctionsToScene(scene){
 		div.style.bottom ="" + centricConversion.getY() + "px";
 		div.style.transform="rotate(" + (holder.getRotationNet()) +"deg" +")";
 		div.style.zIndex = "" + holder.getZIndex();
-		scene.doUpdateMouseable(holder);
+		scene.doUpdateHolderMouseable(holder);
+		scene.doUpdateHolderVisible(holder);
+
+
 	}
 
-	scene.doUpdateMouseable = function(holder){
-		holder.getMouseable() ? holder.getDiv().classList.add("mouseable") : holder.getDiv().classList.remove("mouseable");
-		
-	}
+	
+
+
 	scene.doAddScene = function(){
 		if(scene.getDiv()){
 			scene.doUpdateThisHolder(scene);
@@ -190,25 +150,31 @@ var lastRotate = 0;
 		HHgTopHolder.addEventListener("mousedown", function(e){
 			var relX = e.pageX + wOffset;
 			var relY = HHgScreen.h - (e.pageY + hOffset);
-			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
+			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint( relX, relY),relX - HHgScreen.w / 2, relY - HHgScreen.h / 2  );
+			return false;
 		}, false);
 
 		HHgTopHolder.addEventListener("mouseup", function(e){
 			var relX = e.pageX + wOffset;
 			var relY = HHgScreen.h - (e.pageY + hOffset);
-			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
+			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( relX, relY),relX - HHgScreen.w / 2,relY - HHgScreen.h / 2  );
+			return false;
 		}, false);
 
-		HHgTopHolder.addEventListener("mousedown", function(e){
+		HHgTopHolder.addEventListener("mousemove", function(e){
+			console.log("mouse moving");
+			if(!HHgMain.HHgMouse.clickedDown) return;
 			var relX = e.pageX + wOffset;
 			var relY = HHgScreen.h - (e.pageY + hOffset);
-			HHgMain.HHgMouse.doMouseMove( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
+			HHgMain.HHgMouse.doMouseMove( relX - HHgScreen.w / 2, relY - HHgScreen.h / 2   );
+			return false;
 		}, false);
 
 
 	};
 
 	scene.doesDivContainPoint = function(div, x, y){
+		//console.log("mouse at relative: " +x +"/" +y + "div at" + div.style.left + "/" + div.style.bottom  );
 			var divW = parseInt(div.style.width),
 		    divH = parseInt(div.style.height);
 			
@@ -229,18 +195,18 @@ var lastRotate = 0;
 			var x = xy;
 		}
 		var arr = document.getElementsByClassName("mouseable");
-	
+		console.log("mousable things " + arr.length);
 		var mArr = [];
 		var highestZ = -100;
-		var current;
+		
 		for(var i = 0; i < arr.length; i++ ){
-			current = arr[i];
-			if(scene.doesDivContainPoint(current,x,y)){
-				if(+current.style.zIndex > highestZ){
-					mArr.unshift(scene.getHolderFromDiv(current));
-					highestZ = +current.style.zIndex;
+			
+			if(scene.doesDivContainPoint(arr[i],x,y)){
+				if(+arr[i].style.zIndex > highestZ){
+					mArr.unshift(scene.getHolderFromDiv(arr[i]));
+					highestZ = +arr[i].style.zIndex;
 				}else{
-					mArr.push(scene.getHolderFromDiv(current));
+					mArr.push(scene.getHolderFromDiv(arr[i]));
 				}
 				
 			}

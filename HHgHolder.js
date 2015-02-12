@@ -54,6 +54,7 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	var that = this;
 
 	var _mouseable = true;
+	var _visible = true;
 	
 
 this.getHash = function(){
@@ -61,10 +62,26 @@ this.getHash = function(){
 }
 this.setMouseable = function(mouseable){
 	_mouseable = mouseable;
-	HHgScene.doUpdateMouseable(this);
+	if(_div){
+		HHgScene.doUpdateHolderMouseable(that);
+	}
+	
 }
 this.getMouseable = function(){
 	return _mouseable;
+}
+
+this.setVisible = function(val){
+	_visible = val;
+	if(_div){
+		
+		HHgScene.doUpdateHolderVisible(that);
+	}
+	
+
+}
+this.getVisible = function(){
+	return _visible;
 }
 
 		this.setBackgroundColor = function(H, S, L, A, shouldMultiplyBy){
@@ -144,21 +161,9 @@ this.getMouseable = function(){
 		}
 
 		this.setPositionXYOffsetOriginal =function(xy, y){
-			if(xy === true){
-				xy = _positionXYOffset.getX();
-			}
-			if(y === true){
-				y = _positionXYOffset.getY();
-			}
+			xy = HHg.returnVectorFilter(xy,y,_positionXYOffset);
 
-
-			if(xy instanceof HHgVector2){
-				_positionXYOffset = xy;
-			}else{
-				xy = xy || _positionXYOffset.getX();
-				y = y || _positionXYOffset.getY();
-				_positionXYOffset = new HHgVector2(xy, y);
-			}
+			_positionXYOffset = xy;
 			
 			that.doRecalcPosition();
 		}
@@ -186,15 +191,11 @@ this.getMouseable = function(){
 
 		this.setPositionInScreen = function(xy, y){
 
-			if(xy === true){
-				xy = _positionInScreenOriginal.getX();
-			}
-			if(y === true){
-				y = _positionInScreenOriginal.getY();
-			}
+		xy = HHg.returnVectorFilter(xy,y,_positionInScreenOriginal);
 
-			xy = HHg.doVectorCheck(xy,y);
-
+if(xy === undefined){
+	xy = new HHgVector2(0,0);
+}
 			if(this._parent === "stop"){
 				return;
 			}
@@ -254,21 +255,13 @@ this.getMouseable = function(){
 
 		this.setPositionInParent = function(xy, y ){
 
-			if(xy === true){
-				xy = _positionInParentOriginal.getX();
-			}
-			if(y === true){
-				y = _positionInParentOriginal.getY();
-			}
-
-			xy = HHg.doVectorCheck(xy,y);
-
+			xy = HHg.returnVectorFilter(xy, y, _positionInParentOriginal);
+if(xy === undefined){
+	xy = new HHgVector2(0,0);
+}
 			if(this._parent === "stop"){
 				return;
 			}
-
-			
-
 			
 				_positionInParentOriginal = xy;
 
@@ -313,16 +306,7 @@ this.getMouseable = function(){
 		
 		this.setScaleOriginal = function(xy, y){
 
-			if(xy === true){
-				xy = _scaleOriginal.getX();
-			}
-			if(y === true){
-				y = scaleOriginal.getY();
-			}
-
-			if(xy instanceof HHgVector2 === false){
-				xy = new HHgVector2(xy, y);
-			}
+		xy = HHg.returnVectorFilter(xy,y,_scaleOriginal);
 				_scaleOriginal = xy;
 
 			that.doRecalcScaleNet();
@@ -331,23 +315,14 @@ this.getMouseable = function(){
 
 		this.setScaleOriginalMultiplied = function(xy, y){
 
-			if(xy === true){
-				xy = _scaleOriginal.getX();
-			}
-			if(y === true){
-				y = scaleOriginal.getY();
-			}
-
-			if(xy instanceof HHgVector2 === false){
-				xy = new HHgVector2(xy, y);
-			}
+			xy = HHg.returnVectorFilter(xy,y,_scaleOriginal);
 				_scaleOriginal = _scaleOriginal.returnVectorScaledBy(xy);
 
 			that.doRecalcScaleNet();
 
 		}
 
-		this.getScaleOriginal = function(val){
+		this.getScaleOriginal = function(){
 			return _scaleOriginal;
 		}
 
@@ -372,16 +347,7 @@ this.getMouseable = function(){
 
 		this.setScaleXYOffsetMultiplied = function(xy, y){
 
-			if(xy === true){
-				xy = _scaleXYOffset.getX();
-			}
-			if(y === true){
-				y = _scaleXYOffet.getY();
-			}
-
-			if(xy instanceof HHgVector2 === false){
-				xy = new HHgVector2(xy, y);
-			}
+			xy = HHg.returnVectorFilter(xy, y, _scaleXYOffset);
 				_scaleXYOffset = _scaleXYOffset.returnVectorScaledBy(xy);
 			
 			that.doRecalcScaleNet();
@@ -518,6 +484,27 @@ this.getMouseable = function(){
 			return;
 		}
 
+		
+
+		if(newParent instanceof HHgHolder !== true){
+			if(newParent instanceof HHgVector2){
+				xy = newParent;
+			}else{
+				if(typeof newParent === "number"){
+					yOrIsScreenPos = xy;
+					xy = newParent;
+				}
+			}
+			newParent = HHgScene;
+			
+		}
+
+		if(xy === undefined){
+			xy = _positionInScreenOriginal;
+		}
+
+
+
 		if(_parent === undefined){
 			HHgScene.doAddThisHolder(this);
 		}else{
@@ -527,9 +514,12 @@ this.getMouseable = function(){
 
 		_parent = newParent || HHgScene;
 
+
 		if(_parent instanceof HHgHolder !== true){
 			throw("tried to add child to a parent not of HHgHolder Class");
 		}
+
+		
 
 		if(xy instanceof HHgVector2){
 			isScreenPos = yOrIsScreenPos;
@@ -543,9 +533,7 @@ this.getMouseable = function(){
 		that.doRecalcRotation();
 		that.doRecalcScaleNet();
 
-		xy = xy || _positionInScreenOriginal;
-		xy = xy || new HHgVector2(0,0);
-
+	
 		
 		isScreenPos ? that.setPositionInScreen(xy) : that.setPositionInParent(xy);
 			
@@ -586,6 +574,7 @@ this.getMouseable = function(){
 	}
 
 	this.doMouseDown = function(){
+		console.log("yay")
 		this.setBackgroundColor(true, true, true, .4);
 	}
 
@@ -594,6 +583,29 @@ this.getMouseable = function(){
 	}
 
 	this.doMouseMove = function(){
+
+	}
+
+
+	//======visibility =========
+
+	this.doShow = function(xy,y){
+		
+		xy = HHg.returnVectorFilter(xy,y, _positionInScreenOriginal);
+		
+		this.setVisible(true);
+		if(xy !== undefined){
+			this.setPositionInScreen(xy);
+
+		}
+			
+
+		
+
+	}
+	this.doHide = function(){
+
+		that.setVisible(false);
 
 	}
 
