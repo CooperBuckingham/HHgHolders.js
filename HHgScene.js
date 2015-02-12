@@ -55,35 +55,22 @@ function doStartHHgScene(){
 //==================
 
 //==================
-/*
-testContainer = new HHgHolder(200,200);
-testContainer.doMoveToNewParent(HHgScene, new HHgVector2(-100, 300));
-testContainer.setBackgroundColor(120,.75,.75,.5);
+var testBlock = new HHgHolder(50,50,4);
+testBlock.doMoveToNewParent(HHgScene, 0,0, false);
 
-	var testBlock = new HHgHolder(20,50);
-	testBlock.doMoveToNewParent(testContainer, new HHgVector2(0,0));
+var testBlock = new HHgHolder(100,100,2);
+testBlock.doMoveToNewParent(HHgScene, 10,10, false);
 
-	var testBlock = new HHgHolder(20,50);
-	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,100));
-	testBlock.setBackgroundColor(60,.75,.75,1);
+var testBlock = new HHgHolder(150,150,3);
+testBlock.doMoveToNewParent(HHgScene, 20,20, false);
 
-	var testBlock = new HHgHolder(20,50);
-	testBlock.doMoveToNewParent(testContainer, new HHgVector2(100,100));
-
-	var testBlock = new HHgHolder(20,50);
-	testBlock.doMoveToNewParent(testContainer, new HHgVector2(100,-100));
+var testBlock = new HHgHolder(200,200,5);
+testBlock.doMoveToNewParent(HHgScene, 30,30, false);
 
 
-	var testBlock = new HHgHolder(20,50);
-	testBlock.doMoveToNewParent(testContainer, new HHgVector2(-100,-100));
-
-	//=====
-	//testContainer.setRotationOriginal(30);
-	
-	testBlock.setPositionXYOffsetOriginal(100,0);
-*/
+//--------------
 var testContainer2 = new HHgHolder(250,500);
-testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, 200), false);
+testContainer2.doMoveToNewParent(HHgScene, new HHgVector2(0, 0), false);
 testContainer2.setBackgroundColor(120,.75,.75,.5);
 //testContainer2.setScaleOriginal(2,2);
 
@@ -129,7 +116,7 @@ function doAddFunctionsToScene(scene){
 		div.style.left ="" + centricConversion.getX() +"px";
 		div.style.bottom ="" + centricConversion.getY() + "px";
 		div.style.transform="rotate(" + (holder.getRotationNet()) +"deg" +")";
-
+		div.style.zIndex = "" + holder.getZIndex();
 		scene.doUpdateMouseable(holder);
 	}
 
@@ -204,31 +191,44 @@ var lastRotate = 0;
 	scene.doAddMouseDownAndUpListeners = function(){
 		var wOffset = 0;
 		var hOffset = 0;
-		console.log("HHG, Top" + HHgTopHolder.style.marginLeft);
+
+		
+		
 		HHgTopHolder.addEventListener("mousedown", function(e){
-			HHgMouse.doMouseDown(scene.returnHoldersUnderPoint( e.pageX + wOffset, e.pageY - hOffset));
+			var relX = e.pageX + wOffset;
+			var relY = HHgScreen.h - (e.pageY + hOffset);
+			HHgMouse.doMouseDown( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
 		}, false);
+
 		HHgTopHolder.addEventListener("mouseup", function(e){
-			HHgMouse.doMouseUp(scene.returnHoldersUnderPoint( e.pageX + wOffset, e.pageY - hOffset))
+			var relX = e.pageX + wOffset;
+			var relY = HHgScreen.h - (e.pageY + hOffset);
+			HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
 		}, false);
+
+		HHgTopHolder.addEventListener("mousedown", function(e){
+			var relX = e.pageX + wOffset;
+			var relY = HHgScreen.h - (e.pageY + hOffset);
+			HHgMouse.doMouseMouse( scene.returnHoldersUnderPoint( relX, relY),relX,relY  );
+		}, false);
+
+
 	};
 
 	scene.doesDivContainPoint = function(div, x, y){
-		console.log("Does Div Have: " + x + "," + y);
-			var divW = parseInt(div.style.width);
-			var divH = parseInt(div.style.height);
-
+			var divW = parseInt(div.style.width),
+		    divH = parseInt(div.style.height);
 			
-			if(parseInt(div.style.left) + divW < x ) return false;
-			if(HHgScreen.h - (parseInt(div.style.bottom) + divH) > y) return false;
-			if(parseInt(div.style.left) > x) return false;
-			if(HHgScreen.h - parseInt(div.style.bottom) < y) return false;
+			if( parseInt(div.style.left) + divW < x ) return false;
+			if( parseInt(div.style.bottom) + divH > y) return false;
+			if( parseInt(div.style.left) > x) return false;
+			if( parseInt(div.style.bottom) < y) return false;
 
 			return true;
 	};
 
 	scene.returnHoldersUnderPoint = function(xy, y){
-		console.log("return holders under: " + xy +"," + y);
+		//first item in array is highest z, but after that is random
 		if(xy instanceof HHgVector2 === true ){
 			y = xy.getY();
 			var x = xy.getX();
@@ -236,13 +236,20 @@ var lastRotate = 0;
 			var x = xy;
 		}
 		var arr = document.getElementsByClassName("mouseable");
-		
-	
 	
 		var mArr = [];
+		var highestZ = -100;
+		var current;
 		for(var i = 0; i < arr.length; i++ ){
-			if(scene.doesDivContainPoint(arr[i],x,y)){
-				mArr.push(scene.getHolderFromDiv(arr[i]));
+			current = arr[i];
+			if(scene.doesDivContainPoint(current,x,y)){
+				if(+current.style.zIndex > highestZ){
+					mArr.unshift(scene.getHolderFromDiv(current));
+					highestZ = +current.style.zIndex;
+				}else{
+					mArr.push(scene.getHolderFromDiv(current));
+				}
+				
 			}
 		}
 
@@ -255,7 +262,7 @@ var lastRotate = 0;
 	};
 
 	
-}
+};
 
 //random code findings
 //draw image to canvas, maybe good for per pixel mouse click checking

@@ -6,7 +6,8 @@
 //main loop
 doStartHHgScene();
 doStartHHgActionManager();
-HHgMouse.doStart();
+console.log(HHgMouse);
+doStartHHgMouse();
 
 
 /*
