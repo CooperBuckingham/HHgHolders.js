@@ -2,6 +2,10 @@
 
 
 var HHgAction = function (owner, totalTime, ease, onComplete){
+	if(owner === undefined){
+		console.log("ERROR: no owner holder passed to Action");
+		return;
+	}
 	this.owner = owner;
 
 	this.onComplete = onComplete;
@@ -39,6 +43,10 @@ HHg.HHgActionCommands = {
 //======= MOVEMENT
 
 function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
+
+	if(!owner){
+		return false;
+	}
 	
 	HHgAction.call(this, owner, totalTime, ease, onComplete);
 
@@ -90,6 +98,44 @@ function HHgActionMoveBy(owner, deltaPos, time, ease, onComplete){
 }
 HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
 
+
+
+
+function HHgActionRotateBy(owner, degrees, time, ease, onComplete){
+	HHgAction.call(this, owner, time, ease, onComplete);
+
+
+	this.degreesStart = this.owner.getRotationOriginal();
+	this.degreesToRotate = degrees;
+
+	this.degreesSoFar = this.vA;
+	
+	var that = this;
+
+	var deltaDegrees = 0;
+
+	this.whatShouldIDoThisFrame = function(deltaT, now){
+		this.timeSoFar += deltaT/1000;
+		
+		if(this.timeSoFar >= this.totalTime){
+			
+			owner.setRotationOriginal(this.degreesStart + this.degreesToRotate);
+			that.finalFrame(that);
+
+			return;
+		}
+
+		deltaDegrees = that.degreesToRotate * ( (deltaT / 1000) / that.totalTime );
+
+		that.degreesSoFar += deltaDegrees;
+		owner.setRotationOriginalAdd(deltaDegrees);
+
+
+	}
+	
+	
+}
+HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
 
 
 

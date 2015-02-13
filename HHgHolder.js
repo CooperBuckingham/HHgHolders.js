@@ -35,6 +35,9 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	var _scaleXYOffset = new HHgVector2(1,1);
 	var _scaleNet = scale;
 
+	var _scaleIgnoreParentScale = false;
+	var _scaleUniformOnly = false;
+
 	var _zIndex = zIndex || 1;
 	var _positionXYOffset = xyOffset;
 	var _positionInScreenOriginal = new HHgVector2(0,0);
@@ -74,7 +77,7 @@ this.getMouseable = function(){
 this.setVisible = function(val){
 	_visible = val;
 	if(_div){
-		
+
 		HHgScene.doUpdateHolderVisible(that);
 	}
 	
@@ -359,6 +362,15 @@ if(xy === undefined){
 			return _scaleXYOffset;
 		}
 		this.getScaleNet = function(){
+			_scaleNet = _scaleIgnoreParentScale ? _scale / _parent.getScaleNet() : _scaleNet;
+
+			if(_scaleUniformOnly === true){
+				var larger = _scaleNet.getX() > _scaleNet.geY() ? _scaleNet.getX() : _scaleNet.getY();
+
+				_scaleNet = new HHgVector2(larger, larger);
+			}
+
+
 			return _scaleNet;
 		}
 
@@ -540,6 +552,13 @@ if(xy === undefined){
 }
 
 //============= ACTIONS ================
+
+	var doFinalizeAction = function(action){
+		HHgActionManager.doAddAction(action);
+		_actions = _actions || [];
+		_actions.push(action);
+	}
+
 	this.doActionMoveInScreen = function(xy,y,time,shouldAddTo, onComplete, ease){
 
 		if(xy === true){
@@ -558,13 +577,21 @@ if(xy === undefined){
 			shouldAddTo = time;
 		}
 
-		_actions = _actions || [];
 
 		var theAction;
 		theAction = shouldAddTo ? (new HHgActionMoveBy(that, xy, time, onComplete, ease)) : (new HHgActionMoveTo(that, xy, time, onComplete, ease));
-		_actions.push(theAction);
-		HHgActionManager.doAddAction(theAction);
+		doFinalizeAction(theAction);
 		
+		
+	}
+
+	this.doActionRotate = function(degrees, time){
+
+		var theAction;
+		theAction = new HHgActionRotateBy(that, degrees, time);
+		
+		doFinalizeAction(theAction);
+
 	}
 
 //============= MOUSE =================
@@ -598,15 +625,16 @@ if(xy === undefined){
 			this.setPositionInScreen(xy);
 
 		}
-			
-
-		
 
 	}
 	this.doHide = function(){
 
 		that.setVisible(false);
 
+	}
+
+	this.doAddSprite = function(name){
+		HHgSprite.doAddSpriteToHolder(this,name);
 	}
 
 }
