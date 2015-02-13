@@ -81,8 +81,8 @@ for(var i = 0; i < 50; i++){
 //end rotate test
 
 
-
-//theOne.doActionFollowPath(50,-50,theTwo.getPositionInScreenNet(),10);
+theOne.doActionMoveInScreen(100,-200,10,true);
+theOne.doActionMoveInScreen(-100,-200,10,true);
 
 }
 

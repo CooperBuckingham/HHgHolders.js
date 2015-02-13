@@ -121,15 +121,15 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	}
 
 this.framePositionBy = function(xy){
-	this.frameUpdates = this.frameUpdates.position.returnVectorPlusVector(xy);
+	this.frameUpdates.positionBy = this.frameUpdates.positionBy.returnVectorPlusVector(xy);
 	that.doNotifySceneOfUpdates();
 }
 this.frameRotationBy = function(val){
-	this.frameUpdates.rotation *= val;
+	this.frameUpdates.rotationBy *= val;
 	that.doNotifySceneOfUpdates();
 }
 this.frameScaleBy = function(xy){
-	this.frameUpdates.scale = this.frameUpdates.scale.returnVectorScaledBy(xy);
+	this.frameUpdates.scaleBy = this.frameUpdates.scaleBy.returnVectorScaledBy(xy);
 	that.doNotifySceneOfUpdates();
 }
 
@@ -667,6 +667,8 @@ this.getVisible = function(){
 			time = y;
 
 		}
+
+		console.log("holder moving by: " + xy.returnPretty());
 
 
 		var theAction;

@@ -68,7 +68,7 @@ function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
 		
 		if(this.timeSoFar >= this.totalTime){
 			
-			owner.setPositionInScreen(that.vB);
+			owner.setPositionInScreenTo(that.vB);
 			that.finalFrame(that);
 
 			return;
@@ -80,7 +80,7 @@ function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
 		
 	
 
-		owner.setPositionInScreen(that.currentPosition);
+		owner.setPositionInScreenTo(that.currentPosition);
 
 
 	}
@@ -98,7 +98,7 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 
 	
 	this.vA = owner.getPositionInScreenOriginal();
-	this.vB = this.vA.returnVectorPlusVector(deltaPos);
+	this.vB = deltaPos;
 	
 	
 	this.targetDistance = this.vA.returnDistanceToVector(this.vB);
@@ -107,6 +107,8 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 	var that = this;
 
 	var deltaDistance = 0;
+	var percentOfTotalTime = 0;
+	var lastTime = 0;
 
 	console.log(this.vA.returnPretty() + " TO " + this.vB.returnPretty());
 
@@ -114,17 +116,23 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 		this.timeSoFar += deltaT/1000;
 		
 		if(this.timeSoFar >= this.totalTime){
+			percentOfTotalTime = (this.totalTime - lastTime) / this.totalTime;
+			owner.setPositionInScreenBy( that.vB.returnVectorScaledBy(percentOfTotalTime) );
+
 			
-			owner.setPositionInScreen(getPositionInScreenOriginal().returnVectorAtDistanceToVector(that.vB, that.targetDistance - that.distanceSoFar));
 			that.finalFrame(that);
 
 			return;
 		}
+		lastTime = this.timeSoFar;
+		percentOfTotalTime = (deltaT / 1000) / that.totalTime;
 
-		deltaDistance = that.targetDistance * ( (deltaT / 1000) / that.totalTime );
-		distanceSoFar += deltaDistance;
+		//deltaDistance = that.targetDistance * percentOfTotalTime;
+		//distanceSoFar += deltaDistance;
 
-		owner.setPositionInScreen(owner.getPositionInScreenOriginal().returnVectorAtDistanceToVector(that.vB, deltaDistance));
+		owner.setPositionInScreenBy( that.vB.returnVectorScaledBy(percentOfTotalTime) );
+
+		//owner.setPositionInScreen(owner.getPositionInScreenOriginal().returnVectorAtDistanceToVector(that.vB, deltaDistance));
 		
 
 
