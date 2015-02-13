@@ -9,7 +9,7 @@ var testContainer;
 
 var showDebugSquares;
 
-var HHgScene, HHgSceneDiv, HHgStable;
+var HHgScene, HHgSVG, HHgSceneDiv, HHgStable;
 var HHgTopHolder = document.getElementById("all");
 
 HHgTopHolder.style.width = "" + HHgScreen.w +"px";
@@ -27,10 +27,20 @@ function doStartHHgScene(){
 	HHgSceneDiv = HHgScene.getDiv();
 	
 	HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
+	HHgScene.doInitSVG();
 
 
+//----- rotate test
 	var theOne = new HHgHolder(100,100);
-	theOne.doMoveToNewParent(HHgScene,0,0);
+	theOne.doMoveToNewParent(HHgScene,0,200);
+	theOne.doAddSprite("pool");
+
+	var theTwo = new HHgHolder(100,100);
+	theTwo.doMoveToNewParent(HHgScene,0,-200);
+	theTwo.doAddSprite("soccer");
+
+if(false){
+
 	
 
 	var listOfHolder = [];
@@ -67,13 +77,12 @@ for(var i = 0; i < 50; i++){
 
 	listOfHolder.push(testBall)
 }
+}
+//end rotate test
 
 
 
-
-
-	
-
+//theOne.doActionFollowPath(50,-50,theTwo.getPositionInScreenNet(),10);
 
 }
 
@@ -103,6 +112,8 @@ function doAddFunctionsToScene(scene){
 
 	scene.doUpdateThisHolder = function(holder){
 		if(holder.getDiv() === undefined) return;
+
+		holder.dumpFrameBuffer();
 
 		var div = holder.getDiv();
 		div.style.backgroundColor = holder.getBackgroundColor();
@@ -296,6 +307,16 @@ var lastRotate = 0;
 	
 
 	}
+
+	scene.doInitSVG = function(){
+		HHgSVG = document.createElement('svg');
+		HHgSVG.id = "svg";
+		HHgSVG.width = HHgScreen.w;
+		HHgSVG.height = HHgScreen.h;
+		HHgSceneDiv.appendChild(HHgSVG);
+	}
+
+
 
 	
 };
