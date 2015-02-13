@@ -26,6 +26,7 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 
 	var _rotationOriginal = 0;
 	var _rotationNet = 0;
+	var _rotationOffset = 0;
 
 	var _parent;
 	
@@ -163,6 +164,8 @@ this.getVisible = function(){
 			that.doNotifySceneOfUpdates(_zIndex);
 		}
 
+		
+
 		this.setPositionXYOffsetOriginal =function(xy, y){
 			xy = HHg.returnVectorFilter(xy,y,_positionXYOffset);
 
@@ -176,7 +179,9 @@ this.getVisible = function(){
 		}
 
 		this.getPositionXYOffsetNet = function(){
+			
 			return _positionXYOffset.returnVectorScaledBy(_scaleNet);
+			
 		}
 
 		this.setDiv = function(div){

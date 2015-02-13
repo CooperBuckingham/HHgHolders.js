@@ -28,29 +28,51 @@ function doStartHHgScene(){
 	
 	HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
 
-	var testBlock1 = new HHgHolder(150,150);
-	testBlock1.doMoveToNewParent(HHgScene, 0,0, true);
-	testBlock1.doAddSprite("pool");
 
-	var testBlock2 = new HHgHolder(100,100);
-	testBlock2.doMoveToNewParent(testBlock1, 0,100);
-	testBlock2.doAddSprite("orange");
-	//testBlock.setRotationOriginal(45);
-	
+	var theOne = new HHgHolder(100,100);
+	theOne.doMoveToNewParent(HHgScene,0,0);
 	
 
-	var testBlock3 = new HHgHolder(50,50);
-	testBlock3.doMoveToNewParent(testBlock2, 0,100);
-	testBlock3.doAddSprite("soccer");
+	var listOfHolder = [];
+	listOfHolder.push(theOne);
 
 
-	testBlock1.doActionRotate(180, 20);
-	testBlock2.doActionRotate(180, 30);
 
-	testBlock1.setScaleXYOffsetMultiplied(2,2);
-	//testBlock2.setScaleXYOffsetMultiplied(.9,.9);
+var randomSprite = function(holder){
+	
+		var int1 = window.HHg.returnRandomIntLowIncHighExcl(0,3);
+		var name = "orange";
+		if(int1 === 0){
+			name = "soccer";
+		}else if(int1 === 2){
+			name = "pool";
+		}
 
-	testBlock2.setPositionXYOffsetOriginal(50,50);
+		holder.doAddSprite(name);
+	}
+
+
+
+for(var i = 0; i < 50; i++){
+
+	var size = HHg.returnRandomIntLowIncHighExcl(25,200);
+	
+	var posx = HHg.returnRandomIntLowIncHighExcl(-300,300);
+	var posy = HHg.returnRandomIntLowIncHighExcl(-400,400);
+	var testBall = new HHgHolder(size,size);
+
+	testBall.doMoveToNewParent( listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , posx, posy);
+	randomSprite(testBall);
+	testBall.doActionRotate(HHg.returnRandomInt(120,720), HHg.returnRandomInt(5,35));
+
+	listOfHolder.push(testBall)
+}
+
+
+
+
+
+	
 
 
 }
@@ -187,7 +209,7 @@ var lastRotate = 0;
 		}, false);
 
 		HHgTopHolder.addEventListener("mousemove", function(e){
-			console.log("mouse moving");
+			//this will become a "can drag" check
 			if(!HHgMain.HHgMouse.clickedDown) return;
 			var relX = e.pageX + wOffset;
 			var relY = HHgScreen.h - (e.pageY + hOffset);
@@ -220,7 +242,7 @@ var lastRotate = 0;
 			var x = xy;
 		}
 		var arr = document.getElementsByClassName("mouseable");
-		console.log("mousable things " + arr.length);
+		
 		var mArr = [];
 		var highestZ = -100;
 		
