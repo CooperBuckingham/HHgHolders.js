@@ -7,6 +7,8 @@ var HHgScreen = {
 
 var testContainer;
 
+var showDebugSquares;
+
 var HHgScene, HHgSceneDiv, HHgStable;
 var HHgTopHolder = document.getElementById("all");
 
@@ -26,9 +28,30 @@ function doStartHHgScene(){
 	
 	HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
 
-	var testBlock = new HHgHolder(10,10);
-	testBlock.doMoveToNewParent(HHgScene, 0,0, true);
-	testBlock.setPositionInScreen(-100,0);
+	var testBlock1 = new HHgHolder(150,150);
+	testBlock1.doMoveToNewParent(HHgScene, 0,0, true);
+	testBlock1.doAddSprite("pool");
+
+	var testBlock2 = new HHgHolder(100,100);
+	testBlock2.doMoveToNewParent(testBlock1, 0,100);
+	testBlock2.doAddSprite("orange");
+	//testBlock.setRotationOriginal(45);
+	
+	
+
+	var testBlock3 = new HHgHolder(50,50);
+	testBlock3.doMoveToNewParent(testBlock2, 0,100);
+	testBlock3.doAddSprite("soccer");
+
+
+	testBlock1.doActionRotate(180, 20);
+	testBlock2.doActionRotate(180, 30);
+
+	testBlock1.setScaleXYOffsetMultiplied(2,2);
+	//testBlock2.setScaleXYOffsetMultiplied(.9,.9);
+
+	testBlock2.setPositionXYOffsetOriginal(50,50);
+
 
 }
 
@@ -63,6 +86,7 @@ function doAddFunctionsToScene(scene){
 		div.style.backgroundColor = holder.getBackgroundColor();
 		div.style.width = "" + holder.getWidthNet() + "px";
 		div.style.height ="" + holder.getHeightNet() + "px";
+		
 		var centricConversion = scene.doAnyScreenConversion(holder.getPositionInScreenNet());
 		div.style.left ="" + centricConversion.getX() +"px";
 		div.style.bottom ="" + centricConversion.getY() + "px";
@@ -70,6 +94,7 @@ function doAddFunctionsToScene(scene){
 		div.style.zIndex = "" + holder.getZIndex();
 		scene.doUpdateHolderMouseable(holder);
 		scene.doUpdateHolderVisible(holder);
+		//div.style.transform="scale(" + holder.getScaleNet().getX()+","+ holder.getScaleNet().getY() + ")";
 
 
 	}
@@ -111,7 +136,7 @@ function doAddFunctionsToScene(scene){
 		holder.setDiv(div);
 		div.style.display ="inline-block";
 		div.style.position = "absolute";
-		div.style.backgroundColor ="red";
+		//div.style.backgroundColor =;
 		div.style.border = "2px solid black";
 		div.id = holder.getHash();
 
@@ -219,6 +244,36 @@ var lastRotate = 0;
 	scene.getHolderFromDiv = function (div){
 		return scene._holders[div.id];
 	};
+
+	scene.setBackgroundImageForHolder = function(holder, fileName){
+		//holder.getDiv().style.backgroundImage = "url(" + fileName +")";
+		var img = new Image();
+		img.src = fileName;
+		holder.getDiv().appendChild(img);
+	}
+
+	scene.setCanvasImageForHolder = function(holder, fileName){
+		var canvas = document.createElement('canvas');
+		var ctx = canvas.getContext('2d');
+		canvas.class = holder.getHash()
+        canvas.width  = 200;
+        canvas.height = 200;
+        canvas.style.position = "absolute";
+        if(showDebugSquares){
+        	canvas.style.border   = "1px solid";
+        }
+        var div = holder.getDiv();
+        var grd=ctx.createRadialGradient(75,50,5,90,60,100);
+		grd.addColorStop(0,"red");
+		grd.addColorStop(1,"white");
+
+		ctx.fillStyle=grd;
+		ctx.fillRect(0,0,300,300);
+
+        div.appendChild(canvas)
+	
+
+	}
 
 	
 };
