@@ -5,6 +5,9 @@ var HHgScreen = {
 	h : 960,
 };
 
+var HHgScreenSize = new HHgVector2(HHgScreen.w, HHgScreen.h);
+var HHgScreenSizeHalf = HHgScreenSize.returnVectorScaledBy(.5);
+
 var testContainer;
 
 var showDebugSquares;
@@ -81,8 +84,13 @@ for(var i = 0; i < 50; i++){
 //end rotate test
 
 
-theOne.doActionMoveInScreen(100,-200,10,true);
-theOne.doActionMoveInScreen(-100,-200,10,true);
+//theOne.doActionMoveInScreen(100,-200,10,true);
+//theOne.doActionMoveInScreen(-100,0,5,true);
+
+//theOne.doActionMoveInScreen(theTwo.getPositionInScreenOriginal(),5,false);
+//theOne.doActionMoveInScreen(50,200,5,false);
+
+theOne.doActionFollowQuad(new HHgVector2(100, 0), theTwo.getPositionInScreenOriginal(), .32);
 
 }
 
