@@ -152,6 +152,7 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
 function HHgActionRotateBy(owner, degrees, time, ease, onComplete){
 	HHgAction.call(this, owner, time, ease, onComplete);
 
+console.log("rotating");
 
 	this.degreesStart = this.owner.getRotationOriginal();
 	this.degreesToRotate = degrees;
@@ -167,7 +168,7 @@ function HHgActionRotateBy(owner, degrees, time, ease, onComplete){
 		
 		if(this.timeSoFar >= this.totalTime){
 			
-			owner.setRotationOriginal(this.degreesStart + this.degreesToRotate);
+			owner.setRotationOffsetBy(this.degreesStart + this.degreesToRotate);
 			that.finalFrame(that);
 
 			return;
@@ -176,7 +177,7 @@ function HHgActionRotateBy(owner, degrees, time, ease, onComplete){
 		deltaDegrees = that.degreesToRotate * ( (deltaT / 1000) / that.totalTime );
 
 		that.degreesSoFar += deltaDegrees;
-		owner.setRotationOriginalAdd(deltaDegrees);
+		owner.setRotationOriginalTo(deltaDegrees);
 
 
 	}
@@ -224,7 +225,6 @@ function HHgActionFollowQuad(owner, controlXY, endXY, totalTime, ease, onComplet
 	this.getQuadraticCurvePoint = function(startX, startY, cpX, cpY, endX, endY, position) {
 		return new HHgVector2(this.getXorYAlongQuad(position, startX, cpX, endX),
 								this.getXorYAlongQuad(position, startY, cpY, endY));
-		
 
     };
 	

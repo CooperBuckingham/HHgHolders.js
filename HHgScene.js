@@ -29,18 +29,19 @@ function doStartHHgScene(){
 	HHgScene.doAddScene();
 	HHgSceneDiv = HHgScene.getDiv();
 	
-	HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
+	//HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
 	HHgScene.doInitSVG();
 
 
 //----- rotate test
 	var theOne = new HHgHolder(100,100);
-	theOne.doMoveToNewParent(HHgScene,0,200);
+	theOne.doMoveToNewParent(HHgScene,new HHgVector2(200,200));
 	theOne.doAddSprite("pool");
 
 	var theTwo = new HHgHolder(100,100);
-	theTwo.doMoveToNewParent(HHgScene,0,-200);
+	theTwo.doMoveToNewParent(theOne, new HHgVector2(50,50));
 	theTwo.doAddSprite("soccer");
+
 
 if(false){
 
@@ -88,9 +89,11 @@ for(var i = 0; i < 50; i++){
 //theOne.doActionMoveInScreen(-100,0,5,true);
 
 //theOne.doActionMoveInScreen(theTwo.getPositionInScreenOriginal(),5,false);
-//theOne.doActionMoveInScreen(50,200,5,false);
+//theOne.doActionMoveInScreen(50,200,5,true);
 
-theOne.doActionFollowQuad(new HHgVector2(100, 0), theTwo.getPositionInScreenOriginal(), .32);
+//theOne.doActionFollowQuad(new HHgVector2(100, 0), theTwo.getPositionInScreenOriginal(), 20);
+
+//theOne.setRotationOriginalTo(22);
 
 }
 
@@ -126,7 +129,7 @@ function doAddFunctionsToScene(scene){
 		for(var thing in scene._dirtyHolders){
 			scene.doUpdateThisHolder(scene._dirtyHolders[thing]);
 		}
-		scene.drityHolders = {};
+		scene._dirtyHolders = {};
 	}
 	
 
