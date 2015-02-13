@@ -98,6 +98,8 @@ HHgActionManager.doStart = function(){
       HHgActionManager._actionList[i].whatShouldIDoThisFrame(deltaT, now);
     }
 
+    HHgScene.doEndOfFrame();
+
     return true;
 
   } );

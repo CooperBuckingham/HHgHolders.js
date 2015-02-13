@@ -91,9 +91,14 @@ function doAddFunctionsToScene(scene){
 	scene._holders = {
 
 	}
+	scene._dirtyHolders = {
+
+	}
 
 	//==== specific 1 off updates ====//
-
+	scene.doAddToDirtyList = function(holder){
+		scene._dirtyHolders[holder.getHash()] = holder;
+	}
 
 	scene.doUpdateHolderMouseable = function(holder){
 		holder.getMouseable() ? holder.getDiv().classList.add("mouseable") : holder.getDiv().classList.remove("mouseable");
@@ -108,12 +113,19 @@ function doAddFunctionsToScene(scene){
 		}
 		
 	}
+
+	scene.doEndOfFrame = function(){
+		for(var thing in scene._dirtyHolders){
+			scene.doUpdateThisHolder(scene._dirtyHolders[thing]);
+		}
+		scene.drityHolders = {};
+	}
 	
 
 	scene.doUpdateThisHolder = function(holder){
 		if(holder.getDiv() === undefined) return;
 
-		holder.dumpFrameBuffer();
+		holder.doFrameDump();
 
 		var div = holder.getDiv();
 		div.style.backgroundColor = holder.getBackgroundColor();
@@ -127,6 +139,8 @@ function doAddFunctionsToScene(scene){
 		div.style.zIndex = "" + holder.getZIndex();
 		scene.doUpdateHolderMouseable(holder);
 		scene.doUpdateHolderVisible(holder);
+
+		//this is hold over form the experiment with actually scaling divs
 		//div.style.transform="scale(" + holder.getScaleNet().getX()+","+ holder.getScaleNet().getY() + ")";
 
 
