@@ -15,11 +15,16 @@ var HHg = {
 	},
 
 	returnRandomFloatLowIncHighExcl : function(lowInc, highExcl){
-		return Math.Random() * (highExcl - lowInc) + lowInc;
+		return Math.random() * (highExcl - lowInc) + lowInc;
+	},
+
+	returnRandomInt : function(lowInc, highExcl){
+	return Math.random() * (highExcl - lowInc) + lowInc;
+
 	},
 
 	returnRandomIntLowIncHighExcl : function(lowInc, highExcl){
-		return Math.floor(Math.Random() * (highExcl - lowInc) + lowInc);
+		return Math.floor(Math.random() * (highExcl - lowInc) + lowInc);
 	},
 
 	doRemoveThingFromArray: function(arr,thing){

@@ -7,7 +7,7 @@ var HHgActionManager = {
   },
 
   doRemoveAction: function(action){
-    console.log("action manager remove start");
+    
     if(HHg.doRemoveThingFromArray(this._actionList, action)){
       console.log("action removed");
     }else{
