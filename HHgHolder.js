@@ -668,11 +668,10 @@ this.getVisible = function(){
 
 		}
 
-		console.log("holder moving by: " + xy.returnPretty());
 
 
 		var theAction;
-		theAction = shouldAddTo ? (new HHgActionMoveBy(that, xy, time, onComplete, ease)) : (new HHgActionMoveTo(that, xy, time, onComplete, ease));
+		theAction = shouldAddTo ? (new HHgActionMoveBy(that, xy, time, false, onComplete)) : (new HHgActionMoveTo(that, xy, time,false, onComplete));
 		doFinalizeAction(theAction);
 		
 		
@@ -687,17 +686,15 @@ this.getVisible = function(){
 
 	}
 
-	this.doActionFollowPath = function(Cx, Cy, xy2, time){
-		var myX = _positionInScreenOriginal.getX();
-		var myY = _positionInScreenOriginal.getY();
-		var finalX = xy2.getX();
-		var finalY = xy2.getY();
-
-		that.doActionMoveInScreen(new HHgVector2(Cx, Cy), time / 2, false );
-
-		that.doActionMoveInScreen(xy2, time / 2);
-
+	this.doActionFollowQuad = function(xyC, xy2, time){
 		
+
+		var theAction;
+		theAction = new HHgActionFollowQuad(that, xyC, xy2, time);
+		doFinalizeAction(theAction);
+
+
+
 
 		
 	}
@@ -728,7 +725,7 @@ this.getVisible = function(){
 		
 		this.setVisible(true);
 		if(xy !== undefined){
-			this.setPositionInScreen(xy);
+			this.setPositionInScreenTo(xy);
 
 		}
 

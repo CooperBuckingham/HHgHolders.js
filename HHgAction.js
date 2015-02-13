@@ -19,7 +19,9 @@ var HHgAction = function (owner, totalTime, ease, onComplete){
 
 	};
 	this.finalFrame = function(action){
+		
 		if(action.onComplete){
+			console.log("called follow up");
 			action.onComplete();
 		}
 		
@@ -91,8 +93,10 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
 
 function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 		if(!owner){
-		return false;
-	}
+			return false;
+		}
+
+
 	
 	HHgAction.call(this, owner, totalTime, ease, onComplete);
 
@@ -183,38 +187,65 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
 
 
 
-function HHgActionFollowPath(owner, targetPos, totalTime, path, ease, onComplete){
+function HHgActionFollowQuad(owner, controlXY, endXY, totalTime, ease, onComplete){
 
 	if(!owner){
 		return false;
 	}
+
+
 	
 	HHgAction.call(this, owner, totalTime, ease, onComplete);
 
-	this.path = path;
-	this.pathLength = path.getTotalLength();
-	
+	this.endXY = endXY;
+	this.endX = endXY.getX();
+	this.endY = endXY.getY();
+	this.startXY = owner.getPositionInScreenOriginal();
+	this.startX = this.startXY.getX();
+	this.startY = this.startXY.getY();
+	this.controlXY = controlXY;
+	this.controlX = controlXY.getX();
+	this.controlY = controlXY.getY();
+
+	this.previousXY;
+
+
 	
 	var that = this;
 
+	this.getXorYAlongQuad = function(t, p1, p2, p3) {
+		
+    	var iT = 1 - t;
+    	var test = iT * iT * p1 + 2 * iT * t * p2 + t * t * p3;
+    	//console.log(test);
+    	return test;
+	}
 
+	this.getQuadraticCurvePoint = function(startX, startY, cpX, cpY, endX, endY, position) {
+		return new HHgVector2(this.getXorYAlongQuad(position, startX, cpX, endX),
+								this.getXorYAlongQuad(position, startY, cpY, endY));
+		
+
+    };
+	
+	var distanceAlongCurve;
 
 	this.whatShouldIDoThisFrame = function(deltaT, now){
 		this.timeSoFar += deltaT/1000;
 		
 		if(this.timeSoFar >= this.totalTime){
 			
-			owner.setPositionInScreen(that.path.getPointAtLength(this.pathLength));
+			owner.setPositionInScreenTo(this.endXY);
 			that.finalFrame(that);
 
 			return;
 		}
 
-		deltaDistance = that.totalDistance * ( (deltaT / 1000) / that.totalTime );
+		distanceAlongCurve =  ( this.timeSoFar / that.totalTime );
 	
+		this.previousXY = this.getQuadraticCurvePoint(this.startX, this.startY, this.controlX, this.controlY, this.endX, this.endY, distanceAlongCurve);
 
-		owner.setPositionInScreen(that.path.getPointAtLength(this.timeSoFar/this.totalTime * this.pathLength));
-
+		owner.setPositionInScreenTo(this.previousXY);
 
 	}
 
