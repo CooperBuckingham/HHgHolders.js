@@ -98,7 +98,7 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	this.frameDumpRotation = function(){
 		
 		
-		var returnVal = this.frameUpdates.rotationTo || this.frameUpdates.rotationBy * _rotationOriginal;
+		var returnVal = this.frameUpdates.rotationTo || this.frameUpdates.rotationBy + _rotationOriginal;
 
 		this.frameUpdates.rotationBy = this.frameUpdates.rotationByReset;
 		this.frameUpdates.rotationTo = undefined;
@@ -157,7 +157,8 @@ this.getHash = function(){
 this.setMouseable = function(mouseable){
 	_mouseable = mouseable;
 	if(_div){
-		HHgScene.doUpdateHolderMouseable(that);
+		
+		this.doNotifySceneOfUpdates();
 	}
 	
 }
@@ -168,8 +169,8 @@ this.getMouseable = function(){
 this.setVisible = function(val){
 	_visible = val;
 	if(_div){
-
-		HHgScene.doUpdateHolderVisible(that);
+		this.doNotifySceneOfUpdates();
+		
 	}
 	
 
@@ -256,14 +257,6 @@ this.getVisible = function(){
 
 		
 
-		this.setPositionXYOffsetOriginal =function(xy, y){
-			xy = HHg.returnVectorFilter(xy,y,_positionXYOffset);
-
-			_positionXYOffset = xy;
-			
-			that.doNotifySceneOfUpdates();
-		}
-
 	
 
 		this.setDiv = function(div){
@@ -277,12 +270,25 @@ this.getVisible = function(){
 
 //============ POSITION ==================
 
+
+		this.setPositionXYOffsetOriginal =function(xy, y){
+			xy = HHg.returnVectorFilter(xy,y,_positionXYOffset);
+
+			_positionXYOffset = xy;
+			
+			that.doNotifySceneOfUpdates();
+		}
+
+
 	this.doRecalcPosition = function(){
 			if(_parent === "stop") return;
 
 			if(_parent == undefined){
 				return;
 			}
+
+			
+
 			_positionInScreenOriginal = this.frameDumpPosition();
 
 				_positionInScreenNet = _positionInScreenOriginal;
@@ -306,6 +312,7 @@ this.getVisible = function(){
 			if(_children){
 				HHg.doForEach(_children, function(child){
 					child.doRecalcPosition();
+					//child.setPositionInScreenBy(0,0);
 				});
 			}
 			
@@ -335,8 +342,12 @@ this.getVisible = function(){
 
 		}
 
-		this.setPositionInScreenBy = function(xy){
+		this.setPositionInScreenBy = function(xy, y){
 		
+			xy = HHg.returnVectorFilter(xy,y,_positionInScreenOriginal);
+			if(xy === undefined){
+				xy = new HHgVector2(0,0);
+			}
 			if(this._parent === "stop"){
 				return;
 			}
@@ -354,11 +365,12 @@ this.getVisible = function(){
 		this.getPositionInParentOriginal = function(){
 			return _positionInParentOriginal;
 		}
-
+		
 		this.getPositionInScreenNet = function(){
 			
 			return _positionInScreenNet;
 		}
+
 
 
 		this.setPositionInParentTo = function(xy, y ){
@@ -380,41 +392,30 @@ this.getVisible = function(){
 
 				_positionInScreenOriginal = _positionInParentOriginal.returnVectorScaledBy(_parent.getScaleNet());
 				_positionInScreenOriginal = _parent.getPositionInScreenNet().returnVectorPlusVector(_positionInScreenOriginal);
+
+								_positionInScreenNet = _positionInScreenOriginal.returnVectorPlusVector( _parent.retur
+-                               _positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(that.getPositionXYO
+-                               
+-                               var stuffToSub = _parent.returnHalfSizeVector();
+-                               _positionInScreenNet = _positionInScreenNet.returnVectorRotatedAroundVectorAtAngle( st
+-                               _positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_p
+ 
+-                               //that is actually the final net, I think
 			}
 
 			this.setPositionInScreenTo(_positionInScreenOriginal);
-//try to cut this all out
-/*
-				_positionInScreenNet = _positionInScreenOriginal.returnVectorPlusVector( _parent.returnHalfSizeVector() );
-				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(that.getPositionXYOffsetNet());
-				
-				var stuffToSub = _parent.returnHalfSizeVector();
-				_positionInScreenNet = _positionInScreenNet.returnVectorRotatedAroundVectorAtAngle( stuffToSub.returnVectorPlusVector( _parent.getPositionInScreenNet()), -1 * _parent.getRotationNet() );
-				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
 
-				//that is actually the final net, I think
-				
-				
-				
-			}
-
-			if(_children){
-				HHg.doForEach(_children, function(child){
-					child.doRecalcPosition();
-				});
-			}
-*/
-			
+		}	
 //=============== SCALE ================
 
-		}
+		
 
 		this.returnHalfSizeVector = function(){
 			return new HHgVector2(that.getHalfWidth(), that.getHalfHeight());
 		}
 
 		
-		this.setScaleOriginal = function(xy, y){
+		this.setScaleOriginalTo = function(xy, y){
 
 		xy = HHg.returnVectorFilter(xy,y,_scaleOriginal);
 				_scaleOriginal = xy;
@@ -427,21 +428,40 @@ this.getVisible = function(){
 			return _scaleOriginal;
 		}
 
-		this.setScaleXYOffset = function(xy, y){
+		this.setScaleOffsetTo = function(xy, y){
 
 			if(xy === true){
-				xy = _scaleXYOffset.getX();
+				xy = _scaleOffset.getX();
 			}
 			if(y === true){
-				y = _scaleXYOffet.getY();
+				y = _scaleOffet.getY();
 			}
 
 			if(xy instanceof HHgVector2 === false){
 				xy = new HHgVector2(xy, y);
 			}
-				_scaleXYOffset = xy;
+				
 			
-			this.doNotifySceneOfUpdates();
+			this.frameScaleTo(xy);
+			
+			
+		}
+
+		this.setScaleOffsetTo = function(xy, y){
+
+			if(xy === true){
+				xy = _scaleOffset.getX();
+			}
+			if(y === true){
+				y = _scaleOffet.getY();
+			}
+
+			if(xy instanceof HHgVector2 === false){
+				xy = new HHgVector2(xy, y);
+			}
+				
+			
+			this.frameScaleBy(xy);
 			
 			
 		}
@@ -480,7 +500,7 @@ this.getVisible = function(){
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
-					child.doRecalcScaleNet();
+					child.doRecalcScale();
 				});
 			}
 
@@ -491,21 +511,28 @@ this.getVisible = function(){
 		}
 	//=============== ROTATION ====================
 
-		this.setRotationOriginal = function(val){
+		this.setRotationOriginalTo = function(val){
 			
 			val = val % 360;
 			_rotationOriginal = val;
 			this.doNotifySceneOfUpdates();
 		}
+	
 
 		this.getRotationOriginal = function(){
 			return _rotationOriginal;
 		}
 
-		this.setRotationOffset = function(val){
+		this.setRotationOffsetTo = function(val){
 			val = val % 360;
-			_rotationOffset = val;
-			this.doNotifySceneOfUpdates();
+			
+			this.frameRotationTo(val);
+
+		}
+		this.setRotationOffsetBy = function(val){
+			val = val % 360;
+			
+			this.frameRotationBy(val);
 
 		}
 		this.getRotationOffset = function(){
@@ -524,9 +551,12 @@ this.getVisible = function(){
 			
 			_rotationNet = _rotationOriginal * _rotationOffset;
 
+// disabling inheriting parent rotation;
+/*
 			if(_parent !== undefined){
 				_rotationNet = _rotationNet + _parent.getRotationNet();
 			}
+			*/
 
 
 			if(_children){
@@ -546,6 +576,12 @@ this.getVisible = function(){
 			//*** disabling this and moving to the frame buffer thing
 			//HHgScene.doUpdateThisHolder(that);
 			HHgScene.doAddToDirtyList(that);
+
+			if(_children){
+				HHg.doForEach(_children, function(child){
+					HHgScene.doAddToDirtyList(child);
+				});
+			}
 
 		}
 
@@ -569,7 +605,7 @@ this.getVisible = function(){
 
 	}
 
-	this.doMoveToNewParent = function(newParent, xy, yOrIsScreenPos, isScreenPos){
+	this.doMoveToNewParent = function(newParent, xy, isScreenPos){
 		if(_parent === "stop"){
 			return;
 		}
@@ -581,21 +617,8 @@ this.getVisible = function(){
 
 		
 
-		if(newParent instanceof HHgHolder !== true){
-			if(newParent instanceof HHgVector2){
-				xy = newParent;
-			}else{
-				if(typeof newParent === "number"){
-					yOrIsScreenPos = xy;
-					xy = newParent;
-				}
-			}
-			newParent = HHgScene;
-			
-		}
-
 		if(xy === undefined){
-			xy = _positionInScreenOriginal;
+			xy = new HHgVector2(0,0);
 		}
 
 
@@ -614,13 +637,6 @@ this.getVisible = function(){
 			throw("tried to add child to a parent not of HHgHolder Class");
 		}
 
-		
-
-		if(xy instanceof HHgVector2){
-			isScreenPos = yOrIsScreenPos;
-		}else{
-			xy = new HHgVector2(xy, yOrIsScreenPos);
-		}
 		
 
 		_parent.doAddChild(this);

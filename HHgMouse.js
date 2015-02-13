@@ -23,16 +23,8 @@ var HHgMouse = function HHgMouse(){
 
 
 		that.mouseCircle = new HHgHolder(10,10, 100);
-	/*
-	that.mouseCircle.doShow = function(){
-
-	}
-	that.mouseCircle.doHide = function(){
-
-	}
-	*/	
-		that.mouseCircle.doMoveToNewParent();
-		that.mouseCircle.setVisible(false);
+		//that.mouseCircle.doMoveToNewParent();
+		//that.mouseCircle.setVisible(false);
 		
 
 
