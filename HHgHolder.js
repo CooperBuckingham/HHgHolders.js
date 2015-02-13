@@ -59,7 +59,39 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 
 	var _mouseable = true;
 	var _visible = true;
-	
+
+	this.frameUpdates = {
+		positionReset: new HHgVector2(0,0),
+		position: new HHgVector2(0,0),
+		rotation: 0,
+		scale: new HHgVector2(1,1),
+		scaleReset: new HHgVector2(1,1)
+	}
+
+	this.dumpFrameBuffer = function(){
+		
+		//_scaleNet = _scaleNet.returnVectorScaledBy(this.frameUpdates.scale);
+		//_rotationNet += this.frameUpdates.rotation;
+		//_positionInScreenNet = _positionInScreenOriginal.returnVectorPlusVector(this.frameUpdates.position).returnVectorScaledBy(_scaleNet) ;
+
+		this.frameUpdates.position = this.frameUpdates.positionReset;
+		this.frameUpdates.rotation = 0;
+		this.frameUpdates.scale = this.frameUpdates.scaleReset;
+
+	}
+
+this.frameAddPositionBy = function(xy){
+	this.frameUpdates = this.frameUpdates.position.returnVectorPlusVector(xy);
+}
+this.frameAddRotationBy = function(val){
+	this.frameUpdates.rotation *= val;
+}
+this.frameAddScaleBy = function(xy){
+	this.frameUpdates.scale = this.frameUpdates.scale.returnVectorScaledBy(xy);
+}
+
+
+
 
 this.getHash = function(){
 	return _finalHash;
@@ -562,6 +594,11 @@ if(xy === undefined){
 		HHgActionManager.doAddAction(action);
 		_actions = _actions || [];
 		_actions.push(action);
+
+	}
+
+	this.doRemoveAction = function(action){
+		HHg.doRemoveThingFromArray(_actions, action);
 	}
 
 	this.doActionMoveInScreen = function(xy,y,time,shouldAddTo, onComplete, ease){
@@ -578,8 +615,10 @@ if(xy === undefined){
 			y = y || that.getPositionInScreenOriginal().getY();
 			xy = new HHgVector2(xy, y);
 		}else{
-			time = y;
+			onComplete = shouldAddTo;
 			shouldAddTo = time;
+			time = y;
+
 		}
 
 
@@ -599,11 +638,24 @@ if(xy === undefined){
 
 	}
 
+	this.doActionFollowPath = function(Cx, Cy, xy2, time){
+		var myX = _positionInScreenOriginal.getX();
+		var myY = _positionInScreenOriginal.getY();
+		var finalX = xy2.getX();
+		var finalY = xy2.getY();
+
+		that.doActionMoveInScreen(new HHgVector2(Cx, Cy), time / 2, false );
+
+		that.doActionMoveInScreen(xy2, time / 2);
+
+		
+
+		
+	}
+
 //============= MOUSE =================
 
-	this.doRemoveAction = function(action){
-		HHg.doRemoveThingFromArray(_actions, action);
-	}
+	
 
 	this.doMouseDown = function(){
 		console.log("yay")

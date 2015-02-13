@@ -116,3 +116,17 @@ var HHgMouse = function HHgMouse(){
 
 
 }();
+
+//alpha test for mouse click
+
+function getpixelcolour(canvas, x, y) {
+  var cx = canvas.getContext('2d');
+  var pixel = cx.getImageData(x, y, 1, 1);
+  return {
+    r: pixel.data[0],
+    g: pixel.data[1],
+    b: pixel.data[2],
+    a: pixel.data[3]
+  };
+}
+

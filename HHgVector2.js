@@ -69,9 +69,14 @@ var HHgVector2 = function (x,y){
 	this.returnVectorPlusVector = function(vB){
 		return new HHgVector2(_x + vB.getX(), _y + vB.getY());
 	}
-	this.returnVectorScaledBy = function(val){
+	this.returnVectorScaledBy = function(val,opt){
 		if(val instanceof HHgVector2 === false){
-			val = new HHgVector2(val, val);
+			if(opt === undefined){
+				val = new HHgVector2(val, val);
+			}else{
+				val = new HHgVector2(val,opt);
+			}
+			
 		}
 		return new HHgVector2(_x * val.getX(), _y * val.getY());
 	}

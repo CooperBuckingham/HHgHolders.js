@@ -89,10 +89,46 @@ function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
 }
 HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
 
-function HHgActionMoveBy(owner, deltaPos, time, ease, onComplete){
-	HHgAction.call(this, owner, time, ease, onComplete);
+function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
+		if(!owner){
+		return false;
+	}
+	
+	HHgAction.call(this, owner, totalTime, ease, onComplete);
 
-	this.pos = deltaPos;
+	
+	this.vA = owner.getPositionInScreenOriginal();
+	this.vB = this.vA.returnVectorPlusVector(deltaPos);
+	
+	
+	this.targetDistance = this.vA.returnDistanceToVector(this.vB);
+	this.distanceSoFar = 0;
+
+	var that = this;
+
+	var deltaDistance = 0;
+
+	console.log(this.vA.returnPretty() + " TO " + this.vB.returnPretty());
+
+	this.whatShouldIDoThisFrame = function(deltaT, now){
+		this.timeSoFar += deltaT/1000;
+		
+		if(this.timeSoFar >= this.totalTime){
+			
+			owner.setPositionInScreen(getPositionInScreenOriginal().returnVectorAtDistanceToVector(that.vB, that.targetDistance - that.distanceSoFar));
+			that.finalFrame(that);
+
+			return;
+		}
+
+		deltaDistance = that.targetDistance * ( (deltaT / 1000) / that.totalTime );
+		distanceSoFar += deltaDistance;
+
+		owner.setPositionInScreen(owner.getPositionInScreenOriginal().returnVectorAtDistanceToVector(that.vB, deltaDistance));
+		
+
+
+	}
 	
 	
 }
@@ -133,6 +169,47 @@ function HHgActionRotateBy(owner, degrees, time, ease, onComplete){
 
 	}
 	
+	
+}
+HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
+
+
+
+function HHgActionFollowPath(owner, targetPos, totalTime, path, ease, onComplete){
+
+	if(!owner){
+		return false;
+	}
+	
+	HHgAction.call(this, owner, totalTime, ease, onComplete);
+
+	this.path = path;
+	this.pathLength = path.getTotalLength();
+	
+	
+	var that = this;
+
+
+
+	this.whatShouldIDoThisFrame = function(deltaT, now){
+		this.timeSoFar += deltaT/1000;
+		
+		if(this.timeSoFar >= this.totalTime){
+			
+			owner.setPositionInScreen(that.path.getPointAtLength(this.pathLength));
+			that.finalFrame(that);
+
+			return;
+		}
+
+		deltaDistance = that.totalDistance * ( (deltaT / 1000) / that.totalTime );
+	
+
+		owner.setPositionInScreen(that.path.getPointAtLength(this.timeSoFar/this.totalTime * this.pathLength));
+
+
+	}
+
 	
 }
 HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
