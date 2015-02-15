@@ -61,16 +61,17 @@ var theThree = new HHgHolder(540,3);
 	console.log(theOne.getPositionInScreenNet());
 
 
-	setTimeout(function(){
+setTimeout(function(){
 	var theTwo = new HHgHolder(100,100);
 	theTwo.doMoveToNewParent(theOne, new HHgVector2(0,0), true);
-	theTwo.doAddSprite("soccer");
+	theTwo.doAddSprite("pool");
 	theTwo.test = "soccer";
 
 }, 1000);
 
 setTimeout(function(){
-	theOne.setPositionInScreenTo(new HHgVector2(0,200));
+	//theOne.setPositionInScreenTo(new HHgVector2(0,200));
+	theOne.setRotationOriginalTo(90);
 
 
 }, 4000);
@@ -164,7 +165,8 @@ function doAddFunctionsToScene(scene){
 			return;
 		}
 		var newList = scene._dirtyHolders;
-		scene.dirtyHolders = {};
+		scene._dirtyHolders = {};
+		
 		for(var thing in newList){
 			newList[thing].doFrameDump();
 		}
@@ -176,7 +178,9 @@ function doAddFunctionsToScene(scene){
 	scene.doUpdateThisHolder = function(holder){
 		if(holder.getDiv() === undefined) return;
 
-		
+		if(holder.test == "soccer"){
+			console.log("update soccer: " + holder.getRotationNet());
+		}
 
 		var div = holder.getDiv();
 		div.style.backgroundColor = holder.getBackgroundColor();
