@@ -87,6 +87,10 @@ var HHgVector2 = function (x,y){
 		return new HHgVector2(vB.getX() - _x, vB.getY() - _y);
 	}
 
+	this.hasSameXY = function(vB){
+		return _x == vB.getX() && _y == vB.getY();
+	}
+
 	
 
 }
