@@ -62,6 +62,7 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 
 	//working on the frame combined updates here, but putting it off for now
 	//means we can't have actions that are combinations/additive
+	this.test = "no";
 
 	this.frameUpdates = {
 		positionByReset: new HHgVector2(0,0),
@@ -70,7 +71,6 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 		rotationByReset: 0,
 		scaleBy: new HHgVector2(1,1),
 		scaleByReset: new HHgVector2(1,1),
-
 		positionTo: undefined,
 		rotationTo: undefined,
 		scaleTo: undefined,
@@ -79,43 +79,79 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	this.doFrameDump = function(){
 		//this will call all the do recalcs, which will then call the complex stuff, which will then
 		//use the framebuffers...I think
-		this.doRecalcScale();
-		this.doRecalcRotation();
+
+
+		//this.doRecalcScale();
+		//this.doRecalcRotation();
 		this.doRecalcPosition();
+
 	}
 
 	this.frameDumpPosition = function(){
 		
-		var returnVal = this.frameUpdates.positionTo || _positionInScreenOriginal.returnVectorPlusVector( this.frameUpdates.positionBy);
+		
+
+		if(this.frameUpdates.positionTo !== undefined){
+			
+			_positionInScreenOriginal = this.frameUpdates.positionTo;
+		}else{
+			if(this.frameUpdates.positionBy.hasSameXY(new HHgVector2(0,0))){
+				return false;
+			}
+			_positionInScreenOriginal = _positionInScreenOriginal.returnVectorPlusVector( this.frameUpdates.positionBy);
+		}
 
 		this.frameUpdates.positionBy = this.frameUpdates.positionByReset;
 		this.frameUpdates.positionTo = undefined;
 
-		return returnVal;
+		return true;
+
+
+
 		
 	}
 
 	this.frameDumpRotation = function(){
-		
-		
-		var returnVal = this.frameUpdates.rotationTo || this.frameUpdates.rotationBy + _rotationOriginal;
+		if(this.frameUpdates.rotationTo !== undefined){
+			if(_rotationTo == this.frameUpdates.rotationTo){
+				return false;
+			}
+			_rotationOffset = this.frameUpdates.rotationTo;
+		}else{
+			if(this.frameUpdates.rotationBy == 0){
+				return false;
+			}
+			_rotationOffset += this.frameUpdates.rotationBy;
+		}
 
 		this.frameUpdates.rotationBy = this.frameUpdates.rotationByReset;
 		this.frameUpdates.rotationTo = undefined;
-		return returnVal;
+
+		return true;
 		
 
 	}
 
 
 	this.frameDumpScale = function(){
+		if(this.frameUpdates.scaleTo !== undefined){
+			if(this.frameUpdates.scaleTo.hasSameXY(_scaleXYOffset)){
+				return false;
+			}
+			_scaleXYOffset = this.frameUpdates.scaleTo;
+		}else{
+			if(this.frameUpdates.scaleBy.hasSameXY(new HHgVector2(0,0))){
+				return false;
+			}
+			_scaleXYOffset = _scaleXYOffset.returnVectorPlusVector( this.frameUpdates.scaleBy);
+		}
 		
-		
-		var returnVal = this.frameUpdates.scaleTo || this.frameUpdates.scaleBy.returnVectorScaledBy(_scaleOriginal);
 
 		this.frameUpdates.scaleBy = this.frameUpdates.scaleByReset;
 		this.frameUpdates.scaleTo = undefined;
-		return returnVal;
+
+		return true;
+		
 		
 
 	}
@@ -134,6 +170,7 @@ this.frameScaleBy = function(xy){
 }
 
 this.framePositionTo = function(xy){
+	
 	this.frameUpdates.positionTo = xy;
 	that.doNotifySceneOfUpdates();
 }
@@ -287,10 +324,12 @@ this.getVisible = function(){
 				return;
 			}
 
+			//framedump sets position original
+			if(! this.frameDumpPosition() ){
+				
+				return;
+			}
 			
-
-			_positionInScreenOriginal = this.frameDumpPosition();
-
 				_positionInScreenNet = _positionInScreenOriginal;
 
 			if(_parent !== undefined){
@@ -301,18 +340,20 @@ this.getVisible = function(){
 				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgScene.returnHalfSizeVector());
 				
 				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
-				
 
-				_positionInParentOriginal = _positionInScreenOriginal.returnVectorScaledByInverse(_parent.getScaleNet());
+				_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInScreenOriginal);
+				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(_parent.getScaleNet());
 				_positionInParentOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(),  _parent.getRotationNet() );
 			
 			
 			}
 
+			HHgScene.doUpdateThisHolder(this);
+
 			if(_children){
 				HHg.doForEach(_children, function(child){
-					child.doRecalcPosition();
-					//child.setPositionInScreenBy(0,0);
+					//child.doRecalcPosition();
+					child.updatePositionFromParentMove(child.getPositionInParentOriginal());
 				});
 			}
 			
@@ -337,7 +378,7 @@ this.getVisible = function(){
 			if(this._parent === "stop"){
 				return;
 			}
-
+			
 			this.framePositionTo(xy);
 
 		}
@@ -371,21 +412,36 @@ this.getVisible = function(){
 			return _positionInScreenNet;
 		}
 
-
-
-		this.setPositionInParentTo = function(xy, y ){
-
+		this.setPositionInParentTo = function(xy, y)
+		{
 			xy = HHg.returnVectorFilter(xy, y, _positionInParentOriginal);
 			if(xy === undefined){
 				xy = new HHgVector2(0,0);
 			}
-						if(this._parent === "stop"){
-							return;
-						}
-			
-				_positionInParentOriginal = xy;
+
+			if(this._parent === "stop"){
+				return;
+			}		
+
+					
+			//getting hacky here, but saving the original, then dumping any buffer, then using it to set the udpate
+			var holder = _positionInParentOriginal;
+			this.frameDumpPosition();
+
+			this.updatePositionFromParentMove(holder);
+
+		}
+
+		this.updatePositionFromParentMove = function(xy){
+
+			_positionInParentOriginal = xy;
+			if(this.test = "soccer"){
+				console.log("soccer updated in par " + xy.returnPretty());
+			}
 
 			_positionInScreenOriginal = _positionInParentOriginal;
+
+			this.frameDumpPosition();
 			
 
 			if(_parent !== undefined){
@@ -393,17 +449,24 @@ this.getVisible = function(){
 				_positionInScreenOriginal = _positionInParentOriginal.returnVectorScaledBy(_parent.getScaleNet());
 				_positionInScreenOriginal = _parent.getPositionInScreenNet().returnVectorPlusVector(_positionInScreenOriginal);
 
-								_positionInScreenNet = _positionInScreenOriginal.returnVectorPlusVector( _parent.retur
--                               _positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(that.getPositionXYO
--                               
--                               var stuffToSub = _parent.returnHalfSizeVector();
--                               _positionInScreenNet = _positionInScreenNet.returnVectorRotatedAroundVectorAtAngle( st
--                               _positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_p
- 
--                               //that is actually the final net, I think
+				_positionInScreenNet = _positionInScreenOriginal.returnVectorPlusVector( _parent.returnHalfSizeVector() );
+				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(that.getPositionXYOffsetNet());
+				
+				var stuffToSub = _parent.returnHalfSizeVector();
+				_positionInScreenNet = _positionInScreenNet.returnVectorRotatedAroundVectorAtAngle( stuffToSub.returnVectorPlusVector( _parent.getPositionInScreenNet()), -1 * _parent.getRotationNet() );
+				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
+				
 			}
+			
+			HHgScene.doUpdateThisHolder(this);
 
-			this.setPositionInScreenTo(_positionInScreenOriginal);
+			if(_children){
+				HHg.doForEach(_children, function(child){
+					//child.doRecalcPosition();
+					child.updatePositionFromParentMove(_positionInParentOriginal);
+
+				});
+			}
 
 		}	
 //=============== SCALE ================
@@ -447,7 +510,7 @@ this.getVisible = function(){
 			
 		}
 
-		this.setScaleOffsetTo = function(xy, y){
+		this.setScaleOffsetBy = function(xy, y){
 
 			if(xy === true){
 				xy = _scaleOffset.getX();
@@ -489,14 +552,19 @@ this.getVisible = function(){
 				return;
 			}
 
-			_scaleXYOffset = this.frameDumpScale();
-			_scaleNet = _scaleOriginal.returnVectorScaledBy(_scaleXYOffset);
+			
+			if(!that.frameDumpScale() ){
+				return;
+			}
 
+			_scaleNet = _scaleOriginal.returnVectorScaledBy(_scaleXYOffset);
 
 
 			if(_parent !== undefined){
 				_scaleNet = _parent.getScaleNet().returnVectorScaledBy(_scaleNet);
 			}
+
+			this.doRecalcPosition();
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
@@ -547,17 +615,13 @@ this.getVisible = function(){
 			//now called as frame dump
 			if(_parent === "stop") return;
 
-			_rotationOffset = this.frameDumpRotation();
-			
+			if(!this.frameDumpRotation()){
+				return;
+			}
+
 			_rotationNet = _rotationOriginal * _rotationOffset;
 
-// disabling inheriting parent rotation;
-/*
-			if(_parent !== undefined){
-				_rotationNet = _rotationNet + _parent.getRotationNet();
-			}
-			*/
-
+			this.doRecalcPosition();
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
@@ -576,12 +640,17 @@ this.getVisible = function(){
 			//*** disabling this and moving to the frame buffer thing
 			//HHgScene.doUpdateThisHolder(that);
 			HHgScene.doAddToDirtyList(that);
-
+			
+			/*
 			if(_children){
 				HHg.doForEach(_children, function(child){
 					HHgScene.doAddToDirtyList(child);
 				});
 			}
+			*/
+
+			
+			
 
 		}
 

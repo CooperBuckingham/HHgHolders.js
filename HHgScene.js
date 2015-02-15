@@ -22,6 +22,7 @@ function doStartHHgScene(){
 	console.log("scene setup start");
 	HHgScene = new HHgHolder(HHgScreen.w,HHgScreen.h);
 	HHgScene.setMouseable(false);
+	HHgScene.test = "scene";
 
 	//we add all the custom functions to the scene here
 	doAddFunctionsToScene(HHgScene);
@@ -35,12 +36,45 @@ function doStartHHgScene(){
 
 //----- rotate test
 	var theOne = new HHgHolder(100,100);
-	theOne.doMoveToNewParent(HHgScene,new HHgVector2(200,200));
+	theOne.doMoveToNewParent(HHgScene,new HHgVector2(0,100), true);
 	theOne.doAddSprite("pool");
+	theOne.test = "pool";
 
+var theThree = new HHgHolder(540,3);
+	theThree.doMoveToNewParent(HHgScene,new HHgVector2(0,0), true);
+	theThree.doAddSprite("orange");
+	theThree.test = "orange";
+
+var theThree = new HHgHolder(3,540);
+	theThree.doMoveToNewParent(HHgScene,new HHgVector2(0,0), true);
+	theThree.doAddSprite("orange");
+	theThree.test = "orange";
+
+	
+var theThree = new HHgHolder(540,3);
+	theThree.doMoveToNewParent(HHgScene,new HHgVector2(0,100), true);
+	theThree.doAddSprite("orange");
+	theThree.test = "orange";
+
+	
+	
+	console.log(theOne.getPositionInScreenNet());
+
+
+	setTimeout(function(){
 	var theTwo = new HHgHolder(100,100);
-	theTwo.doMoveToNewParent(theOne, new HHgVector2(50,50));
+	theTwo.doMoveToNewParent(theOne, new HHgVector2(0,0), true);
 	theTwo.doAddSprite("soccer");
+	theTwo.test = "soccer";
+
+}, 1000);
+
+setTimeout(function(){
+	theOne.setPositionInScreenTo(new HHgVector2(0,200));
+
+
+}, 4000);
+
 
 
 if(false){
@@ -126,17 +160,23 @@ function doAddFunctionsToScene(scene){
 	}
 
 	scene.doEndOfFrame = function(){
-		for(var thing in scene._dirtyHolders){
-			scene.doUpdateThisHolder(scene._dirtyHolders[thing]);
+		if(scene._dirtyHolders.length < 1){
+			return;
 		}
-		scene._dirtyHolders = {};
+		var newList = scene._dirtyHolders;
+		scene.dirtyHolders = {};
+		for(var thing in newList){
+			newList[thing].doFrameDump();
+		}
+		newList = {};
+		
 	}
 	
 
 	scene.doUpdateThisHolder = function(holder){
 		if(holder.getDiv() === undefined) return;
 
-		holder.doFrameDump();
+		
 
 		var div = holder.getDiv();
 		div.style.backgroundColor = holder.getBackgroundColor();
@@ -173,6 +213,8 @@ function doAddFunctionsToScene(scene){
 		div.style.backgroundColor ="blue";
 		//div.style.border = "2px solid black";
 		div.id = scene.getHash();
+
+
 
 		scene.doUpdateThisHolder(scene);
 		scene._holders[div.id] = scene;
