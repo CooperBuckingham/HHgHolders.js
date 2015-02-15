@@ -82,7 +82,7 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 
 
 		//this.doRecalcScale();
-		//this.doRecalcRotation();
+		this.doRecalcRotation();
 		this.doRecalcPosition();
 
 	}
@@ -110,10 +110,11 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 
 		
 	}
+	//the key is that update holder is gettign called a bunch of times, and on the third time, rotation net is zero, check console
 
 	this.frameDumpRotation = function(){
 		if(this.frameUpdates.rotationTo !== undefined){
-			if(_rotationTo == this.frameUpdates.rotationTo){
+			if(_rotationOffset == this.frameUpdates.rotationTo){
 				return false;
 			}
 			_rotationOffset = this.frameUpdates.rotationTo;
@@ -143,7 +144,7 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 			if(this.frameUpdates.scaleBy.hasSameXY(new HHgVector2(0,0))){
 				return false;
 			}
-			_scaleXYOffset = _scaleXYOffset.returnVectorPlusVector( this.frameUpdates.scaleBy);
+			_scaleXYOffset = _scaleXYOffset.returnVectorScaledBy( this.frameUpdates.scaleBy);
 		}
 		
 
@@ -317,7 +318,7 @@ this.getVisible = function(){
 		}
 
 
-	this.doRecalcPosition = function(){
+	this.doRecalcPosition = function(forceUpdate){
 			if(_parent === "stop") return;
 
 			if(_parent == undefined){
@@ -325,7 +326,10 @@ this.getVisible = function(){
 			}
 
 			//framedump sets position original
-			if(! this.frameDumpPosition() ){
+			if(! this.frameDumpPosition() && forceUpdate == false){
+				if(this.test = "soccer"){
+					console.log("AHA");
+				}
 				
 				return;
 			}
@@ -347,6 +351,10 @@ this.getVisible = function(){
 			
 			
 			}
+
+			if(this.test = "soccer"){
+					console.log("going into update " + _rotationNet);
+				}
 
 			HHgScene.doUpdateThisHolder(this);
 
@@ -564,7 +572,7 @@ this.getVisible = function(){
 				_scaleNet = _parent.getScaleNet().returnVectorScaledBy(_scaleNet);
 			}
 
-			this.doRecalcPosition();
+			this.doRecalcPosition(true);
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
@@ -582,8 +590,9 @@ this.getVisible = function(){
 		this.setRotationOriginalTo = function(val){
 			
 			val = val % 360;
-			_rotationOriginal = val;
-			this.doNotifySceneOfUpdates();
+			//_rotationOriginal = val;
+			console.log("set rtatate to")
+			this.frameRotationTo(val);
 		}
 	
 
@@ -616,12 +625,24 @@ this.getVisible = function(){
 			if(_parent === "stop") return;
 
 			if(!this.frameDumpRotation()){
+				if(this.test == "pool"){
+					console.log("pool frame dump fail")
+				}
 				return;
 			}
+			console.log("made it past frame dump rotate test");
 
-			_rotationNet = _rotationOriginal * _rotationOffset;
+			_rotationNet = _rotationOriginal + _rotationOffset;
 
-			this.doRecalcPosition();
+			if(_parent !== undefined){
+				_rotationNet += _parent.getRotationNet();
+			}
+
+			if(this.test = "soccer"){
+				console.log("parent set rotate, soccer now " + _rotationNet);
+			}
+
+			this.doRecalcPosition(true);
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
