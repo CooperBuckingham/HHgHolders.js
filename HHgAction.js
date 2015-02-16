@@ -152,8 +152,6 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveTo);
 function HHgActionRotateBy(owner, degrees, time, ease, onComplete){
 	HHgAction.call(this, owner, time, ease, onComplete);
 
-console.log("rotating");
-
 	this.degreesStart = this.owner.getRotationOriginal();
 	this.degreesToRotate = degrees;
 
@@ -168,7 +166,7 @@ console.log("rotating");
 		
 		if(this.timeSoFar >= this.totalTime){
 			
-			owner.setRotationOffsetBy(this.degreesStart + this.degreesToRotate);
+			owner.setRotationOriginalTo(this.degreesStart + this.degreesToRotate);
 			that.finalFrame(that);
 
 			return;
@@ -177,7 +175,7 @@ console.log("rotating");
 		deltaDegrees = that.degreesToRotate * ( (deltaT / 1000) / that.totalTime );
 
 		that.degreesSoFar += deltaDegrees;
-		owner.setRotationOriginalTo(deltaDegrees);
+		owner.setRotationOriginalBy(deltaDegrees);
 
 
 	}
