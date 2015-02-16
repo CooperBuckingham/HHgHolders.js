@@ -2,7 +2,7 @@
 
 var HHgSprite = {
 
-	useContext : false,
+	useContext : true,
 
 	returnSprite : function(name){
 		return HHgImageManager.returnFileName(name);
