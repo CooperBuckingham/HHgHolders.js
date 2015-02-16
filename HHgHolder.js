@@ -458,12 +458,14 @@ this.getVisible = function(){
 			
 			this.frameDumpPosition();
 
-			this.updatePositionFromParentMove(xy);
+			_positionInParentOriginal = xy;
+			//updatePositionFromParentMove(xy)
+			this.doNotifySceneOfUpdates();
 
 		}
 
 		this.updatePositionFromParentMove = function(){
-
+			
 
 			_positionInScreenOriginal = _positionInParentOriginal;
 
@@ -475,9 +477,7 @@ this.getVisible = function(){
 
 				_positionInScreenNet = _positionInScreenOriginal.returnVectorPlusVector( _parent.returnHalfSizeVector() );
 				
-				
-				var stuffToSub = _parent.returnHalfSizeVector();
-				_positionInScreenNet = _positionInScreenNet.returnVectorRotatedAroundVectorAtAngle( stuffToSub.returnVectorPlusVector( _parent.getPositionInScreenNet()), -1 * _parent.getRotationNet() );
+				_positionInScreenNet = _positionInScreenNet.returnVectorRotatedAroundVectorAtAngle( _parent.returnHalfSizeVector().returnVectorPlusVector( _parent.getPositionInScreenNet()), -1 * _parent.getRotationNet() );
 				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
 				
 			}
@@ -572,15 +572,18 @@ this.getVisible = function(){
 			
 			val = val % 360;
 			//_rotationOriginal = val;
-			if(this.test === "pool"){
-				console.log("pool set rtatate to")
-			}
-
-			if(this.test === "soccer"){
-				console.log("soccer set rtatate to " + val);
-			}
+			
 			
 			this.frameRotationTo(val);
+		}
+
+		this.setRotationOriginalBy = function(val){
+			
+			val = val % 360;
+			//_rotationOriginal = val;
+			
+			
+			this.frameRotationBy(val);
 		}
 	
 
@@ -615,7 +618,7 @@ this.getVisible = function(){
 
 		}
 
-
+//==================== management
 
 		this.doNotifySceneOfUpdates = function(){
 			

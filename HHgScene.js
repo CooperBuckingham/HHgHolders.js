@@ -35,10 +35,14 @@ function doStartHHgScene(){
 
 
 //----- rotate test
-var theOne = new HHgHolder(25,25);
+
+if(false){
+
+var theOne = new HHgHolder(100,100);
 	theOne.doMoveToNewParent(HHgScene,new HHgVector2(-200,-200), true);
 	theOne.doAddSprite("pool");
 	theOne.test = "pool";
+
 
 var theThree = new HHgHolder(540,3);
 	theThree.doMoveToNewParent(HHgScene,new HHgVector2(0,0), true);
@@ -59,10 +63,10 @@ var theThree = new HHgHolder(540,3);
 
 var theTwo;
 setTimeout(function(){
-	theTwo = new HHgHolder(50,50);
+	theTwo = new HHgHolder(100,100);
 	debugger;
 	theTwo.doMoveToNewParent(theOne, new HHgVector2(0,0), true);
-	theTwo.doAddSprite("soccer");
+	theTwo.doAddSprite("pool");
 	theTwo.test = "soccer";
 
 	console.log(theTwo.getPositionInParentOriginal().returnPretty());
@@ -72,29 +76,38 @@ setTimeout(function(){
 }, 1000);
 
 setTimeout(function(){
-	//theOne.setPositionInScreenTo(new HHgVector2(0,200));
-	theOne.setRotationOriginalTo(60);
+	theOne.setPositionInScreenTo(new HHgVector2(0,450));
+	theOne.doActionFollowQuad(new HHgVector2(75,120), new HHgVector2(-100,-450));
+	//theOne.setRotationOriginalBy(60);
+	theOne.doActionRotate(60, 10);
 	
 
 
 }, 4000);
 
 setTimeout(function(){
-	//theOne.setPositionInScreenTo(new HHgVector2(0,200));
-	//theTwo.setRotationOriginalTo(180);
+	
+
 	
 
 
 }, 8000);
 
+}
 
+if(true){
 
-if(false){
+	var theOne = new HHgHolder(100,100);
+	theOne.doMoveToNewParent(HHgScene,new HHgVector2(-200,-200), true);
+	theOne.doAddSprite("pool");
+	theOne.test = "pool";
 
-	
 
 	var listOfHolder = [];
 	listOfHolder.push(theOne);
+
+	theOne.setPositionInScreenTo(new HHgVector2(0,450));
+	//theOne.doActionFollowQuad(new HHgVector2(75,120), new HHgVector2(-100,-450));
 
 
 
@@ -121,7 +134,7 @@ for(var i = 0; i < 50; i++){
 	var posy = HHg.returnRandomIntLowIncHighExcl(-400,400);
 	var testBall = new HHgHolder(size,size);
 
-	testBall.doMoveToNewParent( listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , posx, posy);
+	testBall.doMoveToNewParent( listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , new HHgVector2(posx, posy) );
 	randomSprite(testBall);
 	testBall.doActionRotate(HHg.returnRandomInt(120,720), HHg.returnRandomInt(5,35));
 
