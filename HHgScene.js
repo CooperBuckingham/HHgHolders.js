@@ -108,7 +108,7 @@ if(true){
 
 	theOne.setPositionInScreenTo(new HHgVector2(0,450));
 	//theOne.doActionFollowQuad(new HHgVector2(75,120), new HHgVector2(-100,-450));
-
+	theOne.doActionMoveInScreen(-75, -700, 10, true);
 
 
 var randomSprite = function(holder){
@@ -379,23 +379,35 @@ var lastRotate = 0;
 
 	scene.setCanvasImageForHolder = function(holder, fileName){
 		var canvas = document.createElement('canvas');
+		canvas.classList.add("canvasAsSprite");
 		var ctx = canvas.getContext('2d');
-		canvas.class = holder.getHash()
-        canvas.width  = 200;
-        canvas.height = 200;
+		canvas.classList.add(holder.getHash());
+        //canvas.width  = 200;
+        //canvas.height = 200;
         canvas.style.position = "absolute";
         if(showDebugSquares){
         	canvas.style.border   = "1px solid";
         }
         var div = holder.getDiv();
+
+        /*
         var grd=ctx.createRadialGradient(75,50,5,90,60,100);
 		grd.addColorStop(0,"red");
 		grd.addColorStop(1,"white");
 
 		ctx.fillStyle=grd;
 		ctx.fillRect(0,0,300,300);
+		*/
 
-        div.appendChild(canvas)
+		var img = new Image();
+		img.src = fileName;
+		div.appendChild(canvas);
+
+      img.onload = function() {
+        ctx.drawImage(img,0,0, canvas.width, canvas.height);
+      };
+
+        div.appendChild(canvas);
 	
 
 	}
