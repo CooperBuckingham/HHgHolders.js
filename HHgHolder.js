@@ -56,6 +56,17 @@ var HHgHolder = function(w, h, zIndex, scale){
 	var _mouseable = true;
 	var _visible = true;
 
+	var _canvas;
+
+
+	this.setCanvas = function(canvas){
+		_canvas = canvas;
+	}
+
+	this.getCanvas = function(){
+		return _canvas;
+	}
+
 	//working on the frame combined updates here, but putting it off for now
 	//means we can't have actions that are combinations/additive
 	this.test = "no";
@@ -777,6 +788,7 @@ this.getVisible = function(){
 	this.doMouseDown = function(){
 		console.log("yay")
 		this.setBackgroundColor(true, true, true, .4);
+		this.setScaleOriginalTo(.25,.25);
 	}
 
 	this.doMouseUp = function(){
