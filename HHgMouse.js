@@ -61,20 +61,27 @@ var HHgMouse = function HHgMouse(){
 
 	this.doMouseDown = function (holders, x, y){
 		that.mouseCircle.doShow(x,y);
-		console.log("mousedown");
+		//mouseclick is 0/0 centric
+		console.log("mouse down");
+		
 		if(!holders || holders.length < 1){
+			console.log("no divs");
 			return;
 		}
 		
-		that.doSetVars(holder[0], x, y);
-		that.clickedDownOn.doMouseDown();
-		/*
-		HHg.doForEach(holders, function(thing){
-			
-		});
-		*/
+		var holder, canvas;
+		var xy;
+		for(var i = 0; i < holders.length; i++){
+			holder = holders[i];
+			canvas = holder.getCanvas();
+			convertedXY = getXYPosInDivFromMouse(canvas,x,y,convertedXY);
+			if(isAlphaPixel(canvas,convertedXY.getX(), convertedXY.getY() ) === false){
+				that.doSetVars(holder, x, y);
+				that.clickedDownOn.doMouseDown();
+				return;
+			}
 
-		
+		}
 
 	}
 
@@ -109,7 +116,19 @@ var HHgMouse = function HHgMouse(){
 
 }();
 
+function getXYPosInDivFromMouse(canvas,xy,y,convertedXY){
+	convertedXY.setXY(xy,y);
+	convertedXY.returnVectorPlusVector(HHgScene.returnHalfSizeVector());
+	convertedXY = (new HHgVector2(canvas.style.left, canvas.style.bottom)).returnVectorSubtractedFromVector(convertedXY);
+
+	return convertedXY;
+}
+
 //alpha test for mouse click
+function isAlphaPixel(canvas, xy, y){
+	return canvas.getContext('2d').getImageData(x, y, 1, 1).data[3] > .15 ? false : true;
+}
+
 
 function getpixelcolour(canvas, x, y) {
   var cx = canvas.getContext('2d');

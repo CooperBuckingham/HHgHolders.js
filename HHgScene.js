@@ -35,6 +35,15 @@ function doStartHHgScene(){
 
 
 //----- rotate test
+if(true){
+var theOne = new HHgHolder(100,100);
+	theOne.doMoveToNewParent(HHgScene,new HHgVector2(0,0), true);
+	theOne.doAddSprite("pool");
+	theOne.test = "pool";
+
+
+}
+
 
 if(false){
 
@@ -95,7 +104,7 @@ setTimeout(function(){
 
 }
 
-if(true){
+if(false){
 
 	var theOne = new HHgHolder(100,100);
 	theOne.doMoveToNewParent(HHgScene,new HHgVector2(-200,-200), true);
@@ -352,11 +361,17 @@ var lastRotate = 0;
 		for(var i = 0; i < arr.length; i++ ){
 			
 			if(scene.doesDivContainPoint(arr[i],x,y)){
-				if(+arr[i].style.zIndex > highestZ){
-					mArr.unshift(scene.getHolderFromDiv(arr[i]));
-					highestZ = +arr[i].style.zIndex;
-				}else{
+
+				if(mArr.length < 1){
 					mArr.push(scene.getHolderFromDiv(arr[i]));
+				}
+
+				for(var j = 0; j < mArr.length; j++){
+					if(+arr[i].style.zIndex >= mArr[j].style.zIndex){
+						mArr.unshift(scene.getHolderFromDiv(arr[i]));
+						break;
+					}
+
 				}
 				
 			}
@@ -384,10 +399,11 @@ var lastRotate = 0;
 		canvas.classList.add(holder.getHash());
         //canvas.width  = 200;
         //canvas.height = 200;
-        canvas.style.position = "absolute";
+        //canvas.style.position = "absolute";
         if(showDebugSquares){
         	canvas.style.border   = "1px solid";
         }
+        holder.setCanvas(canvas);
         var div = holder.getDiv();
 
         /*
@@ -406,8 +422,6 @@ var lastRotate = 0;
       img.onload = function() {
         ctx.drawImage(img,0,0, canvas.width, canvas.height);
       };
-
-        div.appendChild(canvas);
 	
 
 	}
