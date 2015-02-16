@@ -1,13 +1,12 @@
 var HHgHolderHashCont = 0;
 
-var HHgHolder = function(w, h, zIndex, xyOffset, scale){
+var HHgHolder = function(w, h, zIndex, scale){
 	HHgHolderHashCont++;
 	if(HHgHolderHashCont > 10000){
 		HHgHolderHashCont = 0;
 		console.log("HASH passed 10000");
 	}
 
-	xyOffset =  xyOffset || new HHgVector2(0,0);
 	zIndex = zIndex || 0;
 	w = w || HHgScene.getWidthOriginal();
 	h = h || HHgScene.getHeightOriginal();
@@ -26,21 +25,18 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 
 	var _rotationOriginal = 0;
 	var _rotationNet = 0;
-	var _rotationOffset = 0;
 
 	var _parent;
 	
 	var _backgroundHue, _backgroundSaturation, _backgroundLightness, _backgroundAlpha;
 
 	var _scaleOriginal = scale;
-	var _scaleXYOffset = new HHgVector2(1,1);
 	var _scaleNet = scale;
 
 	var _scaleIgnoreParentScale = false;
 	var _scaleUniformOnly = false;
 
 	var _zIndex = zIndex || 1;
-	var _positionXYOffset = xyOffset;
 	var _positionInScreenOriginal = new HHgVector2(0,0);
 	var _positionInParentOriginal  = new HHgVector2(0,0);
 	var _positionInScreenNet = _positionInScreenOriginal;
@@ -65,12 +61,9 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	this.test = "no";
 
 	this.frameUpdates = {
-		positionByReset: new HHgVector2(0,0),
-		positionBy: new HHgVector2(0,0),
-		rotationBy: 0,
-		rotationByReset: 0,
-		scaleBy: new HHgVector2(1,1),
-		scaleByReset: new HHgVector2(1,1),
+		positionBy: undefined,
+		rotationBy: undefined,
+		scaleBy: undefined,
 		positionTo: undefined,
 		rotationTo: undefined,
 		scaleTo: undefined,
@@ -79,32 +72,72 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	this.doFrameDump = function(){
 		//this will call all the do recalcs, which will then call the complex stuff, which will then
 		//use the framebuffers...I think
+		if(this.test == "soccer"){
+			console.log("soccer is dirty");
+		}
 
+		if(this.frameDumpScale()){
+			this.doRecalcScale();
+		}
+		
+		if(this.frameDumpRotation()){
+			this.doRecalcRotation();
+		}
 
-		//this.doRecalcScale();
-		this.doRecalcRotation();
-		this.doRecalcPosition();
+		
+
+		//this is to allow position in screen to be absolute regardless of parent rotation or scale
+		if(this.frameDumpPosition()){
+			if(this.test == "soccer"){
+				console.log("soccer moving SCREEN");
+			}else{
+
+			}
+			this.doRecalcPosition();
+		}else{
+			if(this.test == "soccer"){
+				console.log("soccer moving PARENT");
+			}
+			this.updatePositionFromParentMove();
+		}
+
+		
+		this.doTellSceneToUpdate();
+
+	}
+
+	this.doTellSceneToUpdate = function(){
+		HHgScene.doUpdateThisHolder(this);
+
+		if(_children){
+			
+				for(var i = 0; i < _children.length; i++){
+					_children[i].doTellSceneToUpdate();
+				}
+			
+		}
 
 	}
 
 	this.frameDumpPosition = function(){
 		
-		
+
+		var returnVal = false;
 
 		if(this.frameUpdates.positionTo !== undefined){
 			
 			_positionInScreenOriginal = this.frameUpdates.positionTo;
-		}else{
-			if(this.frameUpdates.positionBy.hasSameXY(new HHgVector2(0,0))){
-				return false;
-			}
+			returnVal = true;
+		}else if(this.frameUpdates.positionBy !== undefined){
+			
 			_positionInScreenOriginal = _positionInScreenOriginal.returnVectorPlusVector( this.frameUpdates.positionBy);
+			returnVal = true;
 		}
 
-		this.frameUpdates.positionBy = this.frameUpdates.positionByReset;
+		this.frameUpdates.positionBy = undefined;
 		this.frameUpdates.positionTo = undefined;
 
-		return true;
+		return returnVal;
 
 
 
@@ -113,60 +146,77 @@ var HHgHolder = function(w, h, zIndex, xyOffset, scale){
 	//the key is that update holder is gettign called a bunch of times, and on the third time, rotation net is zero, check console
 
 	this.frameDumpRotation = function(){
+
+		var returnVal = false;
+
 		if(this.frameUpdates.rotationTo !== undefined){
-			if(_rotationOffset == this.frameUpdates.rotationTo){
-				return false;
-			}
-			_rotationOffset = this.frameUpdates.rotationTo;
-		}else{
-			if(this.frameUpdates.rotationBy == 0){
-				return false;
-			}
-			_rotationOffset += this.frameUpdates.rotationBy;
+			
+			_rotationOriginal = this.frameUpdates.rotationTo;
+			returnVal = true;
+		}else if(this.frameUpdates.rotationBy !== undefined){
+			
+			_rotationOriginal += this.frameUpdates.rotationBy;
+			returnVal = true;
 		}
 
-		this.frameUpdates.rotationBy = this.frameUpdates.rotationByReset;
+		this.frameUpdates.rotationBy = undefined;
 		this.frameUpdates.rotationTo = undefined;
 
-		return true;
+		return returnVal;
 		
 
 	}
 
 
 	this.frameDumpScale = function(){
+		var returnVal = false;
 		if(this.frameUpdates.scaleTo !== undefined){
-			if(this.frameUpdates.scaleTo.hasSameXY(_scaleXYOffset)){
-				return false;
-			}
-			_scaleXYOffset = this.frameUpdates.scaleTo;
-		}else{
-			if(this.frameUpdates.scaleBy.hasSameXY(new HHgVector2(0,0))){
-				return false;
-			}
-			_scaleXYOffset = _scaleXYOffset.returnVectorScaledBy( this.frameUpdates.scaleBy);
+			
+			_scaleOriginal = this.frameUpdates.scaleTo;
+			returnVal = true;
+		}else if(this.frameUpdates.scaleBy !== undefined){
+			
+			_scaleOriginal = _scaleOriginal.returnVectorScaledBy( this.frameUpdates.scaleBy);
+			returnVal = true;
 		}
 		
 
-		this.frameUpdates.scaleBy = this.frameUpdates.scaleByReset;
+		this.frameUpdates.scaleBy = undefined;
 		this.frameUpdates.scaleTo = undefined;
 
-		return true;
+		return returnVal;
 		
 		
 
 	}
 
 this.framePositionBy = function(xy){
-	this.frameUpdates.positionBy = this.frameUpdates.positionBy.returnVectorPlusVector(xy);
+	if(this.frameUpdates.positionBy){
+		this.frameUpdates.positionBy = this.frameUpdates.positionBy.returnVectorPlusVector(xy);
+	}else{
+		this.frameUpdates.positionBy = xy;
+	}
+	
 	that.doNotifySceneOfUpdates();
 }
 this.frameRotationBy = function(val){
-	this.frameUpdates.rotationBy *= val;
+	if(this.frameUpdates.rotationBy){
+		this.frameUpdates.rotationBy *= val;
+	}else{
+		this.frameUpdates.rotationBy = val;
+	}
+	
 	that.doNotifySceneOfUpdates();
 }
 this.frameScaleBy = function(xy){
-	this.frameUpdates.scaleBy = this.frameUpdates.scaleBy.returnVectorScaledBy(xy);
+
+
+	if(this.frameUpdates.scaleBy){
+		this.frameUpdates.scaleBy = this.frameUpdates.scaleBy.returnVectorScaledBy(xy);
+	}else{
+		this.frameUpdates.scaleBy = xy;
+	}
+	
 	that.doNotifySceneOfUpdates();
 }
 
@@ -309,13 +359,6 @@ this.getVisible = function(){
 //============ POSITION ==================
 
 
-		this.setPositionXYOffsetOriginal =function(xy, y){
-			xy = HHg.returnVectorFilter(xy,y,_positionXYOffset);
-
-			_positionXYOffset = xy;
-			
-			that.doNotifySceneOfUpdates();
-		}
 
 
 	this.doRecalcPosition = function(forceUpdate){
@@ -325,21 +368,12 @@ this.getVisible = function(){
 				return;
 			}
 
-			//framedump sets position original
-			if(! this.frameDumpPosition() && forceUpdate == false){
-				if(this.test = "soccer"){
-					console.log("AHA");
-				}
-				
-				return;
-			}
+			
 			
 				_positionInScreenNet = _positionInScreenOriginal;
 
 			if(_parent !== undefined){
 
-				
-				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(that.getPositionXYOffsetNet());
 			
 				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgScene.returnHalfSizeVector());
 				
@@ -347,38 +381,26 @@ this.getVisible = function(){
 
 				_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInScreenOriginal);
 				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(_parent.getScaleNet());
-				_positionInParentOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(),  _parent.getRotationNet() );
+				_positionInParentOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(), -1 *  _parent.getRotationNet() );
 			
-			
+
 			}
 
-			if(this.test = "soccer"){
-					console.log("going into update " + _rotationNet);
-				}
 
-			HHgScene.doUpdateThisHolder(this);
+			
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
-					//child.doRecalcPosition();
-					child.updatePositionFromParentMove(child.getPositionInParentOriginal());
+					child.updatePositionFromParentMove();
+					
 				});
 			}
-			
-		}
-
-		this.getPositionXYOffsetOriginal = function(){
-			return _positionXYOffset;
-		}
-
-		this.getPositionXYOffsetNet = function(){
-			
-			return _positionXYOffset.returnVectorScaledBy(_scaleNet);
 			
 		}
 		
 
 		this.setPositionInScreenTo = function(xy, y){
+			
 			xy = HHg.returnVectorFilter(xy,y,_positionInScreenOriginal);
 			if(xy === undefined){
 				xy = new HHgVector2(0,0);
@@ -420,45 +442,39 @@ this.getVisible = function(){
 			return _positionInScreenNet;
 		}
 
-		this.setPositionInParentTo = function(xy, y)
+		this.setPositionInParentTo = function(xy)
 		{
-			xy = HHg.returnVectorFilter(xy, y, _positionInParentOriginal);
-			if(xy === undefined){
-				xy = new HHgVector2(0,0);
-			}
+			
+
 
 			if(this._parent === "stop"){
 				return;
-			}		
+			}	
+
+			console.log("THIS IS ODD");	
 
 					
 			//getting hacky here, but saving the original, then dumping any buffer, then using it to set the udpate
-			var holder = _positionInParentOriginal;
+			
 			this.frameDumpPosition();
 
-			this.updatePositionFromParentMove(holder);
+			this.updatePositionFromParentMove(xy);
 
 		}
 
-		this.updatePositionFromParentMove = function(xy){
+		this.updatePositionFromParentMove = function(){
 
-			_positionInParentOriginal = xy;
-			if(this.test = "soccer"){
-				console.log("soccer updated in par " + xy.returnPretty());
-			}
 
 			_positionInScreenOriginal = _positionInParentOriginal;
 
-			this.frameDumpPosition();
 			
-
 			if(_parent !== undefined){
 
 				_positionInScreenOriginal = _positionInParentOriginal.returnVectorScaledBy(_parent.getScaleNet());
 				_positionInScreenOriginal = _parent.getPositionInScreenNet().returnVectorPlusVector(_positionInScreenOriginal);
 
 				_positionInScreenNet = _positionInScreenOriginal.returnVectorPlusVector( _parent.returnHalfSizeVector() );
-				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(that.getPositionXYOffsetNet());
+				
 				
 				var stuffToSub = _parent.returnHalfSizeVector();
 				_positionInScreenNet = _positionInScreenNet.returnVectorRotatedAroundVectorAtAngle( stuffToSub.returnVectorPlusVector( _parent.getPositionInScreenNet()), -1 * _parent.getRotationNet() );
@@ -466,7 +482,7 @@ this.getVisible = function(){
 				
 			}
 			
-			HHgScene.doUpdateThisHolder(this);
+			
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
@@ -485,27 +501,18 @@ this.getVisible = function(){
 			return new HHgVector2(that.getHalfWidth(), that.getHalfHeight());
 		}
 
-		
-		this.setScaleOriginalTo = function(xy, y){
-
-		xy = HHg.returnVectorFilter(xy,y,_scaleOriginal);
-				_scaleOriginal = xy;
-				this.doNotifySceneOfUpdates();
-
-		}
-
 
 		this.getScaleOriginal = function(){
 			return _scaleOriginal;
 		}
 
-		this.setScaleOffsetTo = function(xy, y){
+		this.setScaleOriginalTo = function(xy, y){
 
 			if(xy === true){
-				xy = _scaleOffset.getX();
+				xy = _scaleOriginal.getX();
 			}
 			if(y === true){
-				y = _scaleOffet.getY();
+				y = _scaleOriginal.getY();
 			}
 
 			if(xy instanceof HHgVector2 === false){
@@ -518,29 +525,7 @@ this.getVisible = function(){
 			
 		}
 
-		this.setScaleOffsetBy = function(xy, y){
 
-			if(xy === true){
-				xy = _scaleOffset.getX();
-			}
-			if(y === true){
-				y = _scaleOffet.getY();
-			}
-
-			if(xy instanceof HHgVector2 === false){
-				xy = new HHgVector2(xy, y);
-			}
-				
-			
-			this.frameScaleBy(xy);
-			
-			
-		}
-
-
-		this.getScaleXYOffset = function(){
-			return _scaleXYOffset;
-		}
 		this.getScaleNet = function(){
 			_scaleNet = _scaleIgnoreParentScale ? _scale / _parent.getScaleNet() : _scaleNet;
 
@@ -560,19 +545,15 @@ this.getVisible = function(){
 				return;
 			}
 
-			
-			if(!that.frameDumpScale() ){
-				return;
-			}
 
-			_scaleNet = _scaleOriginal.returnVectorScaledBy(_scaleXYOffset);
+			_scaleNet = _scaleOriginal;
 
 
 			if(_parent !== undefined){
 				_scaleNet = _parent.getScaleNet().returnVectorScaledBy(_scaleNet);
 			}
 
-			this.doRecalcPosition(true);
+			
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
@@ -591,7 +572,14 @@ this.getVisible = function(){
 			
 			val = val % 360;
 			//_rotationOriginal = val;
-			console.log("set rtatate to")
+			if(this.test === "pool"){
+				console.log("pool set rtatate to")
+			}
+
+			if(this.test === "soccer"){
+				console.log("soccer set rtatate to " + val);
+			}
+			
 			this.frameRotationTo(val);
 		}
 	
@@ -600,21 +588,6 @@ this.getVisible = function(){
 			return _rotationOriginal;
 		}
 
-		this.setRotationOffsetTo = function(val){
-			val = val % 360;
-			
-			this.frameRotationTo(val);
-
-		}
-		this.setRotationOffsetBy = function(val){
-			val = val % 360;
-			
-			this.frameRotationBy(val);
-
-		}
-		this.getRotationOffset = function(){
-			return _rotationOffset;
-		}
 
 		this.getRotationNet = function(){
 			return _rotationNet;
@@ -624,29 +597,17 @@ this.getVisible = function(){
 			//now called as frame dump
 			if(_parent === "stop") return;
 
-			if(!this.frameDumpRotation()){
-				if(this.test == "pool"){
-					console.log("pool frame dump fail")
-				}
-				return;
-			}
-			console.log("made it past frame dump rotate test");
-
-			_rotationNet = _rotationOriginal + _rotationOffset;
+			_rotationNet = _rotationOriginal;
 
 			if(_parent !== undefined){
 				_rotationNet += _parent.getRotationNet();
 			}
 
-			if(this.test = "soccer"){
-				console.log("parent set rotate, soccer now " + _rotationNet);
-			}
-
-			this.doRecalcPosition(true);
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
 					child.doRecalcRotation();
+
 				});
 			}
 
@@ -660,6 +621,7 @@ this.getVisible = function(){
 			
 			//*** disabling this and moving to the frame buffer thing
 			//HHgScene.doUpdateThisHolder(that);
+			
 			HHgScene.doAddToDirtyList(that);
 			
 			/*

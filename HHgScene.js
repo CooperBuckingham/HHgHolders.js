@@ -35,8 +35,8 @@ function doStartHHgScene(){
 
 
 //----- rotate test
-	var theOne = new HHgHolder(100,100);
-	theOne.doMoveToNewParent(HHgScene,new HHgVector2(0,100), true);
+var theOne = new HHgHolder(25,25);
+	theOne.doMoveToNewParent(HHgScene,new HHgVector2(-200,-200), true);
 	theOne.doAddSprite("pool");
 	theOne.test = "pool";
 
@@ -56,25 +56,36 @@ var theThree = new HHgHolder(540,3);
 	theThree.doAddSprite("orange");
 	theThree.test = "orange";
 
-	
-	
-	console.log(theOne.getPositionInScreenNet());
 
-
+var theTwo;
 setTimeout(function(){
-	var theTwo = new HHgHolder(100,100);
+	theTwo = new HHgHolder(50,50);
+	debugger;
 	theTwo.doMoveToNewParent(theOne, new HHgVector2(0,0), true);
-	theTwo.doAddSprite("pool");
+	theTwo.doAddSprite("soccer");
 	theTwo.test = "soccer";
+
+	console.log(theTwo.getPositionInParentOriginal().returnPretty());
+	debugger;
+
 
 }, 1000);
 
 setTimeout(function(){
 	//theOne.setPositionInScreenTo(new HHgVector2(0,200));
-	theOne.setRotationOriginalTo(90);
+	theOne.setRotationOriginalTo(60);
+	
 
 
 }, 4000);
+
+setTimeout(function(){
+	//theOne.setPositionInScreenTo(new HHgVector2(0,200));
+	//theTwo.setRotationOriginalTo(180);
+	
+
+
+}, 8000);
 
 
 
@@ -178,9 +189,6 @@ function doAddFunctionsToScene(scene){
 	scene.doUpdateThisHolder = function(holder){
 		if(holder.getDiv() === undefined) return;
 
-		if(holder.test == "soccer"){
-			console.log("update soccer: " + holder.getRotationNet());
-		}
 
 		var div = holder.getDiv();
 		div.style.backgroundColor = holder.getBackgroundColor();
