@@ -43,6 +43,7 @@ var HHgMouse = function HHgMouse(){
 	}
 
 	this.doSetVars = function(holder, x, y){
+
 		that.clickedDownOn = holder;
 		that.lastMousePosX = that.lastMousePosX || x;
 		that.lastMousePosY = that.lastMousePosY || y;
@@ -61,29 +62,23 @@ var HHgMouse = function HHgMouse(){
 
 	this.doMouseDown = function (holders, x, y){
 		that.mouseCircle.doShow(x,y);
-		//mouseclick is 0/0 centric
+		
 		console.log("mouse down");
 		
 		if(!holders || holders.length < 1){
-			console.log("no divs");
+			
 			return;
 		}
-		
-		var holder, canvas;
-		var xy, convertedXY = new HHgVector2(0,0);
-		for(var i = 0; i < holders.length; i++){
-			holder = holders[i];
-			canvas = holder.getCanvas();
-			convertedXY = getXYPosInDivFromMouse(holder,canvas,x,y,convertedXY);
-			if( isAlphaPixel(canvas,convertedXY.getX(), convertedXY.getY() ) === false){
-				that.doSetVars(holder, x, y);
-				that.clickedDownOn.doMouseDown();
-				return;
-			}
 
+		holders = findClickedHolder(holders, x, y);
+		if(holders){
+			that.doSetVars(holders, x, y);
+			that.clickedDownOn.doMouseDown();
+			return;
 		}
-		console.log("no alpha test passed");
 
+		console.log("found nothing to cllick on");
+			
 	}
 
 	this.doMouseUp = function (holders, x, y){
@@ -93,36 +88,71 @@ var HHgMouse = function HHgMouse(){
 		if(that.clickedDownOn === undefined){
 			return;
 		}
-		if(!holders || holders.length < 1){
-			return;
-		}
-
-		for(var i = 0; i < holders.length; i++){
-			if(holders[i] === clickedDownOn){
-				that.clickedDownOn.doMouseUp();
-				
-				return;
+		if(holders ){
+			for(var i = 0; i < holders.length; i++){
+				if(holders[i] === clickedDownOn){
+					//do alhpa check here
+					that.clickedDownOn.doMouseUp(true);
+					that.doResetVars();
+					return;
+				}
 			}
 		}
-		
+
+		that.clickedDownOn.doMouseUp(false);
 		that.doResetVars();
 		
 	}
 
-	
+	this.findClickedHolder = function(holders, x, y){
+		var holder, canvas, xy, convertedXY = new HHgVector2(0,0),canvasSize = new HHgVector2(0,0), canvasStyleSize = new HHgVector2(0,0);
+		for(var i = 0; i < holders.length; i++){
+			holder = holders[i];
+			canvas = holder.getCanvas();
+			canvasSize.setXY(canvas.width, canvas.height);
+			canvasStyleSize.setXY(canvas.clientWidth, canvas.clientHeight);
+			convertedXY = getXYPosInDivFromMouse(holder,canvasSize,canvasStyleSize,x,y,convertedXY);
+			if( isAlphaPixel(canvas,convertedXY.getX(), convertedXY.getY() ) === false){
+				
+				return holder;
+			}
+
+		}
+		console.log("no alpha test passed");
+		return undefined;
+		
+	}
 
 	return this; //for singleton
 
-
-
 }();
 
-function getXYPosInDivFromMouse(holder,canvas,xy,y,convertedXY){
-	var theStr;
-	console.log("canvas width, height " + canvas.width + " " + canvas.height);
-	console.log("holder width, height " + holder.getDiv().clientWidth + " " + holder.getDiv().clientHeight);
-	console.log("holder width, height " + holder.getDiv().offsetHeight + " " + holder.getDiv().offsetWidth);
+function placeRedSquare(canvas, x,y){
 
+var ctx=canvas.getContext("2d");
+var imgData=ctx.createImageData(20,20);
+for (var i=0;i<imgData.data.length;i+=4)
+  {
+  imgData.data[i+0]=255;
+  imgData.data[i+1]=0;
+  imgData.data[i+2]=0;
+  imgData.data[i+3]=255;
+  }
+ctx.putImageData(imgData,x,y);
+}
+
+function getXYPosInDivFromMouse(holder,canvasSize, canvasStyleSize,xy,y,convertedXY){
+	
+	convertedXY.setXY(xy,y);
+	convertedXY = convertedXY.returnVectorPlusVector( holder.returnHalfSizeVector() );
+	
+	convertedXY = holder.getPositionInScreenOriginal().returnVectorSubtractedFromVector(convertedXY);
+	convertedXY.setY(canvasStyleSize.getY() - convertedXY.getY());
+	
+	convertedXY = convertedXY.returnVectorScaledBy(canvasSize.returnVectorScaledByInverse(canvasStyleSize));
+	return convertedXY;
+
+/*
 	for(var x = 0; x < 300; x++){
 		for(var y = 0; y < 300; y++){
 			isAlphaPixel(canvas, x, y) ? theStr += "." : theStr += "0";
@@ -130,7 +160,7 @@ function getXYPosInDivFromMouse(holder,canvas,xy,y,convertedXY){
 		theStr += "\n";
 	}
 	console.log(theStr);
-
+*/
 	/*
 	convertedXY.setXY(xy,y);
 	

@@ -98,7 +98,7 @@ body .spriteNoScale{
     background-size: contain;
 }
 
-.canvasAsSprite{
+body .canvasAsSprite{
   width: 100%;
   height: 100%;
   display: inline-block;
