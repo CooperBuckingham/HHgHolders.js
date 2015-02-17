@@ -80,7 +80,15 @@ var HHgVector2 = function (x,y){
 		}
 		return new HHgVector2(_x * val.getX(), _y * val.getY());
 	}
-	this.returnVectorScaledByInverse = function(val){
+	this.returnVectorScaledByInverse = function(val, opt){
+		if(val instanceof HHgVector2 === false){
+			if(opt === undefined){
+				val = new HHgVector2(val, val);
+			}else{
+				val = new HHgVector2(val,opt);
+			}
+			
+		}
 		return new HHgVector2(_x / val.getX(), _y / val.getY());
 	}
 	this.returnVectorSubtractedFromVector = function(vB){

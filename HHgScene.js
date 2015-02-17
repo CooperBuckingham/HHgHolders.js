@@ -36,10 +36,18 @@ function doStartHHgScene(){
 
 //----- rotate test
 if(true){
-var theOne = new HHgHolder(300,300);
-	theOne.doMoveToNewParent(HHgScene,new HHgVector2(0,0), true);
+var theOne = new HHgHolder(100,100);
+	theOne.doMoveToNewParent(HHgScene,new HHgVector2(100,100), true);
 	theOne.doAddSprite("pool");
 	theOne.test = "pool";
+
+	setTimeout(function(){
+	theOne.setScaleOriginalTo(3,3);
+	
+	
+
+
+}, 1000);
 
 
 }
@@ -402,9 +410,8 @@ var lastRotate = 0;
 		var ctx = canvas.getContext('2d');
 		canvas.classList.add(holder.getHash());
 		var div = holder.getDiv();
-        canvas.width  = div.offsetWidth;
-        canvas.height = div.offsetHeight;
-
+        canvas.width  = 2 * holder.getWidthNet();
+        canvas.height = 2 * holder.getHeightNet();
         
         if(true){
         	//canvas.style.border   = "2px solid white";
@@ -422,8 +429,10 @@ var lastRotate = 0;
 		*/
 
 		var img = new Image();
+
 		img.crossOrigin = "Anonymous";
 		img.src = fileName;
+		
 		div.appendChild(canvas);
 
       img.onload = function() {
