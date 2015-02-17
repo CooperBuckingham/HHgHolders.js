@@ -50,7 +50,7 @@ var HHgMouse = function HHgMouse(){
 		
 		that.thisMousePosX = x;
 		that.thisMousePosY = y;
-		that.thisFrameTime = +new Date;
+		that.thisFrameTime = window.performance.now();
 		that.lastFrameTime = that.lastFrameTime || that.thisFrameTime;
 		
 	}
@@ -70,6 +70,7 @@ var HHgMouse = function HHgMouse(){
 			return;
 		}
 
+return;
 		holders = findClickedHolder(holders, x, y);
 		if(holders){
 			that.doSetVars(holders, x, y);
@@ -77,13 +78,15 @@ var HHgMouse = function HHgMouse(){
 			return;
 		}
 
-		console.log("found nothing to cllick on");
+		
 			
 	}
 
 	this.doMouseUp = function (holders, x, y){
 		console.log("mouseup");
 		that.mouseCircle.doHide();
+
+		return;
 
 		if(that.clickedDownOn === undefined){
 			return;
@@ -107,7 +110,9 @@ var HHgMouse = function HHgMouse(){
 	this.findClickedHolder = function(holders, x, y){
 		var holder, canvas, xy, convertedXY = new HHgVector2(0,0),canvasSize = new HHgVector2(0,0), canvasStyleSize = new HHgVector2(0,0);
 		for(var i = 0; i < holders.length; i++){
+
 			holder = holders[i];
+
 			canvas = holder.getCanvas();
 			canvasSize.setXY(canvas.width, canvas.height);
 			canvasStyleSize.setXY(canvas.clientWidth, canvas.clientHeight);
@@ -118,31 +123,36 @@ var HHgMouse = function HHgMouse(){
 			}
 
 		}
-		console.log("no alpha test passed");
+		
 		return undefined;
 		
+	}
+
+	this.rotateMouse = function(mouseXY, holder){
+
+
+				var _positionInScreenNet = mouseXY;
+
+			
+				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgScene.returnHalfSizeVector());
+				
+				_positionInScreenNet = holder.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
+
+				var _positionInParentOriginal = holder.getParent().getPositionInScreenOriginal().returnVectorSubtractedFromVector(mouseXY);
+				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(holder.getParent().getScaleNet());
+				_positionInParentOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( holder.getParent().getPositionInScreenNet(), -1 *  holder.getParent().getRotationNet() );
+			
+				return _positionInParentOriginal;
 	}
 
 	return this; //for singleton
 
 }();
 
-function placeRedSquare(canvas, x,y){
 
-var ctx=canvas.getContext("2d");
-var imgData=ctx.createImageData(20,20);
-for (var i=0;i<imgData.data.length;i+=4)
-  {
-  imgData.data[i+0]=255;
-  imgData.data[i+1]=0;
-  imgData.data[i+2]=0;
-  imgData.data[i+3]=255;
-  }
-ctx.putImageData(imgData,x,y);
-}
 
 function getXYPosInDivFromMouse(holder,canvasSize, canvasStyleSize,xy,y,convertedXY){
-	
+	/*
 	convertedXY.setXY(xy,y);
 	convertedXY = convertedXY.returnVectorPlusVector( holder.returnHalfSizeVector() );
 	
@@ -151,30 +161,45 @@ function getXYPosInDivFromMouse(holder,canvasSize, canvasStyleSize,xy,y,converte
 	
 	convertedXY = convertedXY.returnVectorScaledBy(canvasSize.returnVectorScaledByInverse(canvasStyleSize));
 	return convertedXY;
-
-/*
-	for(var x = 0; x < 300; x++){
-		for(var y = 0; y < 300; y++){
-			isAlphaPixel(canvas, x, y) ? theStr += "." : theStr += "0";
-		}
-		theStr += "\n";
-	}
-	console.log(theStr);
-*/
-	/*
-	convertedXY.setXY(xy,y);
-	
-	console.log("canvas pos " + holder.getPositionInScreenOriginal().returnPretty());
-	//convertedXY = convertedXY.returnVectorPlusVector(HHgScene.returnHalfSizeVector());
-	convertedXY = convertedXY.returnVectorPlusVector(holder.returnHalfSizeVector());
-	console.log("mouse x, y " + convertedXY.returnPretty());
-
-
-	convertedXY = (new HHgVector2( canvas.style.left, canvas.style.bottom)).returnVectorSubtractedFromVector(convertedXY);
-	
 	*/
+//above worked for non rotated divs
+//getBoundingClientRect();
+
+var imgData = holder.getCanvas().getContext("2d").getImageData(0,0,holder.getCanvas().width, holder.getCanvas().height);
+for(var i = 0; i < imgData.data.length; i+=4){
+	if(i < imgData.data.length / 4){
+
+	}
+	imgData.data[i] = 255;
+	imgData.data[i+1] = 0;
+	imgData.data[i+2] = 0;
+	imgData.data[i+3] = 255;
+
+	if(i < imgData.data.length / 4){
+		
+	imgData.data[i+1] = 255;
+	}
+}
+
+holder.getCanvas().getContext("2d").putImageData(imgData,0,0);
+
+return;
+
+
+	convertedXY.setXY(xy,y);
+	console.log("mouse P:" + convertedXY.returnPretty());
+	console.log("canvas P: " + holder.getCanvas().getBoundingClientRect().left + " " + holder.getCanvas().getBoundingClientRect().bottom);
+	convertedXY = convertedXY.returnVectorPlusVector( holder.returnHalfSizeVector() );
+	//convertedXY = rotateMouse(convertedXY, holder);
+	
+	convertedXY = holder.getPositionInScreenOriginal().returnVectorSubtractedFromVector(convertedXY);
+	convertedXY.setY(canvasStyleSize.getY() - convertedXY.getY());
+	
+	convertedXY = convertedXY.returnVectorScaledBy(canvasSize.returnVectorScaledByInverse(canvasStyleSize));
 	
 	return convertedXY;
+	
+	
 }
 
 //alpha test for mouse click

@@ -25,6 +25,7 @@ var HHgHolder = function(w, h, zIndex, scale){
 
 	var _rotationOriginal = 0;
 	var _rotationNet = 0;
+	var _rotationStored = 0;
 
 	var _parent;
 	
@@ -32,14 +33,18 @@ var HHgHolder = function(w, h, zIndex, scale){
 
 	var _scaleOriginal = scale;
 	var _scaleNet = scale;
+	var _scaleStored = scale;
+	
 
 	var _scaleIgnoreParentScale = false;
 	var _scaleUniformOnly = false;
 
 	var _zIndex = zIndex || 1;
 	var _positionInScreenOriginal = new HHgVector2(0,0);
-	var _positionInParentOriginal  = new HHgVector2(0,0);
+	var _positionInParentOriginal  = _positionInScreenOriginal;
 	var _positionInScreenNet = _positionInScreenOriginal;
+	var _positionStored = _positionInScreenOriginal;
+	
 	
 
 	var _children;
@@ -99,16 +104,10 @@ var HHgHolder = function(w, h, zIndex, scale){
 
 		//this is to allow position in screen to be absolute regardless of parent rotation or scale
 		if(this.frameDumpPosition()){
-			if(this.test == "soccer"){
-				console.log("soccer moving SCREEN");
-			}else{
-
-			}
+		
 			this.doRecalcPosition();
 		}else{
-			if(this.test == "soccer"){
-				console.log("soccer moving PARENT");
-			}
+			
 			this.updatePositionFromParentMove();
 		}
 
@@ -135,18 +134,24 @@ var HHgHolder = function(w, h, zIndex, scale){
 
 		var returnVal = false;
 
+	
+
 		if(this.frameUpdates.positionTo !== undefined){
 			
 			_positionInScreenOriginal = this.frameUpdates.positionTo;
+			
+
 			returnVal = true;
 		}else if(this.frameUpdates.positionBy !== undefined){
 			
 			_positionInScreenOriginal = _positionInScreenOriginal.returnVectorPlusVector( this.frameUpdates.positionBy);
+
 			returnVal = true;
 		}
 
 		this.frameUpdates.positionBy = undefined;
 		this.frameUpdates.positionTo = undefined;
+		
 
 		return returnVal;
 
@@ -181,6 +186,7 @@ var HHgHolder = function(w, h, zIndex, scale){
 
 	this.frameDumpScale = function(){
 		var returnVal = false;
+
 		if(this.frameUpdates.scaleTo !== undefined){
 			
 			_scaleOriginal = this.frameUpdates.scaleTo;
@@ -369,7 +375,7 @@ this.getVisible = function(){
 
 //============ POSITION ==================
 
-
+	
 
 
 	this.doRecalcPosition = function(forceUpdate){
@@ -407,6 +413,18 @@ this.getVisible = function(){
 				});
 			}
 			
+		}
+
+		this.setPositionStored = function(){
+			_positionStored = _positionInScreenOriginal;
+		}
+
+		this.getPositionStored = function(){
+			return _positionStored;
+		}
+
+		this.setPositionToStored = function(){
+			that.setPositionInScreenTo(_positionStored);
 		}
 		
 
@@ -506,7 +524,17 @@ this.getVisible = function(){
 		}	
 //=============== SCALE ================
 
-		
+		this.setScaleStored = function(){
+			_scaleStored = _scaleOriginal;
+		}
+
+		this.getScaleStored = function(){
+			return _scaleStored;
+		}
+
+		this.setScaleToStored = function(){
+			that.setScaleOriginalTo(_scaleStored);
+		}
 
 		this.returnHalfSizeVector = function(){
 			return new HHgVector2(that.getHalfWidth(), that.getHalfHeight());
@@ -535,6 +563,26 @@ this.getVisible = function(){
 			
 			
 		}
+
+		this.setScaleOriginalBy = function(xy, y){
+
+			if(xy === true){
+				xy = _scaleOriginal.getX();
+			}
+			if(y === true){
+				y = _scaleOriginal.getY();
+			}
+
+			if(xy instanceof HHgVector2 === false){
+				xy = new HHgVector2(xy, y);
+			}
+				
+			
+			this.frameScaleBy(xy);
+			
+			
+		}
+
 
 
 		this.getScaleNet = function(){
@@ -578,6 +626,18 @@ this.getVisible = function(){
 			
 		}
 	//=============== ROTATION ====================
+
+		this.setRotationStored = function(){
+			_rotationStored = _rotationOriginal;
+		}
+
+		this.getRotationStored = function(){
+			return _rotationStored;
+		}
+
+		this.setRotationToStored = function(){
+			that.setRotationOriginalTo(_rotationStored);
+		}
 
 		this.setRotationOriginalTo = function(val){
 			
@@ -786,13 +846,14 @@ this.getVisible = function(){
 	
 
 	this.doMouseDown = function(){
-		console.log("yay")
+		
 		this.setBackgroundColor(true, true, true, .4);
-		this.setScaleOriginalTo(.25,.25);
+		this.setScaleStored();
+		this.setScaleOriginalBy(.75,.75);
 	}
 
-	this.doMouseUp = function(){
-
+	this.doMouseUp = function(mouseWasOverWhenReleased){
+		that.setScaleToStored();
 	}
 
 	this.doMouseMove = function(){
