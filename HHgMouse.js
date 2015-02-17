@@ -70,18 +70,19 @@ var HHgMouse = function HHgMouse(){
 		}
 		
 		var holder, canvas;
-		var xy;
+		var xy, convertedXY = new HHgVector2(0,0);
 		for(var i = 0; i < holders.length; i++){
 			holder = holders[i];
 			canvas = holder.getCanvas();
-			convertedXY = getXYPosInDivFromMouse(canvas,x,y,convertedXY);
-			if(isAlphaPixel(canvas,convertedXY.getX(), convertedXY.getY() ) === false){
+			convertedXY = getXYPosInDivFromMouse(holder,canvas,x,y,convertedXY);
+			if( isAlphaPixel(canvas,convertedXY.getX(), convertedXY.getY() ) === false){
 				that.doSetVars(holder, x, y);
 				that.clickedDownOn.doMouseDown();
 				return;
 			}
 
 		}
+		console.log("no alpha test passed");
 
 	}
 
@@ -116,17 +117,39 @@ var HHgMouse = function HHgMouse(){
 
 }();
 
-function getXYPosInDivFromMouse(canvas,xy,y,convertedXY){
-	convertedXY.setXY(xy,y);
-	convertedXY.returnVectorPlusVector(HHgScene.returnHalfSizeVector());
-	convertedXY = (new HHgVector2(canvas.style.left, canvas.style.bottom)).returnVectorSubtractedFromVector(convertedXY);
+function getXYPosInDivFromMouse(holder,canvas,xy,y,convertedXY){
+	var theStr;
+	console.log("canvas width, height " + canvas.width + " " + canvas.height);
+	console.log("holder width, height " + holder.getDiv().clientWidth + " " + holder.getDiv().clientHeight);
+	console.log("holder width, height " + holder.getDiv().offsetHeight + " " + holder.getDiv().offsetWidth);
 
+	for(var x = 0; x < 300; x++){
+		for(var y = 0; y < 300; y++){
+			isAlphaPixel(canvas, x, y) ? theStr += "." : theStr += "0";
+		}
+		theStr += "\n";
+	}
+	console.log(theStr);
+
+	/*
+	convertedXY.setXY(xy,y);
+	
+	console.log("canvas pos " + holder.getPositionInScreenOriginal().returnPretty());
+	//convertedXY = convertedXY.returnVectorPlusVector(HHgScene.returnHalfSizeVector());
+	convertedXY = convertedXY.returnVectorPlusVector(holder.returnHalfSizeVector());
+	console.log("mouse x, y " + convertedXY.returnPretty());
+
+
+	convertedXY = (new HHgVector2( canvas.style.left, canvas.style.bottom)).returnVectorSubtractedFromVector(convertedXY);
+	
+	*/
+	
 	return convertedXY;
 }
 
 //alpha test for mouse click
 function isAlphaPixel(canvas, xy, y){
-	return canvas.getContext('2d').getImageData(x, y, 1, 1).data[3] > .15 ? false : true;
+	return canvas.getContext('2d').getImageData(xy, y, 1, 1).data[3] > .15 ? false : true;
 }
 
 
