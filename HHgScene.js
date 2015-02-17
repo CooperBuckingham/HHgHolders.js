@@ -37,17 +37,29 @@ function doStartHHgScene(){
 //----- rotate test
 if(true){
 var theOne = new HHgHolder(100,100);
-	theOne.doMoveToNewParent(HHgScene,new HHgVector2(100,100), true);
+	theOne.doMoveToNewParent(HHgScene,new HHgVector2(0,0), true);
 	theOne.doAddSprite("pool");
 	theOne.test = "pool";
+	theOne.setMouseable(false);
+
+	//theOne.setScaleOriginalTo(2,2);
+
+var	theTwo = new HHgHolder(100,100);
+	
+	theTwo.doMoveToNewParent(theOne, new HHgVector2(-270 + 100 ,480 - 100), true);
+	theTwo.doAddSprite("pool");
+	theTwo.test = "soccer";
+
 
 	setTimeout(function(){
-	theOne.setScaleOriginalTo(3,3);
+	
+	theTwo.setRotationOriginalTo(45);
+	//theOne.setPositionInScreenTo(0,-200);
 	
 	
 
 
-}, 1000);
+}, 5000);
 
 
 }
@@ -81,13 +93,13 @@ var theThree = new HHgHolder(540,3);
 var theTwo;
 setTimeout(function(){
 	theTwo = new HHgHolder(100,100);
-	debugger;
+	
 	theTwo.doMoveToNewParent(theOne, new HHgVector2(0,0), true);
 	theTwo.doAddSprite("pool");
 	theTwo.test = "soccer";
 
-	console.log(theTwo.getPositionInParentOriginal().returnPretty());
-	debugger;
+	
+	
 
 
 }, 1000);
@@ -229,6 +241,7 @@ function doAddFunctionsToScene(scene){
 		div.style.left ="" + centricConversion.getX() +"px";
 		div.style.bottom ="" + centricConversion.getY() + "px";
 		div.style.transform="rotate(" + (holder.getRotationNet()) +"deg" +")";
+		
 		div.style.zIndex = "" + holder.getZIndex();
 		scene.doUpdateHolderMouseable(holder);
 		scene.doUpdateHolderVisible(holder);
@@ -253,7 +266,7 @@ function doAddFunctionsToScene(scene){
 		div.style.display ="inline-block";
 		div.style.position = "absolute";
 		div.style.backgroundColor ="blue";
-		//div.style.border = "2px solid black";
+		
 		div.id = scene.getHash();
 
 
@@ -279,7 +292,7 @@ function doAddFunctionsToScene(scene){
 		div.style.display ="inline-block";
 		div.style.position = "absolute";
 		//div.style.backgroundColor =;
-		//div.style.border = "2px solid black";
+		div.style.border = "2px solid black";
 		div.id = holder.getHash();
 
 		scene.doUpdateThisHolder(holder);
@@ -315,44 +328,87 @@ var lastRotate = 0;
 		
 		
 		HHgTopHolder.addEventListener("mousedown", function(e){
-			var relX = e.pageX + wOffset;
-			var relY = HHgScreen.h - (e.pageY + hOffset);
-			console.log("SM: relX relY " + relX +" "+relY);
-			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint( relX, relY),relX - HHgScreen.w / 2, relY - HHgScreen.h / 2  );
+			var relX =  + wOffset;
+			var relY =  + hOffset;
+			
+			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint( e.pageX, e.pageY),e.pageX - HHgScreen.w / 2, HHgScreen.h - (e.pageY - HHgScreen.h / 2)  );
 			return false;
 		}, false);
 
 		HHgTopHolder.addEventListener("mouseup", function(e){
+			return;
 			var relX = e.pageX + wOffset;
 			var relY = HHgScreen.h - (e.pageY + hOffset);
-			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( relX, relY),relX - HHgScreen.w / 2,relY - HHgScreen.h / 2  );
+			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( relX, relY),relX - HHgScreen.w / 2,HHgScreen.h - (relY - HHgScreen.h / 2)   );
 			return false;
 		}, false);
 
 		HHgTopHolder.addEventListener("mousemove", function(e){
 			//this will become a "can drag" check
 			if(!HHgMain.HHgMouse.clickedDown) return;
+
 			var relX = e.pageX + wOffset;
 			var relY = HHgScreen.h - (e.pageY + hOffset);
-			HHgMain.HHgMouse.doMouseMove( relX - HHgScreen.w / 2, relY - HHgScreen.h / 2   );
+			HHgMain.HHgMouse.doMouseMove( relX - HHgScreen.w / 2, HHgScreen.h - (relY - HHgScreen.h / 2)    );
 			return false;
 		}, false);
 
 
 	};
 
-	scene.doesDivContainPoint = function(div, x, y){
+	scene.doesDivContainPoint = function(holder, x, y){
 		//console.log("mouse at relative: " +x +"/" +y + "div at" + div.style.left + "/" + div.style.bottom  );
-			var divW = parseInt(div.style.width),
-		    divH = parseInt(div.style.height);
+			
 
 			//console.log("SM: div w/h " + divW + " " + divH);
 		    //console.log("SM: div pos " + parseInt(div.style.left) + " " + parseInt(div.style.bottom));
+			var canvas = holder.getCanvas();
+		   
+		    
+		    var mousePos = new HHgVector2(x,y);
 
-			if( parseInt(div.style.left) + divW < x ) return false;
-			if( parseInt(div.style.bottom) + divH < y) return false;
-			if( parseInt(div.style.left) > x) return false;
-			if( parseInt(div.style.bottom) > y) return false;
+		    var holderPosNet = holder.getPositionInScreenNet();
+		    
+		    holderPosNet = new HHgVector2(holderPosNet.getX(), HHgScreen.h - (holderPosNet.getY() + holder.getHeightNet()) );
+		   var centerPoint = holderPosNet.returnVectorPlusVector(holder.returnHalfSizeVector());
+		   var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(centerPoint, -1 * holder.getRotationNet());
+
+		   var posInCanvas = holderPosNet.returnVectorSubtractedFromVector(mouseFinalRelative);
+		   console.log("POS IN CANVAS: " + posInCanvas.returnPretty());
+
+		   var left = 0;
+		   var right = holder.getWidthNet();
+		   var bottom = holder.getHeightNet();
+		   var top = 0;
+
+		   var posX = posInCanvas.getX();
+		   var posY = posInCanvas.getY();
+
+
+
+		   if(posX < left){
+		   
+		   	return false;
+		   } 
+
+		   if(posX > right) return false;
+
+		   if(posY < top) return false;
+
+		   if(posY > bottom) return false;
+
+		   console.log("INSIDE!")
+
+		   if( isAlphaPixel(canvas, posX, posY) ) return false;
+		   
+		   console.log("SOLID!")
+
+		    paintYellow(canvas, posInCanvas.getX(), posInCanvas.getY());
+		   placeRedSquare(canvas, posInCanvas.getX(), posInCanvas.getY());
+		   
+
+		  
+			
 
 			return true;
 	};
@@ -366,17 +422,19 @@ var lastRotate = 0;
 			var x = xy;
 		}
 		var arr = document.getElementsByClassName("mouseable");
+
 		
 		var mArr = [];
 		var highestZ = -100;
 		
 		for(var i = 0; i < arr.length; i++ ){
 			
-			if(scene.doesDivContainPoint(arr[i],x,y)){
-				//console.log("found click div");
+			if(scene.doesDivContainPoint(scene.getHolderFromDiv(arr[i]),x,y)){
+
 				if(mArr.length < 1){
 					mArr.push(scene.getHolderFromDiv(arr[i]));
 				}
+
 
 				for(var j = 0; j < mArr.length; j++){
 					if(+arr[i].zIndex >= mArr[j].zIndex){
@@ -387,6 +445,7 @@ var lastRotate = 0;
 				}
 				
 			}
+
 		}
 
 		return mArr;
@@ -396,6 +455,10 @@ var lastRotate = 0;
 	scene.getHolderFromDiv = function (div){
 		return scene._holders[div.id];
 	};
+
+	scene.getCanvasFromDiv = function (div){
+		return scene._holders[div.id].getCanvas();
+	}
 
 	scene.setBackgroundImageForHolder = function(holder, fileName){
 		//holder.getDiv().style.backgroundImage = "url(" + fileName +")";
@@ -410,8 +473,8 @@ var lastRotate = 0;
 		var ctx = canvas.getContext('2d');
 		canvas.classList.add(holder.getHash());
 		var div = holder.getDiv();
-        canvas.width  = 2 * holder.getWidthNet();
-        canvas.height = 2 * holder.getHeightNet();
+        canvas.width  = holder.getWidthNet();
+        canvas.height = holder.getHeightNet();
         
         if(true){
         	//canvas.style.border   = "2px solid white";
@@ -450,7 +513,43 @@ var lastRotate = 0;
 		HHgSceneDiv.appendChild(HHgSVG);
 	}
 
+function placeRedSquare(canvas, x,y){
 
+var ctx=canvas.getContext("2d");
+var imgData=ctx.createImageData(10,10);
+for (var i=0;i<imgData.data.length;i+=4)
+  {
+  imgData.data[i+0]=0;
+  imgData.data[i+1]=255;
+  imgData.data[i+2]=0;
+  imgData.data[i+3]=255;
+  }
+ctx.putImageData(imgData,x,y);
+}
+
+function paintYellow(canvas, x, y){
+	var imgData = canvas.getContext("2d").getImageData(0,0,canvas.width, canvas.height);
+for(var i = 0; i < imgData.data.length; i+=4){
+	if(i < imgData.data.length / 4){
+
+	}
+	imgData.data[i] = 255;
+	imgData.data[i+1] = 0;
+	imgData.data[i+2] = 0;
+	imgData.data[i+3] = 255;
+
+	if(i < imgData.data.length / 4){
+		
+	imgData.data[i+1] = 255;
+	}
+}
+
+canvas.getContext("2d").putImageData(imgData,0,0);
+}
+
+function isAlphaPixel(canvas, xy, y){
+	return canvas.getContext('2d').getImageData(xy, y, 1, 1).data[3] > .15 ? false : true;
+}
 
 	
 };
