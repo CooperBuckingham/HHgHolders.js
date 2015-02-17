@@ -36,7 +36,7 @@ function doStartHHgScene(){
 
 //----- rotate test
 if(true){
-var theOne = new HHgHolder(100,100);
+var theOne = new HHgHolder(300,300);
 	theOne.doMoveToNewParent(HHgScene,new HHgVector2(0,0), true);
 	theOne.doAddSprite("pool");
 	theOne.test = "pool";
@@ -271,7 +271,7 @@ function doAddFunctionsToScene(scene){
 		div.style.display ="inline-block";
 		div.style.position = "absolute";
 		//div.style.backgroundColor =;
-		div.style.border = "2px solid black";
+		//div.style.border = "2px solid black";
 		div.id = holder.getHash();
 
 		scene.doUpdateThisHolder(holder);
@@ -309,6 +309,7 @@ var lastRotate = 0;
 		HHgTopHolder.addEventListener("mousedown", function(e){
 			var relX = e.pageX + wOffset;
 			var relY = HHgScreen.h - (e.pageY + hOffset);
+			console.log("SM: relX relY " + relX +" "+relY);
 			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint( relX, relY),relX - HHgScreen.w / 2, relY - HHgScreen.h / 2  );
 			return false;
 		}, false);
@@ -336,11 +337,14 @@ var lastRotate = 0;
 		//console.log("mouse at relative: " +x +"/" +y + "div at" + div.style.left + "/" + div.style.bottom  );
 			var divW = parseInt(div.style.width),
 		    divH = parseInt(div.style.height);
-			
+
+			//console.log("SM: div w/h " + divW + " " + divH);
+		    //console.log("SM: div pos " + parseInt(div.style.left) + " " + parseInt(div.style.bottom));
+
 			if( parseInt(div.style.left) + divW < x ) return false;
-			if( parseInt(div.style.bottom) + divH > y) return false;
+			if( parseInt(div.style.bottom) + divH < y) return false;
 			if( parseInt(div.style.left) > x) return false;
-			if( parseInt(div.style.bottom) < y) return false;
+			if( parseInt(div.style.bottom) > y) return false;
 
 			return true;
 	};
@@ -361,13 +365,13 @@ var lastRotate = 0;
 		for(var i = 0; i < arr.length; i++ ){
 			
 			if(scene.doesDivContainPoint(arr[i],x,y)){
-
+				//console.log("found click div");
 				if(mArr.length < 1){
 					mArr.push(scene.getHolderFromDiv(arr[i]));
 				}
 
 				for(var j = 0; j < mArr.length; j++){
-					if(+arr[i].style.zIndex >= mArr[j].style.zIndex){
+					if(+arr[i].zIndex >= mArr[j].zIndex){
 						mArr.unshift(scene.getHolderFromDiv(arr[i]));
 						break;
 					}
@@ -397,14 +401,16 @@ var lastRotate = 0;
 		canvas.classList.add("canvasAsSprite");
 		var ctx = canvas.getContext('2d');
 		canvas.classList.add(holder.getHash());
-        //canvas.width  = 200;
-        //canvas.height = 200;
-        //canvas.style.position = "absolute";
-        if(showDebugSquares){
-        	canvas.style.border   = "1px solid";
+		var div = holder.getDiv();
+        canvas.width  = div.offsetWidth;
+        canvas.height = div.offsetHeight;
+
+        
+        if(true){
+        	//canvas.style.border   = "2px solid white";
         }
         holder.setCanvas(canvas);
-        var div = holder.getDiv();
+        
 
         /*
         var grd=ctx.createRadialGradient(75,50,5,90,60,100);
@@ -416,6 +422,7 @@ var lastRotate = 0;
 		*/
 
 		var img = new Image();
+		img.crossOrigin = "Anonymous";
 		img.src = fileName;
 		div.appendChild(canvas);
 
