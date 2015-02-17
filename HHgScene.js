@@ -35,7 +35,7 @@ function doStartHHgScene(){
 
 
 //----- rotate test
-if(true){
+if(false){
 var theOne = new HHgHolder(100,100);
 	theOne.doMoveToNewParent(HHgScene,new HHgVector2(0,0), true);
 	theOne.doAddSprite("pool");
@@ -46,7 +46,7 @@ var theOne = new HHgHolder(100,100);
 
 var	theTwo = new HHgHolder(100,100);
 	
-	theTwo.doMoveToNewParent(theOne, new HHgVector2(-270 + 100 ,480 - 100), true);
+	theTwo.doMoveToNewParent(theOne, new HHgVector2(50,50), true);
 	theTwo.doAddSprite("pool");
 	theTwo.test = "soccer";
 
@@ -55,6 +55,7 @@ var	theTwo = new HHgHolder(100,100);
 	
 	theTwo.setRotationOriginalTo(45);
 	//theOne.setPositionInScreenTo(0,-200);
+	theOne.setScaleOriginalTo(2,2);
 	
 	
 
@@ -124,7 +125,7 @@ setTimeout(function(){
 
 }
 
-if(false){
+if(true){
 
 	var theOne = new HHgHolder(100,100);
 	theOne.doMoveToNewParent(HHgScene,new HHgVector2(-200,-200), true);
@@ -292,7 +293,7 @@ function doAddFunctionsToScene(scene){
 		div.style.display ="inline-block";
 		div.style.position = "absolute";
 		//div.style.backgroundColor =;
-		div.style.border = "2px solid black";
+		//div.style.border = "2px solid black";
 		div.id = holder.getHash();
 
 		scene.doUpdateThisHolder(holder);
@@ -328,15 +329,14 @@ var lastRotate = 0;
 		
 		
 		HHgTopHolder.addEventListener("mousedown", function(e){
-			var relX =  + wOffset;
-			var relY =  + hOffset;
+			var relX =  e.pageX + wOffset;
+			var relY =  e.pageY + hOffset;
 			
-			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint( e.pageX, e.pageY),e.pageX - HHgScreen.w / 2, HHgScreen.h - (e.pageY - HHgScreen.h / 2)  );
+			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(relX , relY),relX - HHgScreen.w / 2, HHgScreen.h - (relY - HHgScreen.h / 2)  );
 			return false;
 		}, false);
 
 		HHgTopHolder.addEventListener("mouseup", function(e){
-			return;
 			var relX = e.pageX + wOffset;
 			var relY = HHgScreen.h - (e.pageY + hOffset);
 			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( relX, relY),relX - HHgScreen.w / 2,HHgScreen.h - (relY - HHgScreen.h / 2)   );
@@ -356,7 +356,7 @@ var lastRotate = 0;
 
 	};
 
-	scene.doesDivContainPoint = function(holder, x, y){
+	scene.doesHolderContainPoint = function(holder, x, y){
 		//console.log("mouse at relative: " +x +"/" +y + "div at" + div.style.left + "/" + div.style.bottom  );
 			
 
@@ -374,7 +374,7 @@ var lastRotate = 0;
 		   var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(centerPoint, -1 * holder.getRotationNet());
 
 		   var posInCanvas = holderPosNet.returnVectorSubtractedFromVector(mouseFinalRelative);
-		   console.log("POS IN CANVAS: " + posInCanvas.returnPretty());
+		   
 
 		   var left = 0;
 		   var right = holder.getWidthNet();
@@ -384,12 +384,7 @@ var lastRotate = 0;
 		   var posX = posInCanvas.getX();
 		   var posY = posInCanvas.getY();
 
-
-
-		   if(posX < left){
-		   
-		   	return false;
-		   } 
+		   if(posX < left) return false;
 
 		   if(posX > right) return false;
 
@@ -397,18 +392,12 @@ var lastRotate = 0;
 
 		   if(posY > bottom) return false;
 
-		   console.log("INSIDE!")
+		   //now adjust for scaled canvas
+		   var canvasRatio = new HHgVector2(canvas.width, canvas.height);
+			canvasRatio = canvasRatio.returnVectorScaledByInverse((new HHgVector2(canvas.clientWidth, canvas.clientHeight)));
+			posInCanvas = posInCanvas.returnVectorScaledBy(canvasRatio);
 
-		   if( isAlphaPixel(canvas, posX, posY) ) return false;
-		   
-		   console.log("SOLID!")
-
-		    paintYellow(canvas, posInCanvas.getX(), posInCanvas.getY());
-		   placeRedSquare(canvas, posInCanvas.getX(), posInCanvas.getY());
-		   
-
-		  
-			
+		   if( isAlphaPixel(canvas, posInCanvas.getX(), posInCanvas.getY()) ) return false;
 
 			return true;
 	};
@@ -426,19 +415,25 @@ var lastRotate = 0;
 		
 		var mArr = [];
 		var highestZ = -100;
+		var thisHolder;
 		
 		for(var i = 0; i < arr.length; i++ ){
+			thisHolder = scene.getHolderFromDiv(arr[i]);
 			
-			if(scene.doesDivContainPoint(scene.getHolderFromDiv(arr[i]),x,y)){
+			if(scene.doesHolderContainPoint(thisHolder,x,y)){
+
+				console.log("Z of Clickable:" + thisHolder.getZIndex());
 
 				if(mArr.length < 1){
-					mArr.push(scene.getHolderFromDiv(arr[i]));
+					mArr.push(thisHolder);
+					continue;
 				}
 
-
+				//this just ensures that index 0 is top clicked, then doens't care about order of the rest
+				//we only pass all holders on in case there's some need to drag ALL things under the mouse
 				for(var j = 0; j < mArr.length; j++){
-					if(+arr[i].zIndex >= mArr[j].zIndex){
-						mArr.unshift(scene.getHolderFromDiv(arr[i]));
+					if(thisHolder.getZIndex() >= mArr[j].getZIndex()){
+						mArr.unshift(thisHolder);
 						break;
 					}
 
@@ -473,8 +468,8 @@ var lastRotate = 0;
 		var ctx = canvas.getContext('2d');
 		canvas.classList.add(holder.getHash());
 		var div = holder.getDiv();
-        canvas.width  = holder.getWidthNet();
-        canvas.height = holder.getHeightNet();
+        canvas.width  = 2 * holder.getWidthNet();
+        canvas.height = 2 * holder.getHeightNet();
         
         if(true){
         	//canvas.style.border   = "2px solid white";
@@ -549,6 +544,17 @@ canvas.getContext("2d").putImageData(imgData,0,0);
 
 function isAlphaPixel(canvas, xy, y){
 	return canvas.getContext('2d').getImageData(xy, y, 1, 1).data[3] > .15 ? false : true;
+}
+
+function getpixelcolour(canvas, x, y) {
+  var cx = canvas.getContext('2d');
+  var pixel = cx.getImageData(x, y, 1, 1);
+  return {
+    r: pixel.data[0],
+    g: pixel.data[1],
+    b: pixel.data[2],
+    a: pixel.data[3]
+  };
 }
 
 	
