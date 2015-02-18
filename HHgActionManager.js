@@ -9,7 +9,6 @@ var HHgActionManager = {
   doRemoveAction: function(action){
     
     if(HHg.doRemoveThingFromArray(this._actionList, action)){
-      console.log("action removed");
     }else{
       console.log("failed to find action to be removed");
     };

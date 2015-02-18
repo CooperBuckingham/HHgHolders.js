@@ -85,7 +85,7 @@ function doStartHHgScene(){
 	
 	function sceneTests(){
 	//----- rotate test
-		if(true){
+		if(false){
 			var theOne = new HHgHolder(100,100);
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
 			theOne.doAddSprite("pool");
@@ -162,7 +162,7 @@ function doStartHHgScene(){
 			}, 8000);
 		}
 
-		if(false){
+		if(true){
 
 			var theOne = new HHgHolder(100,100);
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
@@ -187,7 +187,7 @@ function doStartHHgScene(){
 				holder.doAddSprite(name);
 			}
 
-			for(var i = 0; i < 50; i++){
+			for(var i = 0; i < 100; i++){
 
 				var size = HHg.returnRandomIntLowIncHighExcl(25,200);
 
