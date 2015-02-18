@@ -124,7 +124,7 @@ var	theTwo = new HHgHolder(100,100);
 	theTwo.doMoveToNewParent(theOne, new HHgVector2(100,100), true);
 	theTwo.doAddSprite("soccer");
 	theTwo.test = "soccer";
-	theTwo.setMouseable(false);
+	theTwo.setMouseable(true);
 
 var	theThree = new HHgHolder(100,100);
 	
@@ -136,9 +136,9 @@ var	theThree = new HHgHolder(100,100);
 
 	setTimeout(function(){
 	
-	//theTwo.setRotationOriginalTo(45);
+	theOne.setRotationOriginalTo(60);
 	theOne.setPositionInScreenTo(0,-200);
-	//theOne.setScaleOriginalTo(2,2);
+	theOne.setScaleOriginalTo(2,2);
 	
 	
 
