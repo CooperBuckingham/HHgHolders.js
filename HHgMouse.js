@@ -23,10 +23,10 @@ var HHgMouse = function HHgMouse(){
 
 
 		that.mouseCircle = new HHgHolder(200,200, 100);
-		that.mouseCircle.doMoveToNewParent(HHgGameHolder, new HHgVector2(0,0), false);
-		that.mouseCircle.doAddSprite("pool");
-		that.mouseCircle.setVisible(true);
-		that.mouseCircle.setMouseable(false);
+		//that.mouseCircle.doMoveToNewParent(HHgGameHolder, new HHgVector2(0,0), false);
+		//that.mouseCircle.doAddSprite("pool");
+		//that.mouseCircle.setVisible(true);
+		//that.mouseCircle.setMouseable(false);
 		
 
 
@@ -64,9 +64,6 @@ var HHgMouse = function HHgMouse(){
 
 	this.doMouseDown = function (holders, xy){
 		that.mouseCircle.doShow(xy);
-
-		
-		console.log("mouse down " + xy.returnPretty());
 		
 		if(!holders || holders.length < 1){
 			
@@ -79,10 +76,8 @@ var HHgMouse = function HHgMouse(){
 	}
 
 	this.doMouseUp = function (holders, xy){
-		//console.log("mouseup");
-		that.mouseCircle.doHide();
-
 		
+		that.mouseCircle.doHide();
 
 		if(that.clickedDownOn === undefined){
 			return;
