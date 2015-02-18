@@ -72,6 +72,7 @@ this.isScene = false;
 			_widthOriginal = HHgScreen.w;
 			_heightOriginal = HHgScreen.h;
 			_parent = HHgScene;
+			_mouseable = false;
 	}
 
 	this.setCanvas = function(canvas){
