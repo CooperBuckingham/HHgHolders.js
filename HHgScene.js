@@ -16,7 +16,7 @@ var testContainer;
 
 var showDebugSquares;
 
-var HHgScene, HHgSVG, HHgSceneDiv, HHgStable;
+var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHg0Vector;
 var HHgTopHolder = document.getElementById("all");
 
 HHgTopHolder.style.width = "" + HardwareScreen.w +"px";
@@ -24,28 +24,60 @@ HHgTopHolder.style.height = "" + HardwareScreen.h +"px";
 
 function doStartHHgScene(){
 	console.log("scene setup start");
-	HHgScene = new HHgHolder(HHgScreen.w,HHgScreen.h);
+	HHg0Vector = new HHgVector2(0,0);
+	HHg0Vector.setX = function(){};;
+	HHg0Vector.setY = function(){};;
+	HHg0Vector.setXY = function(){};;
+
+	//HHgTestScene = new HHgHolder(HardwareScreen.w, HardwareScreen.h);
+HHgScreenDiff = new HHgVector2(0,0);
+	HHgScene = new HHgHolder(HardwareScreen.w,HardwareScreen.h);
 	
 	HHgScene.test = "scene";
 
 	//we add all the custom functions to the scene here
 	doAddFunctionsToScene(HHgScene);
-
+	HHgGameHolder = HHgScene;
 	HHgScene.doAddScene();
 	
 	HHgScene.setMouseable(false);
-	
-	//HHgStable = new HHgHolder(HHgScene.getWidthNet(), HHgScene.getHeightNet(), -999);
-	HHgScene.doInitSVG();
+	HHgScene.setPositionInParentTo = function(){};
+	HHgScene.setPositionInScreenTo = function(){};
+	HHgScene.setPositionInScreenBy = function(){};
 
+	HHgSceneDiv = HHgScene.getDiv();
+
+	var tempHHgGameHolder = new HHgHolder(HHgScreen.w, HHgScreen.h);
+
+	tempHHgGameHolder.doMoveToNewParent(HHgScene, new HHgVector2(0,0));
+	tempHHgGameHolder.setScaleOriginalTo(HardwareScreen.w / HHgScreen.w, HardwareScreen.w / HHgScreen.w);
+
+	HHgGameHolder = tempHHgGameHolder;
+
+	HHgSceneDiv = HHgGameHolder.getDiv();
+	HHgSceneDiv.style.border = "2px solid black";
+
+	HHgScreenDiff = new HHgVector2(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
+	console.log("Screen diff " + HHgScreenDiff.returnPretty());
+
+	
+	HHgGameHolder.setPositionInParentTo = function(){};
+	HHgGameHolder.setPositionInScreenTo = function(){};
+	HHgGameHolder.setPositionInScreenBy = function(){};
+	HHgGameHolder.getPositionInScreenNet = function(){
+		//return HHg0Vector;
+		return HHg0Vector.returnVectorPlusVector(HHgScreenDiff);
+	}
+
+	
 
 //----- rotate test
-if(false){
+if(true){
 var theOne = new HHgHolder(100,100);
-	theOne.doMoveToNewParent(HHgScene,new HHgVector2(0,0), true);
+	theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
 	theOne.doAddSprite("pool");
 	theOne.test = "pool";
-	theOne.setMouseable(false);
+	theOne.setMouseable(true);
 
 	//theOne.setScaleOriginalTo(2,2);
 
@@ -54,12 +86,14 @@ var	theTwo = new HHgHolder(100,100);
 	theTwo.doMoveToNewParent(theOne, new HHgVector2(100,100), true);
 	theTwo.doAddSprite("soccer");
 	theTwo.test = "soccer";
+	theTwo.setMouseable(false);
 
 var	theThree = new HHgHolder(100,100);
 	
-	theThree.doMoveToNewParent(theOne, new HHgVector2(-100,-100), true);
+	theThree.doMoveToNewParent(theOne, new HHgVector2(-400,-300), true);
 	theThree.doAddSprite("orange");
 	theThree.test = "orange";
+	theThree.setMouseable(true);
 
 
 	setTimeout(function(){
@@ -80,24 +114,24 @@ var	theThree = new HHgHolder(100,100);
 if(false){
 
 var theOne = new HHgHolder(100,100);
-	theOne.doMoveToNewParent(HHgScene,new HHgVector2(-200,-200), true);
+	theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
 	theOne.doAddSprite("pool");
 	theOne.test = "pool";
 
 
 var theThree = new HHgHolder(540,3);
-	theThree.doMoveToNewParent(HHgScene,new HHgVector2(0,0), true);
+	theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
 	theThree.doAddSprite("orange");
 	theThree.test = "orange";
 
 var theThree = new HHgHolder(3,540);
-	theThree.doMoveToNewParent(HHgScene,new HHgVector2(0,0), true);
+	theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
 	theThree.doAddSprite("orange");
 	theThree.test = "orange";
 
 	
 var theThree = new HHgHolder(540,3);
-	theThree.doMoveToNewParent(HHgScene,new HHgVector2(0,100), true);
+	theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,100), true);
 	theThree.doAddSprite("orange");
 	theThree.test = "orange";
 
@@ -136,10 +170,10 @@ setTimeout(function(){
 
 }
 
-if(true){
+if(false){
 
 	var theOne = new HHgHolder(100,100);
-	theOne.doMoveToNewParent(HHgScene,new HHgVector2(-200,-200), true);
+	theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
 	theOne.doAddSprite("pool");
 	theOne.test = "pool";
 
@@ -269,12 +303,13 @@ function doAddFunctionsToScene(scene){
 	}
 
 	scene.doAnyScreenConversion = function(xyPos, holder){
-		if(holder.isScene === true){
-			return xyPos.returnVectorPlusVector(new HHgVector2(0, (HardwareScreen.h - HHgScene.getHeightNet())/2 ) );
-		}else{
-			return HHgScene.returnHalfSizeVector().returnVectorSubtractedFromVector(xyPos).returnVectorScaledBy(scene.ratio).returnVectorPlusVector(HHgScene.returnHalfSizeVector());
-		}
+		//return HHgScreenDiff.returnVectorSubtractedFromVector(xyPos);
+		return xyPos;
+		//return xyPos.returnVectorScaledBy(HHgGameHolder.getScaleNet());
+		//return HHgGameHolder.returnHalfSizeVector().returnVectorSubtractedFromVector(xyPos).returnVectorScaledBy(HHgGameHolder.getScaleNet()).returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
+		
 	};
+
 
 	
 
@@ -293,21 +328,11 @@ function doAddFunctionsToScene(scene){
 		
 		div.id = scene.getHash();
 		div.classList.add("scene");
-		//div.style.width = HHgScreen.w;
-		//div.style.height = HHgScreen.h;
-		scene.isScene = true;
-		scene.setSceneProperties(HardwareScreen, HHgScreen);
-
-		HHgSceneDiv = div;
 		
 		scene.doUpdateThisHolder(scene);
 
 		
 		scene._holders[div.id] = scene;
-
-		//div.style.left = parseInt(div.style.left) - HHgScene.getHalfWidth();
-		//div.style.bottom = parseInt(div.style.bottom) - HHgScene.getHalfHeight();
-	
 
 		HHgTopHolder.appendChild(div);
 		
@@ -332,19 +357,6 @@ function doAddFunctionsToScene(scene){
 
 		HHgSceneDiv.appendChild(div);
 	};
-
-var lastRotate = 0;
-
-	scene.test = function(delta, holder){
-	
-	
-		lastRotate += delta/100;
-		if(lastRotate > 30) lastRotate = 0;
-		holder.setRotationOriginal(lastRotate);
-		holder.setPositionInParent(new HHgVector2(0,.1), true);
-		holder.setScaleXYOffsetMultiplied(.999,.999);
-		//holder.setRotationOriginal(90);
-	};
 	
 
 
@@ -354,20 +366,18 @@ var lastRotate = 0;
 		var wOffset = 0;
 		var hOffset = 0;
 
-		
-		
 		HHgTopHolder.addEventListener("mousedown", function(e){
-			var relX =  e.pageX + wOffset;
-			var relY =  e.pageY + hOffset;
-			
-			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(relX , relY),relX - HHgScreen.w / 2, HHgScreen.h - (relY - HHgScreen.h / 2)  );
+			var relX =  e.pageX;
+			var relY =  e.pageY;
+
+			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(relX , relY),relX - HardwareScreen.w / 2, HardwareScreen.h - (relY - HardwareScreen.h / 2)  );
 			return false;
 		}, false);
 
 		HHgTopHolder.addEventListener("mouseup", function(e){
-			var relX = e.pageX + wOffset;
-			var relY = HHgScreen.h - (e.pageY + hOffset);
-			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( relX, relY),relX - HHgScreen.w / 2,HHgScreen.h - (relY - HHgScreen.h / 2)   );
+			var relX = e.pageX;
+			var relY = e.pageY;
+			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( relX, relY),relX - HardwareScreen.w / 2,HardwareScreen.h - (relY - HardwareScreen.h / 2)   );
 			return false;
 		}, false);
 
@@ -375,9 +385,9 @@ var lastRotate = 0;
 			//this will become a "can drag" check
 			if(!HHgMain.HHgMouse.clickedDown) return;
 
-			var relX = e.pageX + wOffset;
-			var relY = HHgScreen.h - (e.pageY + hOffset);
-			HHgMain.HHgMouse.doMouseMove( relX - HHgScreen.w / 2, HHgScreen.h - (relY - HHgScreen.h / 2)    );
+			var relX = e.pageX;
+			var relY = e.pageY;
+			HHgMain.HHgMouse.doMouseMove( relX - HardwareScreen.w / 2, HardwareScreen.h - (relY - HardwareScreen.h / 2)    );
 			return false;
 		}, false);
 
@@ -387,13 +397,16 @@ var lastRotate = 0;
 	scene.doesHolderContainPoint = function(holder, x, y){
 			var canvas = holder.getCanvas();
 		   
-		    
 		    var mousePos = new HHgVector2(x,y);
+		    //mousePos = mousePos.returnVectorPlusVector(screenOffset);
+		    console.log("MOUSE POS: " + x + " " + y);
 
+		   
 		    var holderPosNet = holder.getPositionInScreenNet();
 		    
-		    holderPosNet = new HHgVector2(holderPosNet.getX(), HHgScreen.h - (holderPosNet.getY() + holder.getHeightNet()) );
+		    holderPosNet = new HHgVector2(holderPosNet.getX(), HardwareScreen.h - (holderPosNet.getY() + holder.getHeightNet()) );
 		   var centerPoint = holderPosNet.returnVectorPlusVector(holder.returnHalfSizeVector());
+		   console.log("CENTER PT: " + centerPoint.returnPretty());
 		   var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(centerPoint, -1 * holder.getRotationNet());
 
 		   var posInCanvas = holderPosNet.returnVectorSubtractedFromVector(mouseFinalRelative);
@@ -445,7 +458,6 @@ var lastRotate = 0;
 			
 			if(scene.doesHolderContainPoint(thisHolder,x,y)){
 
-				console.log("Z of Clickable:" + thisHolder.getZIndex());
 
 				if(mArr.length < 1){
 					mArr.push(thisHolder);

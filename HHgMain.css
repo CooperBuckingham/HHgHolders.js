@@ -115,6 +115,13 @@ html body img{
 
 html body .scene{
   overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+html body .game-holder{
+  
 }
 
 
