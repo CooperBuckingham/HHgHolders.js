@@ -121,7 +121,7 @@ html body .scene{
 }
 
 html body .game-holder{
-  
+  overflow: visible;
 }
 
 
