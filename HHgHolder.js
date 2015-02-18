@@ -8,8 +8,8 @@ var HHgHolder = function(w, h, zIndex, scale){
 	}
 
 	zIndex = zIndex || 0;
-	w = w || HHgScene.getWidthOriginal();
-	h = h || HHgScene.getHeightOriginal();
+	w = w || HHgGameHolder.getWidthOriginal();
+	h = h || HHgGameHolder.getHeightOriginal();
 
 	if(scale instanceof HHgVector2){
 		//scale is fine
@@ -86,17 +86,6 @@ this.isScene = false;
 		scaleTo: undefined,
 	}
 
-	this.setSceneProperties = function(deviceScreen, targetScreen){
-		_widthOriginal = targetScreen.w;
-		_heightOriginal = targetScreen.h;
-		_zIndex = 0;
-
-		//these are both set to width to keep scale uniform
-		that.setScaleOriginalTo( new HHgVector2(deviceScreen.w / targetScreen.w, deviceScreen.w / targetScreen.w) );
-		that.ratio = deviceScreen.w / targetScreen.w;
-		//_scaleNet = _scaleOriginal;
-
-	}
 
 	this.doFrameDump = function(){
 		//this will call all the do recalcs, which will then call the complex stuff, which will then
@@ -398,14 +387,13 @@ this.getVisible = function(){
 				return;
 			}
 
-			
-			
-				_positionInScreenNet = _positionInScreenOriginal;
+				//console.log("GH SCALE" + HHgGameHolder.getScaleNet().returnPretty());
+				_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNet());
 
 			if(_parent !== undefined){
 
 			
-				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgScene.returnHalfSizeVector());
+				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
 				
 				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
 
@@ -416,8 +404,6 @@ this.getVisible = function(){
 
 			}
 
-
-			
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
@@ -447,9 +433,7 @@ this.getVisible = function(){
 			if(xy === undefined){
 				xy = new HHgVector2(0,0);
 			}
-			if(this._parent === "stop"){
-				return;
-			}
+			
 			
 			this.framePositionTo(xy);
 
@@ -461,9 +445,7 @@ this.getVisible = function(){
 			if(xy === undefined){
 				xy = new HHgVector2(0,0);
 			}
-			if(this._parent === "stop"){
-				return;
-			}
+			
 
 			this.framePositionBy(xy);
 		}
@@ -484,17 +466,13 @@ this.getVisible = function(){
 			return _positionInScreenNet;
 		}
 
-		this.setPositionInParentTo = function(xy)
+		this.setPositionInParentTo = function(xy, y)
 		{
 			
-
-
-			if(this._parent === "stop"){
-				return;
-			}	
-
-			console.log("THIS IS ODD");	
-
+			xy = HHg.returnVectorFilter(xy,y,_positionInParentOriginal);
+			if(xy === undefined){
+				xy = new HHgVector2(0,0);
+			}
 					
 			//getting hacky here, but saving the original, then dumping any buffer, then using it to set the udpate
 			
@@ -766,7 +744,7 @@ this.getVisible = function(){
 
 		}
 
-		_parent = newParent || HHgScene;
+		_parent = newParent || HHgGameHolder;
 
 
 		if(_parent instanceof HHgHolder !== true){
