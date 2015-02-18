@@ -66,7 +66,7 @@ var HHgHolder = function(w, h, zIndex, scale){
 this.isScene = false;
 
 	this.setGameHolder = function(){
-			console.log("do we call this?");
+			
 			_scaleOriginal = new HHgVector2(HardwareScreen.w / HHgScreen.w, HardwareScreen.w / HHgScreen.w);
 			_scaleNet = _scaleOriginal;
 			_widthOriginal = HHgScreen.w;
@@ -98,11 +98,6 @@ this.isScene = false;
 
 
 	this.doFrameDump = function(){
-		//this will call all the do recalcs, which will then call the complex stuff, which will then
-		//use the framebuffers...I think
-		if(this.test == "soccer"){
-			console.log("soccer is dirty");
-		}
 
 		if(this.frameDumpScale()){
 			this.doRecalcScale();
@@ -111,8 +106,6 @@ this.isScene = false;
 		if(this.frameDumpRotation()){
 			this.doRecalcRotation();
 		}
-
-		
 
 		//this is to allow position in screen to be absolute regardless of parent rotation or scale
 		if(this.frameDumpPosition()){
@@ -123,7 +116,6 @@ this.isScene = false;
 			this.updatePositionFromParentMove();
 		}
 
-		
 		this.doTellSceneToUpdate();
 
 	}
@@ -143,10 +135,7 @@ this.isScene = false;
 
 	this.frameDumpPosition = function(){
 		
-
 		var returnVal = false;
-
-	
 
 		if(this.frameUpdates.positionTo !== undefined){
 			
@@ -166,12 +155,8 @@ this.isScene = false;
 		
 
 		return returnVal;
-
-
-
-		
 	}
-	//the key is that update holder is gettign called a bunch of times, and on the third time, rotation net is zero, check console
+	
 
 	this.frameDumpRotation = function(){
 
@@ -215,8 +200,6 @@ this.isScene = false;
 
 		return returnVal;
 		
-		
-
 	}
 
 this.framePositionBy = function(xy){
@@ -412,10 +395,6 @@ this.getVisible = function(){
 				_positionInParentOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(), -1 *  _parent.getRotationNet() );
 				
 				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNet());
-
-				if(this.test === "soccer"){
-					console.log("parent pos after screen calc " + _positionInParentOriginal.returnPretty());
-				}
 
 			}
 
