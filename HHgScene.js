@@ -82,11 +82,10 @@ HHgScreenDiff = new HHgVector2(0,0);
 		HHgGameHolder.setPositionInScreenBy = function(){};
 		HHgGameHolder.doFrameDump = function(){};
 
-	HHgGameHolder.getPositionInScreenNet = function(){
-		console.log("called????");
-		return HHg0Vector;
-		//return HHg0Vector.returnVectorPlusVector(HHgScreenDiff);
-	}
+		HHgGameHolder.getPositionInScreenNet = function(){
+			return HHg0Vector;
+			//return HHg0Vector.returnVectorPlusVector(HHgScreenDiff);
+		}
 
 
 		HHgGameHolder.setGameHolder();
@@ -255,18 +254,7 @@ for(var i = 0; i < 50; i++){
 	listOfHolder.push(testBall)
 }
 }
-//end rotate test
 
-
-//theOne.doActionMoveInScreen(100,-200,10,true);
-//theOne.doActionMoveInScreen(-100,0,5,true);
-
-//theOne.doActionMoveInScreen(theTwo.getPositionInScreenOriginal(),5,false);
-//theOne.doActionMoveInScreen(50,200,5,true);
-
-//theOne.doActionFollowQuad(new HHgVector2(100, 0), theTwo.getPositionInScreenOriginal(), 20);
-
-//theOne.setRotationOriginalTo(22);
 
 }
 
@@ -335,9 +323,7 @@ function doAddFunctionsToScene(scene){
 		scene.doUpdateHolderMouseable(holder);
 		scene.doUpdateHolderVisible(holder);
 
-		//this is hold over form the experiment with actually scaling divs
-		//div.style.transform="scale(" + holder.getScaleNet().getX()+","+ holder.getScaleNet().getY() + ")";
-
+		
 
 	}
 
@@ -435,6 +421,7 @@ function doAddFunctionsToScene(scene){
 			var canvas = holder.getCanvas();
 		   
 		    var mousePos = new HHgVector2(x,y);
+		    mousePos = mousePos.returnVectorPlusVector(HHgScreenDiff);
 		    //mousePos = mousePos.returnVectorPlusVector(screenOffset);
 		    console.log("MOUSE POS: " + x + " " + y);
 
