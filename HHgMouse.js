@@ -23,10 +23,10 @@ var HHgMouse = function HHgMouse(){
 
 
 		that.mouseCircle = new HHgHolder(200,200, 100);
-		//that.mouseCircle.doMoveToNewParent(HHgGameHolder, new HHgVector2(0,0), false);
-		//that.mouseCircle.doAddSprite("pool");
-		//that.mouseCircle.setVisible(true);
-		//that.mouseCircle.setMouseable(false);
+		that.mouseCircle.doMoveToNewParent(HHgGameHolder, new HHgVector2(0,0), false);
+		that.mouseCircle.doAddSprite("pool");
+		that.mouseCircle.setVisible(true);
+		that.mouseCircle.setMouseable(false);
 		
 
 
@@ -44,45 +44,42 @@ var HHgMouse = function HHgMouse(){
 		that.thisFrameTime = undefined;
 	}
 
-	this.doSetVars = function(holder, x, y){
+	this.doSetVars = function(holder, xy){
 
 		that.clickedDownOn = holder;
-		that.lastMousePosX = that.lastMousePosX || x;
-		that.lastMousePosY = that.lastMousePosY || y;
+		that.lastMousePosX = that.lastMousePosX || xy.getX();
+		that.lastMousePosY = that.lastMousePosY || xy.getY();
 		
-		that.thisMousePosX = x;
-		that.thisMousePosY = y;
+		that.thisMousePosX = xy.getX();
+		that.thisMousePosY = xy.getY();
 		that.thisFrameTime = window.performance.now();
 		that.lastFrameTime = that.lastFrameTime || that.thisFrameTime;
 		
 	}
 
-	this.doMouseMove = function (x, y){
+	this.doMouseMove = function (xy){
 		//more logic here to determine dragging later
-		that.clickedDownOn.doMouseMove();
+		that.clickedDownOn.doMouseMove(xy);
 	}
 
-	this.doMouseDown = function (holders, x, y){
-		that.mouseCircle.doShow(x,y);
+	this.doMouseDown = function (holders, xy){
+		that.mouseCircle.doShow(xy);
+
 		
-		//console.log("mouse down " + x + " " + y);
+		console.log("mouse down " + xy.returnPretty());
 		
 		if(!holders || holders.length < 1){
 			
 			return;
 		}
 
-		
-		
-			that.doSetVars(holders[0], x, y);
+			that.doSetVars(holders[0], xy);
 			that.clickedDownOn.doMouseDown();
 
-		
-			
 	}
 
-	this.doMouseUp = function (holders, x, y){
-		console.log("mouseup");
+	this.doMouseUp = function (holders, xy){
+		//console.log("mouseup");
 		that.mouseCircle.doHide();
 
 		
