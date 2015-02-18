@@ -4,6 +4,10 @@ var HHgVector2 = function (x,y){
 
 	var that = this;
 
+	this.returnCopy = function(){
+		return new HHgVector(_x, _y);
+	}
+
 	this.returnVectorLength = function(){
 		return Math.sqrt(_x * _x + _y * _y);
 	}
@@ -25,12 +29,19 @@ var HHgVector2 = function (x,y){
 		//_x = Math.round( newX * 10) / 10;
 	}
 
+	this.setXAdd = function(newX){
+		_x += newX;
+	}
+
 	this.getY = function(){
 		return _y;
 	}
 	this.setY = function(newY){
 		_y = newY;
 		//_y =   Math.round( newY * 10) / 10;
+	}
+	this.setYAdd = function(newY){
+		_y += newY;
 	}
 
 

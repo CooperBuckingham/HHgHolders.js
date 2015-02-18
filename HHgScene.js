@@ -23,7 +23,7 @@ HHgTopHolder.style.width = "" + HardwareScreen.w +"px";
 HHgTopHolder.style.height = "" + HardwareScreen.h +"px";
 
 function doStartHHgScene(){
-	console.log("HHgScene Start");
+	console.log("HHgScene Start NOW");
 	HHg0Vector = new HHgVector2(0,0);
 	HHg0Vector.setX = function(){};;
 	HHg0Vector.setY = function(){};;
@@ -322,19 +322,23 @@ function doAddFunctionsToScene(scene){
 	scene.doAddMouseDownAndUpListeners = function(){
 		var wOffset = 0;
 		var hOffset = 0;
+		var relX = 0, relY = 0;
+		
 
 		HHgTopHolder.addEventListener("mousedown", function(e){
-			var relX =  e.pageX;
-			var relY =  e.pageY;
+			relX =  e.pageX;
+			relY =  e.pageY;
+			var mouseXY = new HHgVector2(relX,relY);
 
-			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(relX , relY),relX - HardwareScreen.w / 2, HardwareScreen.h - (relY - HardwareScreen.h / 2)  );
+			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
 			return false;
 		}, false);
 
 		HHgTopHolder.addEventListener("mouseup", function(e){
-			var relX = e.pageX;
-			var relY = e.pageY;
-			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( relX, relY),relX - HardwareScreen.w / 2,HardwareScreen.h - (relY - HardwareScreen.h / 2)   );
+			relX = e.pageX;
+			relY = e.pageY;
+			var mouseXY = new HHgVector2(relX,relY);
+			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
 			return false;
 		}, false);
 
@@ -342,28 +346,43 @@ function doAddFunctionsToScene(scene){
 			//this will become a "can drag" check
 			if(!HHgMain.HHgMouse.clickedDown) return;
 
-			var relX = e.pageX;
-			var relY = e.pageY;
-			HHgMain.HHgMouse.doMouseMove( relX - HardwareScreen.w / 2, HardwareScreen.h - (relY - HardwareScreen.h / 2)    );
+			relX = e.pageX;
+			relY = e.pageY;
+			var mouseXY = new HHgVector2(relX,relY);
+			HHgMain.HHgMouse.doMouseMove( scene.convertMouseToHolder(mouseXY)   );
 			return false;
 		}, false);
 
 
 	};
 
-	scene.doesHolderContainPoint = function(holder, x, y){
+	scene.convertMouseToHolder = function(xy){
+
+		xy = xy.returnVectorPlusVector(HHgScreenDiff);
+		xy.setY(HardwareScreen.h -xy.getY() );
+
+		
+		xy = HHgGameHolder.returnHalfSizeVector().returnVectorSubtractedFromVector(xy);
+		xy = xy.returnVectorScaledByInverse(HHgGameHolder.getScaleNet());
+		return xy;
+		
+
+
+	}
+
+	scene.doesHolderContainPoint = function(holder, xy){
 		var canvas = holder.getCanvas();
 
-		var mousePos = new HHgVector2(x,y);
-		mousePos = mousePos.returnVectorPlusVector(HHgScreenDiff);
+		
+		var mousePos = xy.returnVectorPlusVector(HHgScreenDiff);
 		   
-		    console.log("MOUSE POS: " + x + " " + y);
+		    //console.log("MOUSE POS: " + xy.returnPretty());
 
 		    var holderPosNet = holder.getPositionInScreenNet();
 		    
 		    holderPosNet = new HHgVector2(holderPosNet.getX(), HardwareScreen.h - (holderPosNet.getY() + holder.getHeightNet()) );
 		    var centerPoint = holderPosNet.returnVectorPlusVector(holder.returnHalfSizeVector());
-		    console.log("CENTER PT: " + centerPoint.returnPretty());
+		    //console.log("CENTER PT: " + centerPoint.returnPretty());
 		    var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(centerPoint, -1 * holder.getRotationNet());
 
 		    var posInCanvas = holderPosNet.returnVectorSubtractedFromVector(mouseFinalRelative);
@@ -395,14 +414,9 @@ function doAddFunctionsToScene(scene){
 		   return true;
 		};
 
-		scene.returnHoldersUnderPoint = function(xy, y){
+		scene.returnHoldersUnderPoint = function(xy){
 		
-		if(xy instanceof HHgVector2 === true ){
-			y = xy.getY();
-			var x = xy.getX();
-		}else{
-			var x = xy;
-		}
+	
 		var arr = document.getElementsByClassName("mouseable");
 
 		
@@ -413,7 +427,7 @@ function doAddFunctionsToScene(scene){
 		for(var i = 0; i < arr.length; i++ ){
 			thisHolder = scene.getHolderFromDiv(arr[i]);
 			
-			if(scene.doesHolderContainPoint(thisHolder,x,y)){
+			if(scene.doesHolderContainPoint(thisHolder,xy)){
 
 				if(mArr.length < 1){
 					mArr.push(thisHolder);
