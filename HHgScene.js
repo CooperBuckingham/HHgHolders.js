@@ -47,27 +47,66 @@ HHgScreenDiff = new HHgVector2(0,0);
 
 	HHgSceneDiv = HHgScene.getDiv();
 
-	var tempHHgGameHolder = new HHgHolder(HHgScreen.w, HHgScreen.h);
-
-	tempHHgGameHolder.doMoveToNewParent(HHgScene, new HHgVector2(0,0));
-	tempHHgGameHolder.setScaleOriginalTo(HardwareScreen.w / HHgScreen.w, HardwareScreen.w / HHgScreen.w);
-
-	HHgGameHolder = tempHHgGameHolder;
-
-	HHgSceneDiv = HHgGameHolder.getDiv();
-	HHgSceneDiv.style.border = "2px solid black";
+	//tempHHgGameHolder.doMoveToNewParent(HHgScene, new HHgVector2(0,0));
 
 	HHgScreenDiff = new HHgVector2(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
-	console.log("Screen diff " + HHgScreenDiff.returnPretty());
+	
+
+	function buildHolderFromScratch(){
+		HHgGameHolder = new HHgHolder(HHgScreen.w, HHgScreen.h);;
+		var div = document.createElement("div");
+		HHgGameHolder.setDiv(div);
+		div.style.display ="inline-block";
+		div.style.position = "absolute";
+		div.style.backgroundColor ="white";
+		
+		div.id = HHgGameHolder.getHash();
+		div.classList.add("scene");
+
+		
+		HHgScene._holders[div.id] = HHgGameHolder;
+		HHgSceneDiv.appendChild(div);
+		HHgSceneDiv = div;
+		HHgSceneDiv.style.border = "2px solid black";
+		HHgSceneDiv.style.left = "0px";
+		HHgSceneDiv.style.top = "" + HHgScreenDiff.getY() + "px";
+		
+		HHgScene.doAddChild(HHgGameHolder);
+		div.classList.add("game-holder");
+		div.classList.remove("mouseable");
+		
+
+		HHgGameHolder.doNotifySceneOfUpdates = function(){};
+		HHgGameHolder.setPositionInParentTo = function(){};
+		HHgGameHolder.setPositionInScreenTo = function(){};
+		HHgGameHolder.setPositionInScreenBy = function(){};
+		HHgGameHolder.doFrameDump = function(){};
+
+	HHgGameHolder.getPositionInScreenNet = function(){
+		console.log("called????");
+		return HHg0Vector;
+		//return HHg0Vector.returnVectorPlusVector(HHgScreenDiff);
+	}
+
+
+		HHgGameHolder.setGameHolder();
+	}
+
+	buildHolderFromScratch();
+	
 
 	
-	HHgGameHolder.setPositionInParentTo = function(){};
-	HHgGameHolder.setPositionInScreenTo = function(){};
-	HHgGameHolder.setPositionInScreenBy = function(){};
-	HHgGameHolder.getPositionInScreenNet = function(){
-		//return HHg0Vector;
-		return HHg0Vector.returnVectorPlusVector(HHgScreenDiff);
-	}
+
+	
+
+	
+	
+	
+	
+	
+	
+	
+
 
 	
 
@@ -90,7 +129,7 @@ var	theTwo = new HHgHolder(100,100);
 
 var	theThree = new HHgHolder(100,100);
 	
-	theThree.doMoveToNewParent(theOne, new HHgVector2(-400,-300), true);
+	theThree.doMoveToNewParent(theOne, new HHgVector2(-200,-200), true);
 	theThree.doAddSprite("orange");
 	theThree.test = "orange";
 	theThree.setMouseable(true);
@@ -303,10 +342,8 @@ function doAddFunctionsToScene(scene){
 	}
 
 	scene.doAnyScreenConversion = function(xyPos, holder){
-		//return HHgScreenDiff.returnVectorSubtractedFromVector(xyPos);
+		
 		return xyPos;
-		//return xyPos.returnVectorScaledBy(HHgGameHolder.getScaleNet());
-		//return HHgGameHolder.returnHalfSizeVector().returnVectorSubtractedFromVector(xyPos).returnVectorScaledBy(HHgGameHolder.getScaleNet()).returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
 		
 	};
 
