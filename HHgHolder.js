@@ -396,7 +396,7 @@ this.getVisible = function(){
 				return;
 			}
 
-				console.log("GH SCALE" + HHgGameHolder.getScaleNet().returnPretty());
+				
 				_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNet());
 
 			if(_parent !== undefined){
@@ -409,7 +409,12 @@ this.getVisible = function(){
 				_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInScreenOriginal);
 				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(_parent.getScaleNet());
 				_positionInParentOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(), -1 *  _parent.getRotationNet() );
-			
+				
+				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNet());
+
+				if(this.test === "soccer"){
+					console.log("parent pos after screen calc " + _positionInParentOriginal.returnPretty());
+				}
 
 			}
 

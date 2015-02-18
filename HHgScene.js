@@ -138,7 +138,7 @@ var	theThree = new HHgHolder(100,100);
 	setTimeout(function(){
 	
 	//theTwo.setRotationOriginalTo(45);
-	//theOne.setPositionInScreenTo(0,-200);
+	theOne.setPositionInScreenTo(0,-200);
 	//theOne.setScaleOriginalTo(2,2);
 	
 	
