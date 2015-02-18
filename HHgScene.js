@@ -23,19 +23,15 @@ HHgTopHolder.style.width = "" + HardwareScreen.w +"px";
 HHgTopHolder.style.height = "" + HardwareScreen.h +"px";
 
 function doStartHHgScene(){
-	console.log("scene setup start");
+	console.log("HHgScene Start");
 	HHg0Vector = new HHgVector2(0,0);
 	HHg0Vector.setX = function(){};;
 	HHg0Vector.setY = function(){};;
 	HHg0Vector.setXY = function(){};;
 
-	//HHgTestScene = new HHgHolder(HardwareScreen.w, HardwareScreen.h);
-HHgScreenDiff = new HHgVector2(0,0);
+	HHgScreenDiff = new HHgVector2(0,0);
 	HHgScene = new HHgHolder(HardwareScreen.w,HardwareScreen.h);
-	
 	HHgScene.test = "scene";
-
-	//we add all the custom functions to the scene here
 	doAddFunctionsToScene(HHgScene);
 	HHgGameHolder = HHgScene;
 	HHgScene.doAddScene();
@@ -44,14 +40,10 @@ HHgScreenDiff = new HHgVector2(0,0);
 	HHgScene.setPositionInParentTo = function(){};
 	HHgScene.setPositionInScreenTo = function(){};
 	HHgScene.setPositionInScreenBy = function(){};
-
 	HHgSceneDiv = HHgScene.getDiv();
-
-	//tempHHgGameHolder.doMoveToNewParent(HHgScene, new HHgVector2(0,0));
 
 	HHgScreenDiff = new HHgVector2(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
 	
-
 	function buildHolderFromScratch(){
 		HHgGameHolder = new HHgHolder(HHgScreen.w, HHgScreen.h);;
 		var div = document.createElement("div");
@@ -67,7 +59,7 @@ HHgScreenDiff = new HHgVector2(0,0);
 		HHgScene._holders[div.id] = HHgGameHolder;
 		HHgSceneDiv.appendChild(div);
 		HHgSceneDiv = div;
-		HHgSceneDiv.style.border = "2px solid black";
+		//HHgSceneDiv.style.border = "2px solid black";
 		HHgSceneDiv.style.left = "0px";
 		HHgSceneDiv.style.top = "" + HHgScreenDiff.getY() + "px";
 		
@@ -84,179 +76,139 @@ HHgScreenDiff = new HHgVector2(0,0);
 
 		HHgGameHolder.getPositionInScreenNet = function(){
 			return HHg0Vector;
-			//return HHg0Vector.returnVectorPlusVector(HHgScreenDiff);
 		}
-
 
 		HHgGameHolder.setGameHolder();
 	}
 
 	buildHolderFromScratch();
 	
+	function sceneTests(){
+	//----- rotate test
+		if(true){
+			var theOne = new HHgHolder(100,100);
+			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
+			theOne.doAddSprite("pool");
+			theOne.test = "pool";
+			theOne.setMouseable(true);
 
-	
+			var	theTwo = new HHgHolder(100,100);
+			theTwo.doMoveToNewParent(theOne, new HHgVector2(100,100), true);
+			theTwo.doAddSprite("soccer");
+			theTwo.test = "soccer";
+			theTwo.setMouseable(true);
 
-	
+			var	theThree = new HHgHolder(100,100);
+			
+			theThree.doMoveToNewParent(theOne, new HHgVector2(-200,-200), true);
+			theThree.doAddSprite("orange");
+			theThree.test = "orange";
+			theThree.setMouseable(true);
 
-	
-	
-	
-	
-	
-	
-	
+			setTimeout(function(){
 
+			theOne.setRotationOriginalTo(60);
+			theOne.setPositionInScreenTo(0,-200);
+			theOne.setScaleOriginalTo(2,2);
 
-	
-
-//----- rotate test
-if(true){
-var theOne = new HHgHolder(100,100);
-	theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
-	theOne.doAddSprite("pool");
-	theOne.test = "pool";
-	theOne.setMouseable(true);
-
-	//theOne.setScaleOriginalTo(2,2);
-
-var	theTwo = new HHgHolder(100,100);
-	
-	theTwo.doMoveToNewParent(theOne, new HHgVector2(100,100), true);
-	theTwo.doAddSprite("soccer");
-	theTwo.test = "soccer";
-	theTwo.setMouseable(true);
-
-var	theThree = new HHgHolder(100,100);
-	
-	theThree.doMoveToNewParent(theOne, new HHgVector2(-200,-200), true);
-	theThree.doAddSprite("orange");
-	theThree.test = "orange";
-	theThree.setMouseable(true);
-
-
-	setTimeout(function(){
-	
-	theOne.setRotationOriginalTo(60);
-	theOne.setPositionInScreenTo(0,-200);
-	theOne.setScaleOriginalTo(2,2);
-	
-	
-
-
-}, 5000);
-
-
-}
-
-
-if(false){
-
-var theOne = new HHgHolder(100,100);
-	theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
-	theOne.doAddSprite("pool");
-	theOne.test = "pool";
-
-
-var theThree = new HHgHolder(540,3);
-	theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
-	theThree.doAddSprite("orange");
-	theThree.test = "orange";
-
-var theThree = new HHgHolder(3,540);
-	theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
-	theThree.doAddSprite("orange");
-	theThree.test = "orange";
-
-	
-var theThree = new HHgHolder(540,3);
-	theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,100), true);
-	theThree.doAddSprite("orange");
-	theThree.test = "orange";
-
-
-var theTwo;
-setTimeout(function(){
-	theTwo = new HHgHolder(100,100);
-	
-	theTwo.doMoveToNewParent(theOne, new HHgVector2(0,0), true);
-	theTwo.doAddSprite("pool");
-	theTwo.test = "soccer";
-
-	
-	
-
-
-}, 1000);
-
-setTimeout(function(){
-	theOne.setPositionInScreenTo(new HHgVector2(0,450));
-	theOne.doActionFollowQuad(new HHgVector2(75,120), new HHgVector2(-100,-450));
-	//theOne.setRotationOriginalBy(60);
-	theOne.doActionRotate(60, 10);
-	
-
-
-}, 4000);
-
-setTimeout(function(){
-	
-
-	
-
-
-}, 8000);
-
-}
-
-if(false){
-
-	var theOne = new HHgHolder(100,100);
-	theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
-	theOne.doAddSprite("pool");
-	theOne.test = "pool";
-
-
-	var listOfHolder = [];
-	listOfHolder.push(theOne);
-
-	theOne.setPositionInScreenTo(new HHgVector2(0,450));
-	//theOne.doActionFollowQuad(new HHgVector2(75,120), new HHgVector2(-100,-450));
-	theOne.doActionMoveInScreen(-75, -700, 10, true);
-
-
-var randomSprite = function(holder){
-	
-		var int1 = window.HHg.returnRandomIntLowIncHighExcl(0,3);
-		var name = "orange";
-		if(int1 === 0){
-			name = "soccer";
-		}else if(int1 === 2){
-			name = "pool";
+			}, 5000);
 		}
 
-		holder.doAddSprite(name);
+
+		if(false){
+
+			var theOne = new HHgHolder(100,100);
+			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
+			theOne.doAddSprite("pool");
+			theOne.test = "pool";
+
+
+			var theThree = new HHgHolder(540,3);
+			theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
+			theThree.doAddSprite("orange");
+			theThree.test = "orange";
+
+			var theThree = new HHgHolder(3,540);
+			theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
+			theThree.doAddSprite("orange");
+			theThree.test = "orange";
+
+			
+			var theThree = new HHgHolder(540,3);
+			theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,100), true);
+			theThree.doAddSprite("orange");
+			theThree.test = "orange";
+
+
+			var theTwo;
+			setTimeout(function(){
+				theTwo = new HHgHolder(100,100);
+
+				theTwo.doMoveToNewParent(theOne, new HHgVector2(0,0), true);
+				theTwo.doAddSprite("pool");
+				theTwo.test = "soccer";
+
+			}, 1000);
+
+			setTimeout(function(){
+				theOne.setPositionInScreenTo(new HHgVector2(0,450));
+				theOne.doActionFollowQuad(new HHgVector2(75,120), new HHgVector2(-100,-450));
+				theOne.doActionRotate(60, 10);
+			
+			}, 4000);
+			
+			setTimeout(function(){
+
+			}, 8000);
+		}
+
+		if(false){
+
+			var theOne = new HHgHolder(100,100);
+			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
+			theOne.doAddSprite("pool");
+			theOne.test = "pool";
+
+			var listOfHolder = [];
+			listOfHolder.push(theOne);
+			theOne.setPositionInScreenTo(new HHgVector2(0,450));
+			theOne.doActionMoveInScreen(-75, -700, 10, true);
+
+			var randomSprite = function(holder){
+
+				var int1 = window.HHg.returnRandomIntLowIncHighExcl(0,3);
+				var name = "orange";
+				if(int1 === 0){
+					name = "soccer";
+				}else if(int1 === 2){
+					name = "pool";
+				}
+
+				holder.doAddSprite(name);
+			}
+
+			for(var i = 0; i < 50; i++){
+
+				var size = HHg.returnRandomIntLowIncHighExcl(25,200);
+
+				var posx = HHg.returnRandomIntLowIncHighExcl(-1000,1000);
+				var posy = HHg.returnRandomIntLowIncHighExcl(-500,500);
+				var testBall = new HHgHolder(size,size);
+
+				testBall.doMoveToNewParent( listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , new HHgVector2(posx, posy) );
+				randomSprite(testBall);
+				testBall.doActionRotate(HHg.returnRandomInt(120,720), HHg.returnRandomInt(5,35));
+
+				listOfHolder.push(testBall)
+			}
+		}
+
 	}
-
-
-
-for(var i = 0; i < 50; i++){
-
-	var size = HHg.returnRandomIntLowIncHighExcl(25,200);
-	
-	var posx = HHg.returnRandomIntLowIncHighExcl(-1000,1000);
-	var posy = HHg.returnRandomIntLowIncHighExcl(-500,500);
-	var testBall = new HHgHolder(size,size);
-
-	testBall.doMoveToNewParent( listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , new HHgVector2(posx, posy) );
-	randomSprite(testBall);
-	testBall.doActionRotate(HHg.returnRandomInt(120,720), HHg.returnRandomInt(5,35));
-
-	listOfHolder.push(testBall)
-}
-}
-
+	sceneTests();
 
 }
+
+
 
 function doAddFunctionsToScene(scene){
 	
@@ -304,18 +256,14 @@ function doAddFunctionsToScene(scene){
 	scene.doUpdateThisHolder = function(holder){
 		if(holder.getDiv() === undefined) return;
 
-
-
 		var div = holder.getDiv();
 		div.style.backgroundColor = holder.getBackgroundColor();
 		div.style.width = "" + holder.getWidthNet() + "px";
 		div.style.height ="" + holder.getHeightNet() + "px";
 		
-			var centricConversion = scene.doAnyScreenConversion(holder.getPositionInScreenNet(), holder);
-			div.style.left ="" + centricConversion.getX() +"px";
-			div.style.bottom ="" + centricConversion.getY() + "px";
-
-		
+		var centricConversion = scene.doAnyScreenConversion(holder.getPositionInScreenNet(), holder);
+		div.style.left ="" + centricConversion.getX() +"px";
+		div.style.bottom ="" + centricConversion.getY() + "px";
 
 		div.style.transform="rotate(" + (holder.getRotationNet()) +"deg" +")";
 		
@@ -323,19 +271,11 @@ function doAddFunctionsToScene(scene){
 		scene.doUpdateHolderMouseable(holder);
 		scene.doUpdateHolderVisible(holder);
 
-		
-
 	}
 
 	scene.doAnyScreenConversion = function(xyPos, holder){
-		
 		return xyPos;
-		
 	};
-
-
-	
-
 
 	scene.doAddScene = function(){
 		if(scene.getDiv()){
@@ -353,8 +293,6 @@ function doAddFunctionsToScene(scene){
 		div.classList.add("scene");
 		
 		scene.doUpdateThisHolder(scene);
-
-		
 		scene._holders[div.id] = scene;
 
 		HHgTopHolder.appendChild(div);
@@ -380,10 +318,6 @@ function doAddFunctionsToScene(scene){
 
 		HHgSceneDiv.appendChild(div);
 	};
-	
-
-
-
 	
 	scene.doAddMouseDownAndUpListeners = function(){
 		var wOffset = 0;
@@ -418,52 +352,51 @@ function doAddFunctionsToScene(scene){
 	};
 
 	scene.doesHolderContainPoint = function(holder, x, y){
-			var canvas = holder.getCanvas();
+		var canvas = holder.getCanvas();
+
+		var mousePos = new HHgVector2(x,y);
+		mousePos = mousePos.returnVectorPlusVector(HHgScreenDiff);
 		   
-		    var mousePos = new HHgVector2(x,y);
-		    mousePos = mousePos.returnVectorPlusVector(HHgScreenDiff);
-		    //mousePos = mousePos.returnVectorPlusVector(screenOffset);
 		    console.log("MOUSE POS: " + x + " " + y);
 
-		   
 		    var holderPosNet = holder.getPositionInScreenNet();
 		    
 		    holderPosNet = new HHgVector2(holderPosNet.getX(), HardwareScreen.h - (holderPosNet.getY() + holder.getHeightNet()) );
-		   var centerPoint = holderPosNet.returnVectorPlusVector(holder.returnHalfSizeVector());
-		   console.log("CENTER PT: " + centerPoint.returnPretty());
-		   var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(centerPoint, -1 * holder.getRotationNet());
+		    var centerPoint = holderPosNet.returnVectorPlusVector(holder.returnHalfSizeVector());
+		    console.log("CENTER PT: " + centerPoint.returnPretty());
+		    var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(centerPoint, -1 * holder.getRotationNet());
 
-		   var posInCanvas = holderPosNet.returnVectorSubtractedFromVector(mouseFinalRelative);
-		   
+		    var posInCanvas = holderPosNet.returnVectorSubtractedFromVector(mouseFinalRelative);
 
-		   var left = 0;
-		   var right = holder.getWidthNet();
-		   var bottom = holder.getHeightNet();
-		   var top = 0;
 
-		   var posX = posInCanvas.getX();
-		   var posY = posInCanvas.getY();
+		    var left = 0;
+		    var right = holder.getWidthNet();
+		    var bottom = holder.getHeightNet();
+		    var top = 0;
 
-		   if(posX < left) return false;
+		    var posX = posInCanvas.getX();
+		    var posY = posInCanvas.getY();
 
-		   if(posX > right) return false;
+		    if(posX < left) return false;
 
-		   if(posY < top) return false;
+		    if(posX > right) return false;
 
-		   if(posY > bottom) return false;
+		    if(posY < top) return false;
+
+		    if(posY > bottom) return false;
 
 		   //now adjust for scaled canvas
 		   var canvasRatio = new HHgVector2(canvas.width, canvas.height);
-			canvasRatio = canvasRatio.returnVectorScaledByInverse((new HHgVector2(canvas.clientWidth, canvas.clientHeight)));
-			posInCanvas = posInCanvas.returnVectorScaledBy(canvasRatio);
+		   canvasRatio = canvasRatio.returnVectorScaledByInverse((new HHgVector2(canvas.clientWidth, canvas.clientHeight)));
+		   posInCanvas = posInCanvas.returnVectorScaledBy(canvasRatio);
 
 		   if( isAlphaPixel(canvas, posInCanvas.getX(), posInCanvas.getY()) ) return false;
 
-			return true;
-	};
+		   return true;
+		};
 
-	scene.returnHoldersUnderPoint = function(xy, y){
-		//first item in array is highest z, but after that is random
+		scene.returnHoldersUnderPoint = function(xy, y){
+		
 		if(xy instanceof HHgVector2 === true ){
 			y = xy.getY();
 			var x = xy.getX();
@@ -481,7 +414,6 @@ function doAddFunctionsToScene(scene){
 			thisHolder = scene.getHolderFromDiv(arr[i]);
 			
 			if(scene.doesHolderContainPoint(thisHolder,x,y)){
-
 
 				if(mArr.length < 1){
 					mArr.push(thisHolder);
@@ -527,10 +459,10 @@ function doAddFunctionsToScene(scene){
 		var ctx = canvas.getContext('2d');
 		canvas.classList.add(holder.getHash());
 		var div = holder.getDiv();
-        canvas.width  = 2 * holder.getWidthNet();
-        canvas.height = 2 * holder.getHeightNet();
-        
-        if(true){
+		canvas.width  = 2 * holder.getWidthNet();
+		canvas.height = 2 * holder.getHeightNet();
+
+		if(true){
         	//canvas.style.border   = "2px solid white";
         }
         holder.setCanvas(canvas);
@@ -552,69 +484,61 @@ function doAddFunctionsToScene(scene){
 		
 		div.appendChild(canvas);
 
-      img.onload = function() {
-        ctx.drawImage(img,0,0, canvas.width, canvas.height);
-      };
-	
+		img.onload = function() {
+			ctx.drawImage(img,0,0, canvas.width, canvas.height);
+		};
+
 
 	}
 
-	scene.doInitSVG = function(){
-		HHgSVG = document.createElement('svg');
-		HHgSVG.id = "svg";
-		HHgSVG.width = HHgScreen.w;
-		HHgSVG.height = HHgScreen.h;
-		HHgSceneDiv.appendChild(HHgSVG);
+	function placeRedSquare(canvas, x,y){
+
+		var ctx=canvas.getContext("2d");
+		var imgData=ctx.createImageData(10,10);
+		for (var i=0;i<imgData.data.length;i+=4)
+		{
+			imgData.data[i+0]=0;
+			imgData.data[i+1]=255;
+			imgData.data[i+2]=0;
+			imgData.data[i+3]=255;
+		}
+		ctx.putImageData(imgData,x,y);
 	}
 
-function placeRedSquare(canvas, x,y){
+	function paintYellow(canvas, x, y){
+		var imgData = canvas.getContext("2d").getImageData(0,0,canvas.width, canvas.height);
+		for(var i = 0; i < imgData.data.length; i+=4){
+			if(i < imgData.data.length / 4){
 
-var ctx=canvas.getContext("2d");
-var imgData=ctx.createImageData(10,10);
-for (var i=0;i<imgData.data.length;i+=4)
-  {
-  imgData.data[i+0]=0;
-  imgData.data[i+1]=255;
-  imgData.data[i+2]=0;
-  imgData.data[i+3]=255;
-  }
-ctx.putImageData(imgData,x,y);
-}
+			}
+			imgData.data[i] = 255;
+			imgData.data[i+1] = 0;
+			imgData.data[i+2] = 0;
+			imgData.data[i+3] = 255;
 
-function paintYellow(canvas, x, y){
-	var imgData = canvas.getContext("2d").getImageData(0,0,canvas.width, canvas.height);
-for(var i = 0; i < imgData.data.length; i+=4){
-	if(i < imgData.data.length / 4){
+			if(i < imgData.data.length / 4){
 
+				imgData.data[i+1] = 255;
+			}
+		}
+
+		canvas.getContext("2d").putImageData(imgData,0,0);
 	}
-	imgData.data[i] = 255;
-	imgData.data[i+1] = 0;
-	imgData.data[i+2] = 0;
-	imgData.data[i+3] = 255;
 
-	if(i < imgData.data.length / 4){
-		
-	imgData.data[i+1] = 255;
+	function isAlphaPixel(canvas, xy, y){
+		return canvas.getContext('2d').getImageData(xy, y, 1, 1).data[3] > .15 ? false : true;
 	}
-}
 
-canvas.getContext("2d").putImageData(imgData,0,0);
-}
-
-function isAlphaPixel(canvas, xy, y){
-	return canvas.getContext('2d').getImageData(xy, y, 1, 1).data[3] > .15 ? false : true;
-}
-
-function getpixelcolour(canvas, x, y) {
-  var cx = canvas.getContext('2d');
-  var pixel = cx.getImageData(x, y, 1, 1);
-  return {
-    r: pixel.data[0],
-    g: pixel.data[1],
-    b: pixel.data[2],
-    a: pixel.data[3]
-  };
-}
+	function getpixelcolour(canvas, x, y) {
+		var cx = canvas.getContext('2d');
+		var pixel = cx.getImageData(x, y, 1, 1);
+		return {
+			r: pixel.data[0],
+			g: pixel.data[1],
+			b: pixel.data[2],
+			a: pixel.data[3]
+		};
+	}
 
 	
 };
@@ -636,6 +560,6 @@ canvas.getContext('2d').drawImage(yourImageElement, 0, 0);
 
 
 
-	
-	
+
+
 
