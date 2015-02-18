@@ -113,9 +113,12 @@ html body img{
 
 }
 
+html body .scene{
+  overflow: hidden;
+}
+
 
 html body #all{
-
 
 	display: inline-block;
 	

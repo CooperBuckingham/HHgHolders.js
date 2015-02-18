@@ -63,6 +63,7 @@ var HHgHolder = function(w, h, zIndex, scale){
 
 	var _canvas;
 
+this.isScene = false;
 
 	this.setCanvas = function(canvas){
 		_canvas = canvas;
@@ -83,6 +84,18 @@ var HHgHolder = function(w, h, zIndex, scale){
 		positionTo: undefined,
 		rotationTo: undefined,
 		scaleTo: undefined,
+	}
+
+	this.setSceneProperties = function(deviceScreen, targetScreen){
+		_widthOriginal = targetScreen.w;
+		_heightOriginal = targetScreen.h;
+		_zIndex = 0;
+
+		//these are both set to width to keep scale uniform
+		that.setScaleOriginalTo( new HHgVector2(deviceScreen.w / targetScreen.w, deviceScreen.w / targetScreen.w) );
+		that.ratio = deviceScreen.w / targetScreen.w;
+		//_scaleNet = _scaleOriginal;
+
 	}
 
 	this.doFrameDump = function(){
@@ -599,10 +612,7 @@ this.getVisible = function(){
 		}
 
 		this.doRecalcScale = function(){
-			//this now gets called only in the frame dump
-			if(_parent === "stop"){
-				return;
-			}
+			
 
 
 			_scaleNet = _scaleOriginal;
