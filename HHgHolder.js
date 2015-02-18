@@ -65,6 +65,15 @@ var HHgHolder = function(w, h, zIndex, scale){
 
 this.isScene = false;
 
+	this.setGameHolder = function(){
+			console.log("do we call this?");
+			_scaleOriginal = new HHgVector2(HardwareScreen.w / HHgScreen.w, HardwareScreen.w / HHgScreen.w);
+			_scaleNet = _scaleOriginal;
+			_widthOriginal = HHgScreen.w;
+			_heightOriginal = HHgScreen.h;
+			_parent = HHgScene;
+	}
+
 	this.setCanvas = function(canvas){
 		_canvas = canvas;
 	}
@@ -387,7 +396,7 @@ this.getVisible = function(){
 				return;
 			}
 
-				//console.log("GH SCALE" + HHgGameHolder.getScaleNet().returnPretty());
+				console.log("GH SCALE" + HHgGameHolder.getScaleNet().returnPretty());
 				_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNet());
 
 			if(_parent !== undefined){
@@ -486,19 +495,24 @@ this.getVisible = function(){
 
 		this.updatePositionFromParentMove = function(){
 			
+			
+				_positionInScreenOriginal = _positionInParentOriginal;
 
-			_positionInScreenOriginal = _positionInParentOriginal;
+				//_positionInScreenOriginal = HHgScreenDiff.returnVectorSubtractedFromVector(_positionInScreenOriginal);
 
 			
 			if(_parent !== undefined){
 
-				_positionInScreenOriginal = _positionInParentOriginal.returnVectorScaledBy(_parent.getScaleNet());
+				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorScaledBy(_parent.getScaleNet());
 				_positionInScreenOriginal = _parent.getPositionInScreenNet().returnVectorPlusVector(_positionInScreenOriginal);
 
-				_positionInScreenNet = _positionInScreenOriginal.returnVectorPlusVector( _parent.returnHalfSizeVector() );
 				
+
+				_positionInScreenNet = _positionInScreenOriginal.returnVectorPlusVector( _parent.returnHalfSizeVector() );
 				_positionInScreenNet = _positionInScreenNet.returnVectorRotatedAroundVectorAtAngle( _parent.returnHalfSizeVector().returnVectorPlusVector( _parent.getPositionInScreenNet()), -1 * _parent.getRotationNet() );
 				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
+
+				
 				
 			}
 			
@@ -755,11 +769,8 @@ this.getVisible = function(){
 
 		_parent.doAddChild(this);
 
-		//removing as part of frame dump
-		//that.doRecalcRotation();
-		//that.doRecalcScaleNet();
-
-	
+		this.setRotationOriginalTo(_rotationOriginal);
+		this.setScaleOriginalTo(_scaleOriginal);
 		
 		isScreenPos ? that.setPositionInScreenTo(xy) : that.setPositionInParentTo(xy);
 			
