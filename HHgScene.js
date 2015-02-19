@@ -262,9 +262,9 @@ function doStartHHgScene(){
 				holder.doAddSprite(name);
 			}
 
-			for(var i = 0; i < 50; i++){
+			for(var i = 0; i < 25; i++){
 
-				var size = HHg.returnRandomIntLowIncHighExcl(25,200);
+				var size = HHg.returnRandomIntLowIncHighExcl(60,220);
 
 				var posx = HHg.returnRandomIntLowIncHighExcl(-1000,1000);
 				var posy = HHg.returnRandomIntLowIncHighExcl(-500,500);
@@ -406,9 +406,11 @@ function doAddFunctionsToScene(scene){
 			return false;
 		}, false);
 
-		HHgTopHolder.addEventListener("touchStart", function(e){
+		HHgTopHolder.addEventListener("touchstart", function(e){
 			e.preventDefault();
-			var touch = e.changedTouches[i];
+			
+			var touch = e.changedTouches[0];
+			console.log("touch start :" + touch.identifier);
 			HHgTrackedTouch = touch.identifier;
 			relX =  touch.pageX;
 			relY =  touch.pageY;
@@ -418,12 +420,13 @@ function doAddFunctionsToScene(scene){
 			return false;
 		}, false);
 
-		HHgTopHolder.addEventListener("touchEnd", function(e){
+		HHgTopHolder.addEventListener("touchend", function(e){
 			e.preventDefault();
-
-			var touchList = e.changedTouches;
 			
-			for(var i = 0; i < touchList; i++){
+			var touchList = e.changedTouches;
+			console.log("touch end :" + HHgTrackedTouch);
+			
+			for(var i = 0; i < touchList.length; i++){
 				if(touchList[i].identifier === HHgTrackedTouch){
 					relX =  touchList[i].pageX;
 					relY =  touchList[i].pageY;
@@ -436,7 +439,7 @@ function doAddFunctionsToScene(scene){
 			return false;
 		}, false);
 
-		HHgTopHolder.addEventListener("touchMove", function(e){
+		HHgTopHolder.addEventListener("touchmove", function(e){
 			//this will become a "can drag" check
 			e.preventDefault();
 			var touchList = e.changedTouches;

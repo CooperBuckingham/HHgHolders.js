@@ -58,7 +58,7 @@ var HHgHolder = function(w, h, zIndex, scale){
 
 	var that = this;
 
-	var _mouseable = true;
+	var _mouseable = false;
 	var _visible = true;
 
 	var _canvas;
