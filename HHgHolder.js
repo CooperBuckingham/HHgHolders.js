@@ -65,6 +65,15 @@ var HHgHolder = function(w, h, zIndex, scale){
 
 this.isScene = false;
 
+	this.setScene = function(){
+			_scaleOriginal = new HHgVector2(1,1);
+			_scaleNet = _scaleOriginal;
+			_widthOriginal = HardwareScreen.w;
+			_heightOriginal = HardwareScreen.w / (HHgScreen.w * HHgScreen.maxh);
+			_parent = "stop";
+			_mouseable = false;
+	}
+
 	this.setGameHolder = function(){
 			
 			_scaleOriginal = new HHgVector2(HardwareScreen.w / HHgScreen.w, HardwareScreen.w / HHgScreen.w);

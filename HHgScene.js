@@ -1,13 +1,32 @@
 //scene will need pixel multiplier for retina, etc
 var HardwareScreen = {
-	w : 800,
-	h : 600,
+	w : window.innerWidth,
+	h : window.innerHeight,
 }
 
 var HHgScreen = {
 	w : 1920,
 	h : 1080,
+	maxh : 1440,
+	isLandscapeGame : true,
 };
+
+function HHgUpdateHardwareScreen(){
+	//could update landscape etc here
+	//this doesn't get called anywhere currently, but will become part of the dynamic screen/landscape to portrait system.
+	HardwareScreen.w = window.innerWidth;
+	HardwareScreen.h = window.innerHeight;
+	if(HHgScreen.isLandscapeGame === true){
+		HHgScreenDiff.setXY(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
+	}else{
+		//eventually change this to support portrait
+		HHgScreenDiff.setXY(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
+	}
+
+	HHgScene.getDiv().style.maxHeight = "" + HHgGameHolder.getScaleNet().getX() * HHgScreen.maxh + "px";
+		
+}
+
 
 var HHgScreenSize = new HHgVector2(HHgScreen.w, HHgScreen.h);
 var HHgScreenSizeHalf = HHgScreenSize.returnVectorScaledBy(.5);
@@ -16,7 +35,7 @@ var testContainer;
 
 var showDebugSquares;
 
-var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHg0Vector;
+var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector;
 var HHgTopHolder = document.getElementById("all");
 
 HHgTopHolder.style.width = "" + HardwareScreen.w +"px";
@@ -31,20 +50,58 @@ function doStartHHgScene(){
 
 	HHgScreenDiff = new HHgVector2(0,0);
 	HHgScene = new HHgHolder(HardwareScreen.w,HardwareScreen.h);
+
 	HHgScene.test = "scene";
 	doAddFunctionsToScene(HHgScene);
 	HHgGameHolder = HHgScene;
-	HHgScene.doAddScene();
+
+	function doAddScene(){
+		
+		var div = document.createElement("div");
+		HHgScene.setDiv(div);
+		div.style.display ="inline-block";
+		div.style.position = "absolute";
+		div.style.backgroundColor ="white";
+		
+		div.id = HHgScene.getHash();
+		div.classList.add("scene");
+		
+		div.style.width = "" + HardwareScreen.w + "px";
+		div.style.maxHeight = "" + HardwareScreen.w / HHgScreen.w * HHgScreen.maxh + "px";
+		div.style.height = "" + HardwareScreen.w / HHgScreen.w * HHgScreen.maxh + "px";
+		
+		div.style.left ="" + 0 +"px";
+		//div.style.bottom = HardwareScreen.h - (HardwareScreen.w / HHgScreen.w * HHgScreen.maxh) / 2;
+		div.style.top = "" + ((HardwareScreen.h - (HardwareScreen.w / HHgScreen.w * HHgScreen.maxh)) / 2) + "px";
+
+		HHgScene._holders[div.id] = HHgScene;
+
+		HHgTopHolder.appendChild(div);
+
+		HHgScene.setPositionInParentTo = function(){};
+		HHgScene.setPositionInScreenTo = function(){};
+		HHgScene.setPositionInScreenBy = function(){};
+		HHgScene.doNotifySceneOfUpdates = function(){};
+		HHgScene.doFrameDump = function(){};
+		HHgScene.getPositionInScreenNet = function(){
+			return HHg0Vector;
+		}
+
+		HHgScene.setScene();
+		
+	}
+	doAddScene();
 	
-	HHgScene.setMouseable(false);
-	HHgScene.setPositionInParentTo = function(){};
-	HHgScene.setPositionInScreenTo = function(){};
-	HHgScene.setPositionInScreenBy = function(){};
+	
 	HHgSceneDiv = HHgScene.getDiv();
+	//this is part of the work to make the screen cap out at 4by3, but it just throws stuff off right now.
+	
 
 	HHgScreenDiff = new HHgVector2(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
 	
+	
 	function buildHolderFromScratch(){
+		debugger;
 		HHgGameHolder = new HHgHolder(HHgScreen.w, HHgScreen.h);;
 		var div = document.createElement("div");
 		HHgGameHolder.setDiv(div);
@@ -55,18 +112,25 @@ function doStartHHgScene(){
 		div.id = HHgGameHolder.getHash();
 		div.classList.add("scene");
 
-		
 		HHgScene._holders[div.id] = HHgGameHolder;
+		
 		HHgSceneDiv.appendChild(div);
+		//from here on out the game holder is now the scene div other holders are added to
 		HHgSceneDiv = div;
-		//HHgSceneDiv.style.border = "2px solid black";
-		HHgSceneDiv.style.left = "0px";
-		HHgSceneDiv.style.top = "" + HHgScreenDiff.getY() + "px";
+		HHgSceneDiv.style.border = "2px dashed black";
 		
 		HHgScene.doAddChild(HHgGameHolder);
 		div.classList.add("game-holder");
 		div.classList.remove("mouseable");
+		div.style.width = "" + HHgScreen.w * (HardwareScreen.w / HHgScreen.w) + "px";
+		div.style.height = "" + HHgScreen.h * (HardwareScreen.w / HHgScreen.w) + "px";
+		HHgSceneDiv.style.left = "0px";
+
+		HHgScreenDiffPlus = new HHgVector2(0, ((HardwareScreen.w / HHgScreen.w * HHgScreen.maxh) - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w)))/2 );
+
+		HHgSceneDiv.style.top = "" + HHgScreenDiffPlus.getY() + "px";
 		
+
 
 		HHgGameHolder.doNotifySceneOfUpdates = function(){};
 		HHgGameHolder.setPositionInParentTo = function(){};
@@ -82,6 +146,9 @@ function doStartHHgScene(){
 	}
 
 	buildHolderFromScratch();
+
+	//do more scene stuff
+
 	
 	function sceneTests(){
 	//----- rotate test
@@ -277,27 +344,7 @@ function doAddFunctionsToScene(scene){
 		return xyPos;
 	};
 
-	scene.doAddScene = function(){
-		if(scene.getDiv()){
-			scene.doUpdateThisHolder(scene);
-			return;
-		}
-		
-		var div = document.createElement("div");
-		scene.setDiv(div);
-		div.style.display ="inline-block";
-		div.style.position = "absolute";
-		div.style.backgroundColor ="blue";
-		
-		div.id = scene.getHash();
-		div.classList.add("scene");
-		
-		scene.doUpdateThisHolder(scene);
-		scene._holders[div.id] = scene;
 
-		HHgTopHolder.appendChild(div);
-		
-	};
 
 	scene.doAddThisHolder = function(holder){
 		if(holder.getDiv()){
