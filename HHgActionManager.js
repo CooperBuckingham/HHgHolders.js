@@ -14,58 +14,35 @@ var HHgActionManager = {
     };
   },
 
-  doMakePath: function(){
 
-    //make canvas
-    //add to div, mainly scene I would guess
-    //do context and path
-
-
-/*
-    beginPath()
-    closePath()
-    moveTo(x, y)
-    lineTo(x, y)
-    rect(x, y, width, height)*
-    quadraticCurveTo(cpx, cpy, x, y)
-    bezierCurveTo(cp1x, cp2y, cp2x, cp2y, x, y)
-    arc(x, y, radius, startAngle, endAngle, anticlockwise)
-    arcTo(x1, y1, x2, y2, radius)
-
-    //quad curve
-     context.beginPath();
-
-        // Start
-        context.moveTo(75, 200);
-
-        // Control point (first two numbers) and end point (second two numbers)
-        context.quadraticCurveTo(25, 53, 525, 200);
-
-    context.stroke();
-  }
-
-  //bezier
-   context.beginPath();
-        
-        // Start
-        context.moveTo(75, 200);
-
-        // Control point 1 (first two numbers), Control point 2 (second two numbers) and 
-        // end point (last two numbers)
-        context.bezierCurveTo(210, 30, 365, 30, 525, 200);
-
-    context.stroke();
-
-    //svg path
-    <path d="M100,250 C138,87 397,252 400,250" />
-
-    <svg height="210" width="400">
-  <path d="M150 0 L75 200 L225 200 Z" />
-</svg>
-*/
-
-}
 };
+//changed window.performance.now back to date, as ios was choking
+// copyright Paul Irish 2015
+(function(){
+ 
+  if ("performance" in window == false) {
+      window.performance = {};
+  }
+  
+  Date.now = (Date.now || function () {  // thanks IE8
+    return new Date().getTime();
+  });
+ 
+  if ("now" in window.performance == false){
+    
+    var nowOffset = Date.now();
+    
+    if (performance.timing && performance.timing.navigationStart){
+      nowOffset = performance.timing.navigationStart
+    }
+ 
+    window.performance.now = function now(){
+      return Date.now() - nowOffset;
+    }
+  }
+ 
+})();
+
 
 var paused = false;
 
@@ -90,12 +67,18 @@ HHgActionManager.actionLoop = function( animateActions ) {
 
 HHgActionManager.doStart = function(){
   var i;
+  var testCounter = 0;
  
   this.actionLoop(function( deltaT, now ) {
-    
+    testCounter++;
     for(i = 0; i < HHgActionManager._actionList.length; i++){
       HHgActionManager._actionList[i].whatShouldIDoThisFrame(deltaT, now);
     }
+    //test crap
+    if(testCounter % 4 === 0){
+      HHgTestDiv.getDiv().innerHTML = " " + Math.round(1000/deltaT) ;
+      }
+    //}
 
     HHgScene.doEndOfFrame();
 

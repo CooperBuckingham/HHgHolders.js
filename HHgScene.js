@@ -2,6 +2,8 @@
 var HardwareScreen = {
 	w : window.innerWidth,
 	h : window.innerHeight,
+	//w : window.screen.availWidth,
+	//h : window.screen.availHeight,
 }
 
 var HHgScreen = {
@@ -27,7 +29,7 @@ function HHgUpdateHardwareScreen(){
 		
 }
 
-
+var HHgTrackedTouch;
 var HHgScreenSize = new HHgVector2(HHgScreen.w, HHgScreen.h);
 var HHgScreenSizeHalf = HHgScreenSize.returnVectorScaledBy(.5);
 
@@ -35,7 +37,7 @@ var testContainer;
 
 var showDebugSquares;
 
-var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector;
+var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector, HHgTestDiv;
 var HHgTopHolder = document.getElementById("all");
 
 HHgTopHolder.style.width = "" + HardwareScreen.w +"px";
@@ -152,7 +154,13 @@ function doStartHHgScene(){
 	
 	function sceneTests(){
 	//----- rotate test
-		if(true){
+	HHgTestDiv = new HHgHolder(100,100);
+	HHgTestDiv.doMoveToNewParent(HHgScene, new HHgVector2( (HHgScreen.w * -.5) + 100, (HHgScreen.h * .5) - 150), true);
+	HHgTestDiv.getDiv().innerHTML = "TEST DIV";
+		if(false){
+			HHgGameHolder.getDiv().innerHTML = "innerWidth: " + HardwareScreen.w + "/h " + HardwareScreen.h;
+			HHgGameHolder.getDiv().color = "black";
+
 			var theOne = new HHgHolder(100,100);
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
 			theOne.doAddSprite("pool");
@@ -229,7 +237,7 @@ function doStartHHgScene(){
 			}, 8000);
 		}
 
-		if(false){
+		if(true){
 
 			var theOne = new HHgHolder(100,100);
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
@@ -254,7 +262,7 @@ function doStartHHgScene(){
 				holder.doAddSprite(name);
 			}
 
-			for(var i = 0; i < 100; i++){
+			for(var i = 0; i < 50; i++){
 
 				var size = HHg.returnRandomIntLowIncHighExcl(25,200);
 
@@ -391,11 +399,59 @@ function doAddFunctionsToScene(scene){
 
 		HHgTopHolder.addEventListener("mousemove", function(e){
 			//this will become a "can drag" check
-
 			relX = e.pageX;
 			relY = e.pageY;
 			var mouseXY = new HHgVector2(relX,relY);
 			HHgMain.HHgMouse.doMouseMove( scene.convertMouseToHolder(mouseXY)   );
+			return false;
+		}, false);
+
+		HHgTopHolder.addEventListener("touchStart", function(e){
+			e.preventDefault();
+			var touch = e.changedTouches[i];
+			HHgTrackedTouch = touch.identifier;
+			relX =  touch.pageX;
+			relY =  touch.pageY;
+			var mouseXY = new HHgVector2(relX,relY);
+
+			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
+			return false;
+		}, false);
+
+		HHgTopHolder.addEventListener("touchEnd", function(e){
+			e.preventDefault();
+
+			var touchList = e.changedTouches;
+			
+			for(var i = 0; i < touchList; i++){
+				if(touchList[i].identifier === HHgTrackedTouch){
+					relX =  touchList[i].pageX;
+					relY =  touchList[i].pageY;
+					var mouseXY = new HHgVector2(relX,relY);
+					HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
+					break;
+				}
+			}
+
+			return false;
+		}, false);
+
+		HHgTopHolder.addEventListener("touchMove", function(e){
+			//this will become a "can drag" check
+			e.preventDefault();
+			var touchList = e.changedTouches;
+			
+			for(var i = 0; i < touchList; i++){
+				if(touchList[i].identifier === HHgTrackedTouch){
+					relX =  touchList[i].pageX;
+					relY =  touchList[i].pageY;
+					var mouseXY = new HHgVector2(relX,relY);
+					HHgMain.HHgMouse.doMouseMove( scene.convertMouseToHolder(mouseXY)   );
+					break;
+				}
+			}
+			
+			
 			return false;
 		}, false);
 
