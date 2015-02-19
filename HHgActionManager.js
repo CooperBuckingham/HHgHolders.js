@@ -18,6 +18,7 @@ var HHgActionManager = {
 };
 //changed window.performance.now back to date, as ios was choking
 // copyright Paul Irish 2015
+
 (function(){
  
   if ("performance" in window == false) {
@@ -42,6 +43,7 @@ var HHgActionManager = {
   }
  
 })();
+
 
 
 var paused = false;
@@ -70,14 +72,14 @@ HHgActionManager.doStart = function(){
   var testCounter = 0;
  
   this.actionLoop(function( deltaT, now ) {
-    testCounter++;
+    //testCounter++;
     for(i = 0; i < HHgActionManager._actionList.length; i++){
       HHgActionManager._actionList[i].whatShouldIDoThisFrame(deltaT, now);
     }
     //test crap
-    if(testCounter % 4 === 0){
-      HHgTestDiv.getDiv().innerHTML = " " + Math.round(1000/deltaT) ;
-      }
+    //if(testCounter % 4 === 0){
+      //HHgTestDiv.getDiv().innerHTML = " " + Math.round(1000/deltaT) ;
+      //}
     //}
 
     HHgScene.doEndOfFrame();
