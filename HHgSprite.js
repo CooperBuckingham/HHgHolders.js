@@ -30,6 +30,8 @@ var HHgImageManager = {
 			return "testSoccer.png";
 			case "orange":
 			return "testOrange.png";
+			case "mouse":
+			return "testMouse.png";
 			default:
 			return "testOrange.png";
 		}

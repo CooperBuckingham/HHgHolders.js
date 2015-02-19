@@ -101,7 +101,7 @@ function doStartHHgScene(){
 	
 	
 	function buildHolderFromScratch(){
-		debugger;
+		
 		HHgGameHolder = new HHgHolder(HHgScreen.w, HHgScreen.h);;
 		var div = document.createElement("div");
 		HHgGameHolder.setDiv(div);
@@ -152,7 +152,7 @@ function doStartHHgScene(){
 	
 	function sceneTests(){
 	//----- rotate test
-		if(false){
+		if(true){
 			var theOne = new HHgHolder(100,100);
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
 			theOne.doAddSprite("pool");
@@ -229,7 +229,7 @@ function doStartHHgScene(){
 			}, 8000);
 		}
 
-		if(true){
+		if(false){
 
 			var theOne = new HHgHolder(100,100);
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
@@ -391,7 +391,6 @@ function doAddFunctionsToScene(scene){
 
 		HHgTopHolder.addEventListener("mousemove", function(e){
 			//this will become a "can drag" check
-			if(!HHgMain.HHgMouse.clickedDown) return;
 
 			relX = e.pageX;
 			relY = e.pageY;
