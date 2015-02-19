@@ -22,11 +22,11 @@ var HHgMouse = function HHgMouse(){
 	this.doStart = function(){
 
 
-		that.mouseCircle = new HHgHolder(200,200, 100);
-		//that.mouseCircle.doMoveToNewParent(HHgGameHolder, new HHgVector2(0,0), false);
-		//that.mouseCircle.doAddSprite("pool");
-		//that.mouseCircle.setVisible(true);
-		//that.mouseCircle.setMouseable(false);
+		that.mouseCircle = new HHgHolder(25,25, 100);
+		that.mouseCircle.doMoveToNewParent(HHgGameHolder, new HHgVector2(0,0), false);
+		that.mouseCircle.doAddSprite("mouse");
+		that.mouseCircle.setVisible(false);
+		that.mouseCircle.setMouseable(false);
 		
 
 
@@ -59,6 +59,9 @@ var HHgMouse = function HHgMouse(){
 
 	this.doMouseMove = function (xy){
 		//more logic here to determine dragging later
+		that.mouseCircle.doHide();
+
+		if(!HHgMain.HHgMouse.clickedDown) return;
 		that.clickedDownOn.doMouseMove(xy);
 	}
 
