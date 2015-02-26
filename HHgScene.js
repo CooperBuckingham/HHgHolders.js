@@ -37,7 +37,7 @@ var testContainer;
 
 var showDebugSquares;
 
-var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector, HHgTestDiv;
+var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector, HHgTestDiv, HHgPixelScale;
 var HHgTopHolder = document.getElementById("all");
 
 HHgTopHolder.style.width = "" + HardwareScreen.w +"px";
@@ -189,6 +189,36 @@ function doStartHHgScene(){
 			}, 5000);
 		}
 
+		if(true){
+			
+			var theOne = new HHgHolder(100,100);
+			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
+			theOne.doAddSprite("pool");
+			theOne.test = "pool";
+			theOne.setMouseable(true);
+
+			var	theTwo = new HHgHolder(100,100);
+			theTwo.doMoveToNewParent(theOne, new HHgVector2(100,100), true);
+			theTwo.doAddSprite("soccer");
+			theTwo.test = "soccer";
+			theTwo.setMouseable(true);
+
+			var	theThree = new HHgHolder(100,100);
+			
+			theThree.doMoveToNewParent(theOne, new HHgVector2(-200,-200), true);
+			theThree.doAddSprite("orange");
+			theThree.test = "orange";
+			theThree.setMouseable(true);
+
+			setTimeout(function(){
+				//theOne.doActionMoveInScreen(300,300,50,false);
+				theTwo.doActionMoveInScreen(333,333,50,false);
+				//theThree.doActionMoveInScreen(400,400, 10, false);
+
+
+			}, 500);
+		}
+
 
 		if(false){
 
@@ -237,7 +267,7 @@ function doStartHHgScene(){
 			}, 8000);
 		}
 
-		if(true){
+		if(false){
 
 			var theOne = new HHgHolder(100,100);
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
@@ -333,8 +363,8 @@ function doAddFunctionsToScene(scene){
 
 		var div = holder.getDiv();
 		div.style.backgroundColor = holder.getBackgroundColor();
-		div.style.width = "" + holder.getWidthNet() + "px";
-		div.style.height ="" + holder.getHeightNet() + "px";
+		div.style.width = "" + Math.round(holder.getWidthNet())  + "px";
+		div.style.height ="" + Math.round(holder.getHeightNet()) + "px";
 		
 		var centricConversion = scene.doAnyScreenConversion(holder.getPositionInScreenNet(), holder);
 		div.style.left ="" + centricConversion.getX() +"px";
