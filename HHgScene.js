@@ -13,6 +13,8 @@ var HHgScreen = {
 	isLandscapeGame : true,
 };
 
+//window.console.log = function(){};
+
 function HHgUpdateHardwareScreen(){
 	//could update landscape etc here
 	//this doesn't get called anywhere currently, but will become part of the dynamic screen/landscape to portrait system.
@@ -218,7 +220,7 @@ function doStartHHgScene(){
 
 			}, 500);
 			setTimeout(function(){
-				theTwo.doActionMoveInScreen(400,400,1,false);
+				theTwo.doActionMoveInScreen(0,0,5,false);
 				//theTwo.doActionMoveInScreen(190,190,5,false);
 				//theThree.doActionMoveInScreen(400,400, 10, false);
 

@@ -512,29 +512,15 @@ this.getVisible = function(){
 			
 				_positionInScreenOriginal = _positionInParentOriginal;
 
-				//_positionInScreenOriginal = HHgScreenDiff.returnVectorSubtractedFromVector(_positionInScreenOriginal);
-
-				//I think that means that this is setting screen position incorrectly after calculation
 			
 			if(_parent !== undefined){
 
-				/*
+		
 				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorScaledBy(_parent.getScaleNet());
-				_positionInScreenOriginal = _parent.getPositionInScreenNet().returnVectorPlusVector(_positionInScreenOriginal);
-
-				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorPlusVector( _parent.returnHalfSizeVector() );
-				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.returnHalfSizeVector().returnVectorPlusVector( _parent.getPositionInScreenNet()), -1 * _parent.getRotationNet() );
-				
-
-				this.convertOriginalToNetPosition();
-				*/
-			
-
-				//_positionInScreenOriginal = _positionInParentOriginal.returnVectorScaledByInverse(HHgGameHolder.getScaleNet());
-				_positionInScreenOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(),  _parent.getRotationNet() );
-				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorScaledBy(_parent.getScaleNet());
-
 				_positionInScreenOriginal = _parent.getPositionInScreenOriginal().returnVectorPlusVector(_positionInScreenOriginal);
+
+				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenOriginal() , -1 * _parent.getRotationNet() );
+				
 
 				this.convertOriginalToNetPosition();
 			
@@ -835,13 +821,12 @@ this.getVisible = function(){
 		if(xy === true){
 				xy = _positionInScreenOriginal.getX();
 			}
-			if(y === true){
+		if(y === true){
 				y = _positionInScreenOriginal.getY();
-			}
+		}
 
 		if(xy instanceof HHgVector2 === false){
-			xy = xy || that.getPositionInScreenOriginal().getX();
-			y = y || that.getPositionInScreenOriginal().getY();
+			
 			xy = new HHgVector2(xy, y);
 		}else{
 			onComplete = shouldAddTo;
@@ -897,12 +882,18 @@ this.getVisible = function(){
 	this.doMouseDown = function(){
 		
 		this.setBackgroundColor(true, true, true, .4);
+		/*
 		this.setScaleStored();
 		this.setScaleOriginalBy(.75,.75);
+		*/
+
+		this.setRotationStored();
+		this.setRotationOriginalTo(60);
 	}
 
 	this.doMouseUp = function(mouseWasOverWhenReleased){
 		that.setScaleToStored();
+		that.setRotationToStored();
 	}
 
 	this.doMouseMove = function(){
