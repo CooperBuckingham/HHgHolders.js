@@ -118,14 +118,31 @@ this.isScene = false;
 			this.doRecalcRotation();
 		}
 
+		if(this.test === "soccer"){
+
+		}
 		//this is to allow position in screen to be absolute regardless of parent rotation or scale
 		if(this.frameDumpPosition()){
-		
+			if(this.test === "soccer"){
+				console.log("SOCCER OWN MOVE");
+				console.log("pos on own move screen: " + _positionInScreenOriginal.returnPretty());
+				console.log("pos on own move parent: " + _positionInParentOriginal.returnPretty());
+			}
 			this.doRecalcPosition();
-		}else{
+			if(this.test === "soccer"){
+				console.log("pos on own move after recald screen: " + _positionInScreenOriginal.returnPretty());
+				console.log("pos on own move after recalc parent: " + _positionInParentOriginal.returnPretty());
+			}
 			
+		}else{
+			if(this.test === "soccer"){
+				console.log("PARENT MOVE");
+			}
 			this.updatePositionFromParentMove();
 		}
+			
+		
+		
 
 		this.doTellSceneToUpdate();
 
@@ -392,20 +409,16 @@ this.getVisible = function(){
 			}
 
 				
-				_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNet());
+				this.convertOriginalToNetPosition();
 
 			if(_parent !== undefined){
 
 			
-				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
-				
-				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
-
 				_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInScreenOriginal);
 				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(_parent.getScaleNet());
 				_positionInParentOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(), -1 *  _parent.getRotationNet() );
 				
-				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNet());
+				//_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNet());
 
 			}
 
@@ -491,22 +504,40 @@ this.getVisible = function(){
 
 		this.updatePositionFromParentMove = function(){
 			
+			if(this.test === "soccer"){
+				console.log("parent moved soccer");
+				console.log("pos in screen before: " + _positionInScreenOriginal.returnPretty());
+				console.log("pos in parent before: " + _positionInParentOriginal.returnPretty());
+			}
 			
 				_positionInScreenOriginal = _positionInParentOriginal;
 
 				//_positionInScreenOriginal = HHgScreenDiff.returnVectorSubtractedFromVector(_positionInScreenOriginal);
 
+				//I think that means that this is setting screen position incorrectly after calculation
 			
 			if(_parent !== undefined){
 
+				/*
 				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorScaledBy(_parent.getScaleNet());
 				_positionInScreenOriginal = _parent.getPositionInScreenNet().returnVectorPlusVector(_positionInScreenOriginal);
 
+				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorPlusVector( _parent.returnHalfSizeVector() );
+				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.returnHalfSizeVector().returnVectorPlusVector( _parent.getPositionInScreenNet()), -1 * _parent.getRotationNet() );
 				
 
-				_positionInScreenNet = _positionInScreenOriginal.returnVectorPlusVector( _parent.returnHalfSizeVector() );
-				_positionInScreenNet = _positionInScreenNet.returnVectorRotatedAroundVectorAtAngle( _parent.returnHalfSizeVector().returnVectorPlusVector( _parent.getPositionInScreenNet()), -1 * _parent.getRotationNet() );
-				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
+				this.convertOriginalToNetPosition();
+				*/
+			
+
+				//_positionInScreenOriginal = _positionInParentOriginal.returnVectorScaledByInverse(HHgGameHolder.getScaleNet());
+				_positionInScreenOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(),  _parent.getRotationNet() );
+				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorScaledBy(_parent.getScaleNet());
+
+				_positionInScreenOriginal = _parent.getPositionInScreenOriginal().returnVectorPlusVector(_positionInScreenOriginal);
+
+				this.convertOriginalToNetPosition();
+			
 
 				
 				
@@ -522,7 +553,21 @@ this.getVisible = function(){
 				});
 			}
 
-		}	
+		}
+
+		this.convertOriginalToNetPosition = function(){
+
+			_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNet());
+
+			if(_parent !== undefined){
+
+
+				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
+				
+				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
+			}
+				
+		}
 //=============== SCALE ================
 
 		this.setScaleStored = function(){
@@ -805,7 +850,7 @@ this.getVisible = function(){
 
 		}
 
-		debugger;
+		
 
 		var theAction;
 		theAction = shouldAddTo ? (new HHgActionMoveBy(that, xy, time, false, onComplete)) : (new HHgActionMoveTo(that, xy, time,false, onComplete));

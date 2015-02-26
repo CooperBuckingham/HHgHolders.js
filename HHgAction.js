@@ -61,7 +61,7 @@ function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
 
 	var vectorStore = new HHgVector2(0,0);
 	var xOrYLessThan1 = false;
-	debugger;
+	
 
 	this.whatShouldIDoThisFrame = function(deltaT, now){
 		this.timeSoFar += deltaT/1000;
@@ -161,6 +161,7 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 
 		deltaMove = that.moveByAmount.returnVectorScaledBy(( (deltaT / 1000) / that.totalTime ));
 
+/*
 		if(this.savedAmount !== undefined){
 			deltaMove = deltaMove.returnVectorPlusVector(this.savedAmount);
 			this.savedAmount = undefined;
@@ -191,7 +192,7 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 			vectorStore.setY(0);
 			xOrYLessThan1 = false;
 		}
-
+	*/
 
 		that.moveSoFar = that.moveSoFar.returnVectorPlusVector(deltaMove);
 		owner.setPositionInScreenBy(deltaMove);

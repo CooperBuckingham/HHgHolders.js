@@ -192,7 +192,7 @@ function doStartHHgScene(){
 		if(true){
 			
 			var theOne = new HHgHolder(100,100);
-			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
+			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-100,-100), true);
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
 			theOne.setMouseable(true);
@@ -211,12 +211,19 @@ function doStartHHgScene(){
 			theThree.setMouseable(true);
 
 			setTimeout(function(){
-				//theOne.doActionMoveInScreen(300,300,50,false);
-				theTwo.doActionMoveInScreen(333,333,50,false);
+				theOne.doActionMoveInScreen(200,200,3,false);
+				//theTwo.doActionMoveInScreen(190,190,5,false);
 				//theThree.doActionMoveInScreen(400,400, 10, false);
 
 
 			}, 500);
+			setTimeout(function(){
+				theTwo.doActionMoveInScreen(400,400,1,false);
+				//theTwo.doActionMoveInScreen(190,190,5,false);
+				//theThree.doActionMoveInScreen(400,400, 10, false);
+
+
+			}, 5000);
 		}
 
 
