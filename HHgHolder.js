@@ -77,6 +77,7 @@ this.isScene = false;
 	this.setGameHolder = function(){
 			
 			_scaleOriginal = new HHgVector2(HardwareScreen.w / HHgScreen.w, HardwareScreen.w / HHgScreen.w);
+			HHgPixelScale = _scaleOriginal.getX();
 			_scaleNet = _scaleOriginal;
 			_widthOriginal = HHgScreen.w;
 			_heightOriginal = HHgScreen.h;
@@ -109,6 +110,7 @@ this.isScene = false;
 	this.doFrameDump = function(){
 
 		if(this.frameDumpScale()){
+			console.log("affect scale");
 			this.doRecalcScale();
 		}
 		
@@ -803,7 +805,7 @@ this.getVisible = function(){
 
 		}
 
-
+		debugger;
 
 		var theAction;
 		theAction = shouldAddTo ? (new HHgActionMoveBy(that, xy, time, false, onComplete)) : (new HHgActionMoveTo(that, xy, time,false, onComplete));
@@ -812,10 +814,19 @@ this.getVisible = function(){
 		
 	}
 
-	this.doActionRotate = function(degrees, time){
+	this.doActionRotate = function(degrees, time, shouldAddTo){
 
 		var theAction;
-		theAction = new HHgActionRotateBy(that, degrees, time);
+		theAction = shouldAddTo ? (new HHgActionRotateBy(that, degrees, time)) : (new HHgActionRotateTo(that,degrees,time));
+		
+		doFinalizeAction(theAction);
+
+	}
+
+	this.doActionScale = function(xy, time, shouldAddTo){
+
+		var theAction;
+		theAction = shouldAddTo ? (new HHgActionScaleBy(that, xy, time)) : (new HHgActionScaleTo(that,xy,time));
 		
 		doFinalizeAction(theAction);
 

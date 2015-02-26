@@ -110,6 +110,10 @@ var HHgVector2 = function (x,y){
 		return _x == vB.getX() && _y == vB.getY();
 	}
 
+	this.returnCopy = function(){
+		return new HHgVector2(_x, _y);
+	}
+
 	
 
 }
