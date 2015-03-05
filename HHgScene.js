@@ -31,6 +31,8 @@ function HHgUpdateHardwareScreen(){
 		
 }
 
+
+
 var HHgTrackedTouch;
 var HHgScreenSize = new HHgVector2(HHgScreen.w, HHgScreen.h);
 var HHgScreenSizeHalf = HHgScreenSize.returnVectorScaledBy(.5);
@@ -194,7 +196,7 @@ function doStartHHgScene(){
 		if(true){
 			
 			var theOne = new HHgHolder(100,100);
-			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-100,-100), true);
+			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
 			theOne.setMouseable(true);
@@ -207,22 +209,26 @@ function doStartHHgScene(){
 
 			var	theThree = new HHgHolder(100,100);
 			
-			theThree.doMoveToNewParent(theOne, new HHgVector2(-200,-200), true);
+			theThree.doMoveToNewParent(theOne, new HHgVector2(-100,-100), true);
 			theThree.doAddSprite("orange");
 			theThree.test = "orange";
 			theThree.setMouseable(true);
 
 			setTimeout(function(){
-				theOne.doActionMoveInScreen(200,200,3,false);
-				//theTwo.doActionMoveInScreen(190,190,5,false);
-				//theThree.doActionMoveInScreen(400,400, 10, false);
-
+				//theOne.setRotationOriginalTo(180);
+				//theOne.doActionRotate(180, 15, true);
+				//theOne.doActionMoveInScreen(400,400,30,true);
+				
+				//theThree.doActionMoveInScreen(400,400, 30, true);
+				//theThree.doActionRotate(360, 10, false);
+				
 
 			}, 500);
 			setTimeout(function(){
-				theTwo.doActionMoveInScreen(0,0,5,false);
-				//theTwo.doActionMoveInScreen(190,190,5,false);
+				//theTwo.doActionMoveInScreen(300,300,30,false);
+				theTwo.doActionMoveInScreen(400,400,15,true);
 				//theThree.doActionMoveInScreen(400,400, 10, false);
+				//theTwo.setPositionInParentTo(200,200);
 
 
 			}, 5000);
@@ -282,11 +288,13 @@ function doStartHHgScene(){
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
+			theOne.setMouseable(true);
 
 			var listOfHolder = [];
 			listOfHolder.push(theOne);
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
 			theOne.doActionMoveInScreen(-75, -700, 10, true);
+
 
 			var randomSprite = function(holder){
 
@@ -311,6 +319,7 @@ function doStartHHgScene(){
 
 				testBall.doMoveToNewParent( listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , new HHgVector2(posx, posy) );
 				randomSprite(testBall);
+				testBall.setMouseable(true);
 				testBall.doActionRotate(HHg.returnRandomInt(120,720), HHg.returnRandomInt(5,35));
 
 				listOfHolder.push(testBall)
