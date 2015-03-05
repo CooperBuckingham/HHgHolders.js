@@ -64,6 +64,7 @@ var HHgHolder = function(w, h, zIndex, scale){
 	var _canvas;
 
 this.isScene = false;
+this.parentUpdated = false;
 
 	this.setScene = function(){
 			_scaleOriginal = new HHgVector2(1,1);
@@ -93,8 +94,7 @@ this.isScene = false;
 		return _canvas;
 	}
 
-	//working on the frame combined updates here, but putting it off for now
-	//means we can't have actions that are combinations/additive
+	
 	this.test = "no";
 
 	this.frameUpdates = {
@@ -110,7 +110,6 @@ this.isScene = false;
 	this.doFrameDump = function(){
 
 		if(this.frameDumpScale()){
-			console.log("affect scale");
 			this.doRecalcScale();
 		}
 		
@@ -118,33 +117,22 @@ this.isScene = false;
 			this.doRecalcRotation();
 		}
 
-		if(this.test === "soccer"){
-
-		}
-		//this is to allow position in screen to be absolute regardless of parent rotation or scale
+		
+		
 		if(this.frameDumpPosition()){
-			if(this.test === "soccer"){
-				console.log("SOCCER OWN MOVE");
-				console.log("pos on own move screen: " + _positionInScreenOriginal.returnPretty());
-				console.log("pos on own move parent: " + _positionInParentOriginal.returnPretty());
-			}
+			
 			this.doRecalcPosition();
-			if(this.test === "soccer"){
-				console.log("pos on own move after recald screen: " + _positionInScreenOriginal.returnPretty());
-				console.log("pos on own move after recalc parent: " + _positionInParentOriginal.returnPretty());
-			}
-			
 		}else{
-			if(this.test === "soccer"){
-				console.log("PARENT MOVE");
-			}
-			this.updatePositionFromParentMove();
-		}
 			
-		
-		
+		}
 
+		//if(this.parentUpdated === true){
+			
+		//}
+
+			
 		this.doTellSceneToUpdate();
+		
 
 	}
 
@@ -154,6 +142,7 @@ this.isScene = false;
 		if(_children){
 			
 				for(var i = 0; i < _children.length; i++){
+					_children[i].updatePositionFromParentMove();
 					_children[i].doTellSceneToUpdate();
 				}
 			
@@ -325,13 +314,19 @@ this.getVisible = function(){
 			L = L > 1 ? 1 : L;
 			A = A > 1 ? 1 : A;
 			
-			var mult = shouldMultiplyBy || 1;
+			if(shouldMultiplyBy){
+				_backgroundHue *= H;
+				_backgroundSaturation *= S;
+				_backgroundLightness *= L;
+				_backgroundAlpha *= A;
 
-			_backgroundHue = H * mult || _backgroundHue;
-			_backgroundSaturation = S * mult || _backgroundSaturation;
-			_backgroundLightness = L * mult || _backgroundLightness;
-			_backgroundAlpha = A * mult || _backgroundAlpha;
-
+			}else{
+				_backgroundHue = H;
+				_backgroundSaturation = S;
+				_backgroundLightness = L;
+				_backgroundAlpha = A;
+			}
+			
 			if(_parent !== undefined){
 				that.doNotifySceneOfUpdates("color");
 			}
@@ -383,10 +378,7 @@ this.getVisible = function(){
 			that.doNotifySceneOfUpdates(_zIndex);
 		}
 
-		
-
 	
-
 		this.setDiv = function(div){
 			_div = div;
 		}
@@ -408,23 +400,31 @@ this.getVisible = function(){
 				return;
 			}
 
+			if(that.test === "soccer" && (_positionInScreenOriginal.getX() > 1 || _positionInScreenOriginal.getY() > 1) ){
+				
+					//console.log("SCREEN SOCCER POSITION");
+					//console.log(_positionInScreenOriginal.returnPretty());
+
+				}
 				
 				this.convertOriginalToNetPosition();
+				
 
 			if(_parent !== undefined){
 
 			
+
 				_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInScreenOriginal);
 				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(_parent.getScaleNet());
-				_positionInParentOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenNet(), -1 *  _parent.getRotationNet() );
-				
-				//_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNet());
+				_positionInParentOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenOriginal(), 1 *  _parent.getRotationNet() );
+
 
 			}
 
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
+					child.parentUpdated = true;
 					child.updatePositionFromParentMove();
 					
 				});
@@ -492,9 +492,8 @@ this.getVisible = function(){
 				xy = new HHgVector2(0,0);
 			}
 					
-			//getting hacky here, but saving the original, then dumping any buffer, then using it to set the udpate
 			
-			this.frameDumpPosition();
+			//this.frameDumpPosition();
 
 			_positionInParentOriginal = xy;
 			//updatePositionFromParentMove(xy)
@@ -504,11 +503,13 @@ this.getVisible = function(){
 
 		this.updatePositionFromParentMove = function(){
 			
-			if(this.test === "soccer"){
-				console.log("parent moved soccer");
-				console.log("pos in screen before: " + _positionInScreenOriginal.returnPretty());
-				console.log("pos in parent before: " + _positionInParentOriginal.returnPretty());
-			}
+				if(that.test === "soccer" && (_positionInParentOriginal.getX() > 1 || _positionInParentOriginal.getY() > 1) ){
+					
+					console.log("PARENT SOCCER POSITION");
+					console.log(_positionInParentOriginal.returnPretty());
+					
+
+				}
 			
 				_positionInScreenOriginal = _positionInParentOriginal;
 
@@ -525,16 +526,14 @@ this.getVisible = function(){
 				this.convertOriginalToNetPosition();
 			
 
-				
-				
 			}
 			
 			
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
-					//child.doRecalcPosition();
-					child.updatePositionFromParentMove(_positionInParentOriginal);
+					child.parentUpdated = true;
+					child.updatePositionFromParentMove();
 
 				});
 			}
@@ -632,8 +631,6 @@ this.getVisible = function(){
 
 		this.doRecalcScale = function(){
 			
-
-
 			_scaleNet = _scaleOriginal;
 
 
@@ -645,6 +642,7 @@ this.getVisible = function(){
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
+					child.parentUpdated = true;
 					child.doRecalcScale();
 				});
 			}
@@ -665,7 +663,7 @@ this.getVisible = function(){
 		}
 
 		this.setRotationToStored = function(){
-			that.setRotationOriginalTo(_rotationStored);
+			this.setRotationOriginalTo(_rotationStored);
 		}
 
 		this.setRotationOriginalTo = function(val){
@@ -868,10 +866,6 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionFollowQuad(that, xyC, xy2, time);
 		doFinalizeAction(theAction);
-
-
-
-
 		
 	}
 
@@ -881,19 +875,20 @@ this.getVisible = function(){
 
 	this.doMouseDown = function(){
 		
-		this.setBackgroundColor(true, true, true, .4);
+		//this.setBackgroundColor(true, true, true, .4);
 		/*
 		this.setScaleStored();
 		this.setScaleOriginalBy(.75,.75);
 		*/
-
+		//this.setScaleOriginalTo(.75,.75);
 		this.setRotationStored();
 		this.setRotationOriginalTo(60);
 	}
 
 	this.doMouseUp = function(mouseWasOverWhenReleased){
-		that.setScaleToStored();
+		//this.setScaleOriginalTo(1,1);
 		that.setRotationToStored();
+		//this.setRotationOriginalTo(0);
 	}
 
 	this.doMouseMove = function(){
