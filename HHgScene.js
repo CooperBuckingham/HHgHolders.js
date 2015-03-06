@@ -41,7 +41,7 @@ var testContainer;
 
 var showDebugSquares;
 
-var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector, HHgTestDiv, HHgPixelScale;
+var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector, HHg1Vector, HHgHalfVector, HHgTestDiv, HHgPixelScale;
 var HHgTopHolder = document.getElementById("all");
 
 HHgTopHolder.style.width = "" + HardwareScreen.w +"px";
@@ -50,9 +50,21 @@ HHgTopHolder.style.height = "" + HardwareScreen.h +"px";
 function doStartHHgScene(){
 	console.log("HHgScene Start NOW");
 	HHg0Vector = new HHgVector2(0,0);
-	HHg0Vector.setX = function(){};;
-	HHg0Vector.setY = function(){};;
-	HHg0Vector.setXY = function(){};;
+	HHg0Vector.setX = function(){};
+	HHg0Vector.setY = function(){};
+	HHg0Vector.setXY = function(){};
+
+	HHg1Vector = new HHgVector2(1,1);
+	HHg1Vector.setX = function(){};
+	HHg1Vector.setY = function(){};
+	HHg1Vector.setXY = function(){};
+
+	HHgHalfVector = new HHgVector2(.5,.5);
+	HHgHalfVector.setX = function(){};
+	HHgHalfVector.setY = function(){};
+	HHgHalfVector.setXY = function(){};
+
+
 
 	HHgScreenDiff = new HHgVector2(0,0);
 	HHgScene = new HHgHolder(HardwareScreen.w,HardwareScreen.h);
@@ -165,35 +177,35 @@ function doStartHHgScene(){
 			HHgGameHolder.getDiv().innerHTML = "innerWidth: " + HardwareScreen.w + "/h " + HardwareScreen.h;
 			HHgGameHolder.getDiv().color = "black";
 
-			var theOne = new HHgHolder(100,100);
+			var theOne = new HHgHolder(400,400);
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
 			theOne.setMouseable(true);
 
 			var	theTwo = new HHgHolder(100,100);
-			theTwo.doMoveToNewParent(theOne, new HHgVector2(100,100), true);
+			theTwo.doMoveToNewParent(HHgGameHolder, new HHgVector2(0,0), true);
 			theTwo.doAddSprite("soccer");
 			theTwo.test = "soccer";
 			theTwo.setMouseable(true);
 
 			var	theThree = new HHgHolder(100,100);
 			
-			theThree.doMoveToNewParent(theOne, new HHgVector2(-200,-200), true);
+			theThree.doMoveToNewParent(HHgGameHolder, new HHgVector2(0,0), true);
 			theThree.doAddSprite("orange");
 			theThree.test = "orange";
 			theThree.setMouseable(true);
 
 			setTimeout(function(){
 
-			theOne.setRotationOriginalTo(60);
-			theOne.setPositionInScreenTo(0,-200);
-			theOne.setScaleOriginalTo(2,2);
+			//theOne.setRotationOriginalTo(60);
+			//theOne.setPositionInScreenTo(0,-200);
+			theOne.setScaleOriginalTo(.5,.5);
 
 			}, 5000);
 		}
 
-		if(true){
+		if(false){
 			
 			var theOne = new HHgHolder(100,100);
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
@@ -216,7 +228,7 @@ function doStartHHgScene(){
 
 			setTimeout(function(){
 				//theOne.setRotationOriginalTo(180);
-				//theOne.doActionRotate(180, 15, true);
+				theOne.doActionRotate(180, 15, true);
 				//theOne.doActionMoveInScreen(400,400,30,true);
 				
 				//theThree.doActionMoveInScreen(400,400, 30, true);
@@ -231,7 +243,7 @@ function doStartHHgScene(){
 				//theTwo.setPositionInParentTo(200,200);
 
 
-			}, 5000);
+			}, 2000);
 		}
 
 
@@ -282,7 +294,7 @@ function doStartHHgScene(){
 			}, 8000);
 		}
 
-		if(false){
+		if(true){
 
 			var theOne = new HHgHolder(100,100);
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
@@ -294,6 +306,8 @@ function doStartHHgScene(){
 			listOfHolder.push(theOne);
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
 			theOne.doActionMoveInScreen(-75, -700, 10, true);
+			theOne.doActionRotate(360, 30);
+			theOne.doActionScale(new HHgVector2(.25,.25), 30);
 
 
 			var randomSprite = function(holder){
