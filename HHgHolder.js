@@ -929,7 +929,7 @@ this.getVisible = function(){
 	}
 
 	this.doMouseUp = function(mouseWasOverWhenReleased){
-		this.setScaleOriginalTo(1,1);
+		this.setScaleOriginalBy(1.1,1.1);
 		//that.setRotationToStored();
 		//this.setRotationOriginalTo(0);
 	}

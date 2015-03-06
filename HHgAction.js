@@ -289,7 +289,7 @@ function HHgActionRotateLeftTo(owner, degrees, totalTime, ease, onComplete){
 	
 	
 }
-HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateTo);
+HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateLeftTo);
 
 function HHgActionRotateRightTo(owner, degrees, totalTime, ease, onComplete){
 	
@@ -338,7 +338,7 @@ function HHgActionRotateRightTo(owner, degrees, totalTime, ease, onComplete){
 	
 	
 }
-HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateTo);
+HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateRightTo);
 
 
 function HHgActionScaleBy(owner, scaleXY, totalTime, ease, onComplete){
