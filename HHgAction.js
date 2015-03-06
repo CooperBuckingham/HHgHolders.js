@@ -223,7 +223,7 @@ function HHgActionRotateBy(owner, degrees, totalTime, ease, onComplete){
 		
 		if(this.timeSoFar >= this.totalTime){
 			
-			owner.setRotationOriginalTo(this.degreesStart + this.degreesToRotate);
+			owner.setRotationOriginalBy(that.degreesToRotate - that.degreesSoFar);
 			that.finalFrame(that);
 
 			return;
@@ -242,12 +242,25 @@ function HHgActionRotateBy(owner, degrees, totalTime, ease, onComplete){
 HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateBy);
 
 
-function HHgActionRotateTo(owner, degrees, totalTime, ease, onComplete){
+function HHgActionRotateLeftTo(owner, degrees, totalTime, ease, onComplete){
 	
 	HHgAction.call(this, owner, totalTime, ease, onComplete);
 
 	this.degreesStart = this.owner.getRotationOriginal();
-	this.degreesToRotate = degrees - this.degreesStart;
+
+	degrees = degrees % 360;
+	if(degrees > 180){
+		degrees = -(degrees - 180);
+	}
+
+	if(degrees < this.degreesStart){
+		degrees = degrees - this.degreesStart;
+	}else{
+		degrees = -(360 - Math.abs(this.degreesStart - degrees) );
+	}
+
+	
+	this.degreesToRotate = degrees;
 
 	this.degreesSoFar = 0;
 	
@@ -260,7 +273,56 @@ function HHgActionRotateTo(owner, degrees, totalTime, ease, onComplete){
 		
 		if(this.timeSoFar >= this.totalTime){
 			
-			owner.setRotationOriginalTo(this.degreesStart + this.degreesToRotate);
+			owner.setRotationOriginalBy(this.degreesStart + this.degreesToRotate);
+			that.finalFrame(that);
+
+			return;
+		}
+
+		deltaDegrees = that.degreesToRotate * ( (deltaT / 1000) / that.totalTime );
+
+		that.degreesSoFar += deltaDegrees;
+		owner.setRotationOriginalBy(deltaDegrees);
+
+
+	}
+	
+	
+}
+HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateTo);
+
+function HHgActionRotateRightTo(owner, degrees, totalTime, ease, onComplete){
+	
+	HHgAction.call(this, owner, totalTime, ease, onComplete);
+
+	this.degreesStart = this.owner.getRotationOriginal();
+
+	degrees = degrees % 360;
+	if(degrees > 180){
+		degrees = -(degrees - 180);
+	}
+
+	if(degrees > this.degreesStart){
+		degrees = degrees - this.degreesStart;
+	}else{
+		degrees = -(360 - Math.abs(this.degreesStart - degrees) );
+	}
+
+	
+	this.degreesToRotate = degrees;
+
+	this.degreesSoFar = 0;
+	
+	var that = this;
+
+	var deltaDegrees = 0;
+
+	this.whatShouldIDoThisFrame = function(deltaT, now){
+		this.timeSoFar += deltaT/1000;
+		
+		if(this.timeSoFar >= this.totalTime){
+			
+			owner.setRotationOriginalBy(this.degreesStart + this.degreesToRotate);
 			that.finalFrame(that);
 
 			return;
@@ -280,12 +342,17 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateTo);
 
 
 function HHgActionScaleBy(owner, scaleXY, totalTime, ease, onComplete){
+
+	//(( (scaleBy - 1U) * %) + 1) * currentScale
+
+
 	HHgAction.call(this, owner, totalTime, ease, onComplete);
 
 	this.scaleStart = this.owner.getScaleOriginal();
 	this.scaleByAmount = scaleXY;
+	this.scaleAmountDown1 = HHg1Vector.returnVectorSubtractedFromVector(this.scaleByAmount);
 
-	this.scaleSoFar = HHg0Vector;
+	this.scaleRemaining = this.scaleByAmount;
 	
 	var that = this;
 
@@ -295,16 +362,18 @@ function HHgActionScaleBy(owner, scaleXY, totalTime, ease, onComplete){
 		this.timeSoFar += deltaT/1000;
 		
 		if(this.timeSoFar >= this.totalTime){
-			
-			owner.setScaleOriginalTo(this.scaleStart.returnVectorPlusVector(this.scaleByAmount)  );
+			//this has to be a percentage of time remaining.
+			deltaT = deltaT/1000 - (this.timeSoFar - this.totalTime);
+			deltaScale = this.scaleAmountDown1.returnVectorScaledBy(deltaT / that.totalTime).returnVectorPlusVector(HHg1Vector);
+			owner.setScaleOriginalBy(deltaScale);
 			that.finalFrame(that);
 
 			return;
 		}
 
-		deltaScale = that.scaleByAmount.returnVectorScaledBy(( (deltaT / 1000) / that.totalTime ));
+		deltaScale = this.scaleAmountDown1.returnVectorScaledBy((deltaT / 1000) / that.totalTime).returnVectorPlusVector(HHg1Vector);
 
-		that.scaleSoFar = that.scaleSoFar.returnVectorPlusVector(deltaScale);
+		that.scaleRemaining = deltaScale.returnVectorSubtractedFromVector(that.scaleRemaining);
 		owner.setScaleOriginalBy(deltaScale);
 
 
@@ -316,12 +385,14 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionScaleBy);
 
 
 function HHgActionScaleTo(owner, scaleXY, totalTime, ease, onComplete){
-	HHgAction.call(this, owner, totalTime, ease, onComplete);
+
+HHgAction.call(this, owner, totalTime, ease, onComplete);
 
 	this.scaleStart = this.owner.getScaleOriginal();
-	this.scaleByAmount = this.scaleStart.returnVectorSubtractedFromVector(scaleXY) ;
+	this.scaleByAmount = scaleXY.returnVectorScaledByInverse(this.scaleStart);
+	this.scaleAmountDown1 = HHg1Vector.returnVectorSubtractedFromVector(this.scaleByAmount);
 
-	this.scaleSoFar = HHg0Vector;
+	this.scaleRemaining = this.scaleByAmount;
 	
 	var that = this;
 
@@ -331,16 +402,18 @@ function HHgActionScaleTo(owner, scaleXY, totalTime, ease, onComplete){
 		this.timeSoFar += deltaT/1000;
 		
 		if(this.timeSoFar >= this.totalTime){
-			
-			owner.setScaleOriginalTo(this.scaleStart.returnVectorPlusVector(this.scaleByAmount)  );
+			//this has to be a percentage of time remaining.
+			deltaT = deltaT/1000 - (this.timeSoFar - this.totalTime);
+			deltaScale = this.scaleAmountDown1.returnVectorScaledBy(deltaT / that.totalTime).returnVectorPlusVector(HHg1Vector);
+			owner.setScaleOriginalBy(deltaScale);
 			that.finalFrame(that);
 
 			return;
 		}
 
-		deltaScale = that.scaleByAmount.returnVectorScaledBy(( (deltaT / 1000) / that.totalTime ));
+		deltaScale = this.scaleAmountDown1.returnVectorScaledBy((deltaT / 1000) / that.totalTime).returnVectorPlusVector(HHg1Vector);
 
-		that.scaleSoFar = that.scaleSoFar.returnVectorPlusVector(deltaScale);
+		that.scaleRemaining = deltaScale.returnVectorSubtractedFromVector(that.scaleRemaining);
 		owner.setScaleOriginalBy(deltaScale);
 
 

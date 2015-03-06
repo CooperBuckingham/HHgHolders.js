@@ -123,12 +123,8 @@ this.parentUpdated = false;
 			
 			this.doRecalcPosition();
 		}else{
-			
+			this.updatePositionFromParentMove();
 		}
-
-		//if(this.parentUpdated === true){
-			
-		//}
 
 			
 		this.doTellSceneToUpdate();
@@ -814,7 +810,7 @@ this.getVisible = function(){
 		HHg.doRemoveThingFromArray(_actions, action);
 	}
 
-	this.doActionMoveInScreen = function(xy,y,time,shouldAddTo, onComplete, ease){
+	this.doActionMoveInScreenTo = function(xy,y,time, onComplete, ease){
 
 		if(xy === true){
 				xy = _positionInScreenOriginal.getX();
@@ -827,8 +823,8 @@ this.getVisible = function(){
 			
 			xy = new HHgVector2(xy, y);
 		}else{
-			onComplete = shouldAddTo;
-			shouldAddTo = time;
+			ease = onComplete;
+			onComplete = time;
 			time = y;
 
 		}
@@ -836,25 +832,72 @@ this.getVisible = function(){
 		
 
 		var theAction;
-		theAction = shouldAddTo ? (new HHgActionMoveBy(that, xy, time, false, onComplete)) : (new HHgActionMoveTo(that, xy, time,false, onComplete));
+		theAction = (new HHgActionMoveTo(that, xy, time,false, onComplete));
 		doFinalizeAction(theAction);
 		
 		
 	}
 
-	this.doActionRotate = function(degrees, time, shouldAddTo){
+	this.doActionMoveInScreenBy = function(xy,y,time, onComplete, ease){
+
+		if(xy instanceof HHgVector2 === false){
+			
+			xy = new HHgVector2(xy, y);
+		}else{
+			ease = onComplete;
+			onComplete = time;
+			time = y;
+
+		}
+
+		
 
 		var theAction;
-		theAction = shouldAddTo ? (new HHgActionRotateBy(that, degrees, time)) : (new HHgActionRotateTo(that,degrees,time));
+		theAction = new HHgActionMoveBy(that, xy, time, false, onComplete)
+		doFinalizeAction(theAction);
+		
+		
+	}
+
+	this.doActionRotateBy = function(degrees, time, ease){
+
+		var theAction;
+		theAction = new HHgActionRotateBy(that, degrees, time);
 		
 		doFinalizeAction(theAction);
 
 	}
 
-	this.doActionScale = function(xy, time, shouldAddTo){
+	this.doActionRotateLeftTo = function(degrees, time, ease){
 
 		var theAction;
-		theAction = shouldAddTo ? (new HHgActionScaleBy(that, xy, time)) : (new HHgActionScaleTo(that,xy,time));
+		theAction = new HHgActionRotateLeftTo(that,degrees,time);
+		
+		doFinalizeAction(theAction);
+
+	}
+
+	this.doActionRotateRightTo = function(degrees, time, ease){
+
+		var theAction;
+		theAction = new HHgActionRotateRightTo(that,degrees,time);
+		
+		doFinalizeAction(theAction);
+
+	}
+
+	this.doActionScaleBy = function(xy, time){
+
+		var theAction;
+		theAction = new HHgActionScaleBy(that, xy, time);
+		
+		doFinalizeAction(theAction);
+
+	}
+	this.doActionScaleTo = function(xy, time, shouldAddTo){
+
+		var theAction;
+		theAction = new HHgActionScaleTo(that,xy,time);
 		
 		doFinalizeAction(theAction);
 
@@ -876,18 +919,18 @@ this.getVisible = function(){
 	this.doMouseDown = function(){
 		
 		//this.setBackgroundColor(true, true, true, .4);
-		/*
+		
 		this.setScaleStored();
-		this.setScaleOriginalBy(.75,.75);
-		*/
+		this.setScaleOriginalBy(.9,.9);
+	
 		//this.setScaleOriginalTo(.75,.75);
-		this.setRotationStored();
-		this.setRotationOriginalTo(60);
+		//this.setRotationStored();
+		//this.setRotationOriginalTo(60);
 	}
 
 	this.doMouseUp = function(mouseWasOverWhenReleased){
-		//this.setScaleOriginalTo(1,1);
-		that.setRotationToStored();
+		this.setScaleOriginalTo(1,1);
+		//that.setRotationToStored();
 		//this.setRotationOriginalTo(0);
 	}
 
