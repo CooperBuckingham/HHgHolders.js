@@ -198,8 +198,7 @@ function doStartHHgScene(){
 
 			setTimeout(function(){
 
-			//theOne.setRotationOriginalTo(60);
-			//theOne.setPositionInScreenTo(0,-200);
+			
 			theOne.setScaleOriginalTo(.5,.5);
 
 			}, 5000);
@@ -227,20 +226,16 @@ function doStartHHgScene(){
 			theThree.setMouseable(true);
 
 			setTimeout(function(){
-				//theOne.setRotationOriginalTo(180);
-				theOne.doActionRotate(180, 15, true);
-				//theOne.doActionMoveInScreen(400,400,30,true);
 				
-				//theThree.doActionMoveInScreen(400,400, 30, true);
-				//theThree.doActionRotate(360, 10, false);
+				theOne.doActionRotateBy(180, 15);
+				
 				
 
 			}, 500);
 			setTimeout(function(){
-				//theTwo.doActionMoveInScreen(300,300,30,false);
-				theTwo.doActionMoveInScreen(400,400,15,true);
-				//theThree.doActionMoveInScreen(400,400, 10, false);
-				//theTwo.setPositionInParentTo(200,200);
+				
+				theTwo.doActionMoveInScreenBy(400,400,15);
+				
 
 
 			}, 2000);
@@ -284,8 +279,8 @@ function doStartHHgScene(){
 
 			setTimeout(function(){
 				theOne.setPositionInScreenTo(new HHgVector2(0,450));
-				theOne.doActionFollowQuad(new HHgVector2(75,120), new HHgVector2(-100,-450));
-				theOne.doActionRotate(60, 10);
+				theOne.doActionFollowQuad(new HHgVector2(75,120), new HHgVector2(-100,-450), 10);
+				theOne.doActionRotateBy(60, 10);
 			
 			}, 4000);
 			
@@ -305,9 +300,9 @@ function doStartHHgScene(){
 			var listOfHolder = [];
 			listOfHolder.push(theOne);
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
-			theOne.doActionMoveInScreen(-75, -700, 10, true);
-			theOne.doActionRotate(360, 30);
-			theOne.doActionScale(new HHgVector2(.25,.25), 30);
+			theOne.doActionMoveInScreenBy(-75, -700, 10);
+			theOne.doActionRotateBy(360, 30);
+			theOne.doActionScaleTo(new HHgVector2(.25,.25), 30);
 
 
 			var randomSprite = function(holder){
@@ -334,7 +329,7 @@ function doStartHHgScene(){
 				testBall.doMoveToNewParent( listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , new HHgVector2(posx, posy) );
 				randomSprite(testBall);
 				testBall.setMouseable(true);
-				testBall.doActionRotate(HHg.returnRandomInt(120,720), HHg.returnRandomInt(5,35));
+				testBall.doActionRotateBy(HHg.returnRandomInt(120,720), HHg.returnRandomInt(5,35));
 
 				listOfHolder.push(testBall)
 			}
