@@ -441,9 +441,6 @@ function doAddFunctionsToScene(scene){
 			
 		}
 		
-
-
-		
 	};
 	
 
