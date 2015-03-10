@@ -152,4 +152,21 @@ html body #all{
   bottom: 0;
 
 }
+#inside-loading-screen{
+  font-family: helvetica, sans-serif;
+  display: inline-block;
+  width: 50%;
+  height: 30%;
+  text-align: center;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  border: dashed 2px white;
+  
+}
+#inside-loading-screen h1{
+  font-size: 2em;
+  margin-top: .5em;
+  margin-bottom: .5em;
+}
 

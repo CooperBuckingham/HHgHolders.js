@@ -132,6 +132,13 @@ var HHgHolder = function(w, h, zIndex, scale){
 		_positionStored = _positionInScreenOriginal;
 		
 		
+		for(var i = 0; i < _children.length; i++){
+			_children[i].killHolder();
+		}
+
+		for(var i = 0; i < _actions.length; i++){
+			HHgActionManager.doRemoveAction(_actions[i]);
+		}
 
 		_children = [];
 		_actions = [];
@@ -1018,9 +1025,10 @@ this.getVisible = function(){
 	}
 
 	this.doMouseUp = function(mouseWasOverWhenReleased){
-		this.setScaleOriginalBy(1.1,1.1);
+		this.setScaleOriginalBy(1.0/0.9,1.0/0.9);
 		//that.setRotationToStored();
 		//this.setRotationOriginalTo(0);
+		//this.setScaleToStored();
 	}
 
 	this.doMouseMove = function(){

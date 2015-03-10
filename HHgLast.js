@@ -8,7 +8,9 @@ window.onload = function(){
 	HHgActionManager.doStart();
 
 	HHgMouse.doStart();
-	
+
+	HHgLoadingScreen.splashScreenFinish();
+
 }
 
 
