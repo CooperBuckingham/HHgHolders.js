@@ -22,7 +22,6 @@ var HHgAction = function (owner, totalTime, ease, onComplete){
 	this.finalFrame = function(action){
 		
 		if(action.onComplete){
-			console.log("called follow up");
 			action.onComplete();
 		}
 		
@@ -490,6 +489,30 @@ function HHgActionFollowQuad(owner, controlXY, endXY, totalTime, ease, onComplet
 	
 }
 HHg.HHgActionCommands.makeChildOfAction(HHgActionFollowQuad);
+
+function HHgActionTimer(owner, totalTime, onComplete){
+
+HHgAction.call(this, owner, totalTime, false, onComplete);
+
+	var that = this;
+
+	var deltaScale = HHg0Vector;
+
+	this.whatShouldIDoThisFrame = function(deltaT, now){
+		this.timeSoFar += deltaT/1000;
+		
+		if(this.timeSoFar >= this.totalTime){
+			that.finalFrame(that);
+
+			return;
+		}
+
+
+	}
+	
+	
+}
+HHg.HHgActionCommands.makeChildOfAction(HHgActionTimer);
 
 
 
