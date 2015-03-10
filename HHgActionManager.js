@@ -83,6 +83,7 @@ HHgActionManager.doStart = function(){
     //}
 
     HHgScene.doEndOfFrame();
+    HHgScene.doUpdateHolders();
 
     return true;
 
