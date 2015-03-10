@@ -1,22 +1,26 @@
 
+var HHgObjectPool;
 
-/*
-function (){
 
-	window.HHgObjectPool = {
-		returnNNumberOfObjects: function(n){
-			return HHg.returnNTestedObjects(this, function(thing){
-				return thing.parent ? true : false;
-			}, n);
-		},
-	};
+(function (){
 
-//add to pool
-	for(var i = 0; i < 100; i++){
-		window.HHgObjectPool[""+i] = {number: i};
+	var pool = {};
+
+	HHgObjectPool.start = function(){
+
 	}
 
-}();
-*/
+	HHgObjectPool.returnHolder = function(){
+
+	}
+
+	var tempHolder;
+
+	for(var i = 0; i < 100; i++){
+		tempHolder = new HHgHolder();
+	}
+
+})();
+
 
 
