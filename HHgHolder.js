@@ -63,8 +63,40 @@ var HHgHolder = function(w, h, zIndex, scale){
 
 	var _canvas;
 
-this.isScene = false;
-this.parentUpdated = false;
+	this.isScene = false;
+
+	this.test = "no";
+
+	this.frameUpdates = {
+		positionBy: undefined,
+		rotationBy: undefined,
+		scaleBy: undefined,
+		positionTo: undefined,
+		rotationTo: undefined,
+		scaleTo: undefined,
+	}
+
+	this.changes = {
+		scale: false,
+		position: false,
+		rotation: false,
+		color: false,
+		visible: false,
+		mouseable: false,
+		zIndex: false,
+	}
+
+	this.resetChanges = function(){
+		this.changes = {
+			scale: false,
+			position: false,
+			rotation: false,
+			color: false,
+			visible: false,
+			mouseable: false,
+			zIndex: false,
+		}
+	}
 
 	this.setScene = function(){
 			_scaleOriginal = new HHgVector2(1,1);
@@ -94,19 +126,6 @@ this.parentUpdated = false;
 		return _canvas;
 	}
 
-	
-	this.test = "no";
-
-	this.frameUpdates = {
-		positionBy: undefined,
-		rotationBy: undefined,
-		scaleBy: undefined,
-		positionTo: undefined,
-		rotationTo: undefined,
-		scaleTo: undefined,
-	}
-
-
 	this.doFrameDump = function(){
 
 		if(this.frameDumpScale()){
@@ -117,8 +136,6 @@ this.parentUpdated = false;
 			this.doRecalcRotation();
 		}
 
-		
-		
 		if(this.frameDumpPosition()){
 			
 			this.doRecalcPosition();
@@ -133,6 +150,7 @@ this.parentUpdated = false;
 	}
 
 	this.doTellSceneToUpdate = function(){
+		//pulling this out and doing a second pass
 		HHgScene.doUpdateThisHolder(this);
 
 		if(_children){
@@ -269,6 +287,7 @@ this.getHash = function(){
 }
 this.setMouseable = function(mouseable){
 	_mouseable = mouseable;
+	this.changes.mouseable = true;
 	if(_div){
 		
 		this.doNotifySceneOfUpdates();
@@ -281,6 +300,7 @@ this.getMouseable = function(){
 
 this.setVisible = function(val){
 	_visible = val;
+	this.changes.visible = true;
 	if(_div){
 		this.doNotifySceneOfUpdates();
 		
@@ -292,7 +312,10 @@ this.getVisible = function(){
 	return _visible;
 }
 
-		this.setBackgroundColor = function(H, S, L, A, shouldMultiplyBy){
+	this.setBackgroundColor = function(H, S, L, A, shouldMultiplyBy){
+
+		this.changes.color = true;
+
 		if(H === true){
 			H = _backgroundHue;
 		}
@@ -370,6 +393,8 @@ this.getVisible = function(){
 
 		this.setZIndex = function(z){
 			//***this needs more logic, like regarding children
+
+			this.changes.zIndex = true;
 			_zIndex = z;
 			that.doNotifySceneOfUpdates(_zIndex);
 		}
@@ -395,13 +420,6 @@ this.getVisible = function(){
 			if(_parent == undefined){
 				return;
 			}
-
-			if(that.test === "soccer" && (_positionInScreenOriginal.getX() > 1 || _positionInScreenOriginal.getY() > 1) ){
-				
-					//console.log("SCREEN SOCCER POSITION");
-					//console.log(_positionInScreenOriginal.returnPretty());
-
-				}
 				
 				this.convertOriginalToNetPosition();
 				
@@ -417,10 +435,12 @@ this.getVisible = function(){
 
 			}
 
+			this.changes.position = true;
+
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
-					child.parentUpdated = true;
+					
 					child.updatePositionFromParentMove();
 					
 				});
@@ -523,12 +543,14 @@ this.getVisible = function(){
 			
 
 			}
+
+			this.changes.position = true;
 			
 			
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
-					child.parentUpdated = true;
+					
 					child.updatePositionFromParentMove();
 
 				});
@@ -634,11 +656,12 @@ this.getVisible = function(){
 				_scaleNet = _parent.getScaleNet().returnVectorScaledBy(_scaleNet);
 			}
 
+			this.changes.scale = true;
 			
 
 			if(_children){
 				HHg.doForEach(_children, function(child){
-					child.parentUpdated = true;
+					
 					child.doRecalcScale();
 				});
 			}
@@ -699,6 +722,8 @@ this.getVisible = function(){
 			if(_parent !== undefined){
 				_rotationNet += _parent.getRotationNet();
 			}
+
+			this.changes.rotation = true;
 
 
 			if(_children){

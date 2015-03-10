@@ -351,6 +351,10 @@ function doAddFunctionsToScene(scene){
 
 	}
 
+	scene._finalDirtyHolders = {
+
+	}
+
 	//==== specific 1 off updates ====//
 	scene.doAddToDirtyList = function(holder){
 		scene._dirtyHolders[holder.getHash()] = holder;
@@ -383,31 +387,72 @@ function doAddFunctionsToScene(scene){
 		newList = {};
 		
 	}
+
+	scene.doUpdateHolders = function(){
+
+		if(scene._finalDirtyHolders.length < 1){
+			return;
+		}
+		var newList = scene._finalDirtyHolders;
+		scene._finalDirtyHolders = {};
+		
+		var holder, div, changes;
+		for(var thing in newList){
+			holder = newList[thing];
+
+			if(holder.getDiv() === undefined) return;
+
+			div = holder.getDiv();
+			changes = holder.changes;
+			if(changes.scale === true){
+				div.style.width = "" + Math.round(holder.getWidthNet())  + "px";
+				div.style.height ="" + Math.round(holder.getHeightNet()) + "px";
+			}
+
+			if(changes.rotation === true){
+				div.style.transform="rotate(" + (holder.getRotationNet()) +"deg" +")";
+			
+			}
+
+			if(changes.position === true){
+				div.style.left ="" + holder.getPositionInScreenNet().getX() +"px";
+				div.style.bottom ="" + holder.getPositionInScreenNet().getY() + "px";
+
+			}
+
+			if(changes.color === true){
+				div.style.backgroundColor = holder.getBackgroundColor();
+			}
+
+			if(changes.zIndex === true){
+				div.style.zIndex = "" + holder.getZIndex();
+			}
+			
+			if(changes.mouseable === true){
+				scene.doUpdateHolderMouseable(holder);
+			}
+
+			if(changes.visible === true){
+				scene.doUpdateHolderVisible(holder);
+			}
+			
+			
+			holder.resetChanges();
+			
+		}
+		
+
+
+		
+	};
 	
 
 	scene.doUpdateThisHolder = function(holder){
-		if(holder.getDiv() === undefined) return;
-
-		var div = holder.getDiv();
-		div.style.backgroundColor = holder.getBackgroundColor();
-		div.style.width = "" + Math.round(holder.getWidthNet())  + "px";
-		div.style.height ="" + Math.round(holder.getHeightNet()) + "px";
-		
-		var centricConversion = scene.doAnyScreenConversion(holder.getPositionInScreenNet(), holder);
-		div.style.left ="" + centricConversion.getX() +"px";
-		div.style.bottom ="" + centricConversion.getY() + "px";
-
-		div.style.transform="rotate(" + (holder.getRotationNet()) +"deg" +")";
-		
-		div.style.zIndex = "" + holder.getZIndex();
-		scene.doUpdateHolderMouseable(holder);
-		scene.doUpdateHolderVisible(holder);
-
+	
+		//creating second pass for final updates here
+		//need second dirty list
+		scene._finalDirtyHolders[holder.getHash()] = holder;
 	}
-
-	scene.doAnyScreenConversion = function(xyPos, holder){
-		return xyPos;
-	};
 
 
 
