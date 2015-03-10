@@ -1,7 +1,7 @@
 
 
 var HHgSprite = {
-
+	//toggle this to use pngs directly in divs instead of writing to canvas
 	useContext : true,
 
 	returnSprite : function(name){
@@ -18,7 +18,7 @@ var HHgSprite = {
 
 	
 	}
-}
+};
 
 var HHgImageManager = {
 
@@ -37,4 +37,12 @@ var HHgImageManager = {
 		}
 	}
 
-}
+};
+
+var HHgCachedImages = {
+	//will setup list of images to precache
+	cacheList: {},
+	doStart: function(){
+		//ph
+	}
+};

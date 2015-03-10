@@ -13,7 +13,7 @@ var HHgScreen = {
 	isLandscapeGame : true,
 };
 
-//window.console.log = function(){};
+
 
 function HHgUpdateHardwareScreen(){
 	//could update landscape etc here
@@ -41,13 +41,13 @@ var testContainer;
 
 var showDebugSquares;
 
-var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector, HHg1Vector, HHgHalfVector, HHgTestDiv, HHgPixelScale;
+var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector, HHg1Vector, HHg10000Vector, HHgHalfVector, HHgTestDiv, HHgPixelScale;
 var HHgTopHolder = document.getElementById("all");
 
 HHgTopHolder.style.width = "" + HardwareScreen.w +"px";
 HHgTopHolder.style.height = "" + HardwareScreen.h +"px";
 
-function doStartHHgScene(){
+HHgSceneDoStart = function(){
 	console.log("HHgScene Start NOW");
 	HHg0Vector = new HHgVector2(0,0);
 	HHg0Vector.setX = function(){};
@@ -63,6 +63,12 @@ function doStartHHgScene(){
 	HHgHalfVector.setX = function(){};
 	HHgHalfVector.setY = function(){};
 	HHgHalfVector.setXY = function(){};
+
+	HHg10000Vector = new HHgVector2(10000,10000);
+	HHg10000Vector.setX = function(){};
+	HHg10000Vector.setY = function(){};
+	HHg10000Vector.setXY = function(){};
+
 
 
 
@@ -170,9 +176,10 @@ function doStartHHgScene(){
 	
 	function sceneTests(){
 	//----- rotate test
-	HHgTestDiv = new HHgHolder(100,100);
-	HHgTestDiv.doMoveToNewParent(HHgScene, new HHgVector2( (HHgScreen.w * -.5) + 100, (HHgScreen.h * .5) - 150), true);
-	HHgTestDiv.getDiv().innerHTML = "TEST DIV";
+		HHgTestDiv = new HHgHolder(100,100);
+		HHgTestDiv.doMoveToNewParent(HHgScene, new HHgVector2( (HHgScreen.w * -.5) + 100, (HHgScreen.h * .5) - 150), true);
+		HHgTestDiv.getDiv().innerHTML = "TEST DIV";
+
 		if(false){
 			HHgGameHolder.getDiv().innerHTML = "innerWidth: " + HardwareScreen.w + "/h " + HardwareScreen.h;
 			HHgGameHolder.getDiv().color = "black";
@@ -291,7 +298,7 @@ function doStartHHgScene(){
 
 		if(true){
 
-			var theOne = new HHgHolder(100,100);
+			var theOne = HHgGetHolder(100,100);
 			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
@@ -324,7 +331,7 @@ function doStartHHgScene(){
 
 				var posx = HHg.returnRandomIntLowIncHighExcl(-1000,1000);
 				var posy = HHg.returnRandomIntLowIncHighExcl(-500,500);
-				var testBall = new HHgHolder(size,size);
+				var testBall = HHgGetHolder(size,size);
 
 				testBall.doMoveToNewParent( listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , new HHgVector2(posx, posy) );
 				randomSprite(testBall);

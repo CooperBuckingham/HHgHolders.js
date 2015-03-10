@@ -7,7 +7,7 @@ var HHgHolder = function(w, h, zIndex, scale){
 		console.log("HASH passed 10000");
 	}
 
-	zIndex = zIndex || 0;
+	
 	w = w || HHgGameHolder.getWidthOriginal();
 	h = h || HHgGameHolder.getHeightOriginal();
 
@@ -87,6 +87,70 @@ var HHgHolder = function(w, h, zIndex, scale){
 	}
 
 	this.resetChanges = function(){
+		this.changes = {
+			scale: false,
+			position: false,
+			rotation: false,
+			color: false,
+			visible: false,
+			mouseable: false,
+			zIndex: false,
+		}
+	}
+
+	this.setNewWidthHeight = function(w, h, zIndex, scale){
+		_widthOriginal = w;
+		_heightOriginal = h;
+		_zIndex = zIndex || 1;
+		_scaleOriginal = scale || HHg1Vector;
+	}
+
+	this.killHolder = function(){
+		_widthOriginal = w;
+		_heightOriginal = h;
+
+		_rotationOriginal = 0;
+		_rotationNet = 0;
+		_rotationStored = 0;
+
+		if(_parent) _parent.doRemoveChild(this);
+		
+		_parent = undefined;
+		
+		_scaleOriginal = 1;
+		_scaleNet = 1;
+		_scaleStored = 1;
+		
+
+		_scaleIgnoreParentScale = false;
+		_scaleUniformOnly = false;
+
+		_zIndex = -1;
+		_positionInScreenOriginal = HHg10000Vector;
+		_positionInParentOriginal  = _positionInScreenOriginal;
+		_positionInScreenNet = _positionInScreenOriginal;
+		_positionStored = _positionInScreenOriginal;
+		
+		
+
+		_children = [];
+		_actions = [];
+		_mouseable = false;
+		_visible = false;
+
+		this.isScene = false;
+
+		this.test = "no";
+
+		this.frameUpdates = {
+			positionBy: undefined,
+			rotationBy: undefined,
+			scaleBy: undefined,
+			positionTo: undefined,
+			rotationTo: undefined,
+			scaleTo: undefined,
+		}
+
 		this.changes = {
 			scale: false,
 			position: false,
