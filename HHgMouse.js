@@ -9,10 +9,15 @@ var HHgMouse = function HHgMouse(){
 	HHgMouse.singleton = this;
 
 	this.clickedDownOn;
-	this.lastMousePosX;
-	this.lastMousePosY;
-	this.thisMousePosX;
-	this.thisMousePosY;
+	this.draggingOriginalPosXY;
+	this.draggingMouseOriginalPosXY;
+	this.draggingOffsetXY;
+
+	this.dragging;
+	this.lastMousePosXY;
+	
+	this.thisMousePosXY;
+	
 	this.lastFrameTime;
 	this.thisFrameTime;
 	this.mouseCircle;
@@ -34,37 +39,60 @@ var HHgMouse = function HHgMouse(){
 
 	this.doResetVars = function(){
 		that.clickedDownOn = undefined;
-		that.lastMousePosY = undefined;
-		that.lastMousePosX = undefined;
-		that.thisMousePosY = undefined;
-		that.thisMousePosX = undefined;
+		that.lastMousePosXY = undefined;
+		
+		that.thisMousePosXY = undefined;
+		
 		that.lastFrameTime = undefined;
 		that.thisFrameTime = undefined;
+		this.dragging = undefined;
+		this.draggingOriginalPosXY = undefined;
+		this.draggingMouseOriginalPosXY = undefined;
+		this.draggingOffsetXY = undefined;
+
+
 	}
 
 	this.doSetVars = function(holder, xy){
 
 		that.clickedDownOn = holder;
-		that.lastMousePosX = that.lastMousePosX || xy.getX();
-		that.lastMousePosY = that.lastMousePosY || xy.getY();
+		that.lastMousePosXY = xy;
 		
-		that.thisMousePosX = xy.getX();
-		that.thisMousePosY = xy.getY();
+		that.thisMousePosXY = xy;
 		that.thisFrameTime = window.performance.now();
-		that.lastFrameTime = that.lastFrameTime || that.thisFrameTime;
+		that.lastFrameTime = that.thisFrameTime;
+
+		if(holder.isDraggable){
+			that.dragging = holder;
+			that.draggingOriginalPosXY = holder.getPositionInScreenOriginal();
+			that.draggingMouseOriginalPosXY = xy;
+			that.draggingOffsetXY = xy.returnVectorSubtractedFromVector(that.draggingOriginalPosXY);
+		}
 		
 	}
 
+	this.doUpdateVars = function(xy){
+		that.lastMousePosXY = that.thisMousePosXY;
+		that.thisMousePosXY = xy;
+		that.lastFrameTime = that.thisFrameTime;
+		that.thisFrameTime = window.performance.now();
+
+	}
+
 	this.doMouseMove = function (xy){
-		//more logic here to determine dragging later
 		that.mouseCircle.doHide();
 
-		if(!HHgMain.HHgMouse.clickedDown) return;
-		that.clickedDownOn.doMouseMove(xy);
+
+		if(that.dragging){
+			that.doUpdateVars(xy);
+			that.dragging.doMouseMove();
+		}
+		
 	}
 
 	this.doMouseDown = function (holders, xy){
 		that.mouseCircle.doShow(xy);
+		
 		
 		if(!holders || holders.length < 1){
 			
@@ -74,27 +102,40 @@ var HHgMouse = function HHgMouse(){
 			that.doSetVars(holders[0], xy);
 			that.clickedDownOn.doMouseDown();
 
+			if(that.clickedDownOn.isDraggable){
+				that.clickedDownOn.doStartMouseMove();
+			}
+
 	}
+	var isOverClickedDown = false;
 
 	this.doMouseUp = function (holders, xy){
 		
 		that.mouseCircle.doHide();
+		that.doUpdateVars(xy);
 
 		if(that.clickedDownOn === undefined){
 			return;
 		}
+
 		if(holders ){
 			for(var i = 0; i < holders.length; i++){
 				if(holders[i] === clickedDownOn){
 					
-					that.clickedDownOn.doMouseUp(true);
-					that.doResetVars();
-					return;
+					isOverClickedDown = true;
+					break;
 				}
 			}
 		}
 
-		that.clickedDownOn.doMouseUp(false);
+		that.clickedDownOn.doMouseUp(isOverClickedDown);
+
+		if(that.dragging){
+			that.dragging.doEndMouseMove();
+		}
+
+		isOverClickedDown = false;
+
 		that.doResetVars();
 		
 	}

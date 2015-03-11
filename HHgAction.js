@@ -176,7 +176,7 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateBy);
 
 
 function HHgActionRotateForever(owner, speed, ease){
-	HHgAction.call(this, owner, totalTime, ease);
+	HHgAction.call(this, owner, null, ease);
 
 	this.speed = speed;
 	
@@ -184,7 +184,7 @@ function HHgActionRotateForever(owner, speed, ease){
 
 	this.whatShouldIDoThisFrame = function(deltaT){
 
-		deltaDegrees = that.speed * ( (deltaT) / that.totalTime );
+		deltaDegrees = that.speed * deltaT;
 
 		owner.setRotationOriginalBy(deltaDegrees);
 
