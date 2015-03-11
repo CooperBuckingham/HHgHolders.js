@@ -176,7 +176,7 @@ HHgSceneDoStart = function(){
 	
 	function sceneTests(){
 	
-		if(true){
+		if(false){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
@@ -220,6 +220,23 @@ HHgSceneDoStart = function(){
 
 				listOfHolder.push(testBall)
 			}
+		}
+
+		if(true){
+
+			var theOne = HHgGetHolder({w:100,h:100});
+			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
+			theOne.doAddSprite("pool");
+			theOne.test = "pool";
+			theOne.setMouseable(true);
+			theOne.setIsDraggable(true);
+
+			
+			theOne.setPositionInScreenTo(new HHgVector2(0,450));
+			//theOne.doActionMoveInScreenBy({x:-75,y: -700,time: 30});
+			//theOne.doActionRotateBy({rotation:360,time: 30});
+			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
+
 		}
 
 	}
@@ -464,19 +481,25 @@ function doAddFunctionsToScene(scene){
 	scene.doesHolderContainPoint = function(holder, xy){
 		var canvas = holder.getCanvas();
 
+		if(isNaN(holder.getRotationNet())){
+			debugger;
+		}
+
+
 		
 		var mousePos = xy.returnVectorPlusVector(HHgScreenDiff);
-		   
-		    //console.log("MOUSE POS: " + xy.returnPretty());
 
 		    var holderPosNet = holder.getPositionInScreenNet();
+
 		    
 		    holderPosNet = new HHgVector2(holderPosNet.getX(), HardwareScreen.h - (holderPosNet.getY() + holder.getHeightNet()) );
+		   
 		    var centerPoint = holderPosNet.returnVectorPlusVector(holder.returnHalfSizeVector());
-		    //console.log("CENTER PT: " + centerPoint.returnPretty());
+		     
 		    var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(centerPoint, -1 * holder.getRotationNet());
 
 		    var posInCanvas = holderPosNet.returnVectorSubtractedFromVector(mouseFinalRelative);
+		    
 
 
 		    var left = 0;
@@ -497,8 +520,11 @@ function doAddFunctionsToScene(scene){
 
 		   //now adjust for scaled canvas
 		   var canvasRatio = new HHgVector2(canvas.width, canvas.height);
+		  
 		   canvasRatio = canvasRatio.returnVectorScaledByInverse((new HHgVector2(canvas.clientWidth, canvas.clientHeight)));
+		   
 		   posInCanvas = posInCanvas.returnVectorScaledBy(canvasRatio);
+		   
 
 		   if( isAlphaPixel(canvas, posInCanvas.getX(), posInCanvas.getY()) ) return false;
 
@@ -630,8 +656,13 @@ function doAddFunctionsToScene(scene){
 		canvas.getContext("2d").putImageData(imgData,0,0);
 	}
 
-	function isAlphaPixel(canvas, xy, y){
-		return canvas.getContext('2d').getImageData(xy, y, 1, 1).data[3] > .15 ? false : true;
+	function isAlphaPixel(canvas, x, y){
+		if(isNaN(x)){
+			console.log("FAIL: " + canvas);
+			console.log("isAlpha: canvas: " + canvas +" xy: " + x + " y: " + y );
+		}
+		
+		return canvas.getContext('2d').getImageData(x, y, 1, 1).data[3] > .15 ? false : true;
 	}
 
 	function getpixelcolour(canvas, x, y) {

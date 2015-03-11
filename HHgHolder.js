@@ -37,6 +37,7 @@ var HHgHolder = function(props){
 	
 		_children,
 		_actions,
+		_paused,
 	
 		_div,
 	
@@ -52,8 +53,10 @@ var HHgHolder = function(props){
 		_canvas;
 
 	this.isScene = false,
+	this.isDraggable = false;
 
 	this.test = "no",
+
 
 	this.frameUpdates = {
 		positionBy: undefined,
@@ -85,6 +88,14 @@ var HHgHolder = function(props){
 			zIndex: false,
 		}
 	};
+
+	this.setIsDraggable = function(bool){
+		this.isDraggable = bool;
+	}
+
+	this.getIsDraggable = function(){
+		return this.isDraggable;
+	}
 
 	this.setNewStats = function(props){
 		HHg.returnSizeProps(props);
@@ -157,6 +168,18 @@ var HHgHolder = function(props){
 			mouseable: false,
 			zIndex: false,
 		}
+	}
+
+	this.setPaused = function(bool){
+
+		_paused = bool;
+		for(var i =0; i < _children.length; i++){
+			_children[i].setPaused(bool);
+		}
+	}
+
+	this.getPaused = function(){
+		return _paused;
 	}
 
 	this.setScene = function(){
@@ -838,6 +861,7 @@ this.getVisible = function(){
 
 //============= ACTIONS ================
 	var actionCounter = 0;
+	var actionsTotal = 0;
 	var doFinalizeAction = function(action){
 		
 		_actions = _actions || {};
@@ -851,15 +875,28 @@ this.getVisible = function(){
 		}
 
 		actionCounter++;
-		HHgActionManager.doAddAction(action);
+		actionsTotal++;
+		HHgActionManager.doAddAction(that,action);
 		_actions[action.name] = action;
 
 	}
 
+	this.getActions = function(){
+		return _actions;
+	}
+
 	this.doRemoveAction = function(action){
 		
-		HHgActionManager.doRemoveAction(action);
 		delete _actions[action.name];
+		actionsTotal--;
+		if(actionsTotal <= 0) HHgActionManager.doRemoveOwner(that);
+	}
+	this.doRemoveActionByName = function(name){
+		console.log("doremove action on holder");
+		delete _actions[name];
+		console.log(_actions);
+		actionsTotal--;
+		if(actionsTotal <= 0) HHgActionManager.doRemoveOwner(that);
 	}
 
 	this.doActionMoveInScreenTo = function(props){
@@ -871,6 +908,7 @@ this.getVisible = function(){
 
 		var theAction;
 		theAction = (new HHgActionMoveTo(that, props.position, props.time, props.ease, props.onComplete));
+		theAction.name = props.name;
 		doFinalizeAction(theAction);
 		
 		
@@ -885,6 +923,7 @@ this.getVisible = function(){
 
 		var theAction;
 		theAction = (new HHgActionMoveBy(that, props.position, props.time, props.ease, props.onComplete));
+		theAction.name = props.name;
 		doFinalizeAction(theAction);
 		
 		
@@ -899,7 +938,7 @@ this.getVisible = function(){
 
 		var theAction;
 		theAction = new HHgActionRotateBy(that, props.rotation, props.time, props.ease, props.onComplete);
-		
+		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
 	}
@@ -915,7 +954,7 @@ this.getVisible = function(){
 
 		var theAction;
 		theAction = new HHgActionRotateLeftTo(that, props.rotation, props.time, props.ease, props.onComplete);
-		
+		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
 	}
@@ -929,7 +968,7 @@ this.getVisible = function(){
 
 		var theAction;
 		theAction = new HHgActionRotateRightTo(that, props.rotation, props.time, props.ease, props.onComplete);
-		
+		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
 	}
@@ -941,7 +980,7 @@ this.getVisible = function(){
 
 		var theAction;
 		theAction = new HHgActionRotateForever(that, props.speed, props.ease);
-		
+		theAction.name = props.name;
 		doFinalizeAction(theAction);
 	}
 
@@ -954,7 +993,7 @@ this.getVisible = function(){
 
 		var theAction;
 		theAction = new HHgActionScaleBy(that, props.scale, props.time, props.ease, props.onComplete);
-		
+		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
 	}
@@ -966,7 +1005,7 @@ this.getVisible = function(){
 
 		var theAction;
 		theAction = new HHgActionScaleTo(that, props.scale, props.time, props.ease, props.onComplete);
-		
+		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
 	}
@@ -981,6 +1020,7 @@ this.getVisible = function(){
 
 		var theAction;
 		theAction = new HHgActionFollowQuad(that, props.control, props.position, props.time, props.ease, props.onComplete);
+		theAction.name = props.name;
 		doFinalizeAction(theAction);
 		
 	}
@@ -992,6 +1032,8 @@ this.getVisible = function(){
 
 		var theAction;
 		theAction = new HHgActionTimer(that, props.time, props.onComplete);
+		theAction.name = props.name;
+		doFinalizeAction(theAction);
 	}
 
 //============= MOUSE =================
@@ -1000,25 +1042,32 @@ this.getVisible = function(){
 
 	this.doMouseDown = function(){
 		
-		//this.setBackgroundColor(true, true, true, .4);
-		
+		//this is all PH test, these are expected to be overridden
 		this.setScaleStored();
 		this.setScaleOriginalBy(.9,.9);
 	
-		//this.setScaleOriginalTo(.75,.75);
-		//this.setRotationStored();
-		//this.setRotationOriginalTo(60);
 	}
 
 	this.doMouseUp = function(mouseWasOverWhenReleased){
 		this.setScaleOriginalBy(1.0/0.9,1.0/0.9);
-		//that.setRotationToStored();
-		//this.setRotationOriginalTo(0);
-		//this.setScaleToStored();
+		
+	}
+
+	this.doStartMouseMove = function(xy){
+
+		this.setPositionStored();
+		this.doActionRotateForever({speed:300, name: "mousemoverotate"});
 	}
 
 	this.doMouseMove = function(){
+		this.setPositionInScreenTo(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
+		
+	}
 
+	this.doEndMouseMove = function(xy){
+		
+		this.setPositionInScreenTo(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
+		this.doRemoveActionByName("mousemoverotate");
 	}
 
 

@@ -275,6 +275,10 @@ var HHg = {
 
 	},
 
+	testVector: function(xy){
+		console.log("vector: " + xy.returnPretty());
+	},
+
 
 
 	zValues : {

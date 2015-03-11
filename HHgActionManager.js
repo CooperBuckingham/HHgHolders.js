@@ -1,19 +1,31 @@
-var HHgForce30FPS = true;
+var HHgForce30FPS = false;
 var HHgPaused = false;
+var HHgTempHolder;
+var HHgTempAction;
 
 var HHgActionManager = {
-  _actionList: [],
-  doAddAction: function(action){
-      this._actionList.push(action);
+  _actionList: {},
+  doAddAction: function(owner){
+      this._actionList[owner.getHash()] = owner;
   },
 
-  doRemoveAction: function(action){
-    
-    if(HHg.doRemoveThingFromArray(this._actionList, action)){
-    }else{
-      console.log("failed to find action to be removed");
-    };
+  doRemoveOwner: function(owner){
+    console.log("do remove owner");
+    delete this._actionList[owner.getHash()];
   },
+
+  doActionsForHolders: function(interval){
+    
+    for(HHgTempHolder in this._actionList){
+      HHgTempHolder= this._actionList[HHgTempHolder];
+      if(HHgTempHolder.getPaused() === true) continue;
+
+      for(HHgTempAction in HHgTempHolder.getActions()){
+        HHgTempHolder.getActions()[HHgTempAction].whatShouldIDoThisFrame(interval);
+      }
+
+    }
+  }
 
 
 };
@@ -87,9 +99,8 @@ HHgActionManager.doStart = function(){
      
 
        if(!HHgPaused){
-        for(i = 0; i < HHgActionManager._actionList.length; i++){
-          HHgActionManager._actionList[i].whatShouldIDoThisFrame(interval);
-        }
+        
+        HHgActionManager.doActionsForHolders(interval);
 
         HHgScene.doEndOfFrame();
         HHgScene.doUpdateHolders();
@@ -101,12 +112,10 @@ HHgActionManager.doStart = function(){
   }else{
       this.actionLoop(function( deltaT ) {
      
-      for(i = 0; i < HHgActionManager._actionList.length; i++){
-        HHgActionManager._actionList[i].whatShouldIDoThisFrame(deltaT/1000);
-      }
+        HHgActionManager.doActionsForHolders(deltaT/1000);
 
-      HHgScene.doEndOfFrame();
-      HHgScene.doUpdateHolders();
+        HHgScene.doEndOfFrame();
+        HHgScene.doUpdateHolders();
 
       } );
   }
