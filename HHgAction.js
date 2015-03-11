@@ -16,7 +16,7 @@ var HHgAction = function (owner, totalTime, ease, onComplete){
 	this.savedAmount = undefined;
 
 
-	this.whatShouldIDoThisFrame = function(deltaT, now){
+	this.whatShouldIDoThisFrame = function(deltaT){
 		//override in children
 	};
 	this.finalFrame = function(action){
@@ -54,22 +54,22 @@ function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
 
 	this.moveSoFar = HHg0Vector;
 	
-	var that = this;
+	var that = this,
 
-	var deltaMove = HHg0Vector;
+	deltaMove = HHg0Vector,
 
-	var vectorStore = new HHgVector2(0,0);
-	var xOrYLessThan1 = false;
+	vectorStore = new HHgVector2(0,0),
+	xOrYLessThan1 = false;
 	
 
-	this.whatShouldIDoThisFrame = function(deltaT, now){
-		this.timeSoFar += deltaT/1000;
+	this.whatShouldIDoThisFrame = function(deltaT){
+		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
 			
 			deltaT += this.timeSoFar - this.totalTime;
 			
-			deltaMove = that.moveByAmount.returnVectorScaledBy(( (deltaT / 1000) / that.totalTime ));
+			deltaMove = that.moveByAmount.returnVectorScaledBy(( (deltaT) / that.totalTime ));
 
 			that.moveSoFar = that.moveSoFar.returnVectorPlusVector(deltaMove);
 			owner.setPositionInScreenBy(deltaMove);
@@ -79,40 +79,7 @@ function HHgActionMoveTo(owner, targetPos, totalTime, ease, onComplete){
 			return;
 		}
 
-		deltaMove = that.moveByAmount.returnVectorScaledBy(( (deltaT / 1000) / that.totalTime ));
-
-		/*
-		if(this.savedAmount !== undefined){
-			deltaMove = deltaMove.returnVectorPlusVector(this.savedAmount);
-			this.savedAmount = undefined;
-		}
-
-
-		if(deltaMove.getY() < 1 * HHgPixelScale ){
-			xOrYLessThan1 = true;
-			vectorStore.setY(deltaMove.getY());
-			deltaMove.setY(0);
-		}
-		if(deltaMove.getX() < 1 * HHgPixelScale){
-			xOrYLessThan1 = true;
-			vectorStore.setX(deltaMove.getX());
-			deltaMove.setX(0);
-		}
-
-		
-		if(xOrYLessThan1 === true){
-
-			if(this.savedAmount !== undefined){
-				this.savedAmount = this.savedAmount.returnVectorPlusVector(vectorStore);
-			}else{
-				this.savedAmount = vectorStore.returnCopy();
-			}
-
-			vectorStore.setX(0);
-			vectorStore.setY(0);
-			xOrYLessThan1 = false;
-		}
-		*/
+		deltaMove = that.moveByAmount.returnVectorScaledBy(( (deltaT ) / that.totalTime ));
 
 
 		that.moveSoFar = that.moveSoFar.returnVectorPlusVector(deltaMove);
@@ -134,21 +101,21 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 
 	this.moveSoFar = HHg0Vector;
 	
-	var that = this;
+	var that = this,
 
-	var deltaMove = HHg0Vector;
+	deltaMove = HHg0Vector,
 
-	var vectorStore = new HHgVector2(0,0);
-	var xOrYLessThan1 = false;
+	vectorStore = new HHgVector2(0,0),
+	xOrYLessThan1 = false;
 
-	this.whatShouldIDoThisFrame = function(deltaT, now){
-		this.timeSoFar += deltaT/1000;
+	this.whatShouldIDoThisFrame = function(deltaT){
+		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
 			
 			deltaT += this.timeSoFar - this.totalTime;
 			
-			deltaMove = that.moveByAmount.returnVectorScaledBy(( (deltaT / 1000) / that.totalTime ));
+			deltaMove = that.moveByAmount.returnVectorScaledBy(( (deltaT) / that.totalTime ));
 
 			that.moveSoFar = that.moveSoFar.returnVectorPlusVector(deltaMove);
 			owner.setPositionInScreenBy(deltaMove);
@@ -158,40 +125,7 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 			return;
 		}
 
-		deltaMove = that.moveByAmount.returnVectorScaledBy(( (deltaT / 1000) / that.totalTime ));
-
-/*
-		if(this.savedAmount !== undefined){
-			deltaMove = deltaMove.returnVectorPlusVector(this.savedAmount);
-			this.savedAmount = undefined;
-		}
-
-		if(deltaMove.getY() < 1 / HHgPixelScale ){
-			xOrYLessThan1 = true;
-			vectorStore.setY(deltaMove.getY());
-			deltaMove.setY(0);
-		}
-		if(deltaMove.getX() < 1 / HHgPixelScale){
-			xOrYLessThan1 = true;
-			vectorStore.setX(deltaMove.getX());
-			deltaMove.setX(0);
-		}
-
-		//console.log("" + vectorStore.getX() + " " + vectorStore.getY());
-
-		if(xOrYLessThan1 === true){
-
-			if(this.savedAmount !== undefined){
-				this.savedAmount = this.savedAmount.returnVectorPlusVector(vectorStore);
-			}else{
-				this.savedAmount = vectorStore.returnCopy();
-			}
-
-			vectorStore.setX(0);
-			vectorStore.setY(0);
-			xOrYLessThan1 = false;
-		}
-	*/
+		deltaMove = that.moveByAmount.returnVectorScaledBy(( (deltaT) / that.totalTime ));
 
 		that.moveSoFar = that.moveSoFar.returnVectorPlusVector(deltaMove);
 		owner.setPositionInScreenBy(deltaMove);
@@ -213,12 +147,12 @@ function HHgActionRotateBy(owner, degrees, totalTime, ease, onComplete){
 
 	this.degreesSoFar = 0;
 	
-	var that = this;
+	var that = this,
 
-	var deltaDegrees = 0;
+	deltaDegrees = 0;
 
-	this.whatShouldIDoThisFrame = function(deltaT, now){
-		this.timeSoFar += deltaT/1000;
+	this.whatShouldIDoThisFrame = function(deltaT){
+		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
 			
@@ -228,7 +162,7 @@ function HHgActionRotateBy(owner, degrees, totalTime, ease, onComplete){
 			return;
 		}
 
-		deltaDegrees = that.degreesToRotate * ( (deltaT / 1000) / that.totalTime );
+		deltaDegrees = that.degreesToRotate * ( (deltaT) / that.totalTime );
 
 		that.degreesSoFar += deltaDegrees;
 		owner.setRotationOriginalBy(deltaDegrees);
@@ -248,9 +182,9 @@ function HHgActionRotateForever(owner, speed, ease){
 	
 	var that = this;
 
-	this.whatShouldIDoThisFrame = function(deltaT, now){
+	this.whatShouldIDoThisFrame = function(deltaT){
 
-		deltaDegrees = that.speed * ( (deltaT / 1000) / that.totalTime );
+		deltaDegrees = that.speed * ( (deltaT) / that.totalTime );
 
 		owner.setRotationOriginalBy(deltaDegrees);
 
@@ -284,12 +218,12 @@ function HHgActionRotateLeftTo(owner, degrees, totalTime, ease, onComplete){
 
 	this.degreesSoFar = 0;
 	
-	var that = this;
+	var that = this,
 
-	var deltaDegrees = 0;
+	deltaDegrees = 0;
 
-	this.whatShouldIDoThisFrame = function(deltaT, now){
-		this.timeSoFar += deltaT/1000;
+	this.whatShouldIDoThisFrame = function(deltaT){
+		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
 			
@@ -299,7 +233,7 @@ function HHgActionRotateLeftTo(owner, degrees, totalTime, ease, onComplete){
 			return;
 		}
 
-		deltaDegrees = that.degreesToRotate * ( (deltaT / 1000) / that.totalTime );
+		deltaDegrees = that.degreesToRotate * ( (deltaT) / that.totalTime );
 
 		that.degreesSoFar += deltaDegrees;
 		owner.setRotationOriginalBy(deltaDegrees);
@@ -333,12 +267,12 @@ function HHgActionRotateRightTo(owner, degrees, totalTime, ease, onComplete){
 
 	this.degreesSoFar = 0;
 	
-	var that = this;
+	var that = this,
 
-	var deltaDegrees = 0;
+	deltaDegrees = 0;
 
-	this.whatShouldIDoThisFrame = function(deltaT, now){
-		this.timeSoFar += deltaT/1000;
+	this.whatShouldIDoThisFrame = function(deltaT){
+		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
 			
@@ -348,7 +282,7 @@ function HHgActionRotateRightTo(owner, degrees, totalTime, ease, onComplete){
 			return;
 		}
 
-		deltaDegrees = that.degreesToRotate * ( (deltaT / 1000) / that.totalTime );
+		deltaDegrees = that.degreesToRotate * ( (deltaT) / that.totalTime );
 
 		that.degreesSoFar += deltaDegrees;
 		owner.setRotationOriginalBy(deltaDegrees);
@@ -374,16 +308,16 @@ function HHgActionScaleBy(owner, scaleXY, totalTime, ease, onComplete){
 
 	this.scaleRemaining = this.scaleByAmount;
 	
-	var that = this;
+	var that = this,
 
-	var deltaScale = HHg0Vector;
+	deltaScale = HHg0Vector;
 
-	this.whatShouldIDoThisFrame = function(deltaT, now){
-		this.timeSoFar += deltaT/1000;
+	this.whatShouldIDoThisFrame = function(deltaT){
+		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
 			//this has to be a percentage of time remaining.
-			deltaT = deltaT/1000 - (this.timeSoFar - this.totalTime);
+			deltaT = deltaT - (this.timeSoFar - this.totalTime);
 			deltaScale = this.scaleAmountDown1.returnVectorScaledBy(deltaT / that.totalTime).returnVectorPlusVector(HHg1Vector);
 			owner.setScaleOriginalBy(deltaScale);
 			that.finalFrame(that);
@@ -391,7 +325,7 @@ function HHgActionScaleBy(owner, scaleXY, totalTime, ease, onComplete){
 			return;
 		}
 
-		deltaScale = this.scaleAmountDown1.returnVectorScaledBy((deltaT / 1000) / that.totalTime).returnVectorPlusVector(HHg1Vector);
+		deltaScale = this.scaleAmountDown1.returnVectorScaledBy((deltaT ) / that.totalTime).returnVectorPlusVector(HHg1Vector);
 
 		that.scaleRemaining = deltaScale.returnVectorSubtractedFromVector(that.scaleRemaining);
 		owner.setScaleOriginalBy(deltaScale);
@@ -414,16 +348,16 @@ HHgAction.call(this, owner, totalTime, ease, onComplete);
 
 	this.scaleRemaining = this.scaleByAmount;
 	
-	var that = this;
+	var that = this,
 
-	var deltaScale = HHg0Vector;
+	deltaScale = HHg0Vector;
 
-	this.whatShouldIDoThisFrame = function(deltaT, now){
-		this.timeSoFar += deltaT/1000;
+	this.whatShouldIDoThisFrame = function(deltaT){
+		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
 			//this has to be a percentage of time remaining.
-			deltaT = deltaT/1000 - (this.timeSoFar - this.totalTime);
+			deltaT = deltaT - (this.timeSoFar - this.totalTime);
 			deltaScale = this.scaleAmountDown1.returnVectorScaledBy(deltaT / that.totalTime).returnVectorPlusVector(HHg1Vector);
 			owner.setScaleOriginalBy(deltaScale);
 			that.finalFrame(that);
@@ -431,7 +365,7 @@ HHgAction.call(this, owner, totalTime, ease, onComplete);
 			return;
 		}
 
-		deltaScale = this.scaleAmountDown1.returnVectorScaledBy((deltaT / 1000) / that.totalTime).returnVectorPlusVector(HHg1Vector);
+		deltaScale = this.scaleAmountDown1.returnVectorScaledBy((deltaT) / that.totalTime).returnVectorPlusVector(HHg1Vector);
 
 		that.scaleRemaining = deltaScale.returnVectorSubtractedFromVector(that.scaleRemaining);
 		owner.setScaleOriginalBy(deltaScale);
@@ -468,10 +402,6 @@ function HHgActionFollowQuad(owner, controlXY, endXY, totalTime, ease, onComplet
 
 	this.previousXY;
 
-
-	
-	var that = this;
-
 	this.getXorYAlongQuad = function(t, p1, p2, p3) {
 		
     	var iT = 1 - t;
@@ -485,11 +415,13 @@ function HHgActionFollowQuad(owner, controlXY, endXY, totalTime, ease, onComplet
 								this.getXorYAlongQuad(position, startY, cpY, endY));
 
     };
-	
-	var distanceAlongCurve;
 
-	this.whatShouldIDoThisFrame = function(deltaT, now){
-		this.timeSoFar += deltaT/1000;
+    var that = this,
+	
+	distanceAlongCurve;
+
+	this.whatShouldIDoThisFrame = function(deltaT){
+		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
 			
@@ -519,8 +451,8 @@ HHgAction.call(this, owner, totalTime, false, onComplete);
 
 	var deltaScale = HHg0Vector;
 
-	this.whatShouldIDoThisFrame = function(deltaT, now){
-		this.timeSoFar += deltaT/1000;
+	this.whatShouldIDoThisFrame = function(deltaT){
+		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
 			that.finalFrame(that);
@@ -539,12 +471,6 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionTimer);
 
 
 //=======================
-
-
-
-
-//====Helper Function for above
-
 
 
 

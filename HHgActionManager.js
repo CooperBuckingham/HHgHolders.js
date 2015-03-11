@@ -1,4 +1,5 @@
-
+var HHgForce30FPS = true;
+var HHgPaused = false;
 
 var HHgActionManager = {
   _actionList: [],
@@ -47,54 +48,69 @@ var HHgActionManager = {
 
 
 var paused = false;
+var lowEnd = .01; //1 //.01
+var highEnd = 1600; //160
 
 HHgActionManager.actionLoop = function( animateActions ) {
-    var shouldContinueLoop = true;
+
     var lastFrameTime = window.performance.now();
     var deltaT;
     function recurse( thisFrameTime ) {
-      if ( shouldContinueLoop !== false && paused === false ) {
-        HHgMain.requestAnimationFrame(recurse);
+      
+        window.requestAnimationFrame(recurse);
+
         thisFrameTime = thisFrameTime && thisFrameTime > 480 ? thisFrameTime : window.performance.now();
         deltaT = thisFrameTime - lastFrameTime;
-      if ( deltaT < 160 && deltaT > 1 ) {
-        shouldContinueLoop = animateActions(deltaT, thisFrameTime);
-      }
-      lastFrameTime = thisFrameTime;
-    }
+        
+
+        if ( deltaT < highEnd && deltaT > lowEnd ) {
+          animateActions(deltaT);
+        }
+
+        lastFrameTime = thisFrameTime;
+    
   }
   recurse();
 
 };
 
+
 HHgActionManager.doStart = function(){
   var i;
-  var testCounter = 0;
+
+  if(HHgForce30FPS){
+    var interval = 1.0 / 30.0,
+      frameInterval = interval * 1000.0;
+    console.log(interval);
+       
+    window.setInterval(function(){
+     
+
+       if(!HHgPaused){
+        for(i = 0; i < HHgActionManager._actionList.length; i++){
+          HHgActionManager._actionList[i].whatShouldIDoThisFrame(interval);
+        }
+
+        HHgScene.doEndOfFrame();
+        HHgScene.doUpdateHolders();
+       }
+      
+
+    }, frameInterval );
+
+  }else{
+      this.actionLoop(function( deltaT ) {
+     
+      for(i = 0; i < HHgActionManager._actionList.length; i++){
+        HHgActionManager._actionList[i].whatShouldIDoThisFrame(deltaT/1000);
+      }
+
+      HHgScene.doEndOfFrame();
+      HHgScene.doUpdateHolders();
+
+      } );
+  }
  
-  this.actionLoop(function( deltaT, now ) {
-    //testCounter++;
-    for(i = 0; i < HHgActionManager._actionList.length; i++){
-      HHgActionManager._actionList[i].whatShouldIDoThisFrame(deltaT, now);
-    }
-    //test crap
-    //if(testCounter % 4 === 0){
-      //HHgTestDiv.getDiv().innerHTML = " " + Math.round(1000/deltaT) ;
-      //}
-    //}
-
-    HHgScene.doEndOfFrame();
-    HHgScene.doUpdateHolders();
-
-    return true;
-
-  } );
-
-
-
-
-
-
-
 }
 
 

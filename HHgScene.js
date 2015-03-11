@@ -187,9 +187,9 @@ HHgSceneDoStart = function(){
 			var listOfHolder = [];
 			listOfHolder.push(theOne);
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
-			theOne.doActionMoveInScreenBy({x:-75,y: -700,time: 10});
+			theOne.doActionMoveInScreenBy({x:-75,y: -700,time: 30});
 			theOne.doActionRotateBy({rotation:360,time: 30});
-			theOne.doActionScaleTo({x:0.25,y:0.25,time: 30});
+			theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
 
 
 			var randomSprite = function(holder){
