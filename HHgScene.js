@@ -176,13 +176,14 @@ HHgSceneDoStart = function(){
 	
 	function sceneTests(){
 	
-		if(false){
+		if(true){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
 			theOne.setMouseable(true);
+			theOne.setIsDraggable(true);
 
 			var listOfHolder = [];
 			listOfHolder.push(theOne);
@@ -216,6 +217,7 @@ HHgSceneDoStart = function(){
 				testBall.doMoveToNewParent( {parent: listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , position: new HHgVector2(posx, posy) });
 				randomSprite(testBall);
 				testBall.setMouseable(true);
+				testBall.setIsDraggable(true);
 				testBall.doActionRotateBy({rotation: HHg.returnRandomInt(120,720), time: HHg.returnRandomInt(5,35)});
 
 				listOfHolder.push(testBall)
@@ -481,17 +483,10 @@ function doAddFunctionsToScene(scene){
 	scene.doesHolderContainPoint = function(holder, xy){
 		var canvas = holder.getCanvas();
 
-		if(isNaN(holder.getRotationNet())){
-			debugger;
-		}
-
-
-		
 		var mousePos = xy.returnVectorPlusVector(HHgScreenDiff);
 
 		    var holderPosNet = holder.getPositionInScreenNet();
 
-		    
 		    holderPosNet = new HHgVector2(holderPosNet.getX(), HardwareScreen.h - (holderPosNet.getY() + holder.getHeightNet()) );
 		   
 		    var centerPoint = holderPosNet.returnVectorPlusVector(holder.returnHalfSizeVector());
@@ -499,8 +494,6 @@ function doAddFunctionsToScene(scene){
 		    var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(centerPoint, -1 * holder.getRotationNet());
 
 		    var posInCanvas = holderPosNet.returnVectorSubtractedFromVector(mouseFinalRelative);
-		    
-
 
 		    var left = 0;
 		    var right = holder.getWidthNet();
@@ -525,7 +518,6 @@ function doAddFunctionsToScene(scene){
 		   
 		   posInCanvas = posInCanvas.returnVectorScaledBy(canvasRatio);
 		   
-
 		   if( isAlphaPixel(canvas, posInCanvas.getX(), posInCanvas.getY()) ) return false;
 
 		   return true;

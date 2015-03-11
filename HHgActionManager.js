@@ -1,4 +1,5 @@
 var HHgForce30FPS = false;
+var HHgForce15FPS = false;
 var HHgPaused = false;
 var HHgTempHolder;
 var HHgTempAction;
@@ -90,10 +91,15 @@ HHgActionManager.actionLoop = function( animateActions ) {
 HHgActionManager.doStart = function(){
   var i;
 
-  if(HHgForce30FPS){
+  if(HHgForce30FPS || HHgForce15FPS){
     var interval = 1.0 / 30.0,
+        frameInterval = interval * 1000.0;
+    
+
+    if(HHgForce15FPS){
+      interval = 1.0 / 15.0;
       frameInterval = interval * 1000.0;
-    console.log(interval);
+    }
        
     window.setInterval(function(){
      
