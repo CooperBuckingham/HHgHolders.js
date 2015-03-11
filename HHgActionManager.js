@@ -60,9 +60,9 @@ var HHgActionManager = {
 
 
 
-var paused = false;
+
 var lowEnd = .01; //1 //.01
-var highEnd = 1600; //160
+var highEnd = 160; //160
 
 HHgActionManager.actionLoop = function( animateActions ) {
 

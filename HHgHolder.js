@@ -54,6 +54,7 @@ var HHgHolder = function(props){
 
 	this.isScene = false,
 	this.isDraggable = false;
+	this.isBeingDragged = false;
 
 	this.test = "no",
 
@@ -137,12 +138,11 @@ var HHgHolder = function(props){
 			_children[i].killHolder();
 		}
 
-		for(var i = 0; i < _actions.length; i++){
-			HHgActionManager.doRemoveAction(_actions[i]);
-		}
+		actionsTotal -= _actions.length;
+		HHgActionManager.doRemoveOwner(that);
 
 		_children = [];
-		_actions = [];
+		_actions = {};
 		_mouseable = false;
 		_visible = false;
 
@@ -224,7 +224,10 @@ var HHgHolder = function(props){
 			
 			this.doRecalcPosition();
 		}else{
-			this.updatePositionFromParentMove();
+			
+				this.updatePositionFromParentMove();
+
+			
 		}
 
 			
@@ -592,13 +595,9 @@ this.getVisible = function(){
 
 		this.updatePositionFromParentMove = function(){
 			
-				if(that.test === "soccer" && (_positionInParentOriginal.getX() > 1 || _positionInParentOriginal.getY() > 1) ){
-					
-					console.log("PARENT SOCCER POSITION");
-					console.log(_positionInParentOriginal.returnPretty());
-					
-
-				}
+			if(this.isBeingDragged === true){
+				return;
+			}
 			
 				_positionInScreenOriginal = _positionInParentOriginal;
 
@@ -788,16 +787,6 @@ this.getVisible = function(){
 			
 			HHgScene.doAddToDirtyList(that);
 			
-			/*
-			if(_children){
-				HHg.doForEach(_children, function(child){
-					HHgScene.doAddToDirtyList(child);
-				});
-			}
-			*/
-
-			
-			
 
 		}
 
@@ -892,7 +881,7 @@ this.getVisible = function(){
 		if(actionsTotal <= 0) HHgActionManager.doRemoveOwner(that);
 	}
 	this.doRemoveActionByName = function(name){
-		console.log("doremove action on holder");
+		
 		delete _actions[name];
 		console.log(_actions);
 		actionsTotal--;
@@ -1056,6 +1045,7 @@ this.getVisible = function(){
 	this.doStartMouseMove = function(xy){
 
 		this.setPositionStored();
+		this.isBeingDragged = true;
 		this.doActionRotateForever({speed:300, name: "mousemoverotate"});
 	}
 
@@ -1067,6 +1057,7 @@ this.getVisible = function(){
 	this.doEndMouseMove = function(xy){
 		
 		this.setPositionInScreenTo(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
+		this.isBeingDragged = false;
 		this.doRemoveActionByName("mousemoverotate");
 	}
 

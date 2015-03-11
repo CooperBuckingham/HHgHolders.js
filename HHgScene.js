@@ -224,7 +224,7 @@ HHgSceneDoStart = function(){
 			}
 		}
 
-		if(true){
+		if(false){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
@@ -233,7 +233,13 @@ HHgSceneDoStart = function(){
 			theOne.setMouseable(true);
 			theOne.setIsDraggable(true);
 
-			
+			var theTwo = HHgGetHolder({w:100,h:100});
+			theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(-200,-200), isScreenPos: false});
+			theTwo.doAddSprite("soccer");
+			theTwo.test = "soccer";
+			theTwo.setMouseable(true);
+			theTwo.setIsDraggable(true);
+
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
 			//theOne.doActionMoveInScreenBy({x:-75,y: -700,time: 30});
 			//theOne.doActionRotateBy({rotation:360,time: 30});
