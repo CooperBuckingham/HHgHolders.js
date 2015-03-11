@@ -22,14 +22,12 @@ var HHgMouse = function HHgMouse(){
 	this.doStart = function(){
 
 
-		that.mouseCircle = HHgGetHolder(25,25, 100);
-		that.mouseCircle.doMoveToNewParent(HHgGameHolder, HHg0Vector, false);
+		that.mouseCircle = HHgGetHolder({w:25,h:25,zIndex: 100});
+		that.mouseCircle.doMoveToNewParent({parent: HHgGameHolder, position: HHg0Vector, isScreenPos: false});
 		that.mouseCircle.doAddSprite("mouse");
 		that.mouseCircle.setVisible(false);
 		that.mouseCircle.setMouseable(false);
 		
-
-
 		HHgScene.doAddMouseDownAndUpListeners();
 
 	}
@@ -88,7 +86,7 @@ var HHgMouse = function HHgMouse(){
 		if(holders ){
 			for(var i = 0; i < holders.length; i++){
 				if(holders[i] === clickedDownOn){
-					//do alhpa check here
+					
 					that.clickedDownOn.doMouseUp(true);
 					that.doResetVars();
 					return;
@@ -107,9 +105,6 @@ var HHgMouse = function HHgMouse(){
 
 }();
 
-
-
-//alpha test for mouse click
 
 
 

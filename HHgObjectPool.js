@@ -16,13 +16,13 @@ var HHgReleaseHolder;
 		numberOfCachedHolders = numberOfCachedHolders || 100;
 
 		for(var i = 0; i < numberOfCachedHolders; i++){
-			tempHolder = new HHgHolder(1,1);
+			tempHolder = new HHgHolder({w:1,h:1});
 			availablePool[tempHolder.getHash()] = tempHolder;
 			runningCount++;
 		}
 	};
 
-	HHgGetHolder = HHgObjectPool.getHolder = function(w, h, zIndex, scale){
+	HHgGetHolder = HHgObjectPool.getHolder = function(props){
 		
 
 		for(tempHolder in availablePool){
@@ -30,13 +30,13 @@ var HHgReleaseHolder;
 			runningCount--;
 			delete availablePool[tempHolder];
 			//set new height and width
-			tempHolder2.setNewWidthHeight(w, h, zIndex, scale);
+			tempHolder2.setNewStats(props);
 
 			return tempHolder2;
 		}
 
 		console.log("WARNING: no available holders, creating new");
-		return new HHgHolder(w, h, zIndex, scale);
+		return new HHgHolder(props);
 
 	};
 
