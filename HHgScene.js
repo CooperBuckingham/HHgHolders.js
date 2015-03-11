@@ -73,7 +73,7 @@ HHgSceneDoStart = function(){
 
 
 	HHgScreenDiff = new HHgVector2(0,0);
-	HHgScene = new HHgHolder(HardwareScreen.w,HardwareScreen.h);
+	HHgScene = new HHgHolder({w:HardwareScreen.w,h:HardwareScreen.h});
 
 	HHgScene.test = "scene";
 	doAddFunctionsToScene(HHgScene);
@@ -126,7 +126,7 @@ HHgSceneDoStart = function(){
 	
 	function buildHolderFromScratch(){
 		
-		HHgGameHolder = new HHgHolder(HHgScreen.w, HHgScreen.h);;
+		HHgGameHolder = new HHgHolder({w:HHgScreen.w, h: HHgScreen.h});;
 		var div = document.createElement("div");
 		HHgGameHolder.setDiv(div);
 		div.style.display ="inline-block";
@@ -175,131 +175,11 @@ HHgSceneDoStart = function(){
 
 	
 	function sceneTests(){
-	//----- rotate test
-		HHgTestDiv = new HHgHolder(100,100);
-		HHgTestDiv.doMoveToNewParent(HHgScene, new HHgVector2( (HHgScreen.w * -.5) + 100, (HHgScreen.h * .5) - 150), true);
-		HHgTestDiv.getDiv().innerHTML = "TEST DIV";
-
-		if(false){
-			HHgGameHolder.getDiv().innerHTML = "innerWidth: " + HardwareScreen.w + "/h " + HardwareScreen.h;
-			HHgGameHolder.getDiv().color = "black";
-
-			var theOne = new HHgHolder(400,400);
-			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
-			theOne.doAddSprite("pool");
-			theOne.test = "pool";
-			theOne.setMouseable(true);
-
-			var	theTwo = new HHgHolder(100,100);
-			theTwo.doMoveToNewParent(HHgGameHolder, new HHgVector2(0,0), true);
-			theTwo.doAddSprite("soccer");
-			theTwo.test = "soccer";
-			theTwo.setMouseable(true);
-
-			var	theThree = new HHgHolder(100,100);
-			
-			theThree.doMoveToNewParent(HHgGameHolder, new HHgVector2(0,0), true);
-			theThree.doAddSprite("orange");
-			theThree.test = "orange";
-			theThree.setMouseable(true);
-
-			setTimeout(function(){
-
-			
-			theOne.setScaleOriginalTo(.5,.5);
-
-			}, 5000);
-		}
-
-		if(false){
-			
-			var theOne = new HHgHolder(100,100);
-			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
-			theOne.doAddSprite("pool");
-			theOne.test = "pool";
-			theOne.setMouseable(true);
-
-			var	theTwo = new HHgHolder(100,100);
-			theTwo.doMoveToNewParent(theOne, new HHgVector2(100,100), true);
-			theTwo.doAddSprite("soccer");
-			theTwo.test = "soccer";
-			theTwo.setMouseable(true);
-
-			var	theThree = new HHgHolder(100,100);
-			
-			theThree.doMoveToNewParent(theOne, new HHgVector2(-100,-100), true);
-			theThree.doAddSprite("orange");
-			theThree.test = "orange";
-			theThree.setMouseable(true);
-
-			setTimeout(function(){
-				
-				theOne.doActionRotateBy(180, 15);
-				
-				
-
-			}, 500);
-			setTimeout(function(){
-				
-				theTwo.doActionMoveInScreenBy(400,400,15);
-				
-
-
-			}, 2000);
-		}
-
-
-		if(false){
-
-			var theOne = new HHgHolder(100,100);
-			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
-			theOne.doAddSprite("pool");
-			theOne.test = "pool";
-
-
-			var theThree = new HHgHolder(540,3);
-			theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
-			theThree.doAddSprite("orange");
-			theThree.test = "orange";
-
-			var theThree = new HHgHolder(3,540);
-			theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,0), true);
-			theThree.doAddSprite("orange");
-			theThree.test = "orange";
-
-			
-			var theThree = new HHgHolder(540,3);
-			theThree.doMoveToNewParent(HHgGameHolder,new HHgVector2(0,100), true);
-			theThree.doAddSprite("orange");
-			theThree.test = "orange";
-
-
-			var theTwo;
-			setTimeout(function(){
-				theTwo = new HHgHolder(100,100);
-
-				theTwo.doMoveToNewParent(theOne, new HHgVector2(0,0), true);
-				theTwo.doAddSprite("pool");
-				theTwo.test = "soccer";
-
-			}, 1000);
-
-			setTimeout(function(){
-				theOne.setPositionInScreenTo(new HHgVector2(0,450));
-				theOne.doActionFollowQuad(new HHgVector2(75,120), new HHgVector2(-100,-450), 10);
-				theOne.doActionRotateBy(60, 10);
-			
-			}, 4000);
-			
-			setTimeout(function(){
-
-			}, 8000);
-		}
-
+	
 		if(true){
 
-			var theOne = HHgGetHolder(100,100);
-			theOne.doMoveToNewParent(HHgGameHolder,new HHgVector2(-200,-200), true);
+			var theOne = HHgGetHolder({w:100,h:100});
+			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
 			theOne.setMouseable(true);
@@ -307,9 +187,9 @@ HHgSceneDoStart = function(){
 			var listOfHolder = [];
 			listOfHolder.push(theOne);
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
-			theOne.doActionMoveInScreenBy(-75, -700, 10);
-			theOne.doActionRotateBy(360, 30);
-			theOne.doActionScaleTo(new HHgVector2(.25,.25), 30);
+			theOne.doActionMoveInScreenBy({x:-75,y: -700,time: 10});
+			theOne.doActionRotateBy({rotation:360,time: 30});
+			theOne.doActionScaleTo({x:0.25,y:0.25,time: 30});
 
 
 			var randomSprite = function(holder){
@@ -331,12 +211,12 @@ HHgSceneDoStart = function(){
 
 				var posx = HHg.returnRandomIntLowIncHighExcl(-1000,1000);
 				var posy = HHg.returnRandomIntLowIncHighExcl(-500,500);
-				var testBall = HHgGetHolder(size,size);
+				var testBall = HHgGetHolder({w:size,h:size});
 
-				testBall.doMoveToNewParent( listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , new HHgVector2(posx, posy) );
+				testBall.doMoveToNewParent( {parent: listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , position: new HHgVector2(posx, posy) });
 				randomSprite(testBall);
 				testBall.setMouseable(true);
-				testBall.doActionRotateBy(HHg.returnRandomInt(120,720), HHg.returnRandomInt(5,35));
+				testBall.doActionRotateBy({rotation: HHg.returnRandomInt(120,720), time: HHg.returnRandomInt(5,35)});
 
 				listOfHolder.push(testBall)
 			}

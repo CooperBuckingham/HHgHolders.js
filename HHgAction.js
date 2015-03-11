@@ -26,7 +26,7 @@ var HHgAction = function (owner, totalTime, ease, onComplete){
 		}
 		
 		action.owner.doRemoveAction(action);
-		HHgActionManager.doRemoveAction(action);
+		
 
 
 	};
@@ -239,6 +239,27 @@ function HHgActionRotateBy(owner, degrees, totalTime, ease, onComplete){
 	
 }
 HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateBy);
+
+
+function HHgActionRotateForever(owner, speed, ease){
+	HHgAction.call(this, owner, totalTime, ease);
+
+	this.speed = speed;
+	
+	var that = this;
+
+	this.whatShouldIDoThisFrame = function(deltaT, now){
+
+		deltaDegrees = that.speed * ( (deltaT / 1000) / that.totalTime );
+
+		owner.setRotationOriginalBy(deltaDegrees);
+
+	}
+	
+	
+}
+HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateBy);
+
 
 
 function HHgActionRotateLeftTo(owner, degrees, totalTime, ease, onComplete){
