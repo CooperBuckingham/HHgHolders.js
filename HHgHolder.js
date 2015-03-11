@@ -959,7 +959,6 @@ this.getVisible = function(){
 
 	}
 	this.doActionScaleTo = function(props){
-
 		HHg.returnScaleProps(props);
 		HHg.returnTimeProps(props);
 		HHg.returnEaseProps(props);
