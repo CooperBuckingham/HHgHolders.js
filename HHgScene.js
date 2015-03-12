@@ -95,7 +95,7 @@ HHgSceneDoStart = function(){
 		div.style.height = "" + HardwareScreen.w / HHgScreen.w * HHgScreen.maxh + "px";
 		
 		div.style.left ="" + 0 +"px";
-		//div.style.bottom = HardwareScreen.h - (HardwareScreen.w / HHgScreen.w * HHgScreen.maxh) / 2;
+
 		div.style.top = "" + ((HardwareScreen.h - (HardwareScreen.w / HHgScreen.w * HHgScreen.maxh)) / 2) + "px";
 
 		HHgScene._holders[div.id] = HHgScene;
@@ -176,7 +176,7 @@ HHgSceneDoStart = function(){
 	
 	function sceneTests(){
 	
-		if(true){
+		if(false){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
@@ -224,14 +224,15 @@ HHgSceneDoStart = function(){
 			}
 		}
 
-		if(false){
+		if(true){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
-			theOne.doAddSprite("pool");
+			//theOne.doAddSprite("pool");
 			theOne.test = "pool";
 			theOne.setMouseable(true);
 			theOne.setIsDraggable(true);
+			theOne.setBackgroundRGBA(new HHgColorRGBA(255,0,0));
 
 			var theTwo = HHgGetHolder({w:100,h:100});
 			theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(-200,-200), isScreenPos: false});
@@ -239,6 +240,7 @@ HHgSceneDoStart = function(){
 			theTwo.test = "soccer";
 			theTwo.setMouseable(true);
 			theTwo.setIsDraggable(true);
+			theOne.setTintToRGBA(new HHgColorRGBA(255,255,0));
 
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
 			//theOne.doActionMoveInScreenBy({x:-75,y: -700,time: 30});
@@ -332,8 +334,14 @@ function doAddFunctionsToScene(scene){
 
 			}
 
-			if(changes.color === true){
-				div.style.backgroundColor = holder.getBackgroundColor();
+			if(changes.backgroundColor === true){
+				div.style.backgroundColor = holder.getBackgroundRGBA().returnString();
+				//do something with tint holder.getTintRGBA().returnString(); //or add div, or modify per pixel
+
+			}
+			if(changes.tint === true){
+				holder.getTintRGBA().returnString(); //or add div, or modify per pixel
+
 			}
 
 			if(changes.zIndex === true){
@@ -532,9 +540,13 @@ function doAddFunctionsToScene(scene){
 
 
 	scene.doesHolderContainPoint = function(holder, xy){
-		var canvas = holder.getCanvas(),
+		var canvas = holder.getCanvas();
+		
+		if(canvas === undefined){
+			return true;
+		}
 
-		mousePos = xy.returnVectorPlusVector(HHgScreenDiff),
+		var mousePos = xy.returnVectorPlusVector(HHgScreenDiff),
 
 		    holderPosNet = holder.getPositionInScreenNet();
 

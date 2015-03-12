@@ -19,7 +19,8 @@ var HHgHolder = function(props){
 
 		_parent,
 	
-		_backgroundHue, _backgroundSaturation, _backgroundLightness, _backgroundAlpha,
+		_backgroundColor,
+		_tintColor,
 
 		_scaleOriginal = HHg.returnScaleProps(props),
 		_scaleNet = _scaleOriginal,
@@ -72,7 +73,8 @@ var HHgHolder = function(props){
 		scale: false,
 		position: false,
 		rotation: false,
-		color: false,
+		tint: false,
+		backgroundColor: false,
 		visible: false,
 		mouseable: false,
 		zIndex: false,
@@ -83,7 +85,8 @@ var HHgHolder = function(props){
 			scale: false,
 			position: false,
 			rotation: false,
-			color: false,
+			tint: false,
+			backgroundColor: false,
 			visible: false,
 			mouseable: false,
 			zIndex: false,
@@ -114,6 +117,9 @@ var HHgHolder = function(props){
 		_rotationOriginal = 0;
 		_rotationNet = 0;
 		_rotationStored = 0;
+
+		_backgroundColor = undefined;
+		_tintColor = undefined;
 
 		if(_parent) _parent.doRemoveChild(this);
 		
@@ -159,15 +165,7 @@ var HHgHolder = function(props){
 			scaleTo: undefined,
 		}
 
-		this.changes = {
-			scale: false,
-			position: false,
-			rotation: false,
-			color: false,
-			visible: false,
-			mouseable: false,
-			zIndex: false,
-		}
+		this.resetChanges();
 	}
 
 	this.setPaused = function(bool){
@@ -399,56 +397,44 @@ this.getVisible = function(){
 	return _visible;
 }
 
-	this.setBackgroundColor = function(props){
-		//HSLA should multiplyBy
-		this.changes.color = true;
-
-		if(H === true){
-			H = _backgroundHue;
-		}
-		if(S === true){
-			L = _backgroundSaturation;
-		}
-		if(L === true){
-			L = _backgroundLightness;
-		}
-		if(A === true){
-			A = _backgroundAlpha;
-		}
-			H = H > 360 ? H % 360 : H;
-			S = S > 1 ? 1 : S;
-			L = L > 1 ? 1 : L;
-			A = A > 1 ? 1 : A;
+		this.setBackgroundRGBA = function(color){
 			
-			if(shouldMultiplyBy){
-				_backgroundHue *= H;
-				_backgroundSaturation *= S;
-				_backgroundLightness *= L;
-				_backgroundAlpha *= A;
+			_backgroundColor = color;
+			
 
-			}else{
-				_backgroundHue = H;
-				_backgroundSaturation = S;
-				_backgroundLightness = L;
-				_backgroundAlpha = A;
-			}
+			this.changes.backgroundColor = true;
 			
 			if(_parent !== undefined){
-				that.doNotifySceneOfUpdates("color");
+				that.doNotifySceneOfUpdates();
 			}
 			
 		}
-
-		this.setTintTo = function(props){
-
+		this.getBackgroundRGBA = function(){
+			return _backgroundColor;
 		}
 
-		this.setTintBy = function(props){
-
+		this.setTintToRGBA = function(color){
+			this.changes.tint = true;
+			if(_parent !== undefined){
+				that.doNotifySceneOfUpdates();
+			}
+			_tintColor = color;
 		}
 
-		this.getBackgroundColor= function(){
-			return "hsla(" + _backgroundHue + ", " + (100 * _backgroundSaturation) + "%, " + (100 * _backgroundLightness) + "%, " + _backgroundAlpha +")";
+		this.setTintByRGBA = function(color, percent){
+			this.changes.tint = true;
+			if(_parent !== undefined){
+				that.doNotifySceneOfUpdates();
+			}
+			if(_tintColor){
+				_tintColor.blendColorIn(color,percent);
+			}else{
+				this.setTintToRGBA(color);
+			}
+			
+		}
+		this.getTintRGBA = function(){
+			return _tintColor;
 		}
 	
 		//do we want these to be calculations if the holder is holding things?
