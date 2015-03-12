@@ -399,8 +399,8 @@ this.getVisible = function(){
 	return _visible;
 }
 
-	this.setBackgroundColor = function(H, S, L, A, shouldMultiplyBy){
-
+	this.setBackgroundColor = function(props){
+		//HSLA should multiplyBy
 		this.changes.color = true;
 
 		if(H === true){
@@ -437,6 +437,14 @@ this.getVisible = function(){
 				that.doNotifySceneOfUpdates("color");
 			}
 			
+		}
+
+		this.setTintTo = function(props){
+
+		}
+
+		this.setTintBy = function(props){
+
 		}
 
 		this.getBackgroundColor= function(){

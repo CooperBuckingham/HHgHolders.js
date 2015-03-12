@@ -275,6 +275,87 @@ var HHg = {
 
 	},
 
+	returnColorProps: function(props){
+
+		if(props instanceof HHgColorRGBA === true || props instanceof HHgColorHSLA === true){
+			return props.returnSimpleObject();
+		}
+
+		if(typeof props === "string"){
+			switch(props){
+				case "red":
+				//return object with RGB
+				break;
+				case "green":
+				//return object with RGB
+				break;
+				case "blue":
+				//return object with RGB
+				break;
+			}
+		}
+
+		if(props.H){
+
+		}else if(props.h){
+			props.H = props.h;
+		}else if(props.hue){
+			props.H = props.hue;
+		}
+
+		if(props.S){
+
+		}else if(props.s){
+			props.S = props.s;
+		}else if(props.saturation){
+			props.S = props.saturation;
+		}
+
+		if(props.L){
+
+		}else if(props.l){
+			props.L = props.l;
+		}else if(props.lightness){
+			props.L = props.lightness;
+		}
+
+		if(props.A){
+
+		}else if(props.a){
+			props.A = props.a;
+		}else if(props.alhpa){
+			props.A = props.alpha;
+		}
+
+
+		if(props.R){
+
+		}else if(props.r){
+			props.R = props.r;
+		}else if(props.red){
+			props.R = props.red;
+		}
+
+		if(props.G){
+
+		}else if(props.g){
+			props.G = props.g;
+		}else if(props.green){
+			props.G = props.green;
+		}
+
+		if(props.B){
+
+		}else if(props.b){
+			props.B = props.b;
+		}else if(props.blue){
+			props.B = props.blue;
+		}
+
+		return props;
+
+	},
+
 	testVector: function(xy){
 		console.log("vector: " + xy.returnPretty());
 	},
