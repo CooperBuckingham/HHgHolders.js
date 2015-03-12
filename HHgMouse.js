@@ -140,6 +140,11 @@ var HHgMouse = function HHgMouse(){
 		
 	}
 
+	this.doMouseCancel = function(holders, xy){
+		
+		this.doMouseUp(holders, xy);
+	}
+
 
 
 	return this; //for singleton

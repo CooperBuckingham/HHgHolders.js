@@ -883,7 +883,7 @@ this.getVisible = function(){
 	this.doRemoveActionByName = function(name){
 		
 		delete _actions[name];
-		console.log(_actions);
+		
 		actionsTotal--;
 		if(actionsTotal <= 0) HHgActionManager.doRemoveOwner(that);
 	}

@@ -11,7 +11,6 @@ var HHgActionManager = {
   },
 
   doRemoveOwner: function(owner){
-    console.log("do remove owner");
     delete this._actionList[owner.getHash()];
   },
 
