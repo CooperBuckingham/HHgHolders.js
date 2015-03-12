@@ -163,6 +163,7 @@ var HHgHolder = function(props){
 			positionTo: undefined,
 			rotationTo: undefined,
 			scaleTo: undefined,
+			positionAbsolute: undefined,
 		}
 
 		this.resetChanges();
@@ -218,17 +219,15 @@ var HHgHolder = function(props){
 			this.doRecalcRotation();
 		}
 
-		if(this.frameDumpPosition()){
+		if(this.frameDumpPosition() || this.isBeingDragged === true){
 			
 			this.doRecalcPosition();
 		}else{
 			
-				this.updatePositionFromParentMove();
-
+			this.updatePositionFromParentMove();
 			
 		}
 
-			
 		this.doTellSceneToUpdate();
 		
 
@@ -253,13 +252,19 @@ var HHgHolder = function(props){
 		
 		var returnVal = false;
 
-		if(this.frameUpdates.positionTo !== undefined){
+		if(this.frameUpdates.positionAbsolute !== undefined){
+
+			_positionInScreenOriginal = this.frameUpdates.positionAbsolute;
+
+		}else if(this.isBeingDragged === true){
+			//won't allow other types of position updates
+		}else if(this.frameUpdates.positionTo !== undefined){
 			
 			_positionInScreenOriginal = this.frameUpdates.positionTo;
 			
 
 			returnVal = true;
-		}else if(this.frameUpdates.positionBy !== undefined){
+		}else if(this.frameUpdates.positionBy !== undefined ){
 			
 			_positionInScreenOriginal = _positionInScreenOriginal.returnVectorPlusVector( this.frameUpdates.positionBy);
 
@@ -268,6 +273,7 @@ var HHgHolder = function(props){
 
 		this.frameUpdates.positionBy = undefined;
 		this.frameUpdates.positionTo = undefined;
+		this.frameUpdates.positionAbsolute = undefined;
 		
 
 		return returnVal;
@@ -361,6 +367,11 @@ this.frameRotationTo = function(val){
 
 this.frameScaleTo = function(xy){
 	this.frameUpdates.scaleTo = xy;
+	that.doNotifySceneOfUpdates();
+}
+
+this.framePositionAbsolute = function(xy){
+	this.frameUpdates.positionAbsolute = xy;
 	that.doNotifySceneOfUpdates();
 }
 
@@ -515,13 +526,11 @@ this.getVisible = function(){
 
 			if(_parent !== undefined){
 
-			
+				_positionInParentOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenOriginal(), 1 *  _parent.getRotationNet() );
 
-				_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInScreenOriginal);
+				_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInParentOriginal);
 				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(_parent.getScaleNet());
-				_positionInParentOriginal = _positionInParentOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenOriginal(), 1 *  _parent.getRotationNet() );
-
-
+				
 			}
 
 			this.changes.position = true;
@@ -562,10 +571,18 @@ this.getVisible = function(){
 			this.framePositionBy(HHg.returnPositionProps(props));
 		}
 
+		this.setPositionInScreenAbsolute = function(props){
+			this.framePositionAbsolute(HHg.returnPositionProps(props));
+		}
+
 
 		this.getPositionInScreenOriginal = function(){
 			
 			return _positionInScreenOriginal;
+		}
+
+		this.getPositionWithCentering = function(){
+			return that.returnHalfSizeVector().returnVectorPlusVector( _positionInScreenOriginal);
 		}
 
 
@@ -582,13 +599,14 @@ this.getVisible = function(){
 		{
 
 			_positionInParentOriginal = HHg.returnPositionProps(props);
-			//updatePositionFromParentMove(xy)
+			
 			this.doNotifySceneOfUpdates();
 
 		}
 
 		this.updatePositionFromParentMove = function(){
-			
+
+			//****
 			if(this.isBeingDragged === true){
 				return;
 			}
@@ -1057,6 +1075,7 @@ this.getVisible = function(){
 	this.doMouseUp = function(mouseWasOverWhenReleased){
 		this.setScaleOriginalBy(1.0/0.9,1.0/0.9);
 		this.doRemoveActionByName("mousedownscale");
+		this.isBeingDragged = false;
 		
 	}
 
@@ -1069,13 +1088,13 @@ this.getVisible = function(){
 	}
 
 	this.doMouseMove = function(){
-		this.setPositionInScreenTo(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
+		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
 		
 	}
 
 	this.doEndMouseMove = function(xy){
 		
-		this.setPositionInScreenTo(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
+		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
 		this.isBeingDragged = false;
 		this.doRemoveActionByName("mousemoverotate");
 	}
