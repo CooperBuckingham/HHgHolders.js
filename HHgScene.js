@@ -389,30 +389,58 @@ function doAddFunctionsToScene(scene){
 		var wOffset = 0;
 		var hOffset = 0;
 		var relX = 0, relY = 0;
+		var mouseXY, touch, touchlist, i;
 		
 
 		HHgTopHolder.addEventListener("mousedown", function(e){
+			e.preventDefault();
+			e.stopPropagation();
 			relX =  e.pageX;
 			relY =  e.pageY;
-			var mouseXY = new HHgVector2(relX,relY);
+			mouseXY = new HHgVector2(relX,relY);
 
 			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
 			return false;
 		}, false);
 
 		HHgTopHolder.addEventListener("mouseup", function(e){
+			e.preventDefault();
+			e.stopPropagation();
 			relX = e.pageX;
 			relY = e.pageY;
-			var mouseXY = new HHgVector2(relX,relY);
+			mouseXY = new HHgVector2(relX,relY);
 			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
 			return false;
 		}, false);
 
+
+		document.addEventListener("mouseout", function(e){
+			
+			e = e ? e : window.event;
+		    var from = e.relatedTarget || e.toElement;
+		    if (!from || from.nodeName == "HTML") {
+
+		        relX = e.pageX;
+				relY = e.pageY;
+				mouseXY = new HHgVector2(relX,relY);
+				HHgMain.HHgMouse.doMouseCancel( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
+		    }
+			//e.preventDefault();
+			//e.stopPropagation();
+			//if(e.relatedTarget !== null) return;
+			//if(e.target !== HHgTopHolder) return;
+
+			
+			return false;
+		}, false);
+
 		HHgTopHolder.addEventListener("mousemove", function(e){
-			//this will become a "can drag" check
+			e.preventDefault();
+			e.stopPropagation();
 			relX = e.pageX;
 			relY = e.pageY;
-			var mouseXY = new HHgVector2(relX,relY);
+
+			mouseXY = new HHgVector2(relX,relY);
 			HHgMain.HHgMouse.doMouseMove( scene.convertMouseToHolder(mouseXY)   );
 			return false;
 		}, false);
@@ -420,12 +448,12 @@ function doAddFunctionsToScene(scene){
 		HHgTopHolder.addEventListener("touchstart", function(e){
 			e.preventDefault();
 			
-			var touch = e.changedTouches[0];
+			touch = e.changedTouches[0];
 			console.log("touch start :" + touch.identifier);
 			HHgTrackedTouch = touch.identifier;
 			relX =  touch.pageX;
 			relY =  touch.pageY;
-			var mouseXY = new HHgVector2(relX,relY);
+			mouseXY = new HHgVector2(relX,relY);
 
 			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
 			return false;
@@ -434,14 +462,13 @@ function doAddFunctionsToScene(scene){
 		HHgTopHolder.addEventListener("touchend", function(e){
 			e.preventDefault();
 			
-			var touchList = e.changedTouches;
-			console.log("touch end :" + HHgTrackedTouch);
+			touchList = e.changedTouches;
 			
-			for(var i = 0; i < touchList.length; i++){
+			for(i = 0; i < touchList.length; i++){
 				if(touchList[i].identifier === HHgTrackedTouch){
 					relX =  touchList[i].pageX;
 					relY =  touchList[i].pageY;
-					var mouseXY = new HHgVector2(relX,relY);
+					mouseXY = new HHgVector2(relX,relY);
 					HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
 					break;
 				}
@@ -453,19 +480,37 @@ function doAddFunctionsToScene(scene){
 		HHgTopHolder.addEventListener("touchmove", function(e){
 			//this will become a "can drag" check
 			e.preventDefault();
-			var touchList = e.changedTouches;
+			touchList = e.changedTouches;
 			
-			for(var i = 0; i < touchList; i++){
+			for(i = 0; i < touchList; i++){
 				if(touchList[i].identifier === HHgTrackedTouch){
 					relX =  touchList[i].pageX;
 					relY =  touchList[i].pageY;
-					var mouseXY = new HHgVector2(relX,relY);
+					mouseXY = new HHgVector2(relX,relY);
 					HHgMain.HHgMouse.doMouseMove( scene.convertMouseToHolder(mouseXY)   );
 					break;
 				}
 			}
 			
 			
+			return false;
+		}, false);
+
+		HHgTopHolder.addEventListener("touchcancel", function(e){
+			e.preventDefault();
+			
+			touchList = e.changedTouches;
+			
+			for(i = 0; i < touchList.length; i++){
+				if(touchList[i].identifier === HHgTrackedTouch){
+					relX =  touchList[i].pageX;
+					relY =  touchList[i].pageY;
+					mouseXY = new HHgVector2(relX,relY);
+					HHgMain.HHgMouse.doMouseCancel( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
+					break;
+				}
+			}
+
 			return false;
 		}, false);
 
@@ -486,28 +531,29 @@ function doAddFunctionsToScene(scene){
 
 	}
 
+
 	scene.doesHolderContainPoint = function(holder, xy){
-		var canvas = holder.getCanvas();
+		var canvas = holder.getCanvas(),
 
-		var mousePos = xy.returnVectorPlusVector(HHgScreenDiff);
+		mousePos = xy.returnVectorPlusVector(HHgScreenDiff),
 
-		    var holderPosNet = holder.getPositionInScreenNet();
+		    holderPosNet = holder.getPositionInScreenNet();
 
 		    holderPosNet = new HHgVector2(holderPosNet.getX(), HardwareScreen.h - (holderPosNet.getY() + holder.getHeightNet()) );
 		   
-		    var centerPoint = holderPosNet.returnVectorPlusVector(holder.returnHalfSizeVector());
+		    var centerPoint = holderPosNet.returnVectorPlusVector(holder.returnHalfSizeVector()),
 		     
-		    var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(centerPoint, -1 * holder.getRotationNet());
+		    mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(centerPoint, -1 * holder.getRotationNet()),
 
-		    var posInCanvas = holderPosNet.returnVectorSubtractedFromVector(mouseFinalRelative);
+		    posInCanvas = holderPosNet.returnVectorSubtractedFromVector(mouseFinalRelative),
 
-		    var left = 0;
-		    var right = holder.getWidthNet();
-		    var bottom = holder.getHeightNet();
-		    var top = 0;
+		    left = 0,
+		    right = holder.getWidthNet(),
+		    bottom = holder.getHeightNet(),
+		    top = 0,
 
-		    var posX = posInCanvas.getX();
-		    var posY = posInCanvas.getY();
+		    posX = posInCanvas.getX(),
+		    posY = posInCanvas.getY();
 
 		    if(posX < left) return false;
 
@@ -532,12 +578,12 @@ function doAddFunctionsToScene(scene){
 		scene.returnHoldersUnderPoint = function(xy){
 		
 	
-		var arr = document.getElementsByClassName("mouseable");
+		var arr = document.getElementsByClassName("mouseable"),
 
 		
-		var mArr = [];
-		var highestZ = -100;
-		var thisHolder;
+		mArr = [],
+		highestZ = -100,
+		thisHolder;
 		
 		for(var i = 0; i < arr.length; i++ ){
 			thisHolder = scene.getHolderFromDiv(arr[i]);
