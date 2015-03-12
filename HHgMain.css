@@ -169,4 +169,11 @@ html body #all{
   margin-top: .5em;
   margin-bottom: .5em;
 }
+.tintDiv{
+  background-blend-mode: lighten;
+  mix-blend-mode: lighten;
+  display:inline-block;
+  width: 100%;
+  height: 100%;
+}
 

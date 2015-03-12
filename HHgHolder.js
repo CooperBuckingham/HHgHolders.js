@@ -425,6 +425,7 @@ this.getVisible = function(){
 		}
 
 		this.setTintToRGBA = function(color){
+			console.log("setting tint: " + color.pretty());
 			this.changes.tint = true;
 			if(_parent !== undefined){
 				that.doNotifySceneOfUpdates();
@@ -1121,8 +1122,8 @@ this.getVisible = function(){
 
 	}
 
-	this.doAddSprite = function(name){
-		HHgSprite.doAddSpriteToHolder(this,name);
+	this.doAddSprite = function(name, whitePixelTintRGB){
+		HHgSprite.doAddSpriteToHolder(this,name,whitePixelTintRGB);
 	}
 
 }
