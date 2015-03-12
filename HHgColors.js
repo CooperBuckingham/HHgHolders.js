@@ -1,23 +1,28 @@
 var HHgColorRGBA = function(props){
-	var  A, R,G,B, temp, that = this;
+	var temp, that = this;
 
+this.A;
+this.R;
+this.G;
+this.B;
 
 	this.setRGBA = function(props){
 		HHg.returnColorProps(props);
 
-			R = props.R || R || 255;
-			G = props.G || G || 255;
-			B = props.B || B || 255;
-			A = props.A || A || 1.0;
+			this.R = props.R || this.R || 255;
+			this.G = props.G || this.G || 255;
+			this.B = props.B || this.B || 255;
+			this.A = props.A || this.A || 1.0;
 	};
 
 
 		if(arguments.length > 1){
 
-			R = arguments[0];
-			G = arguments[1];
-			B = arguments[2];
-			arguments[3] ? A = arguments[3] : A = 1.0;
+			this.R = arguments[0];
+			this.G = arguments[1];
+			this.B = arguments[2];
+			arguments[3] ? this.A = arguments[3] : this.A = 1.0;
+			
 
 		}else{
 
@@ -25,42 +30,14 @@ var HHgColorRGBA = function(props){
 			
 		}
 
-
-
-	this.setR = function(v){
-		R = v;
-	};
-	this.setG = function(v){
-		G = v;
-	};
-	this.setB = function(v){
-		B = v;
-	};
-	this.setA = function(v){
-		A = v;
-	};
-
-	this.getR = function(){
-		return R;
-	};
-	this.getG = function(){
-		return G;
-	};
-	this.getB = function(){
-		return B;
-	};
-	this.getA = function(){
-		return A;
-	};
-
 	this.lighten = function(percent){
-		R*=percent; G*=percent; B*=percent;
+		this.R*=percent; this.G*=percent; this.B*=percent;
 	}
 	this.darken = function(percent){
 		if(percent < 0){
 			percent = 1 + percent;
 		}
-		R*=percent; G*=percent; B*=percent;
+		this.R*=percent; this.G*=percent; this.B*=percent;
 	}
 
 	this.blendColorIn = function(color, percent){
@@ -77,15 +54,15 @@ var HHgColorRGBA = function(props){
 	};
 
 	this.returnSimpleObject = function(){
-		return {R: R, G: G, B: B, A: A};
+		return {R: this.R, G: this.G, B: this.B, A: this.A};
 	};
 	
 
 	this.returnCopy = function(){
-		return new HHgColor({R: R, G: G,B: B,A: A});
+		return new HHgColor({R: this.R, G: this.G,B: this.B,A: this.A});
 	};
 	this.returnString = function(){
-		return "rgba(" + R + ", " + B+ ", " + B + ", " + A +")";
+		return "rgba(" + this.R + "," + this.G + "," + this.B + "," + this.A +")";
 	};
 	this.pretty = function(){
 		return this.returnString();
@@ -93,24 +70,29 @@ var HHgColorRGBA = function(props){
 };
 
 var HHgColorHSLA = function(props){
-	var H, S, L, A, temp;
+	var temp;
+
+	this.H;
+	this.S;
+	this.L;
+	this.A;
 
 
 	this.setHSLA = function(props){
 			HHg.returnColorProps(props);
-			H = props.H || H || 360;
-			S = props.S || S || 100;
-			L = props.L || L || 100;
-			A = props.A || A || 1.0;
+			this.H = props.H || this.H || 360;
+			this.S = props.S || this.S || 100;
+			this.L = props.L || this.L || 100;
+			this.A = props.A || this.A || 1.0;
 			
 	};
 
 		if(arguments.length > 1){
 
-			H = arguments[0];
-			S = arguments[1];
-			L = arguments[2];
-			arguments[3] ? A = arguments[3] : A = 1.0;
+			this.H = arguments[0];
+			this.S = arguments[1];
+			this.L = arguments[2];
+			arguments[3] ? this.A = arguments[3] : this.A = 1.0;
 
 		}else{
 
@@ -119,41 +101,14 @@ var HHgColorHSLA = function(props){
 		};
 
 
-
-	this.setH = function(v){
-		H = v;
-	};
-	this.setS = function(v){
-		S = v;
-	};
-	this.setL = function(v){
-		L = v;
-	};
-	this.setA = function(v){
-		A = v;
-	};
-
-	this.getH = function(){
-		return H;
-	};
-	this.getS = function(){
-		return S;
-	};
-	this.getL = function(){
-		return L;
-	};
-	this.getA = function(){
-		return A;
-	};
-
 	this.lighten = function(percent){
-		L*=percent;
+		this.L*=percent;
 	}
 	this.darken = function(percent){
 		if(percent < 0){
 			percent = 1 + percent;
 		}
-		L*=percent;
+		this.L*=percent;
 	}
 
 	this.blendColorIn = function(color, percent){
@@ -170,15 +125,15 @@ var HHgColorHSLA = function(props){
 	};
 
 	this.returnSimpleObject = function(){
-		return {H: H, S: S, L: L, A: A};
+		return {H: this.H, S: this.S, L: this.L, A: this.A};
 	};
 	
 
 	this.returnCopy = function(){
-		return new HHgColor({H: H, S: S,L: L,A: A});
+		return new HHgColor({H: this.H, S: this.S,L: this.L,A: this.A});
 	};
 	this.returnString = function(){
-		return "hsla(" + H + ", " + (100 * S) + "%, " + (100 * L) + "%, " + A +")";
+		return "hsla(" + this.H + ", " + (100 * this.S) + "%, " + (100 * this.L) + "%, " + this.A +")";
 	};
 	this.pretty = function(){
 		return this.returnString();
@@ -327,13 +282,16 @@ var HHgColorHelper = function HHgColorHelper() {
 
 	};
 
+	this.getGrayscaleFromRGBA = function(color){
+		var av = (color.R + color.G + color.B)/3;
+		return {R:av,G:av,B:av,A:color.A};
+	}
+
 	
 	return this;
 
 }();
 
-var startColorRGB = new HHgColorRGBA(85,128,64);
-console.log(startColorRGB.pretty());
 
 var HHgColorRGBAWhite = new HHgColorRGBA({R:255,G:255,B:255});
 var HHgColorRGBABlack = new HHgColorRGBA({R:0,G:0,B:0});

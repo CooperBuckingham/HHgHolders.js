@@ -176,7 +176,7 @@ HHgSceneDoStart = function(){
 	
 	function sceneTests(){
 	
-		if(true){
+		if(false){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
@@ -224,25 +224,24 @@ HHgSceneDoStart = function(){
 			}
 		}
 
-		if(false){
+		if(true){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
-			//theOne.doAddSprite("pool");
+			theOne.doAddSprite("pool");
 			theOne.test = "pool";
 			theOne.setMouseable(true);
 			theOne.setIsDraggable(true);
-			theOne.setBackgroundRGBA(new HHgColorRGBA(255,0,0));
+			//theOne.setBackgroundRGBA(new HHgColorRGBA(255,0,0));
 			
 
 			var theTwo = HHgGetHolder({w:100,h:100});
 			theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(-200,-200), isScreenPos: false});
-			theTwo.doAddSprite("soccer");
+			theTwo.doAddSprite("soccer", new HHgColorRGBA(0,255,255,.5));
 			theTwo.test = "soccer";
 			theTwo.setMouseable(true);
 			theTwo.setIsDraggable(true);
-			theOne.setTintToRGBA(new HHgColorRGBA(255,255,0));
-
+			
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
 			//theOne.doActionMoveInScreenBy({x:-75,y: -700,time: 30});
 			//theOne.doActionRotateBy({rotation:60,time: 5});
@@ -319,6 +318,18 @@ function doAddFunctionsToScene(scene){
 
 			div = holder.getDiv();
 			changes = holder.changes;
+
+			if(changes.backgroundColor === true){
+				div.style.backgroundColor = holder.getBackgroundRGBA().returnString();
+				//do something with tint holder.getTintRGBA().returnString(); //or add div, or modify per pixel
+
+			}
+			if(changes.tint === true){
+				tintCanvasByFill( holder.getCanvas(), holder.getTintRGBA().returnString() );
+				
+
+			}
+
 			if(changes.scale === true){
 				div.style.width = "" + Math.round(holder.getWidthNet())  + "px";
 				div.style.height ="" + Math.round(holder.getHeightNet()) + "px";
@@ -335,16 +346,6 @@ function doAddFunctionsToScene(scene){
 
 				div.style.left ="" + ( holder.getPositionInScreenNet().getX() ) +"px";
 				div.style.bottom ="" + ( holder.getPositionInScreenNet().getY() ) + "px";
-
-			}
-
-			if(changes.backgroundColor === true){
-				div.style.backgroundColor = holder.getBackgroundRGBA().returnString();
-				//do something with tint holder.getTintRGBA().returnString(); //or add div, or modify per pixel
-
-			}
-			if(changes.tint === true){
-				holder.getTintRGBA().returnString(); //or add div, or modify per pixel
 
 			}
 
@@ -643,7 +644,7 @@ function doAddFunctionsToScene(scene){
 		holder.getDiv().appendChild(img);
 	}
 
-	scene.setCanvasImageForHolder = function(holder, fileName){
+	scene.setCanvasImageForHolder = function(holder, fileName, whitePixelTintColor){
 		var canvas = document.createElement('canvas');
 		canvas.classList.add("canvasAsSprite");
 		var ctx = canvas.getContext('2d');
@@ -651,6 +652,7 @@ function doAddFunctionsToScene(scene){
 		var div = holder.getDiv();
 		canvas.width  = 2 * holder.getWidthNet();
 		canvas.height = 2 * holder.getHeightNet();
+		var color = whitePixelTintColor;
 
 		if(true){
         	//canvas.style.border   = "2px solid white";
@@ -676,9 +678,64 @@ function doAddFunctionsToScene(scene){
 
 		img.onload = function() {
 			ctx.drawImage(img,0,0, canvas.width, canvas.height);
+			if(color){
+				tintCanvasByColorize(canvas, color);
+				
+			}
+		
 		};
 
 
+
+	}
+
+	var ctx, imgData;
+	function tintCanvasByFill(canvas, color){
+		ctx = canvas.getContext("2d");
+		
+		ctx.fillStyle = color.returnString();
+		ctx.fillRect(0,0,canvas.width,canvas.height);
+		ctx.globalCompositeOperation = "destination-atop";
+		
+	};
+
+	function tintCanvasByColorize(canvas, color){
+		ctx = canvas.getContext("2d");
+		imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
+
+			for(var i = 0; i < imgData.data.length; i+=4){
+					
+				if(imgData.data[i+4] === 0) continue;
+
+					imgData.data[i] = imgData.data[i] / 255 * color.R;
+					imgData.data[i+1] = imgData.data[i+1] / 255 * color.G;
+					imgData.data[i+2] = imgData.data[i+2] / 255 * color.B;
+					//imgData.data[i+3] === 255;
+			}
+
+		ctx.putImageData(imgData,0,0);
+	}
+
+	function tintCanvasByOverlay(canvas, color){
+
+			function overlay(a,b){
+				a /=255; b /= 255;
+				if(a < .5) return 255*2*a*b;
+
+				return 255*(1 - 2*(1-a)*(1-b));
+			}
+
+			console.log(color);
+
+			for(var i = 0; i < imgData.data.length; i+=4){
+					
+				if(imgData.data[i+4] === 0) continue;
+
+					imgData.data[i] = overlay(imgData.data[i], color.R);
+					imgData.data[i+1] = overlay(imgData.data[i+1], color.G);
+					imgData.data[i+2] = overlay(imgData.data[i+2], color.B);
+					//imgData.data[i+3] === 255;
+			}
 	}
 
 	function placeRedSquare(canvas, x,y){
@@ -698,9 +755,7 @@ function doAddFunctionsToScene(scene){
 	function paintYellow(canvas, x, y){
 		var imgData = canvas.getContext("2d").getImageData(0,0,canvas.width, canvas.height);
 		for(var i = 0; i < imgData.data.length; i+=4){
-			if(i < imgData.data.length / 4){
-
-			}
+			
 			imgData.data[i] = 255;
 			imgData.data[i+1] = 0;
 			imgData.data[i+2] = 0;
