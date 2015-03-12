@@ -53,8 +53,18 @@ var HHgColorRGBA = function(props){
 		return A;
 	};
 
+	this.lighten = function(percent){
+		R*=percent; G*=percent; B*=percent;
+	}
+	this.darken = function(percent){
+		if(percent < 0){
+			percent = 1 + percent;
+		}
+		R*=percent; G*=percent; B*=percent;
+	}
+
 	this.blendColorIn = function(color, percent){
-		HHgColorHelper.blendRGBAColors(color, this, percent);
+		this.setRGBA( HHgColorHelper.blendRGBAColors(this, color, percent));
 	};
 
 	this.setToHexString = function(hex){
@@ -75,10 +85,10 @@ var HHgColorRGBA = function(props){
 		return new HHgColor({R: R, G: G,B: B,A: A});
 	};
 	this.returnString = function(){
-		//TODO
+		return "rgba(" + R + ", " + B+ ", " + B + ", " + A +")";
 	};
 	this.pretty = function(){
-		return ("R: " + R + " G: " + G + " B: " + B + " A: " + A);
+		return this.returnString();
 	};
 };
 
@@ -136,8 +146,18 @@ var HHgColorHSLA = function(props){
 		return A;
 	};
 
+	this.lighten = function(percent){
+		L*=percent;
+	}
+	this.darken = function(percent){
+		if(percent < 0){
+			percent = 1 + percent;
+		}
+		L*=percent;
+	}
+
 	this.blendColorIn = function(color, percent){
-		HHgColorHelper.blendHSLAColors(color,this,percent);
+		this.setHSLA(HHgColorHelper.blendHSLAColors(this,color,percent));
 	};
 
 	this.setToHexString = function(hex){
@@ -158,10 +178,10 @@ var HHgColorHSLA = function(props){
 		return new HHgColor({H: H, S: S,L: L,A: A});
 	};
 	this.returnString = function(){
-		//TODO
+		return "hsla(" + H + ", " + (100 * S) + "%, " + (100 * L) + "%, " + A +")";
 	};
 	this.pretty = function(){
-		return ("H: " + H + " S: " + L + " L: " + L + " A: " + A);
+		return this.returnString();
 	};
 
 };
@@ -285,10 +305,10 @@ var HHgColorHelper = function HHgColorHelper() {
 		col1 = HHg.returnColorProps(col1);
 		col2 = HHg.returnColorProps(col2);
 
-		R = col1.R * balance + (1 - balance) * col2.R;
-		G = col1.G * balance + (1 - balance) * col2.G;
-		B = col1.B * balance + (1 - balance) * col2.B;
-		A = col1.A * balance + (1 - balance) * col2.A;
+		R = col2.R * balance + (1 - balance) * col1.R;
+		G = col2.G * balance + (1 - balance) * col1.G;
+		B = col2.B * balance + (1 - balance) * col1.B;
+		A = col2.A * balance + (1 - balance) * col1.A;
 
 		return {R:R,G:G,B:B,A:A};
 
@@ -298,10 +318,10 @@ var HHgColorHelper = function HHgColorHelper() {
 		col1 = HHg.returnColorProps(col1);
 		col2 = HHg.returnColorProps(col2);
 
-		H = col1.H * balance + (1 - balance) * col2.H;
-		S = col1.S * balance + (1 - balance) * col2.S;
-		L = col1.L * balance + (1 - balance) * col2.L;
-		A = col1.A * balance + (1 - balance) * col2.A;
+		H = col2.H * balance + (1 - balance) * col1.H;
+		S = col2.S * balance + (1 - balance) * col1.S;
+		L = col2.L * balance + (1 - balance) * col1.L;
+		A = col2.A * balance + (1 - balance) * col1.A;
 
 		return {H:H,S:S,L:L,A:A};
 
