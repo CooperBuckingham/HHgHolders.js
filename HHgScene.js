@@ -176,7 +176,7 @@ HHgSceneDoStart = function(){
 	
 	function sceneTests(){
 	
-		if(false){
+		if(true){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
@@ -224,7 +224,7 @@ HHgSceneDoStart = function(){
 			}
 		}
 
-		if(true){
+		if(false){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
@@ -233,6 +233,7 @@ HHgSceneDoStart = function(){
 			theOne.setMouseable(true);
 			theOne.setIsDraggable(true);
 			theOne.setBackgroundRGBA(new HHgColorRGBA(255,0,0));
+			
 
 			var theTwo = HHgGetHolder({w:100,h:100});
 			theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(-200,-200), isScreenPos: false});
@@ -244,7 +245,7 @@ HHgSceneDoStart = function(){
 
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
 			//theOne.doActionMoveInScreenBy({x:-75,y: -700,time: 30});
-			//theOne.doActionRotateBy({rotation:360,time: 30});
+			//theOne.doActionRotateBy({rotation:60,time: 5});
 			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
 
 		}
@@ -324,13 +325,16 @@ function doAddFunctionsToScene(scene){
 			}
 
 			if(changes.rotation === true){
-				div.style.transform="rotate(" + (holder.getRotationNet()) +"deg" +")";
+				div.style.transform="rotate(" + (Math.round(holder.getRotationNet() * 100)/100) +"deg" +")";
 			
 			}
 
 			if(changes.position === true){
-				div.style.left ="" + holder.getPositionInScreenNet().getX() +"px";
-				div.style.bottom ="" + holder.getPositionInScreenNet().getY() + "px";
+				//div.style.left ="" + (Math.round(holder.getPositionInScreenNet().getX() ) ) +"px";
+				//div.style.bottom ="" + (Math.round(holder.getPositionInScreenNet().getY() ) ) + "px";
+
+				div.style.left ="" + ( holder.getPositionInScreenNet().getX() ) +"px";
+				div.style.bottom ="" + ( holder.getPositionInScreenNet().getY() ) + "px";
 
 			}
 
@@ -541,7 +545,7 @@ function doAddFunctionsToScene(scene){
 
 	scene.doesHolderContainPoint = function(holder, xy){
 		var canvas = holder.getCanvas();
-		
+
 		if(canvas === undefined){
 			return true;
 		}
