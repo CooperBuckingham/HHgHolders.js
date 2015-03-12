@@ -389,7 +389,7 @@ function doAddFunctionsToScene(scene){
 		var wOffset = 0;
 		var hOffset = 0;
 		var relX = 0, relY = 0;
-		var mouseXY, touch, touchlist, i;
+		var mouseXY, touch, touchlist, i, test;
 		
 
 		HHgTopHolder.addEventListener("mousedown", function(e){
@@ -417,9 +417,8 @@ function doAddFunctionsToScene(scene){
 		document.addEventListener("mouseout", function(e){
 			
 			e = e ? e : window.event;
-		    var from = e.relatedTarget || e.toElement;
-		    if (!from || from.nodeName == "HTML") {
-
+		    test = e.relatedTarget || e.toElement;
+		    if (!test || test.nodeName == "HTML") {
 		        relX = e.pageX;
 				relY = e.pageY;
 				mouseXY = new HHgVector2(relX,relY);

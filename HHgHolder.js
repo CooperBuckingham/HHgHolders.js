@@ -331,7 +331,7 @@ this.framePositionBy = function(xy){
 }
 this.frameRotationBy = function(val){
 	if(this.frameUpdates.rotationBy){
-		this.frameUpdates.rotationBy *= val;
+		this.frameUpdates.rotationBy += val;
 	}else{
 		this.frameUpdates.rotationBy = val;
 	}
@@ -918,6 +918,17 @@ this.getVisible = function(){
 		
 	}
 
+	this.doActionMoveForever = function(props){
+		HHg.returnPositionProps(props);
+		HHg.returnEaseProps(props);
+
+		var theAction;
+		theAction = new HHgActionMoveForever(that, props.position, props.ease);
+		theAction.name = props.name;
+		doFinalizeAction(theAction);
+
+	}
+
 	this.doActionRotateBy = function(props){
 
 		HHg.returnRotationProps(props);
@@ -999,6 +1010,17 @@ this.getVisible = function(){
 
 	}
 
+	this.doActionScaleForever = function(props){
+		HHg.returnScaleProps(props);
+		HHg.returnEaseProps(props);
+
+		var theAction;
+		theAction = new HHgActionScaleForever(that, props.scale, props.ease);
+		theAction.name = props.name;
+		doFinalizeAction(theAction);
+
+	}
+
 	this.doActionFollowQuad = function(props){
 		
 		HHg.returnPositionProps(props);
@@ -1034,11 +1056,13 @@ this.getVisible = function(){
 		//this is all PH test, these are expected to be overridden
 		this.setScaleStored();
 		this.setScaleOriginalBy(.9,.9);
+		this.doActionScaleForever({scaleX: 1.1, scaleY: 1.1, name: "mousedownscale"});
 	
 	}
 
 	this.doMouseUp = function(mouseWasOverWhenReleased){
 		this.setScaleOriginalBy(1.0/0.9,1.0/0.9);
+		this.doRemoveActionByName("mousedownscale");
 		
 	}
 
@@ -1047,6 +1071,7 @@ this.getVisible = function(){
 		this.setPositionStored();
 		this.isBeingDragged = true;
 		this.doActionRotateForever({speed:300, name: "mousemoverotate"});
+
 	}
 
 	this.doMouseMove = function(){

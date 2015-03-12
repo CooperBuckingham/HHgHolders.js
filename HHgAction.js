@@ -136,6 +136,23 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 }
 HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveBy);
 
+function HHgActionMoveForever(owner, vectorPerSecond, ease){
+	HHgAction.call(this, owner, null, ease);
+
+	this.vectorPerSecond = vectorPerSecond;
+	
+	var that = this;
+
+	this.whatShouldIDoThisFrame = function(deltaT){
+
+		owner.setPositionInScreenBy(that.vectorPerSecond.returnVectorScaledBy(deltaT));
+
+	}
+	
+	
+}
+HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveForever);
+
 
 
 
@@ -192,7 +209,7 @@ function HHgActionRotateForever(owner, speed, ease){
 	
 	
 }
-HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateBy);
+HHg.HHgActionCommands.makeChildOfAction(HHgActionRotateForever);
 
 
 
@@ -373,9 +390,27 @@ HHgAction.call(this, owner, totalTime, ease, onComplete);
 
 	}
 	
-	
 }
 HHg.HHgActionCommands.makeChildOfAction(HHgActionScaleTo);
+
+function HHgActionScaleForever(owner, vectorPerSecond, ease){
+	HHgAction.call(this, owner, null, ease);
+
+	this.scaleByAmount = vectorPerSecond;
+	this.scaleAmountDown1 = HHg1Vector.returnVectorSubtractedFromVector(this.scaleByAmount);
+
+	var that = this;
+
+	this.whatShouldIDoThisFrame = function(deltaT){
+
+		owner.setScaleOriginalBy(this.scaleAmountDown1.returnVectorScaledBy(deltaT).returnVectorPlusVector(HHg1Vector));
+
+	}
+	
+	
+}
+HHg.HHgActionCommands.makeChildOfAction(HHgActionScaleForever);
+
 
 
 
