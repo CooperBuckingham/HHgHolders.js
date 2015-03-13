@@ -3,6 +3,7 @@ var HHgForce15FPS = false;
 var HHgPaused = false;
 var HHgTempHolder;
 var HHgTempAction;
+var showFPS = false;
 
 var HHgActionManager = {
   _actionList: {},
@@ -60,7 +61,7 @@ var HHgActionManager = {
 
 
 
-var lowEnd = .01; //1 //.01
+var lowEnd = 9; //1 //.01
 var highEnd = 160; //160
 
 HHgActionManager.actionLoop = function( animateActions ) {
@@ -76,6 +77,7 @@ HHgActionManager.actionLoop = function( animateActions ) {
         
 
         if ( deltaT < highEnd && deltaT > lowEnd ) {
+      
           animateActions(deltaT);
         }
 
@@ -115,7 +117,30 @@ HHgActionManager.doStart = function(){
     }, frameInterval );
 
   }else{
+
+    var count = 0, average = 0, high = 0, low = 100, stored = 0;;
+
       this.actionLoop(function( deltaT ) {
+        
+        if(showFPS){
+            if(deltaT < 1){
+            console.log("WARNING < 1");
+        }
+          count++;
+          average += deltaT;
+          if(high < deltaT) high = deltaT; if(low > deltaT) low = deltaT;
+          if(count === 60){
+            count = 0;
+            average = average / 60;
+            average = 1000 / average;
+            stored = "FPS: " + Math.round(average) + " high: " + Math.round(high) + " low: " + Math.round(low);
+            console.log(stored);
+            high = 0; low = 100;
+            average = 0;
+
+          }
+        }
+      
      
         HHgActionManager.doActionsForHolders(deltaT/1000);
 

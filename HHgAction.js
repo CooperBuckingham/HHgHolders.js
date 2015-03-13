@@ -137,10 +137,7 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 	
 	var that = this,
 
-	deltaMove = HHg0Vector,
-
-	vectorStore = new HHgVector2(0,0),
-	xOrYLessThan1 = false;
+	deltaMove = HHg0Vector;
 
 	this.whatShouldIDoThisFrame = function(deltaT){
 		this.timeSoFar += deltaT;
@@ -159,7 +156,7 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 			return;
 		}
 
-
+		/*
 		if(this.easeInPercent > 0 && this.timeSoFar/that.totalTime <= this.easeInPercent){
 			easeTimePercent = this.timeSoFar/(this.easeInPercent * that.totalTime);
 			deltaMove = that.easeInVector.returnVectorScaledBy(deltaT/that.totalTime).returnVectorScaledBy(easeTimePercent);
@@ -170,7 +167,9 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 		}else{
 			deltaMove = that.remainingVector.returnVectorScaledBy( deltaT / that.totalTime );
 		}
-		//deltaMove = that.moveByAmount.returnVectorScaledBy(( (deltaT) / that.totalTime ));
+		*/
+
+		deltaMove = that.moveByAmount.returnVectorScaledBy( deltaT / that.totalTime );
 
 		that.moveSoFar = that.moveSoFar.returnVectorPlusVector(deltaMove);
 		owner.setPositionInScreenBy(deltaMove);
