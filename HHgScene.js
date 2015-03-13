@@ -369,7 +369,7 @@ function doAddFunctionsToScene(scene){
 	};
 	
 
-	scene.doUpdateThisHolder = function(holder){
+	scene.addToFinalPassList = function(holder){
 	
 		//creating second pass for final updates here
 		//need second dirty list
@@ -380,7 +380,7 @@ function doAddFunctionsToScene(scene){
 
 	scene.doAddThisHolder = function(holder){
 		if(holder.getDiv()){
-			scene.doUpdateThisHolder(holder);
+			scene.addToFinalPassList(holder);
 			return;
 		}
 		
@@ -392,7 +392,7 @@ function doAddFunctionsToScene(scene){
 		//div.style.border = "2px solid black";
 		div.id = holder.getHash();
 
-		scene.doUpdateThisHolder(holder);
+		scene.addToFinalPassList(holder);
 		scene._holders[div.id] = holder;
 
 		HHgSceneDiv.appendChild(div);
@@ -591,7 +591,7 @@ function doAddFunctionsToScene(scene){
 		   return true;
 		};
 
-		scene.returnHoldersUnderPoint = function(xy){
+	scene.returnHoldersUnderPoint = function(xy){
 		
 	
 		var arr = document.getElementsByClassName("mouseable"),
@@ -718,6 +718,9 @@ function doAddFunctionsToScene(scene){
 
 	function tintCanvasByOverlay(canvas, color){
 
+		var ctx = canvas.getContext("2d");
+		var imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
+
 			function overlay(a,b){
 				a /=255; b /= 255;
 				if(a < .5) return 255*2*a*b;
@@ -736,39 +739,10 @@ function doAddFunctionsToScene(scene){
 					imgData.data[i+2] = overlay(imgData.data[i+2], color.B);
 					//imgData.data[i+3] === 255;
 			}
+
+			ctx.putImageData(imgData,0,0);
 	}
 
-	function placeRedSquare(canvas, x,y){
-
-		var ctx=canvas.getContext("2d");
-		var imgData=ctx.createImageData(10,10);
-		for (var i=0;i<imgData.data.length;i+=4)
-		{
-			imgData.data[i+0]=0;
-			imgData.data[i+1]=255;
-			imgData.data[i+2]=0;
-			imgData.data[i+3]=255;
-		}
-		ctx.putImageData(imgData,x,y);
-	}
-
-	function paintYellow(canvas, x, y){
-		var imgData = canvas.getContext("2d").getImageData(0,0,canvas.width, canvas.height);
-		for(var i = 0; i < imgData.data.length; i+=4){
-			
-			imgData.data[i] = 255;
-			imgData.data[i+1] = 0;
-			imgData.data[i+2] = 0;
-			imgData.data[i+3] = 255;
-
-			if(i < imgData.data.length / 4){
-
-				imgData.data[i+1] = 255;
-			}
-		}
-
-		canvas.getContext("2d").putImageData(imgData,0,0);
-	}
 
 	function isAlphaPixel(canvas, x, y){
 		if(isNaN(x)){

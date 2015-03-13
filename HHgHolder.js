@@ -228,20 +228,20 @@ var HHgHolder = function(props){
 			
 		}
 
-		this.doTellSceneToUpdate();
+		this.doMarkForFinalPass();
 		
 
 	}
 
-	this.doTellSceneToUpdate = function(){
+	this.doMarkForFinalPass = function(){
 		//pulling this out and doing a second pass
-		HHgScene.doUpdateThisHolder(this);
+		HHgScene.addToFinalPassList(this);
 
 		if(_children){
 			
 				for(var i = 0; i < _children.length; i++){
 					_children[i].updatePositionFromParentMove();
-					_children[i].doTellSceneToUpdate();
+					_children[i].doMarkForFinalPass();
 				}
 			
 		}
@@ -255,6 +255,7 @@ var HHgHolder = function(props){
 		if(this.frameUpdates.positionAbsolute !== undefined){
 
 			_positionInScreenOriginal = this.frameUpdates.positionAbsolute;
+			returnVal = true;
 
 		}else if(this.isBeingDragged === true){
 			//won't allow other types of position updates
