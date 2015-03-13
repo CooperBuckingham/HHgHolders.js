@@ -243,7 +243,7 @@ HHgSceneDoStart = function(){
 			theTwo.setIsDraggable(true);
 			
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
-			//theOne.doActionMoveInScreenBy({x:-75,y: -700,time: 30});
+			theOne.doActionMoveInScreenBy({x:-7,y: -700,time: 15});
 			//theOne.doActionRotateBy({rotation:60,time: 5});
 			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
 
@@ -331,8 +331,12 @@ function doAddFunctionsToScene(scene){
 			}
 
 			if(changes.scale === true){
+
 				div.style.width = "" + Math.round(holder.getWidthNet())  + "px";
 				div.style.height ="" + Math.round(holder.getHeightNet()) + "px";
+
+				//div.style.width = "" + holder.getWidthNet()  + "px";
+				//div.style.height ="" + holder.getHeightNet() + "px";
 			}
 
 			if(changes.rotation === true){
@@ -341,11 +345,11 @@ function doAddFunctionsToScene(scene){
 			}
 
 			if(changes.position === true){
-				//div.style.left ="" + (Math.round(holder.getPositionInScreenNet().getX() ) ) +"px";
-				//div.style.bottom ="" + (Math.round(holder.getPositionInScreenNet().getY() ) ) + "px";
+				div.style.left ="" + Math.round(holder.getPositionInScreenNet().getX()  ) +"px";
+				div.style.bottom ="" + Math.round(holder.getPositionInScreenNet().getY()  ) + "px";
 
-				div.style.left ="" + ( holder.getPositionInScreenNet().getX() ) +"px";
-				div.style.bottom ="" + ( holder.getPositionInScreenNet().getY() ) + "px";
+				//div.style.left ="" +  holder.getPositionInScreenNet().getX()  +"px";
+				//div.style.bottom ="" +  holder.getPositionInScreenNet().getY()  + "px";
 
 			}
 

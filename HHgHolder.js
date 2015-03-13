@@ -212,6 +212,7 @@ var HHgHolder = function(props){
 	this.doFrameDump = function(){
 
 		if(this.frameDumpScale()){
+			console.log("hmm");
 			this.doRecalcScale();
 		}
 		
