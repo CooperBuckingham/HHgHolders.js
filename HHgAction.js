@@ -13,25 +13,42 @@ var HHgAction = function (owner, totalTime, ease, onComplete){
 	this.totalTime = totalTime;
 	this.startTime = +new Date;
 	this.timeSoFar = 0;
-	this.savedAmount = undefined;
+	this.easeInPercent = 0;
+	this.easeOutPercent = 0;
+	this.easeInDistanceMod = .5; //this is a hack since everything is linear easing right now
+	this.easeOutDistanceMod = .5; //this is a hack since everything is linear easing right now
+	
 
 	if(ease){
 		switch(ease){
-		case "in10":
-		this.easeInPercent = 10;
+		case "none":
 		break;
-		case "out10":
-		this.easeInPercent = 10;
+
+		case "in30":
+		this.easeInPercent = .30;
 		break;
+
+		case "out30":
+		this.easeInPercent = .30;
+		break;
+
 		case "in10out10":
-		this.easeInPercent = 10;
-		this.easeOutPercent = 10;
+		this.easeInPercent = .10;
+		this.easeOutPercent = .10;
+		break;
+
+		case "inAndOut50":
+		this.easeInPercent = .50;
+		this.easeOutPercent = .50;
+		break;
+
 		default:
-		this.easeInPercent = 10;
-		this.easeOutPercent = 10;
+		this.easeInPercent = .20;
+		this.easeOutPercent = .20;
 		break;
 
 	}
+	
 }
 
 
@@ -121,32 +138,46 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 	this.moveSoFar = HHg0Vector;
 
 	if(this.easeInPercent > 0){
-		this.easeInVector = this.moveByAmount.returnVectorScaledBy(.1 * .385);
+		this.easeInVector = this.moveByAmount.returnVectorScaledBy(this.easeInPercent / this.easeInDistanceMod);
+		this.easeInTime = (this.totalTime * this.easeInPercent);
+	
+		
 	}else{
 		this.easeInVector = HHg0Vector;
+		thise.easeInTime = 0;
 	}
 
 	if(this.easeOutPercent > 0){
-		this.easeOutVector = this.moveByAmount.returnVectorScaledBy(.1 * .385);
+		this.easeOutVector = this.moveByAmount.returnVectorScaledBy(this.easeOutPercent / this.easeOutDistanceMod);
+		this.easeOutTime = (this.totalTime * this.easeOutPercent);
 	}else{
 		this.easeOutVector = HHg0Vector;
 	}
 	
-	this.remainingVector = this.moveByAmount.returnVectorPlusVector(this.easeInVector.returnVectorPlusVector(this.easeOutVector).returnVectorScaledBy(-1));
-	console.log(this.remainingVector.returnPretty());
+	this.middleVector = this.moveByAmount.returnVectorScaledBy(1 - (this.easeOutPercent + this.easeInPercent) );
+	this.middleTime = this.totalTime - (this.easeOutTime + this.easeInTime);
+	//this.remainingVector = this.remainingVector.returnVectorPlusVector(this.easeOutVector.returnVectorPlusVector(this.easeInVector));
+	
 	
 	var that = this,
 
-	deltaMove = HHg0Vector;
+	deltaMove = HHg0Vector,
+	easeTimePercent;
 
 	this.whatShouldIDoThisFrame = function(deltaT){
 		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
 			
-			deltaT += this.timeSoFar - this.totalTime;
+			deltaT -= this.timeSoFar - this.totalTime;
 			
-			deltaMove = that.moveByAmount.returnVectorScaledBy(( (deltaT) / that.totalTime ));
+			if(this.easeOutPercent <= 0){
+				deltaMove = that.moveByAmount.returnVectorScaledBy( deltaT / that.totalTime );
+			}else{
+				easeTimePercent = (that.totalTime - this.timeSoFar)/this.easeOutTime;
+				deltaMove = that.easeOutVector.returnVectorScaledBy( deltaT/that.easeOutTime * easeTimePercent );
+			}
+			
 
 			that.moveSoFar = that.moveSoFar.returnVectorPlusVector(deltaMove);
 			owner.setPositionInScreenBy(deltaMove);
@@ -156,20 +187,27 @@ function HHgActionMoveBy(owner, deltaPos, totalTime, ease, onComplete){
 			return;
 		}
 
-		/*
-		if(this.easeInPercent > 0 && this.timeSoFar/that.totalTime <= this.easeInPercent){
-			easeTimePercent = this.timeSoFar/(this.easeInPercent * that.totalTime);
-			deltaMove = that.easeInVector.returnVectorScaledBy(deltaT/that.totalTime).returnVectorScaledBy(easeTimePercent);
+		
+		if(this.timeSoFar < this.easeInTime){
+			easeTimePercent = this.timeSoFar/that.easeInTime;
 			
-		}else if(this.easeOutPercent > 0 && this.timeSoFar/that.totalTime >= this.easeOutPercent ){
-			easeTimePercent = this.timeSoFar/(this.easeInPercent * that.totalTime);
-			deltaMove = that.easeOutVector.returnVectorScaledByInverse(deltaT/that.totalTime).returnVectorScaledByInverse(easeTimePercent);
+			deltaMove = that.easeInVector.returnVectorScaledBy( deltaT/that.easeInTime * easeTimePercent );
+		
+			
+		}else if(this.timeSoFar > that.totalTime - that.easeOutTime ){
+			
+			easeTimePercent = (that.totalTime - this.timeSoFar)/this.easeOutTime;
+			
+			deltaMove = that.easeOutVector.returnVectorScaledBy( deltaT/that.easeOutTime * easeTimePercent );
+			
+			
 		}else{
-			deltaMove = that.remainingVector.returnVectorScaledBy( deltaT / that.totalTime );
-		}
-		*/
 
-		deltaMove = that.moveByAmount.returnVectorScaledBy( deltaT / that.totalTime );
+			deltaMove = that.middleVector.returnVectorScaledBy( deltaT / that.middleTime );
+		}
+		
+
+		//deltaMove = that.moveByAmount.returnVectorScaledBy( deltaT / that.totalTime );
 
 		that.moveSoFar = that.moveSoFar.returnVectorPlusVector(deltaMove);
 		owner.setPositionInScreenBy(deltaMove);
