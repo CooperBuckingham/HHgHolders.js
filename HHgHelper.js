@@ -47,7 +47,7 @@ var HHg = {
 		return degrees*Math.PI/180;
 	},
 
-	returnPositionProps: function(props, defaultXY){
+	returnPositionProps: function(props){
 
 		if(props instanceof HHgVector2){
 			return props;
@@ -60,22 +60,28 @@ var HHg = {
 			return props.position;
 		}
 
-		if(props.position){
+		if(props.position !== undefined){
 			props.position = new HHgVector2(props.position, props.position);
 			return props.position;
 		}
 
-		var x, y;
+		if(props.x !== undefined){
+			props.position = new HHgVector2(props.x, props.y);
+			return props.position;
+		}
 
-			x = props.positionX || props.x;
-			y = props.positionY || props.y;
+		if(props.X  !== undefined){
+			props.position = new HHgVector2(props.X, props.Y);
+			return props.position;
+		}
 
-			defaultXY = defaultXY || new HHgVector2(0,0);
+		if(props.positionX  !== undefined){
+			props.position = new HHgVector2(props.positionX, props.positionY);
+			return props.position;
+		}
 
-			x = x || defaultXY.getX();
-			y = y || defaultXY.getY();
-		
-		props.position = new HHgVector2(x, y);
+		props.position = new HHgVector2(0,0);
+
 		return props.position;
 
 	},
@@ -93,26 +99,37 @@ var HHg = {
 			return props.size;
 		}
 
-		if(props.size){
+		if(props.size !== undefined){
 			props.size = new HHgVector2(props.size, props.size);
 			return props.size;
 		}
 
-		var w, h;
+	
+		if(props.w !== undefined){
+			props.size = new HHgVector2(props.w, props.h);
+			return props.size;
+		}
 
-			w = props.w || props.width;
-			h = props.h || props.height;
+		if(props.W !== undefined){
+			props.size = new HHgVector2(props.W, props.H);
+			return props.size;
+		}
 
-			w = w || HHgGameHolder.getWidthOriginal();
-			h = h || HHgGameHolder.getHeightOriginal()
+		if(props.width !== undefined){
+			props.size = new HHgVector2(props.width, props.height);
+			return props.size;
+		}
 		
-		props.size = new HHgVector2(w, h);
+		props.size = new HHgVector2(HHgGameHolder.getWidthOriginal(), HHgGameHolder.getHeightOriginal());
 		return props.size;
 
 	},
 
-	returnScaleProps: function(props, defaultXY){
-		
+	returnScaleProps: function(props){
+		if(props === undefined){
+			return new HHgVector2(1,1);
+		}
+
 		if(props instanceof HHgVector2){
 			return props;
 		}
@@ -123,30 +140,25 @@ var HHg = {
 
 		if(props.scale instanceof HHgVector2){
 			return props.scale;
-		}else if(props.scaleXY instanceof HHgVector2){
+		}
+
+		if(props.scaleXY instanceof HHgVector2){
 			props.scale = props.scaleXY;
 			return props.scale;
 		}
 
-		if(props.scale){
+		if(props.scale !== undefined){
 			props.scale = new HHgVector2(props.scale, props.scale);
 			return props.scale;
 		}
 
-		var x, y;
-		defaultXY = defaultXY || new HHgVector2(1,1);
+		if(props.scaleX !== undefined){
+			props.scale = new HHgVector2(props.scaleX, props.scaleY);
+			return props.scale;
+		}
 
-			x = props.scaleX ;
-			y = props.scaleY ;
+		props.scale = new HHgVector2(1,1);
 
-			x = x || defaultXY.getY();
-			y = y || defaultXY.getX();
-
-
-			x = x || 1;
-			y = y || 1;
-
-		props.scale = new HHgVector2(x, y);
 		return props.scale;
 	},
 
@@ -156,19 +168,22 @@ var HHg = {
 			return props;
 		}
 
-		if(props.rotation){
+		if(props.rotation !== undefined){
 			return props.rotation;
 		}
 
-		if(props.rot){
+		if(props.rot !== undefined){
 			props.rotation = props.rot;
 			return props.rot
 		}
 
-		if(props.rotate){
+		if(props.rotate !== undefined){
 			props.rotation = props.rotate;
 			return props.rotation;
 		}
+
+		props.rotation = undefined;
+		return props.rotation;
 
 	},
 
@@ -178,15 +193,15 @@ var HHg = {
 			return props;
 		}
 
-		if(props.speed){
+		if(props.speed !== undefined){
 			return props.speed;
 		}
 
-		if(props.s){
+		if(props.s !== undefined){
 			props.speed = props.s;
 			return props.speed
 		}
-
+		props.speed = undefined;
 		return undefined;
 
 	},
@@ -197,16 +212,16 @@ var HHg = {
 			return props;
 		}
 
-		if(props.time){
+		if(props.time !== undefined){
 			return props.time;
 		}
 
-		if(props.t){
+		if(props.t !== undefined){
 			props.time = props.t;
 			return props.time;
 		}
 
-		if(props.seconds){
+		if(props.seconds !== undefined){
 			props.time = props.seconds;
 			return props.time;
 		}
@@ -223,7 +238,7 @@ var HHg = {
 			return props;
 		}
 
-		if(props.ease){
+		if(typeof props.ease === "string"){
 			return props.ease;
 		}
 
@@ -266,12 +281,25 @@ var HHg = {
 			return props.control;
 		}
 
-		if(props.control){
+		if("control" in props){
 			props.control = new HHgVector2(props.control, props.control);
 			return props.control;
 		}
 
-		return undefined;
+		if("cx" in props ){
+			props.control = new HHgVector2(props.cx, props.cy);
+			return props.control;
+		}
+
+		if("cX" in props){
+			props.control = new HHgVector2(props.cX, props.cY);
+			return props.control;
+		}
+
+		props.control = new HHgVector2(0,0);
+
+
+		return props.control;
 
 	},
 
@@ -295,64 +323,73 @@ var HHg = {
 			}
 		}
 
-		if(props.H){
+		if("H" in props){
 
-		}else if(props.h){
+		}else if("h" in props){
 			props.H = props.h;
-		}else if(props.hue){
+		}else if("hue" in props){
 			props.H = props.hue;
 		}
 
-		if(props.S){
+		if("S" in props){
 
-		}else if(props.s){
+		}else if("s" in props){
 			props.S = props.s;
-		}else if(props.saturation){
+		}else if("saturation" in props){
 			props.S = props.saturation;
 		}
 
-		if(props.L){
+		if("L" in props){
 
-		}else if(props.l){
+		}else if("l" in props){
 			props.L = props.l;
-		}else if(props.lightness){
+		}else if("lightness" in props){
 			props.L = props.lightness;
 		}
 
-		if(props.A){
+		if("A" in props){
 
-		}else if(props.a){
+		}else if("a" in props){
 			props.A = props.a;
-		}else if(props.alhpa){
+		}else if("alpha" in props){
 			props.A = props.alpha;
+		}else{
+			props.A = 1;
 		}
 
 
-		if(props.R){
+		if("R" in props){
 
-		}else if(props.r){
+		}else if("r" in props){
 			props.R = props.r;
-		}else if(props.red){
+		}else if("red" in props){
 			props.R = props.red;
 		}
 
-		if(props.G){
+		if(props.G !== undefined){
 
-		}else if(props.g){
+		}else if(props.g !== undefined){
 			props.G = props.g;
-		}else if(props.green){
+		}else if(props.green !== undefined){
 			props.G = props.green;
 		}
 
-		if(props.B){
+		if(props.B !== undefined){
 
-		}else if(props.b){
+		}else if(props.b !== undefined){
 			props.B = props.b;
-		}else if(props.blue){
+		}else if(props.blue !== undefined){
 			props.B = props.blue;
 		}
 
-		return props;
+		if(props.R !== undefined){
+			return {R: props.R, G: props.G, B: props.B, A: props.A};
+		}
+
+		if(props.H !== undefined){
+			return {H: props.H, S: props.S, L: props.L, A: props.A};
+		}
+		
 
 	},
 
