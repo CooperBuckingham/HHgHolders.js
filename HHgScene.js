@@ -188,9 +188,9 @@ HHgSceneDoStart = function(){
 			var listOfHolder = [];
 			listOfHolder.push(theOne);
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
-			theOne.doActionMoveInScreenBy({x:-75,y: -700,time: 30});
+			theOne.doActionMoveInScreenBy({x:0,y: -700,time: 10, ease: "inAndOut50"});
 			theOne.doActionRotateBy({rotation:360,time: 30});
-			theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
+			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
 
 
 			var randomSprite = function(holder){
@@ -227,7 +227,7 @@ HHgSceneDoStart = function(){
 		if(true){
 
 			var theOne = HHgGetHolder({w:100,h:100});
-			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
+			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-950,0), isScreenPos: true});
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
 			theOne.setMouseable(true);
@@ -242,8 +242,8 @@ HHgSceneDoStart = function(){
 			theTwo.setMouseable(true);
 			theTwo.setIsDraggable(true);
 			
-			theOne.setPositionInScreenTo(new HHgVector2(0,450));
-			theOne.doActionMoveInScreenBy({x:-7,y: -700,time: 15});
+			
+			theOne.doActionMoveInScreenBy({x:1900,y: 0,time: 10, ease: "inAndOut50"});
 			//theOne.doActionRotateBy({rotation:60,time: 5});
 			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
 
@@ -321,7 +321,6 @@ function doAddFunctionsToScene(scene){
 
 			if(changes.backgroundColor === true){
 				div.style.backgroundColor = holder.getBackgroundRGBA().returnString();
-				//do something with tint holder.getTintRGBA().returnString(); //or add div, or modify per pixel
 
 			}
 			if(changes.tint === true){
