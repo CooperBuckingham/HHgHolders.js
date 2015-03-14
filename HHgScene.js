@@ -243,8 +243,9 @@ HHgSceneDoStart = function(){
 			theTwo.setIsDraggable(true);
 			
 			
-			theOne.doActionMoveInScreenBy({x:1900,y: 0,time: 10, ease: "inAndOut50"});
-			//theOne.doActionRotateBy({rotation:60,time: 5});
+			//theOne.doActionMoveInScreenBy({x:1900,y: 0,time: 10, ease: "inAndOut50"});
+			//theOne.doActionRotateRightTo({rotation:180,time: 5});
+			theOne.doActionFollowQuad({cx: 0, cy: 400, x: 1900, y: 0, time: 10 });
 			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
 
 		}
