@@ -27,7 +27,7 @@ function HHgUpdateHardwareScreen(){
 		HHgScreenDiff.setXY(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
 	}
 
-	HHgScene.getDiv().style.maxHeight = "" + HHgGameHolder.getScaleNet().getX() * HHgScreen.maxh + "px";
+	HHgScene.getDiv().style.maxHeight = "" + HHgGameHolder.getScaleNetForChildScale().getX() * HHgScreen.maxh + "px";
 		
 }
 
@@ -154,8 +154,6 @@ HHgSceneDoStart = function(){
 
 		HHgSceneDiv.style.top = "" + HHgScreenDiffPlus.getY() + "px";
 		
-
-
 		HHgGameHolder.doNotifySceneOfUpdates = function(){};
 		HHgGameHolder.setPositionInParentTo = function(){};
 		HHgGameHolder.setPositionInScreenTo = function(){};
@@ -171,12 +169,11 @@ HHgSceneDoStart = function(){
 
 	buildHolderFromScratch();
 
-	//do more scene stuff
 
 	
 	function sceneTests(){
 	
-		if(false){
+		if(true){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
@@ -224,41 +221,46 @@ HHgSceneDoStart = function(){
 			}
 		}
 
-		if(true){
+		if(false){
 
 			var theOne = HHgGetHolder({w:100,h:100});
-			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-950,0), isScreenPos: true});
+			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-960,-540), isScreenPos: false});
 			
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
 			theOne.setMouseable(true);
 			theOne.setIsDraggable(true);
 			//theOne.setBackgroundRGBA(new HHgColorRGBA(255,0,0));
-			
+			var theTwo;
 			setTimeout(function(){
-				var theTwo = HHgGetHolder({w:200,h:200});
-			theTwo.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(960,540), isScreenPos: false});
+				 theTwo = HHgGetHolder({w:200,h:200});
+			theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(300,300), isScreenPos: false});
 			theTwo.doAddSprite("orange", new HHgColorRGBA(0,255,255,.5));
-			theTwo.test = "soccer";
+			theTwo.test = "orange";
 			theTwo.setMouseable(true);
 			theTwo.setIsDraggable(true);
 		}, 3000);
-
+	var theThree;
 			setTimeout(function(){
-				var theTwo = HHgGetHolder({w:100,h:100});
-			theTwo.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(960,540), isScreenPos: true});
-			theTwo.doAddSprite("soccer", new HHgColorRGBA(0,255,255,.5));
-			theTwo.test = "soccer";
-			theTwo.setMouseable(true);
-			theTwo.setIsDraggable(true);
-		}, 3000);
+
+				for(var i = -960; i <= 960; i+=100){
+					theThree = HHgGetHolder({w:100,h:100});
+					theThree.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(i,0), isScreenPos: true});
+					theThree.doAddSprite("soccer", new HHgColorRGBA(0,255,255,.5));
+					theThree.test = "soccer";
+					theThree.setMouseable(true);
+					theThree.setIsDraggable(true);
+				}
+			
+
+		}, 4000);
 			
 			
 			
 			//theOne.doActionMoveInScreenBy({x:1900,y: 0,time: 10, ease: "inAndOut50"});
 			//theOne.doActionRotateRightTo({rotation:180,time: 5});
 
-			theOne.doActionFollowQuad({cx: 0, cy: 540, x: 950, y: 0, time: 10 });
+			theOne.doActionFollowQuad({cx: 0, cy: 540, x: 960, y: -540, time: 10 });
 
 			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
 
@@ -554,7 +556,7 @@ function doAddFunctionsToScene(scene){
 
 		
 		xy = HHgGameHolder.returnHalfSizeVector().returnVectorSubtractedFromVector(xy);
-		xy = xy.returnVectorScaledByInverse(HHgGameHolder.getScaleNet());
+		xy = xy.returnVectorScaledByInverse(HHgGameHolder.getScaleNetForChildScale());
 		return xy;
 		
 
