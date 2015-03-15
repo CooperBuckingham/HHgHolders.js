@@ -67,6 +67,7 @@ var HHgHolder = function(props){
 		positionTo: undefined,
 		rotationTo: undefined,
 		scaleTo: undefined,
+		positionAbsolute: undefined,
 	};
 
 	this.changes = {
@@ -92,6 +93,25 @@ var HHgHolder = function(props){
 			zIndex: false,
 		}
 	};
+
+	this.resetFrameUpdates = function(){
+		this.frameUpdates = {
+			positionBy: undefined,
+			rotationBy: undefined,
+			scaleBy: undefined,
+			positionTo: undefined,
+			rotationTo: undefined,
+			scaleTo: undefined,
+			positionAbsolute: undefined,
+		}
+			
+	};
+
+	this.resetFramePositionUpdates = function(){
+		this.frameUpdates.positionBy = undefined;
+		this.frameUpdates.positionTo = undefined;
+		this.frameUpdates.positionAbsolute = undefined;
+	}
 
 	this.setIsDraggable = function(bool){
 		this.isDraggable = bool;
@@ -157,18 +177,11 @@ var HHgHolder = function(props){
 
 		this.test = "no";
 
-		this.frameUpdates = {
-			positionBy: undefined,
-			rotationBy: undefined,
-			scaleBy: undefined,
-			positionTo: undefined,
-			rotationTo: undefined,
-			scaleTo: undefined,
-			positionAbsolute: undefined,
-		}
+		this.resetFrameUpdates();
 
 		this.resetChanges();
 	}
+
 
 	this.setPaused = function(bool){
 
@@ -200,6 +213,10 @@ var HHgHolder = function(props){
 			_heightOriginal = HHgScreen.h;
 			_parent = HHgScene;
 			_mouseable = false;
+			this.isGameHolder = true;
+			this.getScaleNetForChildPosition = function(){
+				return HHg1Vector;
+			}
 	}
 
 	this.setCanvas = function(canvas){
@@ -213,7 +230,6 @@ var HHgHolder = function(props){
 	this.doFrameDump = function(){
 
 		if(this.frameDumpScale()){
-			console.log("hmm");
 			this.doRecalcScale();
 		}
 		
@@ -495,12 +511,28 @@ this.getVisible = function(){
 			return _zIndex;
 		}
 
-		this.setZIndex = function(z){
+		this.setZIndexTo = function(z, doNotUpdateChildren){
 			//***this needs more logic, like regarding children
 
 			this.changes.zIndex = true;
 			_zIndex = z;
 			that.doNotifySceneOfUpdates();
+			if(doNotUpdateChildren !== true){
+				for(var i = 0; i < _children.length; i++){
+					_children[i].setZIndexTo(z);
+				}
+			}
+		}
+
+		this.setZIndexBy = function(z, doNotUpdateChildren){
+			this.changes.zIndex = true;
+			_zIndex+= z;
+			that.doNotifySceneOfUpdates();
+			if(doNotUpdateChildren !== true){
+				for(var i = 0; i < _children.length; i++){
+					_children[i].setZIndexBy(z);
+				}
+			}
 		}
 
 	
@@ -533,7 +565,7 @@ this.getVisible = function(){
 				_positionInParentOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenOriginal(), 1 *  _parent.getRotationNet() );
 
 				_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInParentOriginal);
-				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(_parent.getScaleNet());
+				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(_parent.getScaleNetForChildPosition());
 				
 			}
 
@@ -602,11 +634,14 @@ this.getVisible = function(){
 		this.setPositionInParentTo = function(props)
 		{
 
-			_positionInParentOriginal = HHg.returnPositionProps(props);
-			
-			this.doNotifySceneOfUpdates();
+				_positionInParentOriginal = HHg.returnPositionProps(props);
 
-			this.updatePositionFromParentMove();
+				this.doNotifySceneOfUpdates();
+
+				this.resetFramePositionUpdates();
+
+				this.updatePositionFromParentMove();
+		
 
 		}
 
@@ -623,7 +658,7 @@ this.getVisible = function(){
 			if(_parent !== undefined){
 
 		
-				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorScaledBy(_parent.getScaleNet());
+				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorScaledBy(_parent.getScaleNetForChildPosition());
 				_positionInScreenOriginal = _parent.getPositionInScreenOriginal().returnVectorPlusVector(_positionInScreenOriginal);
 
 				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenOriginal() , -1 * _parent.getRotationNet() );
@@ -650,7 +685,7 @@ this.getVisible = function(){
 
 		this.convertOriginalToNetPosition = function(){
 
-			_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNet());
+			_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
 
 			if(_parent !== undefined){
 
@@ -700,8 +735,8 @@ this.getVisible = function(){
 			
 		}
 
-		this.getScaleNet = function(){
-			_scaleNet = _scaleIgnoreParentScale ? _scale / _parent.getScaleNet() : _scaleNet;
+		this.getScaleNetForChildScale = function(){
+			_scaleNet = _scaleIgnoreParentScale ? _scale / _parent.getScaleNetForChildPosition() : _scaleNet;
 
 			if(_scaleUniformOnly === true){
 				var larger = _scaleNet.getX() > _scaleNet.geY() ? _scaleNet.getX() : _scaleNet.getY();
@@ -713,13 +748,23 @@ this.getVisible = function(){
 			return _scaleNet;
 		}
 
+		this.getScaleNetForChildPosition = function(){
+
+			if(_parent.isGameHolder === true || this.isGameHolder === true){
+				return HHg1Vector;
+			}else{
+				return this.getScaleNetForChildScale();
+			}
+
+		}
+
 		this.doRecalcScale = function(){
 			
 			_scaleNet = _scaleOriginal;
 
 
 			if(_parent !== undefined){
-				_scaleNet = _parent.getScaleNet().returnVectorScaledBy(_scaleNet);
+				_scaleNet = _parent.getScaleNetForChildScale().returnVectorScaledBy(_scaleNet);
 			}
 
 			this.changes.scale = true;
@@ -862,9 +907,12 @@ this.getVisible = function(){
 		this.setRotationOriginalTo(_rotationOriginal);
 		this.setScaleOriginalTo(_scaleOriginal);
 
-		_positionInScreenOriginal = props.position;
-		
-		props.isScreenPos ? that.setPositionInScreenTo(props.position) : that.setPositionInParentTo(props.position);
+		if(HHg.returnIsScreenPosProps(props)){
+			_positionInScreenOriginal = props.position;
+			that.setPositionInScreenTo(props.position)
+		}else{
+			that.setPositionInParentTo(props.position)
+		}
 			
 }
 

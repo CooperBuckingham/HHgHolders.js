@@ -419,6 +419,35 @@ var HHg = {
 
 	},
 
+	returnIsScreenPosProps: function(props){
+		if(typeof props === "boolean"){
+			return props;
+		}
+
+		if(props.isScreenPos !== undefined){
+			return props.isScreenPos;
+		}
+
+		if(props.isParentPos !== undefined){
+			props.isScreenPos = !props.isParentPos;
+			return props.isScreenPos;
+		}
+
+		if(props.screenPos !== undefined){
+			props.isScreenPos = props.screenPos;
+			return props.isScreenPos;
+		}
+
+		if(props.parentPos !== undefined){
+			props.isScreenPos = !props.parentPos;
+			return props.isScreenPos;
+		}
+
+		props.isScreenPos = false;
+		return props.isScreenPos;
+
+	},
+
 	testVector: function(xy){
 		console.log("vector: " + xy.returnPretty());
 	},
