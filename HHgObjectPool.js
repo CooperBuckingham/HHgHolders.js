@@ -2,6 +2,7 @@
 var HHgObjectPool = {};
 var HHgGetHolder;
 var HHgReleaseHolder;
+var HHgPlaceTestSprite;
 
 
 (function (){
@@ -53,6 +54,14 @@ var HHgReleaseHolder;
 
 
 	};
+
+	HHgPlaceTestSprite = HHgObjectPool.placeTestSprite = function(xy){
+			var testHolder = HHgGetHolder({w: 100, h: 100});
+			testHolder.doAddToNewParent({parent: HHgGameHolder, position: xy});
+			testHolder.doAddSprite("soccer", new HHgColorRGBA(0,255,255,.5));
+			//HHgScene.tintCanvasByFill(testHolder.getCanvas(), new HHgColorRGBA(255,0,0) );
+			return testHolder;
+	}
 
 
 })();
