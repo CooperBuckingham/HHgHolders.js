@@ -319,6 +319,8 @@ function doAddFunctionsToScene(scene){
 		
 	}
 
+
+
 	scene.doUpdateHolders = function(){
 
 		if(scene._finalDirtyHolders.length < 1){
@@ -348,21 +350,21 @@ function doAddFunctionsToScene(scene){
 
 			if(changes.scale === true){
 
-				div.style.width = "" + Math.round(holder.getWidthNet())  + "px";
-				div.style.height ="" + Math.round(holder.getHeightNet()) + "px";
+				div.style.width = "" + HHg.roundNumToPlaces(holder.getWidthNet(), 0)  + "px";
+				div.style.height ="" + HHg.roundNumToPlaces(holder.getHeightNet(), 0) + "px";
 
 				//div.style.width = "" + holder.getWidthNet()  + "px";
 				//div.style.height ="" + holder.getHeightNet() + "px";
 			}
 
 			if(changes.rotation === true){
-				div.style.transform="rotate(" + (Math.round(holder.getRotationNet() * 100)/100) +"deg" +")";
+				div.style.transform="rotate(" + HHg.roundNumToPlaces(holder.getRotationNet(), 0) +"deg" +")";
 			
 			}
 
 			if(changes.position === true){
-				div.style.left ="" + Math.round(holder.getPositionInScreenNet().getX()  ) +"px";
-				div.style.bottom ="" + Math.round(holder.getPositionInScreenNet().getY()  ) + "px";
+				div.style.left ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getX(),0) +"px";
+				div.style.bottom ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getY(),0) + "px";
 
 				//div.style.left ="" +  holder.getPositionInScreenNet().getX()  +"px";
 				//div.style.bottom ="" +  holder.getPositionInScreenNet().getY()  + "px";

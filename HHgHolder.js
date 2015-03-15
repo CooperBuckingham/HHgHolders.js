@@ -671,8 +671,6 @@ this.getVisible = function(){
 
 			this.changes.position = true;
 			
-			
-
 			if(_children){
 				HHg.doForEach(_children, function(child){
 					
@@ -685,10 +683,10 @@ this.getVisible = function(){
 
 		this.convertOriginalToNetPosition = function(){
 
+		//note, to specifically use GameHolder position for child
 			_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
 
 			if(_parent !== undefined){
-
 
 				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
 				
@@ -750,8 +748,8 @@ this.getVisible = function(){
 
 		this.getScaleNetForChildPosition = function(){
 
-			if(_parent.isGameHolder === true || this.isGameHolder === true){
-				return HHg1Vector;
+			if(_parent.isGameHolder === true){
+				return _scaleOriginal;
 			}else{
 				return this.getScaleNetForChildScale();
 			}
@@ -1147,7 +1145,7 @@ this.getVisible = function(){
 		//this is all PH test, these are expected to be overridden
 		this.setScaleStored();
 		this.setScaleOriginalBy(.9,.9);
-		this.doActionScaleForever({scaleX: 1.1, scaleY: 1.1, name: "mousedownscale"});
+		this.doActionScaleForever({scaleX: .9, scaleY: .9, name: "mousedownscale"});
 	
 	}
 

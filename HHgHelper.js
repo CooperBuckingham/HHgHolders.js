@@ -462,6 +462,11 @@ var HHg = {
 		mouse: 400,
 	},
 
+	roundNumToPlaces: function(num, places){
+		places = Math.pow(10, places);
+		return Math.round(num * places)/places;
+	},
+
 	
 
 }
