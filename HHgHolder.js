@@ -103,6 +103,7 @@ var HHgHolder = function(props){
 
 	this.setNewStats = function(props){
 		HHg.returnSizeProps(props);
+		HHg.returnZIndexProps(props);
 		_widthOriginal = props.size.getX();
 		_heightOriginal = props.size.getY();
 		_zIndex = props.zIndex || 1;
@@ -110,7 +111,7 @@ var HHgHolder = function(props){
 		_scaleOriginal = HHg.returnScaleProps(props);
 	};
 
-	this.killHolder = function(){
+	this.killHolder = this.releaseHolder = function(){
 		_widthOriginal = w;
 		_heightOriginal = h;
 
@@ -605,6 +606,8 @@ this.getVisible = function(){
 			
 			this.doNotifySceneOfUpdates();
 
+			this.updatePositionFromParentMove();
+
 		}
 
 		this.updatePositionFromParentMove = function(){
@@ -825,7 +828,7 @@ this.getVisible = function(){
 
 	}
 
-	this.doMoveToNewParent = function(props){
+	this.doMoveToNewParent = this.doAddToNewParent = function(props){
 		//newParent, xy, isScreenPos
 
 		if(_parent === "stop"){
@@ -858,6 +861,8 @@ this.getVisible = function(){
 
 		this.setRotationOriginalTo(_rotationOriginal);
 		this.setScaleOriginalTo(_scaleOriginal);
+
+		_positionInScreenOriginal = props.position;
 		
 		props.isScreenPos ? that.setPositionInScreenTo(props.position) : that.setPositionInParentTo(props.position);
 			
@@ -1060,15 +1065,12 @@ this.getVisible = function(){
 
 	this.doActionFollowQuad = function(props){
 
-		console.log(props);
 		
 		HHg.returnPositionProps(props);
 		HHg.returnControlPositionProps(props);
 		HHg.returnTimeProps(props);
 		HHg.returnEaseProps(props);
 		HHg.returnOnCompleteProps(props);
-
-		console.log(props);
 
 		var theAction;
 		theAction = new HHgActionFollowQuad(that, props.control, props.position, props.time, props.ease, props.onComplete);

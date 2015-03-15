@@ -86,6 +86,32 @@ var HHg = {
 
 	},
 
+	returnZIndexProps: function(props){
+		if(!isNaN(props) ) return props;
+
+		if(props.zIndex !== undefined){
+			return props.zIndex;
+		}
+
+		if(props.ZIndex !== undefined){
+			props.zIndex = props.ZIndex;
+			return props.zIndex;
+		}
+
+		if(props.z !== undefined){
+			props.zIndex = props.z;
+			return props.zIndex;
+		}
+
+		if(props.Z !== undefined){
+			props.zIndex = props.z;
+			return props.zIndex;
+		}
+
+		props.zIndex = 1;
+		return props.zIndex;
+	},
+
 	returnSizeProps: function(props){
 
 		if(props instanceof HHgVector2){
