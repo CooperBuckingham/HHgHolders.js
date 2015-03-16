@@ -26,36 +26,11 @@ var HHgAction = function (owner, totalTime, ease, onComplete){
 	
 
 	if(ease){
-		switch(ease){
-		case "none":
-		break;
-
-		case "in30":
-		this.easeInPercent = .30;
-		break;
-
-		case "out30":
-		this.easeInPercent = .30;
-		break;
-
-		case "in10out10":
-		this.easeInPercent = .10;
-		this.easeOutPercent = .10;
-		break;
-
-		case "inAndOut50":
-		this.easeInPercent = .50;
-		this.easeOutPercent = .50;
-		break;
-
-		default:
+		
 		this.easeInPercent = .20;
 		this.easeOutPercent = .20;
-		break;
 
 	}
-	
-}
 
 
 	this.whatShouldIDoThisFrame = function(deltaT){

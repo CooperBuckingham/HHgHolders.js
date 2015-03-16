@@ -107,6 +107,7 @@ HHgSceneDoStart = function(){
 		HHgScene.setPositionInScreenBy = function(){};
 		HHgScene.doNotifySceneOfUpdates = function(){};
 		HHgScene.doFrameDump = function(){};
+		HHgGameHolder.killHolder = function(){};
 		HHgScene.getPositionInScreenNet = function(){
 			return HHg0Vector;
 		}
@@ -159,6 +160,7 @@ HHgSceneDoStart = function(){
 		HHgGameHolder.setPositionInScreenTo = function(){};
 		HHgGameHolder.setPositionInScreenBy = function(){};
 		HHgGameHolder.doFrameDump = function(){};
+		HHgGameHolder.killHolder = function(){};
 
 		HHgGameHolder.getPositionInScreenNet = function(){
 			return HHg0Vector;
@@ -173,7 +175,7 @@ HHgSceneDoStart = function(){
 	
 	function sceneTests(){
 	
-		if(true){
+		if(false){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
@@ -185,7 +187,7 @@ HHgSceneDoStart = function(){
 			var listOfHolder = [];
 			listOfHolder.push(theOne);
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
-			theOne.doActionMoveInScreenBy({x:0,y: -700,time: 10, ease: "inAndOut50"});
+			theOne.doActionMoveInScreenBy({x:0,y: -700,time: 10, easeIn: 20 });
 			theOne.doActionRotateBy({rotation:360,time: 30});
 			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
 
@@ -221,7 +223,7 @@ HHgSceneDoStart = function(){
 			}
 		}
 
-		if(false){
+		if(true){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-960,-540), isScreenPos: false});
@@ -260,7 +262,7 @@ HHgSceneDoStart = function(){
 			//theOne.doActionMoveInScreenBy({x:1900,y: 0,time: 10, ease: "inAndOut50"});
 			//theOne.doActionRotateRightTo({rotation:180,time: 5});
 
-			theOne.doActionFollowQuad({cx: 0, cy: 540, x: 960, y: -540, time: 10 });
+			theOne.doActionFollowQuad({cx: 0, cy: 540, x: 960, y: -540, time: 10, easeIn: 20, easeOut: 50 });
 
 			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
 
