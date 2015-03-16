@@ -259,18 +259,36 @@ var HHg = {
 	},
 
 	returnEaseProps: function(props){
+		var returnNow = false;
 
-		if(typeof props === "string"){
-			return props;
+		if(props.easeIn !== undefined){
+			returnNow = true;
+		}else if(props.in !== undefined){
+			props.easeIn = props.in;
+			returnNow = true;
 		}
 
-		if(typeof props.ease === "string"){
-			return props.ease;
+		if(props.easeOut !== undefined){
+			returnNow = true;
+		}else if(props.out !== undefined){
+			props.easeOut = props.out;
+			returnNow = true;
 		}
 
-		props.ease = "none";
+		if(returnNow) return props;
 
-		return props.ease;
+		if(props.ease !== undefined){
+			if(!isNaN(props.ease)){
+				props.ease = {easeIn: props.ease, easeOut: props.ease};
+			}else{
+				return this.returnEaseProps(props.ease)
+			}
+			
+		}
+
+		return undefined;
+		
+
 
 	},
 

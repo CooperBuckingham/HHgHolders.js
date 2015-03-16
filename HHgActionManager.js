@@ -69,7 +69,7 @@ HHgActionManager.actionLoop = function( animateActions ) {
     var lastFrameTime = window.performance.now();
     var deltaT;
     var lowEnd = 1; //1 //.01
-    var highEnd = 160; //160
+    var highEnd = 40; //160
 
     function recurse( thisFrameTime ) {
       
@@ -80,13 +80,16 @@ HHgActionManager.actionLoop = function( animateActions ) {
         deltaT = thisFrameTime - lastFrameTime;
         
 
-        if ( deltaT < highEnd && deltaT > lowEnd ) {
-
-          animateActions(deltaT);
+        if ( deltaT >  highEnd){
+          deltaT = highEnd;
         }
 
-        lastFrameTime = thisFrameTime;
-    
+        if(deltaT > lowEnd){
+
+          animateActions(deltaT);
+          lastFrameTime = thisFrameTime;
+        }
+
   }
   recurse();
 
@@ -158,6 +161,39 @@ HHgActionManager.doStart = function(){
   }
  
 }
+
+/*
+  var loopObject = {};
+
+  loopObject.gameLoop = function(callback) {
+    loopObject.lastGameLoopFrame = new Date().getTime();
+
+    // Short circuit the loop check in case multiple scenes
+    // are staged immediately
+    loopObject.loop = true; 
+
+    // Keep track of the frame we are on (so that animations can be synced
+    // to the next frame)
+    loopObject._loopFrame = 0;
+
+    // Wrap the callback to save it and standardize the passed
+    // in time. 
+    loopObject.gameLoopCallbackWrapper = function() {
+      var now = new Date().getTime();
+      loopObject._loopFrame++;
+      loopObject.loop = window.requestAnimationFrame(Q.gameLoopCallbackWrapper);
+      var dt = now - Q.lastGameLoopFrame;
+      //Prevent fast-forwarding by limiting the length of a single frame.
+      if(dt > Q.options.frameTimeLimit) { dt = Q.options.frameTimeLimit; }
+      callback.apply([dt / 1000]);  
+      Q.lastGameLoopFrame = now;
+    };
+
+    window.requestAnimationFrame(Q.gameLoopCallbackWrapper);
+    return Q;
+  };
+
+  */
 
 
 

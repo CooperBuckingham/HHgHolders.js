@@ -683,7 +683,8 @@ this.getVisible = function(){
 
 		this.convertOriginalToNetPosition = function(){
 
-		//note, to specifically use GameHolder position for child
+		//note, to specifically use GameHolder position for child here, even though it's asking for position
+		//because the offsets need its relative scale.
 			_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
 
 			if(_parent !== undefined){
