@@ -259,36 +259,38 @@ var HHg = {
 	},
 
 	returnEaseProps: function(props){
-		var returnNow = false;
+		
 
 		if(props.easeIn !== undefined){
-			returnNow = true;
+			
 		}else if(props.in !== undefined){
 			props.easeIn = props.in;
-			returnNow = true;
-		}
-
-		if(props.easeOut !== undefined){
-			returnNow = true;
-		}else if(props.out !== undefined){
-			props.easeOut = props.out;
-			returnNow = true;
-		}
-
-		if(returnNow) return props;
-
-		if(props.ease !== undefined){
-			if(!isNaN(props.ease)){
-				props.ease = {easeIn: props.ease, easeOut: props.ease};
-			}else{
-				return this.returnEaseProps(props.ease)
-			}
 			
 		}
 
-		return undefined;
-		
+		if(props.easeOut !== undefined){
+	
+		}else if(props.out !== undefined){
+			props.easeOut = props.out;
+		}
 
+		if(props.easeIn !== undefined || props.easeOut !== undefined){
+			props.ease = {easeOut: props.easeOut, easeIn: props.easeIn};
+			return props.ease;
+		}
+
+		if(props.ease !== undefined){
+			if(!isNaN(props.ease)){
+				props.ease = {easeOut: props.ease, easeIn: props.ease};
+				return props.ease;
+				
+			}else{
+				return props.ease;
+			}
+			
+		}
+		
+		return undefined;
 
 	},
 
