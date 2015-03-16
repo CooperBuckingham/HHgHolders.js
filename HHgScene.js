@@ -225,8 +225,8 @@ HHgSceneDoStart = function(){
 
 		if(true){
 
-			var theOne = HHgGetHolder({w:100,h:100});
-			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-960,-540), isScreenPos: false});
+			var theOne = HHgGetHolder({w:300,h:300});
+			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-950,0), isScreenPos: false});
 			
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
@@ -236,15 +236,16 @@ HHgSceneDoStart = function(){
 			var theTwo;
 			setTimeout(function(){
 				 theTwo = HHgGetHolder({w:200,h:200});
-			theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(300,300), isScreenPos: false});
-			theTwo.doAddSprite("orange", new HHgColorRGBA(0,255,255,.5));
-			theTwo.test = "orange";
-			theTwo.setMouseable(true);
-			theTwo.setIsDraggable(true);
+				theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(300,300), isScreenPos: false});
+				theTwo.doAddSprite("orange", new HHgColorRGBA(0,255,255,.5));
+				theTwo.test = "orange";
+				theTwo.setMouseable(true);
+				theTwo.setIsDraggable(true);
 		}, 3000);
-	var theThree;
-			setTimeout(function(){
 
+		var theThree;
+			setTimeout(function(){
+				return;
 				for(var i = -960; i <= 960; i+=100){
 					theThree = HHgGetHolder({w:100,h:100});
 					theThree.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(i,0), isScreenPos: true});
@@ -259,10 +260,11 @@ HHgSceneDoStart = function(){
 			
 			
 			
-			//theOne.doActionMoveInScreenBy({x:1900,y: 0,time: 10, ease: "inAndOut50"});
-			//theOne.doActionRotateRightTo({rotation:180,time: 5});
+			theOne.doActionMoveInScreenBy({x:1900,y: 0,time: 10, easeIn: 25, easeOut: 25});
+			
+			//theOne.doActionRotateBy({rotation:180,time: 5, easeIn: 20, easeOut: 20});
 
-			theOne.doActionFollowQuad({cx: 0, cy: 540, x: 960, y: -540, time: 10, easeIn: 20, easeOut: 50 });
+			//theOne.doActionFollowQuad({cx: 0, cy: 540, x: 960, y: -540, time: 10, easeIn: 25, easeOut: 25 });
 
 			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
 

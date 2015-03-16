@@ -1,6 +1,7 @@
 var HHgVector2 = function (x,y){
 	var _x = +x;
 	var _y = +y;
+	var vB;
 
 	var that = this;
 
@@ -62,8 +63,8 @@ var HHgVector2 = function (x,y){
 								(Math.sin(rads) * (_x - vBx) + Math.cos(rads) * (_y - vBy) + vBy) );
 	}
 
-	this.returnPretty = function(){
-		return ("HHgVector2: x: " + _x + " y: " + _y);
+	this.returnPretty = this.pretty = function(){
+		return ("x: " + _x + " y: " + _y);
 	}
 	
 	
@@ -77,41 +78,70 @@ var HHgVector2 = function (x,y){
 		}
 		
 	}
-	this.returnVectorPlusVector = function(vB){
+	this.returnVectorPlusVector = this.returnAdd = function(){
+		vB = this.parse(arguments);
 		return new HHgVector2(_x + vB.getX(), _y + vB.getY());
 	}
-	this.returnVectorScaledBy = function(val,opt){
-		if(val instanceof HHgVector2 === false){
-			if(opt === undefined){
-				val = new HHgVector2(val, val);
-			}else{
-				val = new HHgVector2(val,opt);
-			}
-			
-		}
-		return new HHgVector2(_x * val.getX(), _y * val.getY());
+	this.plusEquals = function(){
+		vB = this.parse(arguments);
+		this.setXY(_x + vB.getX(), _y + vB.getY());
+		return this;
 	}
-	this.returnVectorScaledByInverse = function(val, opt){
-		if(val instanceof HHgVector2 === false){
-			if(opt === undefined){
-				val = new HHgVector2(val, val);
-			}else{
-				val = new HHgVector2(val,opt);
-			}
-			
-		}
-		return new HHgVector2(_x / val.getX(), _y / val.getY());
+	this.minusEquals = function(){
+		vB = this.parse(arguments);
+		this.setXY(_x - vB.getX(), _y - vB.getY());
+		return this;
 	}
-	this.returnVectorSubtractedFromVector = function(vB){
+	this.timesEquals = function(){
+		vB = this.parse(arguments);
+		this.setXY(_x * vB.getX(), _y * vB.getY());
+		return this;
+	}
+	this.divideEquals = function(){
+		vB = this.parse(arguments);
+		this.setXY(_x / vB.getX(), _y / vB.getY());
+		return this;
+	}
+
+	this.returnVectorScaledBy = this.returnMultiply = function(){
+		vB = this.parse(arguments);
+
+		return new HHgVector2(_x * vB.getX(), _y * vB.getY());
+	}
+	this.returnVectorScaledByInverse = this.returnDivide = function(){
+		vB = this.parse(arguments);
+		return new HHgVector2(_x / vB.getX(), _y / vB.getY());
+	}
+	this.returnVectorSubtractedFromVector = function(){
+		vB = this.parse(arguments);
 		return new HHgVector2(vB.getX() - _x, vB.getY() - _y);
 	}
 
-	this.hasSameXY = function(vB){
+	this.returnSubtract = function(){
+		vB = this.parse(arguments);
+		return new HHgVector2( _x - vB.getX(), _y - vB.getY() );
+	}
+
+	this.hasSameXY = this.isSameAs = this.equals = function(){
+		vB = this.parse(arguments);
 		return _x == vB.getX() && _y == vB.getY();
 	}
 
-	this.returnCopy = function(){
+	this.returnCopy = this.copy = function(){
 		return new HHgVector2(_x, _y);
+	}
+
+	this.parse = function(arg){
+
+		if(arg[0] instanceof HHgVector2 === false){
+			if(arg[1] !== undefined){
+				return new HHgVector2(arg[0], arg[1])
+			}else{
+				return new HHgVector2(arg[0], arg[0])
+			}
+		}else{
+			return arg[0];
+		}
 	}
 
 	
