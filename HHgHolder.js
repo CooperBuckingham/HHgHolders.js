@@ -50,6 +50,7 @@ var HHgHolder = function(props){
 
 		_mouseable = false,
 		_visible = true,
+		_classList = [],
 
 		_canvas;
 
@@ -169,6 +170,7 @@ var HHgHolder = function(props){
 		HHgActionManager.doRemoveOwner(that);
 
 		_children = [];
+		_classList = [];
 		_actions = {};
 		_mouseable = false;
 		_visible = false;
@@ -1202,6 +1204,10 @@ this.getVisible = function(){
 
 	this.doAddSprite = function(name, whitePixelTintRGB){
 		HHgSprite.doAddSpriteToHolder(this,name,whitePixelTintRGB);
+	}
+
+	this.doAddText = function(props){
+		HHgText.doAddTextToHolder(this,props);
 	}
 
 }
