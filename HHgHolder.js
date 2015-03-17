@@ -1118,7 +1118,7 @@ this.getVisible = function(){
 		HHg.returnTimeProps(props);
 		HHg.returnEaseProps(props);
 		HHg.returnOnCompleteProps(props);
-		console.log(props.ease);
+		
 
 		var theAction;
 		theAction = new HHgActionFollowQuad(that, props.control, props.position, _positionInScreenOriginal, props.time, props.ease, props.onComplete);
