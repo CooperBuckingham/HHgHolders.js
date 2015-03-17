@@ -4,7 +4,7 @@ var HardwareScreen = {
 	h : window.innerHeight,
 	//w : window.screen.availWidth,
 	//h : window.screen.availHeight,
-}
+};
 
 var HHgScreen = {
 	w : 1920,
@@ -26,6 +26,7 @@ function HHgUpdateHardwareScreen(){
 		//eventually change this to support portrait
 		HHgScreenDiff.setXY(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
 	}
+	HHgPixelScale = HHgGameHolder.getScaleNetForChildScale();
 
 	HHgScene.getDiv().style.maxHeight = "" + HHgGameHolder.getScaleNetForChildScale().getX() * HHgScreen.maxh + "px";
 		
@@ -41,7 +42,7 @@ var testContainer;
 
 var showDebugSquares;
 
-var HHgScene, HHgSVG, HHgSceneDiv, HHgStable, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector, HHg1Vector, HHg10000Vector, HHgHalfVector, HHgTestDiv, HHgPixelScale;
+var HHgScene, HHgSceneDiv, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector, HHg1Vector, HHg10000Vector, HHgHalfVector, HHgTestDiv, HHgPixelScale;
 var HHgTopHolder = document.getElementById("all");
 
 HHgTopHolder.style.width = "" + HardwareScreen.w +"px";
@@ -167,111 +168,14 @@ HHgSceneDoStart = function(){
 		}
 
 		HHgGameHolder.setGameHolder();
+		HHgPixelScale = HHgGameHolder.getScaleNetForChildScale();
 	}
 
 	buildHolderFromScratch();
 
 
-	
-	function sceneTests(){
-	
-		if(false){
+	HHgGame.doStart();
 
-			var theOne = HHgGetHolder({w:100,h:100});
-			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
-			theOne.doAddSprite("pool");
-			theOne.test = "pool";
-			theOne.setMouseable(true);
-			theOne.setIsDraggable(true);
-
-			var listOfHolder = [];
-			listOfHolder.push(theOne);
-			theOne.setPositionInScreenTo(new HHgVector2(0,450));
-			theOne.doActionMoveInScreenBy({x:0,y: -700,time: 10, easeIn: 20 });
-			theOne.doActionRotateBy({rotation:360,time: 30});
-			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
-
-
-			var randomSprite = function(holder){
-
-				var int1 = window.HHg.returnRandomIntLowIncHighExcl(0,3);
-				var name = "orange";
-				if(int1 === 0){
-					name = "soccer";
-				}else if(int1 === 2){
-					name = "pool";
-				}
-
-				holder.doAddSprite(name);
-			}
-
-			for(var i = 0; i < 25; i++){
-
-				var size = HHg.returnRandomIntLowIncHighExcl(60,220);
-
-				var posx = HHg.returnRandomIntLowIncHighExcl(-1000,1000);
-				var posy = HHg.returnRandomIntLowIncHighExcl(-500,500);
-				var testBall = HHgGetHolder({w:size,h:size});
-
-				testBall.doMoveToNewParent( {parent: listOfHolder[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolder.length) ] , position: new HHgVector2(posx, posy) });
-				randomSprite(testBall);
-				testBall.setMouseable(true);
-				testBall.setIsDraggable(true);
-				testBall.doActionRotateBy({rotation: HHg.returnRandomInt(120,720), time: HHg.returnRandomInt(5,35)});
-
-				listOfHolder.push(testBall)
-			}
-		}
-
-		if(true){
-
-			var theOne = HHgGetHolder({w:300,h:300});
-			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-950,-540), isScreenPos: false});
-			
-			theOne.doAddSprite("pool");
-			theOne.test = "pool";
-			theOne.setMouseable(true);
-			theOne.setIsDraggable(true);
-			//theOne.setBackgroundRGBA(new HHgColorRGBA(255,0,0));
-			var theTwo;
-			setTimeout(function(){
-				 theTwo = HHgGetHolder({w:200,h:200});
-				theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(300,300), isScreenPos: false});
-				theTwo.doAddSprite("orange", new HHgColorRGBA(0,255,255,.5));
-				theTwo.test = "orange";
-				theTwo.setMouseable(true);
-				theTwo.setIsDraggable(true);
-		}, 3000);
-
-		var theThree;
-			setTimeout(function(){
-				return;
-				for(var i = -960; i <= 960; i+=100){
-					theThree = HHgGetHolder({w:100,h:100});
-					theThree.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(i,0), isScreenPos: true});
-					theThree.doAddSprite("soccer", new HHgColorRGBA(0,255,255,.5));
-					theThree.test = "soccer";
-					theThree.setMouseable(true);
-					theThree.setIsDraggable(true);
-				}
-			
-
-		}, 4000);
-			
-			
-			
-			//theOne.doActionMoveInScreenBy({x:1900,y: 0,time: 10, easeIn: 25, easeOut: 25});
-			
-			//theOne.doActionRotateBy({rotation:360,time: 10, easeIn: 25, easeOut: 25});
-
-			theOne.doActionFollowQuad({cx: 0, cy: 540, x: 960, y: -540, time: 10, easeIn: 25, easeOut: 25 });
-
-			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
-
-		}
-
-	}
-	sceneTests();
 
 }
 
@@ -423,6 +327,33 @@ function doAddFunctionsToScene(scene){
 
 		HHgSceneDiv.appendChild(div);
 	};
+
+	scene.doAddTextDiv = function(owner){
+
+		var div = document.createElement("div");
+		div.style.display = "inline";
+		div.style.position = "absolute";
+		//div.style.width = "" + HHg.roundNumToPlaces(owner.getWidthNet(), 0)  + "px";
+		//div.style.height ="" + HHg.roundNumToPlaces(owner.getHeightNet(), 0) + "px";
+		div.style.width = "100%";
+		div.style.height = "50%";
+		div.style.top = "50%";
+		div.style.left = "0px";
+		div.style.marginTop = "0";
+		div.style.color = props.color.returnString();
+		div.style.fontSize = "" + (props.fontSize * HHgPixelScale) + "px";
+		div.classList.add(props.fontStyle);
+		div.innerHTML = props.text;
+
+		div.classList.add("textHolder");
+
+		div.id = owner.getHash() + "t";
+		scene._holders[div.id] = div;
+		owner.getDiv().appendChild(div);
+
+		owner.textDiv = div;
+			
+	}
 	
 	scene.doAddMouseDownAndUpListeners = function(){
 		var wOffset = 0;

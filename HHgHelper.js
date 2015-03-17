@@ -351,95 +351,83 @@ var HHg = {
 
 	returnColorProps: function(props){
 
-		if(props instanceof HHgColorRGBA === true || props instanceof HHgColorHSLA === true){
-			return props.returnSimpleObject();
+		if(props instanceof HHgColorRGBA === true ){
+			return props;
+		}
+		if(props.color instanceof HHgColorRGBA){
+			return props.color;
+		}
+		if(props instanceof HHgColorHSLA === true){
+			props = HHgColorHelper.getRGBfromHSL(props);
+			return props;
+		}
+		if(props.color instanceof HHgColorHSLA === true){
+			props.color = HHgColorHelper.getRGBfromHSL(props.color);
+			return props.color;
 		}
 
-		if(typeof props === "string"){
-			switch(props){
-				case "red":
-				//return object with RGB
-				break;
-				case "green":
-				//return object with RGB
-				break;
-				case "blue":
-				//return object with RGB
-				break;
+		function stringTest(test){
+				if(typeof test !== "string") return false;
+
+				switch(test){
+					case "red":
+					test = new HHgColorRGBA(255,0,0);
+					return test;
+					break;
+					case "green":
+					test = new HHgColorRGBA(0,255,0);
+					return test;
+					break;
+					case "blue":
+					test = new HHgColorRGBA(0,0,255);
+					return test;
+					break;
+					case "white":
+					test = new HHgColorRGBA(255,255,255);
+					return test;
+					break;
+					case "black":
+					test = new HHgColorRGBA(0,0,0);
+					return test;
+					break;
+				}
+				console.log("ERROR: unsupported color string: ", test);
+				return false;
+		}
+
+		if(stringTest(props.color)) return props.color;
+		if(stringTest(props)) return props;
+
+		function RGBHSLtest(test){
+			if(test === undefined) return false;
+
+			if("H" in test){
+				test = new HHgColorHelper.getRGBfromHSL(test.H, test.S, test.L, test.A || 1);
+			}else if("hue" in props){
+				test = new HHgColorHelper.getRGBfromHSL(test.hue, test.saturation, test.lightness, test.alpha || 1);
 			}
+
+			if("R" in test){
+				test = new HHgColorRGBA(test.R, test.G, test.B, test.A || 1);
+			}else if("r" in props){
+				test = new HHgColorRGBA(test.r, test.g, test.b, test.a || 1);
+			}else if("red" in props){
+				test = new HHgColorRGBA(test.red, test.green, test.blue, test.alpha || 1);
+			}
+
+			return (test instanceof HHgColorRGBA);
 		}
 
-		if("H" in props){
+		if(RGBHSLtest(props.color)) return props.color;
+		if(RGBHSLtest(props)) return props;
 
-		}else if("h" in props){
-			props.H = props.h;
-		}else if("hue" in props){
-			props.H = props.hue;
-		}
-
-		if("S" in props){
-
-		}else if("s" in props){
-			props.S = props.s;
-		}else if("saturation" in props){
-			props.S = props.saturation;
-		}
-
-		if("L" in props){
-
-		}else if("l" in props){
-			props.L = props.l;
-		}else if("lightness" in props){
-			props.L = props.lightness;
-		}
-
-		if("A" in props){
-
-		}else if("a" in props){
-			props.A = props.a;
-		}else if("alpha" in props){
-			props.A = props.alpha;
-		}else{
-			props.A = 1;
-		}
-
-
-		if("R" in props){
-
-		}else if("r" in props){
-			props.R = props.r;
-		}else if("red" in props){
-			props.R = props.red;
-		}
-
-		if(props.G !== undefined){
-
-		}else if(props.g !== undefined){
-			props.G = props.g;
-		}else if(props.green !== undefined){
-			props.G = props.green;
-		}
-
-		if(props.B !== undefined){
-
-		}else if(props.b !== undefined){
-			props.B = props.b;
-		}else if(props.blue !== undefined){
-			props.B = props.blue;
-		}
-
-		if(props.R !== undefined){
-			return {R: props.R, G: props.G, B: props.B, A: props.A};
-		}
-
-		if(props.H !== undefined){
-			return {H: props.H, S: props.S, L: props.L, A: props.A};
-		}
+		return undefined;
 		
-
 	},
 
 	returnIsScreenPosProps: function(props){
+		if(props === undefined) return false;
+
 		if(typeof props === "boolean"){
 			return props;
 		}

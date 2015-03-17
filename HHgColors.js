@@ -285,7 +285,8 @@ var HHgColorHelper = function HHgColorHelper() {
 	this.getGrayscaleFromRGBA = function(color){
 		var av = (color.R + color.G + color.B)/3;
 		return {R:av,G:av,B:av,A:color.A};
-	}
+	};
+
 
 	
 	return this;
