@@ -226,7 +226,7 @@ HHgSceneDoStart = function(){
 		if(true){
 
 			var theOne = HHgGetHolder({w:300,h:300});
-			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-950,0), isScreenPos: false});
+			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-950,-540), isScreenPos: false});
 			
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
@@ -260,11 +260,11 @@ HHgSceneDoStart = function(){
 			
 			
 			
-			theOne.doActionMoveInScreenBy({x:1900,y: 0,time: 10, easeIn: 25, easeOut: 25});
+			//theOne.doActionMoveInScreenBy({x:1900,y: 0,time: 10, easeIn: 25, easeOut: 25});
 			
-			//theOne.doActionRotateBy({rotation:180,time: 5, easeIn: 20, easeOut: 20});
+			//theOne.doActionRotateBy({rotation:360,time: 10, easeIn: 25, easeOut: 25});
 
-			//theOne.doActionFollowQuad({cx: 0, cy: 540, x: 960, y: -540, time: 10, easeIn: 25, easeOut: 25 });
+			theOne.doActionFollowQuad({cx: 0, cy: 540, x: 960, y: -540, time: 10, easeIn: 25, easeOut: 25 });
 
 			//theOne.doActionScaleTo({scaleX:0.25,scaleY:0.25,time: 30});
 
@@ -362,13 +362,13 @@ function doAddFunctionsToScene(scene){
 			}
 
 			if(changes.rotation === true){
-				div.style.transform="rotate(" + HHg.roundNumToPlaces(holder.getRotationNet(), 0) +"deg" +")";
+				div.style.transform="rotate(" + HHg.roundNumToPlaces(holder.getRotationNet(), 2) +"deg" +")";
 			
 			}
 
 			if(changes.position === true){
-				div.style.left ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getX(),0) +"px";
-				div.style.bottom ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getY(),0) + "px";
+				div.style.left ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getX(),2) +"px";
+				div.style.bottom ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getY(),2) + "px";
 
 				//div.style.left ="" +  holder.getPositionInScreenNet().getX()  +"px";
 				//div.style.bottom ="" +  holder.getPositionInScreenNet().getY()  + "px";

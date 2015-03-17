@@ -16,7 +16,7 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 	this.easeInPercent = 0;
 	this.easeOutPercent = 0;
 	this.easeAreaUnderCurveMod = .5; //this is a hack since everything is linear easing right now
-	this.startValue = this.startValue;
+	this.startValue = startValue;
 
 	this.totalDelta = totalDelta;
 
@@ -40,9 +40,6 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 	}
 
 
-	this.whatShouldIDoThisFrame = function(deltaT){
-		//override in children
-	};
 	this.finalFrame = function(action){
 		
 		if(action.onComplete){
@@ -53,16 +50,7 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 		
 	};
 
-	
-}
-
-HHg.HHgActionCommands = {
-	makeChildOfAction : function(subclass){
-		subclass.prototype = Object.create(HHgAction.prototype);
-		subclass.prototype.constructor = subclass;
-
-	},
-	setEase: function(){
+	this.setEase = function(){
 		if(this.easeInPercent > 0){
 			this.easeInTime = this.totalTime * this.easeInPercent;
 		}else{
@@ -80,79 +68,21 @@ HHg.HHgActionCommands = {
 		this.middlePercent = this.middlePercent + (this.easeOutPercent * (1 - this.easeAreaUnderCurveMod));
 		this.middleTime = this.totalTime - (this.easeOutTime + this.easeInTime);
 
-	},
+	};
 
-	/*
-	setEaseN: function(){
-		if(this.easeInPercent > 0){
-			this.easeInVector = this.changeN * (this.easeInPercent / this.easeInDistanceMod);
-			this.easeInTime = (this.totalTime * this.easeInPercent);
-		
-			
-		}else{
-			this.easeInVector = 0;
-			this.easeInTime = 0;
-		}
 
-		if(this.easeOutPercent > 0){
-			this.easeOutVector = this.changeN * (this.easeOutPercent / this.easeOutDistanceMod);
-			this.easeOutTime = (this.totalTime * this.easeOutPercent);
-		}else{
-			this.easeOutVector = HHg0Vector;
-			this.easeOutTime = 0;
-		}
-		
-		this.middleVector = this.changeN * (1 - (this.easeOutPercent + this.easeInPercent) );
-		this.middleTime = this.totalTime - (this.easeOutTime + this.easeInTime);
-	},
-
-	doFrameN: function(deltaT){
+	this.whatShouldIDoThisFrame = function(deltaT){
 		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
 			
-			deltaT -= (this.timeSoFar - this.totalTime);
-
-
-
-			this.updateFunc(this.);
-			this.finalFrame(this);
-
-			return;
-		}
-
-		if(this.timeSoFar < this.easeInTime){
-			
-			this.deltaN = this.easeInVector * ( deltaT/this.easeInTime * (this.timeSoFar/this.easeInTime) );
-		
-			
-		}else if(this.timeSoFar > this.totalTime - this.easeOutTime ){
-			
-			this.deltaN = this.easeOutVector * ( deltaT/this.easeOutTime * ( (this.totalTime - this.timeSoFar)/this.easeOutTime ) );
-			
-			
-		}else{
-
-			this.deltaN = this.middleVector * ( deltaT / this.middleTime );
-		}
-
-		this.soFarN += this.deltaN;
-		this.updateFunc(this.deltaN);
-
-	},
-	*/
-
-	doFrame: function(deltaT){
-		this.timeSoFar += deltaT;
-		
-		if(this.timeSoFar >= this.totalTime){
-			
-			if(this.isXY === true){
+			if(this.isSpecial === true){
+				this.updateFunc(this.lastValue.returnVectorSubtractedFromVector(this.endXY));
+			}else if(this.isXY === true){
 				this.updateFunc(this.lastValue.returnVectorSubtractedFromVector(this.totalDelta));
 			}else{
 				this.updateFunc( this.totalDelta - this.lastValue );
 			}
-			
 			
 			this.finalFrame(this);
 
@@ -177,24 +107,36 @@ HHg.HHgActionCommands = {
 
 		this.lastPercent += this.deltaPercent;
 	
-		if(this.isXY === true){
+		if(this.isSpecial === true){
+				this.tempXY = this.specialUpdateFunc(this.lastPercent, this);
+				
+				this.deltaValue = this.tempXY.returnSubtract(this.lastValue);
+				this.lastValue = this.tempXY;
+		}else if(this.isXY === true){
 			this.deltaValue = this.totalDelta.returnMultiply(this.lastPercent);
 			this.deltaValue.minusEquals(this.lastValue);
 			this.lastValue.plusEquals(this.deltaValue);
 		}else{
-			this.deltaValue *= this.lastPercent;
+			this.deltaValue = this.totalDelta * this.lastPercent;
 			this.deltaValue -= this.lastValue;
 			this.lastValue += this.deltaValue;
 		}
 
 		this.updateFunc(this.deltaValue);
 
-	},
+	};
 
-
-
-
+	
 }
+
+HHg.HHgActionCommands = {
+	makeChildOfAction : function(subclass){
+		subclass.prototype = Object.create(HHgAction.prototype);
+		subclass.prototype.constructor = subclass;
+
+	}
+};
+
 
 //======= MOVEMENT
 
@@ -206,8 +148,7 @@ function HHgActionMoveBy(owner, totalDelta, startValue, totalTime, ease, onCompl
 
 	this.updateFunc = this.owner.setPositionInScreenBy.bind(owner);
 
-	HHg.HHgActionCommands.setEase.bind(this)();
-	this.whatShouldIDoThisFrame = HHg.HHgActionCommands.doFrame.bind(this);
+	this.setEase();
 	
 }
 HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveBy);
@@ -231,13 +172,10 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionMoveForever);
 function HHgActionRotateBy(owner, totalDelta, startValue, totalTime, ease, onComplete){
 	HHgAction.call(this, owner, totalDelta, startValue, totalTime, ease, onComplete);
 
-	this.startValue = this.owner.getRotationOriginal();
-	this.totalDelta = degrees;
 	
 	this.updateFunc = this.owner.setRotationOriginalBy.bind(owner);
 
-	HHg.HHgActionCommands.setEase.bind(this)();
-	this.whatShouldIDoThisFrame = HHg.HHgActionCommands.doFrame.bind(this);
+	this.setEase();
 	
 	
 }
@@ -268,13 +206,9 @@ function HHgActionScaleBy(owner, totalDelta, startValue, totalTime, ease, onComp
 
 	HHgAction.call(this, owner, totalDelta, startValue, totalTime, ease, onComplete);
 
-	this.startValue = this.owner.getScaleOriginal();
-	this.totalDelta = HHg1Vector.returnVectorSubtractedFromVector(scaleXY);
-
 	this.updateFunc = this.owner.setScaleOriginalBy.bind(owner);
 
-	HHg.HHgActionCommands.setEase.bind(this)();
-	this.whatShouldIDoThisFrame = HHg.HHgActionCommands.doFrame.bind(this);
+	this.setEase();
 	
 	
 }
@@ -298,54 +232,33 @@ function HHgActionScaleForever(owner, vectorPerSecond, ease){
 HHg.HHgActionCommands.makeChildOfAction(HHgActionScaleForever);
 
 
-function HHgActionFollowQuad(owner, controlXY, endXY, startXY, totalTime, ease, onComplete){
+function HHgActionFollowQuad(owner, controlXY, endXY, startValue, totalTime, ease, onComplete){
 
-	if(!owner){
-		return false;
-	}
-
-
-	
-	HHgAction.call(this, owner, 1, startXY, totalTime, ease, onComplete);
+	HHgAction.call(this, owner, new HHgVector2(1,1), startValue, totalTime, ease, onComplete);
 
 	this.endXY = endXY;
 	this.endX = endXY.getX();
 	this.endY = endXY.getY();
 	
-
-	this.startX = this.startXY.getX();
-	this.startY = this.startXY.getY();
+	this.startX = this.startValue.getX();
+	this.startY = this.startValue.getY();
 	this.controlXY = controlXY;
 	this.controlX = controlXY.getX();
 	this.controlY = controlXY.getY();
 
-	this.previousXY = this.startXY;
+	this.tempXY = new HHgVector2(0,0);
+	this.lastValue = this.startValue;
+	this.isSpecial = true;
 
-	this.changeN = 1;
-
-		if(this.easeInPercent > 0){
-			this.easeInVector = this.changeN * (this.easeInPercent / this.easeInDistanceMod);
-			this.easeInTime = (this.totalTime * this.easeInPercent);
+	this.specialUpdateFunc = function(distance, action){
 		
-			
-		}else{
-			this.easeInVector = 0;
-			this.easeInTime = 0;
-		}
+		return new HHgVector2(action.getXorYAlongQuad(distance, action.startX, action.controlX, action.endX),
+								action.getXorYAlongQuad(distance, action.startY, action.controlY, action.endY));
+	}
 
-		if(this.easeOutPercent > 0){
-			this.easeOutVector = this.changeN * (this.easeOutPercent / this.easeOutDistanceMod);
-			this.easeOutTime = (this.totalTime * this.easeOutPercent);
-		}else{
-			this.easeOutVector = HHg0Vector;
-			this.easeOutTime = 0;
-		}
-		
-		this.middleVector = this.changeN * (1 - (this.easeOutPercent + this.easeInPercent) );
-		this.middleTime = this.totalTime - (this.easeOutTime + this.easeInTime);
+	this.updateFunc = this.owner.setPositionInScreenBy.bind(owner);
 
-
-	//break this into easing using points at percent times to create 3 sub curves, yikes
+	this.setEase();
 
 	var negT;
 	this.getXorYAlongQuad = function(t, p1, p2, p3) {
@@ -354,78 +267,20 @@ function HHgActionFollowQuad(owner, controlXY, endXY, startXY, totalTime, ease, 
     	return (negT * negT * p1 + 2 * negT * t * p2 + t * t * p3);
     	
 	}
-
-	
-	this.getQuadraticCurvePoint = function(startX, startY, controlX, controlY, endX, endY, distance) {
-		return new HHgVector2(this.getXorYAlongQuad(distance, startX, controlX, endX),
-								this.getXorYAlongQuad(distance, startY, controlY, endY));
-
-    };
-
-    var that = this, distanceAlongCurve = 0, lastDistanceAlongCurve = 0;
-    
-
-	this.whatShouldIDoThisFrame = function(deltaT){
-		this.timeSoFar += deltaT;
-		
-		if(this.timeSoFar >= this.totalTime){
-
-			distanceAlongCurve = 1;
-	
-			this.currentXY = this.getQuadraticCurvePoint(this.startX, this.startY, this.controlX, this.controlY, this.endX, this.endY, distanceAlongCurve);
-		
-			owner.setPositionInScreenBy( this.previousXY.returnVectorSubtractedFromVector(this.currentXY) );
-
-			
-			that.finalFrame(that);
-
-			return;
-		}
-
-		
-		//HHgPlaceTestSprite(this.currentXY);
-
-		if(this.timeSoFar < this.easeInTime){
-			
-			this.deltaN = this.easeInVector * ( deltaT/this.easeInTime * (this.timeSoFar/this.easeInTime) );
-
-			//this.deltaN = 1/this.deltaN;
-		
-		}else if(this.timeSoFar > this.totalTime - this.easeOutTime ){
-			
-			this.deltaN = this.easeOutVector * ( deltaT/this.easeOutTime * ( (this.totalTime - this.timeSoFar)/this.easeOutTime ) );
-			//this.deltaN = 1/this.deltaN;
-			
-			
-		}else{
-
-			this.deltaN = this.middleVector * ( deltaT / this.middleTime );
-		}
-
-		distanceAlongCurve = lastDistanceAlongCurve + this.deltaN;
-	
-		this.currentXY = this.getQuadraticCurvePoint(this.startX, this.startY, this.controlX, this.controlY, this.endX, this.endY, distanceAlongCurve);
-		lastDistanceAlongCurve = distanceAlongCurve;
-
-
-		owner.setPositionInScreenBy( this.previousXY.returnVectorSubtractedFromVector(this.currentXY) );
-		this.previousXY = this.currentXY ;
-
-	}
-
 	
 }
 HHg.HHgActionCommands.makeChildOfAction(HHgActionFollowQuad);
 
+
 function HHgActionTimer(owner, totalTime, onComplete){
 
-HHgAction.call(this, owner, totalTime, false, onComplete);
+HHgAction.call(this, owner,null,null, totalTime, false, onComplete);
 
 	this.whatShouldIDoThisFrame = function(deltaT){
 		this.timeSoFar += deltaT;
 		
 		if(this.timeSoFar >= this.totalTime){
-			that.finalFrame(that);
+			that.finalFrame(this);
 
 			return;
 		}
