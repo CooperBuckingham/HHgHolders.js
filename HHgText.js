@@ -1,32 +1,81 @@
 
-var HHgText = function(){
+var HHgText = {};
 
-	var that = this;
+(function(){
 
-	this.doAddTextToHolder = function(owner, props){
-		HHgTextHelper.returnTextProps(props);
-		HHgTextHelper.returnFontSizeProps(props);
-		HHgTextHelper.returnFontTypeProps(props);
-		HHgTextHelper.returnHAlignProps(props);
-		HHgTextHelper.returnVAlignProps(props);
+
+	var that = HHgText;
+
+
+
+	that.doAddTextParagraphToHolder = function(owner, props){
+		that.returnTextProps(props);
+		that.returnFontSizeProps(props);
+		that.returnFontProps(props);
+		that.returnHAlignProps(props);
+		that.returnVAlignProps(props);
 		HHg.returnColorProps(props);
 
-		HHgScene.doAddTextDiv(owner);
+
+
+		HHgScene.doAddTextDiv(owner, props);
 
 	}
 
-};
+	that.doAddTextCanvasToHolder = function(owner, props){
+		that.returnTextProps(props);
+		that.returnFontSizeProps(props);
+		that.returnFontProps(props);
+		that.returnHAlignProps(props);
+		that.returnVAlignProps(props);
+		HHg.returnColorProps(props);
+		that.returnShadowProps(props);
 
+		props.size = {width: 1, height: 1};
 
-var HHgTextHelper = function HHgTextHelper(){
+		HHgScene.doAddTextToCanvas(owner, props);
 
-	if(HHgTextHelper.singleton){
-		return HHgTextHelper.singleton;
 	}
 
-	HHgTextHelper.singleton = this;
+	//TODO stroke processing
 
-	this.returnTextProps = function(props){
+	that.returnShadowProps = function(props){
+		if(props.shadow === undefined) return props.shadow;
+
+			if(props.shadow.x !== undefined){
+				//good to go
+			}else if(props.shadow.w !== undefined){
+				props.shadow.x = props.shadow.w;
+				props.shadow.y = props.shadow.h; if(props.shadow.y === undefined) props.shadow.y = props.shadow.x;
+			}else if(props.shadow.offsetX !== undefined){
+				props.shadow.x = props.shadow.offsetX;
+				props.shadow.y = props.shadow.offsetY; if(props.shadow.y === undefined) props.shadow.y = props.shadow.x;
+			}else if(props.shadow.offset !== undefined){
+				props.shadow.x = props.shadow.offset;
+				props.shadow.y = props.shadow.offset;
+			}else{
+				props.shadow.x = 1;
+				props.shadow.y = 1;
+			}
+
+			if(typeof props.shadow.x === "string"){
+				props.shadow.x = parseFloat(props.shadow.x);
+				props.shadow.y = parseFloat(props.shadow.y);
+			}
+
+			if(props.shadow.blur !== undefined){
+				//good to go
+			}else if(props.shadow.radius !== undefined){
+				props.shadow.blur = parseFloat(props.shadow.radius);
+			}
+
+			props.shadow.color = HHg.returnColorProps(props.shadow);
+
+			return props.shadow;
+
+	}
+
+	that.returnTextProps = function(props){
 		if(typeof props === "string"){
 			return props;
 		}
@@ -37,8 +86,11 @@ var HHgTextHelper = function HHgTextHelper(){
 			props.text = props.string;
 			return props.text;
 		}
+
+		props.text = "EMPTY STRING"; console.log("WARNING: empty string sent to text field");
+		return props.text;
 	}
-	this.returnFontSizeProps = function(props){
+	that.returnFontSizeProps = function(props){
 		if(typeof props === "number"){
 			return props;
 		}
@@ -46,66 +98,71 @@ var HHgTextHelper = function HHgTextHelper(){
 			return props.fontSize;
 		}
 
+		if(typeof props.fontSize === "string"){
+			props.fontSize = parseFloat(props.fontSize);
+			return props.fontSize;
+		}
+
+		props.fontSize = 32;
+		return props.fontSize;
+
 	}
-	this.returnFontTypeProps = function(props){
+	that.returnFontProps = function(props){
 		//use some system here
-		props.fontType = "fontTypeTemp";
-		return props.fontType;
+		props.font = "Helvetica";
+		return props.font;
 	}
-	this.returnHAlignProps = function(props){
+	that.returnHAlignProps = function(props){
 
 		switch(props.hAlign){
 			case "center":
 			case "middle":
 			case 1:
-			props.hAlign = 1;
+			props.hAlign = "center";
 			break;
 
 			case "left":
 			case 0:
-			props.hAlign = 0;
+			props.hAlign = "left";
 			break;
 
 			case "right":
 			case 2:
-			props.hAlign = 2;
+			props.hAlign = "right";
 			break;
 
 			default:
-			props.hAlign = 1;
+			props.hAlign = "center";
 		}
 
 		return props.hAlign;
 
 	}
-	this.returnVAlignProps = function(props){
+	that.returnVAlignProps = function(props){
+
 			switch(props.vAlign){
 			case "center":
 			case "middle":
 			case 1:
-			props.vAlign = 1;
+			props.vAlign = "middle";
 			break;
 
 			case "top":
 			case 0:
-			props.vAlign = 0;
+			props.vAlign = "top";
 			break;
 
 			case "bottom":
 			case 2:
-			props.vAlign = 2;
+			props.vAlign = "bottom";
 			break;
 
 			default:
-			props.vAlign = 1;
+			props.vAlign = "middle";
 		}
 
 		return props.vAlign;
 	}
 
 
-
-
-	return this;
-
-}();
+})();

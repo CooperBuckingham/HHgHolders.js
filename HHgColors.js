@@ -141,16 +141,15 @@ var HHgColorHSLA = function(props){
 
 };
 
-var HHgColorHelper = function HHgColorHelper() {
-	if(HHgColorHelper.singleton){
-		return HHgColorHelper.singleton;
-	}
+var HHgColorHelper = {};
 
-	HHgColorHelper.singleton = this;
+(function() {
 
 	var H,S,L,A,R,G,B,val1,val2, hex, hex1, hex2, hex3,max,min;
 
-	this.getRGBfromHSL = function(h, s, l){
+	var that = HHgColorHelper;
+
+	that.getRGBfromHSL = function(h, s, l){
 		if(arguments.length === 1){
 			h = h.H; s = h.S; l = H.l;
 		}
@@ -181,7 +180,7 @@ var HHgColorHelper = function HHgColorHelper() {
 	    return {R:R, G:G, B:B};
 	};
 
-	this.getHSLfromRGB = function(r, g, b){
+	that.getHSLfromRGB = function(r, g, b){
 		if(arguments.length === 1){
 			r = r.R; g = r.G; b = r.B;
 		}
@@ -215,15 +214,15 @@ var HHgColorHelper = function HHgColorHelper() {
 	    return {H:H * 360,S:S,L:L};
 	};
 
-	this.getHexFromHSL = function(){
+	that.getHexFromHSL = function(){
 		
-		return this.getHexFromRGB(this.getRGBfromHSL(arguments));
+		return that.getHexFromRGB(that.getRGBfromHSL(arguments));
 
 	};
-	this.getHSLfromHex = function(){
-		return this.getHSLfromRGB(this.getRGBfromHex());
+	that.getHSLfromHex = function(){
+		return that.getHSLfromRGB(that.getRGBfromHex());
 	};
-	this.getHexFromRGB = function(r,g,b){
+	that.getHexFromRGB = function(r,g,b){
 		if(arguments.length === 1){
 			r = r.R; g = r.G; b = r.B;
 		}
@@ -239,7 +238,7 @@ var HHgColorHelper = function HHgColorHelper() {
 		return "#" + hex1 + hex2 + hex3;
 	};
 
-	this.getRGBfromHex = function(hex){
+	that.getRGBfromHex = function(hex){
 		R = hex.substring(1,3);
 		G = hex.substring(3,5);
 		B = hex.substring(5,7);
@@ -256,7 +255,7 @@ var HHgColorHelper = function HHgColorHelper() {
 		return {R:R,G:G,B:B};
 	};
 
-	this.blendRGBAColors = function(col1, col2, balance){
+	that.blendRGBAColors = function(col1, col2, balance){
 		col1 = HHg.returnColorProps(col1);
 		col2 = HHg.returnColorProps(col2);
 
@@ -269,7 +268,7 @@ var HHgColorHelper = function HHgColorHelper() {
 
 	};
 
-	this.blendHSLAColors = function(col1, col2, balance){
+	that.blendHSLAColors = function(col1, col2, balance){
 		col1 = HHg.returnColorProps(col1);
 		col2 = HHg.returnColorProps(col2);
 
@@ -282,16 +281,13 @@ var HHgColorHelper = function HHgColorHelper() {
 
 	};
 
-	this.getGrayscaleFromRGBA = function(color){
+	that.getGrayscaleFromRGBA = function(color){
 		var av = (color.R + color.G + color.B)/3;
 		return {R:av,G:av,B:av,A:color.A};
 	};
 
 
-	
-	return this;
-
-}();
+})();
 
 
 var HHgColorRGBAWhite = new HHgColorRGBA({R:255,G:255,B:255});

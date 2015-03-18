@@ -6,7 +6,6 @@ window.onload = function(){
 	HHgObjectPool.doStart(50); //number of holders to cache
 	HHgSceneDoStart();
 	HHgActionManager.doStart();
-
 	HHgMouse.doStart();
 
 	HHgLoadingScreen.splashScreenFinish();

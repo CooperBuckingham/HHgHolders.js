@@ -2,30 +2,31 @@
 
 
 
-var HHgMouse = function HHgMouse(){
-	if(HHgMouse.singleton){
-		return HHgMouse.singleton;
-	}
-	HHgMouse.singleton = this;
+var HHgMouse = {};
 
-	this.clickedDownOn;
-	this.draggingOriginalPosXY;
-	this.draggingMouseOriginalPosXY;
-	this.draggingOffsetXY;
+(function(){
 
-	this.dragging;
-	this.lastMousePosXY;
+	var that = HHgMouse;
+
+	that.clickedDownOn;
+	that.draggingOriginalPosXY;
+	that.draggingMouseOriginalPosXY;
+	that.draggingOffsetXY;
+
+	that.dragging;
+	that.lastMousePosXY;
 	
-	this.thisMousePosXY;
+	that.thisMousePosXY;
 	
-	this.lastFrameTime;
-	this.thisFrameTime;
-	this.mouseCircle;
+	that.lastFrameTime;
+	that.thisFrameTime;
+	that.mouseCircle;
 
-	var that = this;
 	
-	this.doStart = function(){
+	
+	that.doStart = function(){
 
+		console.log("mouse start");
 
 		that.mouseCircle = HHgGetHolder({w:25,h:25,zIndex: 100});
 		that.mouseCircle.doMoveToNewParent({parent: HHgGameHolder, position: HHg0Vector, isScreenPos: false});
@@ -37,7 +38,7 @@ var HHgMouse = function HHgMouse(){
 
 	}
 
-	this.doResetVars = function(){
+	that.doResetVars = function(){
 		that.clickedDownOn = undefined;
 		that.lastMousePosXY = undefined;
 		
@@ -45,15 +46,15 @@ var HHgMouse = function HHgMouse(){
 		
 		that.lastFrameTime = undefined;
 		that.thisFrameTime = undefined;
-		this.dragging = undefined;
-		this.draggingOriginalPosXY = undefined;
-		this.draggingMouseOriginalPosXY = undefined;
-		this.draggingOffsetXY = undefined;
+		that.dragging = undefined;
+		that.draggingOriginalPosXY = undefined;
+		that.draggingMouseOriginalPosXY = undefined;
+		that.draggingOffsetXY = undefined;
 
 
 	}
 
-	this.doSetVars = function(holder, xy){
+	that.doSetVars = function(holder, xy){
 
 		that.clickedDownOn = holder;
 		that.lastMousePosXY = xy;
@@ -71,7 +72,7 @@ var HHgMouse = function HHgMouse(){
 		
 	}
 
-	this.doUpdateVars = function(xy){
+	that.doUpdateVars = function(xy){
 		that.lastMousePosXY = that.thisMousePosXY;
 		that.thisMousePosXY = xy;
 		that.lastFrameTime = that.thisFrameTime;
@@ -79,7 +80,7 @@ var HHgMouse = function HHgMouse(){
 
 	}
 
-	this.doMouseMove = function (xy){
+	that.doMouseMove = function (xy){
 		that.mouseCircle.doHide();
 
 
@@ -90,7 +91,7 @@ var HHgMouse = function HHgMouse(){
 		
 	}
 
-	this.doMouseDown = function (holders, xy){
+	that.doMouseDown = function (holders, xy){
 		that.mouseCircle.doShow(xy);
 		
 		
@@ -109,7 +110,7 @@ var HHgMouse = function HHgMouse(){
 	}
 	var isOverClickedDown = false;
 
-	this.doMouseUp = function (holders, xy){
+	that.doMouseUp = function (holders, xy){
 		
 		that.mouseCircle.doHide();
 		that.doUpdateVars(xy);
@@ -120,7 +121,7 @@ var HHgMouse = function HHgMouse(){
 
 		if(holders ){
 			for(var i = 0; i < holders.length; i++){
-				if(holders[i] === clickedDownOn){
+				if(holders[i] === that.clickedDownOn){
 					
 					isOverClickedDown = true;
 					break;
@@ -140,16 +141,13 @@ var HHgMouse = function HHgMouse(){
 		
 	}
 
-	this.doMouseCancel = function(holders, xy){
+	that.doMouseCancel = function(holders, xy){
 		
-		this.doMouseUp(holders, xy);
+		that.doMouseUp(holders, xy);
 	}
 
 
-
-	return this; //for singleton
-
-}();
+})();
 
 
 

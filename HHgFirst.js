@@ -1,2 +1,1 @@
-var HHgMain;
-HHgMain = window;
+//was setting HHgMain here, has moved
