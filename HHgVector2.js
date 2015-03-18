@@ -18,7 +18,7 @@ var HHgVector2 = function (x,y){
 	}
 
 	this.returnDistanceToVector = function(vB){
-		
+
 		return Math.sqrt( (_x-vB.getX())*(_x-vB.getX()) + (_y-vB.getY())*(_y-vB.getY()) );
 	}
 
@@ -58,7 +58,7 @@ var HHgVector2 = function (x,y){
 		var rads = HHg.doDegreesToRads(angle),
 			vBx = vB.getX(),
 			vBy = vB.getY();
-		
+
 		return new HHgVector2( (Math.cos(rads) * (_x - vBx) - Math.sin(rads) * (_y - vBy) + vBx),
 								(Math.sin(rads) * (_x - vBx) + Math.cos(rads) * (_y - vBy) + vBy) );
 	}
@@ -66,8 +66,8 @@ var HHgVector2 = function (x,y){
 	this.returnPretty = this.pretty = function(){
 		return ("x: " + _x + " y: " + _y);
 	}
-	
-	
+
+
 	this.setXY = function(xy,y){
 		if(xy instanceof HHgVector2){
 			_x = xy.getX();
@@ -76,23 +76,23 @@ var HHgVector2 = function (x,y){
 			_x = +xy;
 			_y = +y;
 		}
-		
+
 	}
 	this.returnVectorPlusVector = this.returnAdd = function(){
 		vB = this.parse(arguments);
 		return new HHgVector2(_x + vB.getX(), _y + vB.getY());
 	}
-	this.plusEquals = function(){
+	this.plusEquals = this.addEquals = function(){
 		vB = this.parse(arguments);
 		this.setXY(_x + vB.getX(), _y + vB.getY());
 		return this;
 	}
-	this.minusEquals = function(){
+	this.minusEquals = this.subtractEquals = function(){
 		vB = this.parse(arguments);
 		this.setXY(_x - vB.getX(), _y - vB.getY());
 		return this;
 	}
-	this.timesEquals = function(){
+	this.timesEquals = this.multiplyEquals = function(){
 		vB = this.parse(arguments);
 		this.setXY(_x * vB.getX(), _y * vB.getY());
 		return this;
@@ -144,6 +144,6 @@ var HHgVector2 = function (x,y){
 		}
 	}
 
-	
+
 
 }
