@@ -17,6 +17,7 @@ time, mark, audio, video {
   font-size: 100%;
   font: inherit;
   vertical-align: baseline;
+  cursor: default;
 
 
 }
@@ -67,6 +68,12 @@ table {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 
+}
+
+html {
+    font-family: "Helvetica", Helvetica;
+    text-align: center;
+    color: white;
 }
 
 body {
@@ -175,5 +182,20 @@ html body #all{
   display:inline-block;
   width: 100%;
   height: 100%;
+}
+
+.textDiv{
+  position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; display: table;
+  
+  cursor: default;
+}
+
+.textDiv pre{
+   display: table-cell; vertical-align: middle; text-align: center;
+   width: 100%;
+   height: 100%;
+    
+    cursor: default;
+  
 }
 

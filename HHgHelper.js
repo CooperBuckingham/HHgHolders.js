@@ -354,9 +354,7 @@ var HHg = {
 		if(props instanceof HHgColorRGBA === true ){
 			return props;
 		}
-		if(props.color instanceof HHgColorRGBA){
-			return props.color;
-		}
+	
 		if(props instanceof HHgColorHSLA === true){
 			props = HHgColorHelper.getRGBfromHSL(props);
 			return props;
@@ -368,6 +366,11 @@ var HHg = {
 
 		function stringTest(test){
 				if(typeof test !== "string") return false;
+				
+				if(test[0] === "#"){
+					test = new HHgColorRGBA(HHgColorHelper.getRGBfromHex(test));
+					return test;
+				}
 
 				switch(test){
 					case "red":
@@ -395,8 +398,19 @@ var HHg = {
 				return false;
 		}
 
-		if(stringTest(props.color)) return props.color;
-		if(stringTest(props)) return props;
+		var test;
+		test = stringTest(props.color);
+		if(test){
+			props.color = test;
+			return props.color;
+		};
+
+		test = stringTest(props);
+		if(test){
+			props = test;
+			return props;
+		};
+
 
 		function RGBHSLtest(test){
 			if(test === undefined) return false;
@@ -415,11 +429,21 @@ var HHg = {
 				test = new HHgColorRGBA(test.red, test.green, test.blue, test.alpha || 1);
 			}
 
-			return (test instanceof HHgColorRGBA);
+			return test;
 		}
 
-		if(RGBHSLtest(props.color)) return props.color;
-		if(RGBHSLtest(props)) return props;
+		test = RGBHSLtest(props.color);
+		if(test){
+			props.color = test;
+			return props.color;
+		}
+
+		test = RGBHSLtest(props);
+		if(test){
+			props = test;
+			return props;
+		}
+		
 
 		return undefined;
 		

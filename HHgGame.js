@@ -1,11 +1,12 @@
-var HHgGame = function HHgGame(){
+var HHgGame = {};
 
-	if(HHgGame.singleton){
-		return HHgGame.singleton;
-	}
 
-	this.doStart = function(){
-	
+(function(){
+
+
+	HHgGame.doStart = function(){
+		//GAME STARTS HERE
+	console.log("start game");
 		if(false){
 
 			var theOne = HHgGetHolder({w:100,h:100});
@@ -14,6 +15,7 @@ var HHgGame = function HHgGame(){
 			theOne.test = "pool";
 			theOne.setMouseable(true);
 			theOne.setIsDraggable(true);
+
 
 			var listOfHolder = [];
 			listOfHolder.push(theOne);
@@ -54,15 +56,23 @@ var HHgGame = function HHgGame(){
 			}
 		}
 
+		var theOne;
 		if(true){
 
-			var theOne = HHgGetHolder({w:300,h:300});
+			theOne = HHgGetHolder({w:300,h:300});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-950,-540), isScreenPos: false});
 			
 			theOne.doAddSprite("pool");
 			theOne.test = "pool";
 			theOne.setMouseable(true);
 			theOne.setIsDraggable(true);
+			//theOne.doAddCanvasText({text: "TBLOCK", vAlign: "bottom", hAlign: "right", fontSize: "200"});
+			console.log(HHgColorHelper);
+			theOne.doAddParagraphText({text: "TBLOCK\nStuff and stuff", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "40", shadow: {x: 5, y: 5, color: "#000000", blur: 2}});
+
+
+
+			
 			//theOne.setBackgroundRGBA(new HHgColorRGBA(255,0,0));
 			var theTwo;
 			setTimeout(function(){
@@ -72,6 +82,7 @@ var HHgGame = function HHgGame(){
 				theTwo.test = "orange";
 				theTwo.setMouseable(true);
 				theTwo.setIsDraggable(true);
+				
 		}, 3000);
 
 		var theThree;
@@ -103,6 +114,4 @@ var HHgGame = function HHgGame(){
 
 	}
 
-return this;
-
-}();
+})();

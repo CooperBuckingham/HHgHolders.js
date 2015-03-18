@@ -13,7 +13,7 @@ var HHgScreen = {
 	isLandscapeGame : true,
 };
 
-
+var HHgTestBoxes = true;
 
 function HHgUpdateHardwareScreen(){
 	//could update landscape etc here
@@ -26,7 +26,7 @@ function HHgUpdateHardwareScreen(){
 		//eventually change this to support portrait
 		HHgScreenDiff.setXY(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
 	}
-	HHgPixelScale = HHgGameHolder.getScaleNetForChildScale();
+	HHgPixelScale = HHgGameHolder.getScaleNetForChildScale().getX();
 
 	HHgScene.getDiv().style.maxHeight = "" + HHgGameHolder.getScaleNetForChildScale().getX() * HHgScreen.maxh + "px";
 		
@@ -69,8 +69,6 @@ HHgSceneDoStart = function(){
 	HHg10000Vector.setX = function(){};
 	HHg10000Vector.setY = function(){};
 	HHg10000Vector.setXY = function(){};
-
-
 
 
 	HHgScreenDiff = new HHgVector2(0,0);
@@ -168,18 +166,16 @@ HHgSceneDoStart = function(){
 		}
 
 		HHgGameHolder.setGameHolder();
-		HHgPixelScale = HHgGameHolder.getScaleNetForChildScale();
+		HHgPixelScale = HHgGameHolder.getScaleNetForChildScale().getX();
 	}
 
 	buildHolderFromScratch();
 
-
+	//ALL CUSTOM GAME CODE START IN THIS FUNCTION:
 	HHgGame.doStart();
 
 
 }
-
-
 
 function doAddFunctionsToScene(scene){
 	
@@ -226,7 +222,6 @@ function doAddFunctionsToScene(scene){
 		newList = {};
 		
 	}
-
 
 
 	scene.doUpdateHolders = function(){
@@ -306,8 +301,6 @@ function doAddFunctionsToScene(scene){
 		scene._finalDirtyHolders[holder.getHash()] = holder;
 	}
 
-
-
 	scene.doAddThisHolder = function(holder){
 		if(holder.getDiv()){
 			scene.addToFinalPassList(holder);
@@ -318,8 +311,11 @@ function doAddFunctionsToScene(scene){
 		holder.setDiv(div);
 		div.style.display ="inline-block";
 		div.style.position = "absolute";
-		//div.style.backgroundColor =;
-		//div.style.border = "2px solid black";
+		
+		if(HHgTestBoxes === true){
+			div.style.border = "2px solid black";
+		}
+		
 		div.id = holder.getHash();
 
 		scene.addToFinalPassList(holder);
@@ -328,31 +324,93 @@ function doAddFunctionsToScene(scene){
 		HHgSceneDiv.appendChild(div);
 	};
 
-	scene.doAddTextDiv = function(owner){
+	scene.doAddTextDiv = function(owner, props){
+		
+		var parent = document.createElement("div");
+		owner.getDiv().appendChild(parent);
+		var child = document.createElement("pre");
+		parent.appendChild(child);
 
-		var div = document.createElement("div");
-		div.style.display = "inline";
-		div.style.position = "absolute";
-		//div.style.width = "" + HHg.roundNumToPlaces(owner.getWidthNet(), 0)  + "px";
-		//div.style.height ="" + HHg.roundNumToPlaces(owner.getHeightNet(), 0) + "px";
-		div.style.width = "100%";
-		div.style.height = "50%";
-		div.style.top = "50%";
-		div.style.left = "0px";
-		div.style.marginTop = "0";
-		div.style.color = props.color.returnString();
-		div.style.fontSize = "" + (props.fontSize * HHgPixelScale) + "px";
-		div.classList.add(props.fontStyle);
-		div.innerHTML = props.text;
+		child.style.color = props.color ? props.color.returnString() : "black";
+		child.style.fontSize = "" + (props.fontSize * HHgPixelScale) + "px";
+		child.classList.add(props.fontStyle);
+		child.innerHTML = props.text;
 
-		div.classList.add("textHolder");
+		child.style.textAlign = props.hAlign;
+		child.style.verticalAlign = props.vAlign;
 
-		div.id = owner.getHash() + "t";
-		scene._holders[div.id] = div;
-		owner.getDiv().appendChild(div);
+		parent.classList.add("textDiv");
 
-		owner.textDiv = div;
+		parent.id = owner.getHash() + "t";
+		child.id = owner.getHash() + "p";
+
+		if(props.shadow !== undefined){
+			props.shadow.x *= HHgPixelScale;
+			props.shadow.y *= HHgPixelScale;
+			props.shadow.blur *= HHgPixelScale;
+
+			child.style.textShadow = "" + props.shadow.x + "px " + props.shadow.y + "px " + props.shadow.blur + "px " + props.shadow.color;
+		}
+		
+		owner.textDiv = parent;
+		owner.paragraph = child;
+	
+	};
+
+	scene.doAddTextToCanvas = function(owner, props){
+
+		var ctx = owner.getCanvas().getContext("2d"), x, y, textWidth, textHeight, divWidth, divHeight;
+		console.log("debug");
+
+		textHeight = props.fontSize * HHgPixelScale;
+		ctx.font = "" + textHeight + "px " + props.font ;
+		textWidth = ctx.measureText(props.text).width * HHgPixelScale;
+
+		divWidth = owner.getWidthNet() * 2;
+		divHeight = owner.getHeightNet() * 2;
+		
+
+		if(props.vAlign === "top"){
+			y = 0;
+			ctx.textBaseline = "top";
+		}else if(props.vAlign === "middle"){
+			y = (divHeight - textHeight) / 2;
+			ctx.textBaseline = "middle";
+		}else{
+			y = divHeight;
+			ctx.textBaseline = "bottom";
+		}
+
+		if(props.hAlign === "left"){
+			x = 0;
+			ctx.textAlign = "left";
+		}else if(props.hAlign === "center"){
+			x = (divWidth - textWidth) / 2;
+			ctx.textAlign = "center";
+		}else{
+			x = divWidth;
 			
+			ctx.textAlign = "right";
+		}
+
+		if(props.shadow !== undefined){
+			ctx.shadowOffsetX = props.shadow.x * HHgPixelScale;
+			ctx.shadowOffsetY = props.shadow.y  * HHgPixelScale;
+			ctx.shadowColor = props.shadow.color;
+			ctx.shadowBlur = props.shadow.blur  * HHgPixelScale;
+		}
+
+		if(props.stroke !== undefined){
+			ctx.strokeStyle = props.stroke.color;
+  			ctx.lineWidth = props.stroke.width;
+  			ctx.strokeText = 
+  			ctx.strokeText(props.text, x, y);
+		}
+
+		//ctx.globalCompositeOperation = "destination-atop";
+		ctx.fillText(props.text,x,y);
+
+
 	}
 	
 	scene.doAddMouseDownAndUpListeners = function(){
@@ -369,7 +427,7 @@ function doAddFunctionsToScene(scene){
 			relY =  e.pageY;
 			mouseXY = new HHgVector2(relX,relY);
 
-			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
+			HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
 			return false;
 		}, false);
 
@@ -379,7 +437,7 @@ function doAddFunctionsToScene(scene){
 			relX = e.pageX;
 			relY = e.pageY;
 			mouseXY = new HHgVector2(relX,relY);
-			HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
+			HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
 			return false;
 		}, false);
 
@@ -392,7 +450,7 @@ function doAddFunctionsToScene(scene){
 		        relX = e.pageX;
 				relY = e.pageY;
 				mouseXY = new HHgVector2(relX,relY);
-				HHgMain.HHgMouse.doMouseCancel( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
+				HHgMouse.doMouseCancel( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
 		    }
 			//e.preventDefault();
 			//e.stopPropagation();
@@ -410,7 +468,7 @@ function doAddFunctionsToScene(scene){
 			relY = e.pageY;
 
 			mouseXY = new HHgVector2(relX,relY);
-			HHgMain.HHgMouse.doMouseMove( scene.convertMouseToHolder(mouseXY)   );
+			HHgMouse.doMouseMove( scene.convertMouseToHolder(mouseXY)   );
 			return false;
 		}, false);
 
@@ -424,7 +482,7 @@ function doAddFunctionsToScene(scene){
 			relY =  touch.pageY;
 			mouseXY = new HHgVector2(relX,relY);
 
-			HHgMain.HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
+			HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
 			return false;
 		}, false);
 
@@ -438,7 +496,7 @@ function doAddFunctionsToScene(scene){
 					relX =  touchList[i].pageX;
 					relY =  touchList[i].pageY;
 					mouseXY = new HHgVector2(relX,relY);
-					HHgMain.HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
+					HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
 					break;
 				}
 			}
@@ -456,7 +514,7 @@ function doAddFunctionsToScene(scene){
 					relX =  touchList[i].pageX;
 					relY =  touchList[i].pageY;
 					mouseXY = new HHgVector2(relX,relY);
-					HHgMain.HHgMouse.doMouseMove( scene.convertMouseToHolder(mouseXY)   );
+					HHgMouse.doMouseMove( scene.convertMouseToHolder(mouseXY)   );
 					break;
 				}
 			}
@@ -475,7 +533,7 @@ function doAddFunctionsToScene(scene){
 					relX =  touchList[i].pageX;
 					relY =  touchList[i].pageY;
 					mouseXY = new HHgVector2(relX,relY);
-					HHgMain.HHgMouse.doMouseCancel( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
+					HHgMouse.doMouseCancel( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
 					break;
 				}
 			}

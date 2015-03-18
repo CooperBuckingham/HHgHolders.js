@@ -1206,8 +1206,17 @@ this.getVisible = function(){
 		HHgSprite.doAddSpriteToHolder(this,name,whitePixelTintRGB);
 	}
 
-	this.doAddText = function(props){
-		HHgText.doAddTextToHolder(this,props);
+	this.doAddParagraphText = function(props){
+
+		HHgText.doAddTextParagraphToHolder(this,props);
+	}
+
+	this.doAddCanvasText = this.doAddText = function(props){
+		HHgText.doAddTextCanvasToHolder(this,props);
+	}
+
+	this.doScaleFontSizeBy = function(val){
+		this.paragraph.style.fontSize = this.paragraph.style.fontSize * val;
 	}
 
 }
