@@ -67,7 +67,7 @@ var HHgGame = {};
 			theOne.setMouseable(true);
 			theOne.setIsDraggable(true);
 			//theOne.doAddCanvasText({text: "TBLOCK", vAlign: "bottom", hAlign: "right", fontSize: "200"});
-			console.log(HHgColorHelper);
+			
 			theOne.doAddParagraphText({text: "TBLOCK\nStuff and stuff", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "40", shadow: {x: 5, y: 5, color: "#000000", blur: 2}});
 
 
