@@ -54,12 +54,14 @@ var HHgHolder = function(props){
 
 		_canvas;
 
+	this.fontSizeOriginal = 1;
+	this.fontSizeScaled = 1;
+
 	this.isScene = false,
 	this.isDraggable = false;
 	this.isBeingDragged = false;
 
-	this.test = "no",
-
+	this.test = "no";
 
 	this.frameUpdates = {
 		positionBy: undefined,
@@ -768,6 +770,8 @@ this.getVisible = function(){
 				_scaleNet = _parent.getScaleNetForChildScale().returnVectorScaledBy(_scaleNet);
 			}
 
+			this.fontSizeScaled = this.fontSizeOriginal * _scaleNet.getX();
+
 			this.changes.scale = true;
 			
 
@@ -1149,7 +1153,7 @@ this.getVisible = function(){
 		//this is all PH test, these are expected to be overridden
 		this.setScaleStored();
 		this.setScaleOriginalBy(.9,.9);
-		this.doActionScaleForever({scaleX: .9, scaleY: .9, name: "mousedownscale"});
+		this.doActionScaleForever({scaleX: 1.05, scaleY: 1.05, name: "mousedownscale"});
 	
 	}
 
@@ -1215,9 +1219,6 @@ this.getVisible = function(){
 		HHgText.doAddTextCanvasToHolder(this,props);
 	}
 
-	this.doScaleFontSizeBy = function(val){
-		this.paragraph.style.fontSize = this.paragraph.style.fontSize * val;
-	}
 
 }
 

@@ -256,6 +256,11 @@ function doAddFunctionsToScene(scene){
 				div.style.width = "" + HHg.roundNumToPlaces(holder.getWidthNet(), 0)  + "px";
 				div.style.height ="" + HHg.roundNumToPlaces(holder.getHeightNet(), 0) + "px";
 
+				if(holder.paragraph !== undefined){
+					holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
+				}
+				
+
 				//div.style.width = "" + holder.getWidthNet()  + "px";
 				//div.style.height ="" + holder.getHeightNet() + "px";
 			}
@@ -330,14 +335,17 @@ function doAddFunctionsToScene(scene){
 		owner.getDiv().appendChild(parent);
 		var child = document.createElement("pre");
 		parent.appendChild(child);
-
+		var parentScale = owner.getScaleNetForChildScale().getX();
+		var tempFontSize = props.fontSize * parentScale;
 		child.style.color = props.color ? props.color.returnString() : "black";
-		child.style.fontSize = "" + (props.fontSize * HHgPixelScale) + "px";
+		child.style.fontSize = "" +  + "px";
 		child.classList.add(props.fontStyle);
 		child.innerHTML = props.text;
 
 		child.style.textAlign = props.hAlign;
 		child.style.verticalAlign = props.vAlign;
+
+		parent.style.border = "4px solid green";
 
 		parent.classList.add("textDiv");
 
@@ -345,15 +353,16 @@ function doAddFunctionsToScene(scene){
 		child.id = owner.getHash() + "p";
 
 		if(props.shadow !== undefined){
-			props.shadow.x *= HHgPixelScale;
-			props.shadow.y *= HHgPixelScale;
-			props.shadow.blur *= HHgPixelScale;
+			props.shadow.x *= parentScale;
+			props.shadow.y *= parentScale;
+			props.shadow.blur *= parentScale;
 
 			child.style.textShadow = "" + props.shadow.x + "px " + props.shadow.y + "px " + props.shadow.blur + "px " + props.shadow.color;
 		}
 		
 		owner.textDiv = parent;
 		owner.paragraph = child;
+		owner.fontSizeOriginal = props.fontSize;
 	
 	};
 
@@ -361,10 +370,10 @@ function doAddFunctionsToScene(scene){
 
 		var ctx = owner.getCanvas().getContext("2d"), x, y, textWidth, textHeight, divWidth, divHeight;
 		console.log("debug");
-
-		textHeight = props.fontSize * HHgPixelScale;
+		var parentScale = owner.getScaleNetForChildScale().getX();
+		textHeight = props.fontSize * parentScale;
 		ctx.font = "" + textHeight + "px " + props.font ;
-		textWidth = ctx.measureText(props.text).width * HHgPixelScale;
+		textWidth = ctx.measureText(props.text).width * parentScale;
 
 		divWidth = owner.getWidthNet() * 2;
 		divHeight = owner.getHeightNet() * 2;
@@ -394,16 +403,15 @@ function doAddFunctionsToScene(scene){
 		}
 
 		if(props.shadow !== undefined){
-			ctx.shadowOffsetX = props.shadow.x * HHgPixelScale;
-			ctx.shadowOffsetY = props.shadow.y  * HHgPixelScale;
+			ctx.shadowOffsetX = props.shadow.x * parentScale;
+			ctx.shadowOffsetY = props.shadow.y  * parentScale;
 			ctx.shadowColor = props.shadow.color;
-			ctx.shadowBlur = props.shadow.blur  * HHgPixelScale;
+			ctx.shadowBlur = props.shadow.blur  * parentScale;
 		}
 
 		if(props.stroke !== undefined){
 			ctx.strokeStyle = props.stroke.color;
   			ctx.lineWidth = props.stroke.width;
-  			ctx.strokeText = 
   			ctx.strokeText(props.text, x, y);
 		}
 
