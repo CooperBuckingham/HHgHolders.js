@@ -16,12 +16,17 @@ The engine functions entirely independantly of the DOM, except for HHgScene.js
 which updates all the visible elements per frame. HHgScene could be modified
 to "translate" the engine's data into any one of a number of visual forms.
 
+The engine is most notably missing a physics system, but in general is not
+really designed to be a thousands of things bouncing and updating engine.
+Though one could easily be added and then use updates on HHgHolders.
+
 
 Doc v0.0.5
 //====================================================================
 1. The scene will automatically scale visually to the width of the screen.
 	a. But all measurements are done on a point system of 1920/1080.
-	b. Both of these settings can be changed in HHgScene.js
+		aa. so even if you are on a tiny phone, or in a small browser window, you would still use 1920 as screen width.
+	b. All of these settings can be changed in HHgScene.js
 
 2. HHgLoadingScreen.js is loaded before any engine processing takes place.
 
@@ -80,10 +85,9 @@ Doc v0.0.5
 	d. passing a key for 'onComplete: someFunction' to the function will cause the passed function to be executed on completion.
 	e. HHgHolder has actions for:
 		doActionRotateBy(any amount from negative to positive, time);
-		doActionRotateLeftTo(any degree from 0 - 360, time); doActionRotateRightTo();
-		doActionRotateForever(+/- rotation per second);
+		doActionRotateLeftTo(any degree from 0 - 360, time); doActionRotateRightTo(); doActionRotateForever(+/- rotation per second);
 		doActionMoveInScreenTo(x,y, time); doActionMoveInScreenBy(); doActionMoveForever(vector per second);
-		doActionScaleTo(positive value, positive vale, time); doActionScaleBy(positive value, positive value); doActionScaleForever(scale per second);
+		doActionScaleTo(positive value, positive value, time); doActionScaleBy(positive value, positive value); doActionScaleForever(scale per second);
 		doActionFollowQuad(vector control, vector destination, time); //creates a quadratic path using the current xy, a control xy, and final xy
 
 9. Timers - do not use setTimeOut or setInterval anywhere, as this will cause things to fall out of sync
@@ -109,7 +113,6 @@ Doc v0.0.5
 		da. someHolder.setIsDraggable(true);
 	e. HHgMouse recieves an array of all qualifying Holders for mouse/touch, it only uses the highest element in the array.
 		ea. if you need to access a "stack of holders" for something like dragging a stack, then you'll need to modify HHgMouse.js.
-
 
 12. HHgColor
 	a. all color in the engine eventually comes down to R: 1-255 G: 1-255 B: 1-255 A: 0-1
@@ -143,7 +146,7 @@ Doc v0.0.5
 
 14. HHgText
 	a. all text is displayed in engine by adding it to HHgHolders.
-		aa. this text is 1 of 2 types:
+		aa. this text is one of 2 types:
 			aaa. someHolder.doAddParagraphText({text: "my text", color: {H: 255, S: .5, L: .5, A: 1}, shadow: {color: "black", x: 4, y: 4, blur: 4}});
 			aab. someHolder.doAddCanvasText({text: "my text", color: {H: 255, S: .5, L: .5, A: 1}, shadow: {color: "black", x: 4, y: 4, blur: 4}});
 		ab. paragraph text creates a <pre> (preformatted text) element inside of the div.
@@ -153,11 +156,13 @@ Doc v0.0.5
 		ac. canvas text is created by formatting a 2d context and then painting the text directly onto the div's canvas
 			aca. this is obviously much lower overhead, but will look "rasterized", and will be part of mouse/touch detection rules.
 
-
 15. Adding and Modifying
 	a. the engine is designed to have anything and everything modded, but I recommend not changing anything on HHgHolder or HHgScene
 		aa. unless you understand exactly what it's doing.
 	b. tack any properties onto holders that make sense to you, and create any custom controllers to handle game logic.
+	c. HHgActionManager runs a function every frame that receives the delta time since the last frame
+		ca. actions already handle all of their updates via this delta
+		cb. but you could add another function to the beginning of the list if you were interested in another type of game loop.
 
 15. Usage and Quirks
 	a. you'll notice that pretty much any function that you are supposed to interact with start with "do" to do something or "return" to return something
@@ -166,6 +171,10 @@ Doc v0.0.5
 	c. most functions require property objects to be passed as arguments {R: 255, G: 255, B: 255};
 		ca. but if a function just takes 1 concept, then it usally can be short-handed for faster typing:
 			funcTakesColor(255,255,255);
+
+
+//=============================================================
+//END
 
 
 

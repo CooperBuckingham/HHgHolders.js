@@ -1,4 +1,4 @@
-var HHgForce30FPS = false;
+var HHgForce30FPS = false; //these are for testing only, as they bypass the animationframe loop
 var HHgForce15FPS = false;
 var HHgPaused = false;
 var HHgTempHolder;
@@ -16,7 +16,7 @@ var HHgActionManager = {
   },
 
   doActionsForHolders: function(interval){
-    
+
     for(HHgTempHolder in this._actionList){
       HHgTempHolder= this._actionList[HHgTempHolder];
       if(HHgTempHolder.getPaused() === true) continue;
@@ -34,28 +34,28 @@ var HHgActionManager = {
 // copyright Paul Irish 2015
 
 (function(){
- 
+
   if ("performance" in window == false) {
       window.performance = {};
   }
-  
-  Date.now = (Date.now || function () { 
+
+  Date.now = (Date.now || function () {
     return new Date().getTime();
   });
- 
+
   if ("now" in window.performance == false){
-    
+
     var nowOffset = Date.now();
-    
+
     if (performance.timing && performance.timing.navigationStart){
       nowOffset = performance.timing.navigationStart
     }
- 
+
     window.performance.now = function now(){
       return Date.now() - nowOffset;
     }
   }
- 
+
 })();
 
 
@@ -72,13 +72,13 @@ HHgActionManager.actionLoop = function( animateActions ) {
     var highEnd = 40; //160
 
     function recurse( thisFrameTime ) {
-      
+
         window.requestAnimationFrame(recurse);
 
         thisFrameTime = thisFrameTime && thisFrameTime > 480 ? thisFrameTime : window.performance.now();
-        
+
         deltaT = thisFrameTime - lastFrameTime;
-        
+
 
         if ( deltaT >  highEnd){
           deltaT = highEnd;
@@ -104,96 +104,43 @@ HHgActionManager.doStart = function(){
   if(HHgForce30FPS || HHgForce15FPS){
     var interval = 1.0 / 30.0,
         frameInterval = interval * 1000.0;
-    
+
 
     if(HHgForce15FPS){
       interval = 1.0 / 15.0;
       frameInterval = interval * 1000.0;
     }
-       
+
     window.setInterval(function(){
-     
+
 
        if(!HHgPaused){
-        
+
         HHgActionManager.doActionsForHolders(interval);
 
         HHgScene.doEndOfFrame();
         HHgScene.doUpdateHolders();
        }
-      
+
 
     }, frameInterval );
 
   }else{
 
-    //var count = 0, average = 0, high = 0, low = 100, stored = 0; framesOver16 = 0; lastFrame = 0;
-
       this.actionLoop(function( deltaT ) {
 
+        //ADD CUSTOM OR ADDITIONAL GAME LOOP HERE
+        //IE PHYSICS SYSTEM UPDATES
         HHgActionManager.doActionsForHolders(deltaT/1000);
-
         HHgScene.doEndOfFrame();
         HHgScene.doUpdateHolders();
-        /*
-        if(HHgShowFPS){
-            
-          count++;
-          average += deltaT;
-          if(high < deltaT) high = deltaT; if(low > deltaT)low = deltaT; if(deltaT > 34)framesOver16++;
-          if(count === 30){
-            count = 0;
-            average = average / 30;
-            average = 1000 / average;
-            stored = "FPS: " + Math.round(average) + " high: " + Math.round(high) + " low: " + Math.round(low) + " #over: " + framesOver16;
-            console.log(stored);
-            high = 0; low = 100;
-            average = 0;
-            framesOver16 = 0;
 
-          }
-        }
-        */
-      
-        
+
 
       } );
   }
- 
+
 }
-
-/*
-  var loopObject = {};
-
-  loopObject.gameLoop = function(callback) {
-    loopObject.lastGameLoopFrame = new Date().getTime();
-
-    // Short circuit the loop check in case multiple scenes
-    // are staged immediately
-    loopObject.loop = true; 
-
-    // Keep track of the frame we are on (so that animations can be synced
-    // to the next frame)
-    loopObject._loopFrame = 0;
-
-    // Wrap the callback to save it and standardize the passed
-    // in time. 
-    loopObject.gameLoopCallbackWrapper = function() {
-      var now = new Date().getTime();
-      loopObject._loopFrame++;
-      loopObject.loop = window.requestAnimationFrame(Q.gameLoopCallbackWrapper);
-      var dt = now - Q.lastGameLoopFrame;
-      //Prevent fast-forwarding by limiting the length of a single frame.
-      if(dt > Q.options.frameTimeLimit) { dt = Q.options.frameTimeLimit; }
-      callback.apply([dt / 1000]);  
-      Q.lastGameLoopFrame = now;
-    };
-
-    window.requestAnimationFrame(Q.gameLoopCallbackWrapper);
-    return Q;
-  };
-
-  */
 
 
 
