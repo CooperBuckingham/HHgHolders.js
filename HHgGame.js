@@ -7,7 +7,17 @@ var HHgGame = {};
 	HHgGame.doStart = function(){
 		//GAME STARTS HERE
 	console.log("start game");
-		if(true){
+	if(true){
+			var theOne = HHgGetHolder({w:100,h:100});
+			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
+			theOne.doAddSprite("pool");
+			theOne.test = "pool";
+			//theOne.setMouseable(true);
+			//theOne.setIsDraggable(true);
+			theOne.doAddCSSClass("testDiv");
+
+	}
+		if(false){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
@@ -54,6 +64,8 @@ var HHgGame = {};
 				randomSprite(testBall);
 				testBall.setMouseable(true);
 				testBall.setIsDraggable(true);
+
+				testBall.doAddCSSClass("testDiv");
 
 				//testBall.doActionRotateBy({rotation:360,time: 30});
 

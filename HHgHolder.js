@@ -773,11 +773,6 @@ this.getVisible = function(){
 					child.doRecalcScale();
 				});
 			}
-
-
-
-
-
 		}
 	//=============== ROTATION ====================
 
@@ -834,8 +829,6 @@ this.getVisible = function(){
 				});
 			}
 
-
-
 		}
 
 //==================== management
@@ -847,9 +840,7 @@ this.getVisible = function(){
 
 			HHgScene.doAddToDirtyList(that);
 
-
 		}
-
 
 		this.doAddChild = function (child){
 			//this should be a private method
@@ -860,7 +851,6 @@ this.getVisible = function(){
 			}
 
 			_children.push(child);
-
 
 		}
 
@@ -994,8 +984,6 @@ this.getVisible = function(){
 		doFinalizeAction(theAction);
 
 	}
-
-
 
 	this.doActionRotateLeftTo = function(props){
 
@@ -1167,13 +1155,14 @@ this.getVisible = function(){
 	//======custom CSS==========
 	this.doAddCSSClass = this.doAddCSSClass = function(className){
 		this.classAddingObject = this.classAddingObject || {};
-		this.classAddingObject[className] = true;
-		this.frameUpdates
+		this.classAddingObject[className] = className;
+		this.changes.classList = true;
 	}
 
 	this.doRemoveCSSClass = this.doRemoveCSSClass = function(className){
 		this.classRemovingObject = this.classRemovingObject || {};
-		this.classRemovingObject[className] = true;
+		this.classRemovingObject[className] = className;
+		this.changes.classList = true;
 	}
 
 

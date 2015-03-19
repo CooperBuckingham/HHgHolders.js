@@ -7,8 +7,8 @@ b, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
   margin: 0;
@@ -22,7 +22,7 @@ time, mark, audio, video {
 
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
+article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
   display: block;
 }
@@ -77,10 +77,10 @@ html {
 }
 
 body {
-	
+
 	background-color: black;
 
-	
+
 
 }
 
@@ -133,17 +133,17 @@ html body .game-holder{
 html body #all{
 
 	display: inline-block;
-	
+
 	position: relative;
   top: 0;
   left: 0;
 
-  
-	
+
+
 	background-color: black;
 	overflow: hidden;
-  	
-	
+
+
 }
 
 #loading-screen{
@@ -169,7 +169,7 @@ html body #all{
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
   border: dashed 2px white;
-  
+
 }
 #inside-loading-screen h1{
   font-size: 2em;
@@ -186,7 +186,7 @@ html body #all{
 
 .textDiv{
   position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; display: table;
-  
+
   cursor: default;
 }
 
@@ -194,8 +194,13 @@ html body #all{
    display: table-cell; vertical-align: middle; text-align: center;
    width: 100%;
    height: 100%;
-    
+
     cursor: default;
-  
+
 }
+
+.testDiv{
+
+}
+
 
