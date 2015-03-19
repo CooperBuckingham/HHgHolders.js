@@ -15,25 +15,23 @@ var HHgMouse = {};
 
 	that.dragging;
 	that.lastMousePosXY;
-	
+
 	that.thisMousePosXY;
-	
+
 	that.lastFrameTime;
 	that.thisFrameTime;
 	that.mouseCircle;
 
-	
-	
-	that.doStart = function(){
 
-		console.log("mouse start");
+
+	that.doStart = function(){
 
 		that.mouseCircle = HHgGetHolder({w:25,h:25,zIndex: 100});
 		that.mouseCircle.doMoveToNewParent({parent: HHgGameHolder, position: HHg0Vector, isScreenPos: false});
 		that.mouseCircle.doAddSprite("mouse");
 		that.mouseCircle.setVisible(false);
 		that.mouseCircle.setMouseable(false);
-		
+
 		HHgScene.doAddMouseDownAndUpListeners();
 
 	}
@@ -41,9 +39,9 @@ var HHgMouse = {};
 	that.doResetVars = function(){
 		that.clickedDownOn = undefined;
 		that.lastMousePosXY = undefined;
-		
+
 		that.thisMousePosXY = undefined;
-		
+
 		that.lastFrameTime = undefined;
 		that.thisFrameTime = undefined;
 		that.dragging = undefined;
@@ -58,7 +56,7 @@ var HHgMouse = {};
 
 		that.clickedDownOn = holder;
 		that.lastMousePosXY = xy;
-		
+
 		that.thisMousePosXY = xy;
 		that.thisFrameTime = window.performance.now();
 		that.lastFrameTime = that.thisFrameTime;
@@ -69,7 +67,7 @@ var HHgMouse = {};
 			that.draggingMouseOriginalPosXY = xy;
 			that.draggingOffsetXY = xy.returnVectorSubtractedFromVector(that.draggingOriginalPosXY);
 		}
-		
+
 	}
 
 	that.doUpdateVars = function(xy){
@@ -88,15 +86,15 @@ var HHgMouse = {};
 			that.doUpdateVars(xy);
 			that.dragging.doMouseMove();
 		}
-		
+
 	}
 
 	that.doMouseDown = function (holders, xy){
 		that.mouseCircle.doShow(xy);
-		
-		
+
+
 		if(!holders || holders.length < 1){
-			
+
 			return;
 		}
 
@@ -111,7 +109,7 @@ var HHgMouse = {};
 	var isOverClickedDown = false;
 
 	that.doMouseUp = function (holders, xy){
-		
+
 		that.mouseCircle.doHide();
 		that.doUpdateVars(xy);
 
@@ -122,7 +120,7 @@ var HHgMouse = {};
 		if(holders ){
 			for(var i = 0; i < holders.length; i++){
 				if(holders[i] === that.clickedDownOn){
-					
+
 					isOverClickedDown = true;
 					break;
 				}
@@ -138,11 +136,11 @@ var HHgMouse = {};
 		isOverClickedDown = false;
 
 		that.doResetVars();
-		
+
 	}
 
 	that.doMouseCancel = function(holders, xy){
-		
+
 		that.doMouseUp(holders, xy);
 	}
 
