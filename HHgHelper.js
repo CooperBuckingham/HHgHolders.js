@@ -436,6 +436,7 @@ var HHg = {
 				if(typeof test !== "string") return false;
 
 				if(test[0] === "#"){
+
 					test = new HHgColorRGBA(HHgColorHelper.getRGBfromHex(test));
 					return test;
 				}

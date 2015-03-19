@@ -21,7 +21,8 @@ var HHgGame = {};
 			listOfHolders.push(theOne);
 			theOne.setPositionInScreenTo(new HHgVector2(0,450));
 
-			//theOne.doActionMoveInScreenBy({x:0,y: -700,time: 10, easeIn: 20 });
+			theOne.doActionMoveInScreenBy({x:0,y: -700,time: 10, easeIn: 20 });
+			theOne.doActionRotateForever(HHg.returnRandomInt(1,35));
 
 			//theOne.doActionRotateBy({rotation:360,time: 30});
 
@@ -57,7 +58,7 @@ var HHgGame = {};
 				//testBall.doActionRotateBy({rotation:360,time: 30});
 
 				testBall.doActionRotateForever(HHg.returnRandomInt(1,35));
-				//testBall.doAddParagraphText({text: "" + i, color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "60", shadow: {x: 3, y: 3, color: "#000000", blur: 2}});
+				testBall.doAddParagraphText({text: "" + i, color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 3, y: 3, color: "#000000", blur: 2}});
 
 
 				listOfHolders.push(testBall)
