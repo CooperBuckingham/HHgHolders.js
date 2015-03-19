@@ -963,13 +963,8 @@ this.getVisible = function(){
 
 	this.doActionMoveInScreenTo = function(props){
 
-		HHg.returnPositionProps(props);
-		HHg.returnTimeProps(props);
-		HHg.returnEaseProps(props);
-		HHg.returnOnCompleteProps(props);
-
 		var theAction;
-		theAction = (new HHgActionMoveBy(that, _positionInScreenOriginal.returnVectorSubtractedFromVector(props.position), _positionInScreenOriginal, props.time, props.ease, props.onComplete));
+		theAction = new HHgActionMoveBy(that, _positionInScreenOriginal.returnVectorSubtractedFromVector(HHg.returnPositionProps(props)), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
@@ -978,13 +973,8 @@ this.getVisible = function(){
 
 	this.doActionMoveInScreenBy = function(props){
 
-		HHg.returnPositionProps(props);
-		HHg.returnTimeProps(props);
-		HHg.returnEaseProps(props);
-		HHg.returnOnCompleteProps(props);
-
 		var theAction;
-		theAction = (new HHgActionMoveBy(that, props.position, _positionInScreenOriginal, props.time, props.ease, props.onComplete));
+		theAction = new HHgActionMoveBy(that, HHg.returnPositionProps(props), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
@@ -992,11 +982,9 @@ this.getVisible = function(){
 	}
 
 	this.doActionMoveForever = function(props){
-		HHg.returnPositionProps(props);
-		HHg.returnEaseProps(props);
 
 		var theAction;
-		theAction = new HHgActionMoveForever(that, props.position, _positionInScreenOriginal, props.ease);
+		theAction = new HHgActionMoveForever(that, HHg.returnPositionProps(props) || HHg.returnSpeedXYprops(props), _positionInScreenOriginal, HHg.returnEaseProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
@@ -1004,13 +992,12 @@ this.getVisible = function(){
 
 	this.doActionRotateBy = function(props){
 
-		HHg.returnRotationProps(props);
 		HHg.returnTimeProps(props);
 		HHg.returnEaseProps(props);
 		HHg.returnOnCompleteProps(props);
 
 		var theAction;
-		theAction = new HHgActionRotateBy(that, props.rotation, _rotationOriginal, props.time, props.ease, props.onComplete);
+		theAction = new HHgActionRotateBy(that, HHg.returnRotationProps(props), _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
@@ -1020,12 +1007,7 @@ this.getVisible = function(){
 
 	this.doActionRotateLeftTo = function(props){
 
-		HHg.returnRotationProps(props);
-		HHg.returnTimeProps(props);
-		HHg.returnEaseProps(props);
-		HHg.returnOnCompleteProps(props);
-
-			var degrees = props.rotation % 360;
+			var degrees = HHg.returnRotationProps(props) % 360;
 			if(degrees > 180){
 				degrees = -(degrees - 180);
 			}
@@ -1037,7 +1019,7 @@ this.getVisible = function(){
 			}
 
 		var theAction;
-		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, props.time, props.ease, props.onComplete);
+		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
@@ -1045,12 +1027,7 @@ this.getVisible = function(){
 
 	this.doActionRotateRightTo = function(props){
 
-		HHg.returnRotationProps(props);
-		HHg.returnTimeProps(props);
-		HHg.returnEaseProps(props);
-		HHg.returnOnCompleteProps(props);
-
-			var degrees = props.rotation % 360;
+			var degrees = HHg.returnRotationProps(props) % 360;
 			if(degrees > 180){
 				degrees = -(degrees - 180);
 			}
@@ -1062,7 +1039,7 @@ this.getVisible = function(){
 			}
 
 		var theAction;
-		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, props.time, props.ease, props.onComplete);
+		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
@@ -1070,48 +1047,33 @@ this.getVisible = function(){
 
 	this.doActionRotateForever = function(props){
 
-		HHg.returnSpeedProps(props);
-		HHg.returnEaseProps(props);
-
-
 		var theAction;
-		theAction = new HHgActionRotateForever(that, props.speed, props.ease);
+		theAction = new HHgActionRotateForever(that, HHg.returnRotationProps(props) || HHg.returnSpeedNProps(props), HHg.returnEaseProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 	}
 
 	this.doActionScaleBy = function(props){
 
-		HHg.returnScaleProps(props);
-		HHg.returnTimeProps(props);
-		HHg.returnEaseProps(props);
-		HHg.returnOnCompleteProps(props);
-
 		var theAction;
-		theAction = new HHgActionScaleBy(that, props.scale, _scaleOriginal, props.time, props.ease, props.onComplete);
+		theAction = new HHgActionScaleBy(that, HHg.returnScaleProps(props), _scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
 	}
 	this.doActionScaleTo = function(props){
-		HHg.returnScaleProps(props);
-		HHg.returnTimeProps(props);
-		HHg.returnEaseProps(props);
-		HHg.returnOnCompleteProps(props);
 
 		var theAction;
-		theAction = new HHgActionScaleBy(that, props.scale.returnVectorScaledByInverse(_scaleOriginal), _scaleOriginal, props.time, props.ease, props.onComplete);
+		theAction = new HHgActionScaleBy(that, HHg.returnScaleProps(props).returnVectorScaledByInverse(_scaleOriginal), _scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
 	}
 
 	this.doActionScaleForever = function(props){
-		HHg.returnScaleProps(props);
-		HHg.returnEaseProps(props);
 
 		var theAction;
-		theAction = new HHgActionScaleForever(that, props.scale, props.ease);
+		theAction = new HHgActionScaleForever(that, HHg.returnScaleProps(props) || HHg.returnSpeedXYprops(props), HHg.returnEaseProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
@@ -1119,16 +1081,8 @@ this.getVisible = function(){
 
 	this.doActionFollowQuad = function(props){
 
-
-		HHg.returnPositionProps(props);
-		HHg.returnControlPositionProps(props);
-		HHg.returnTimeProps(props);
-		HHg.returnEaseProps(props);
-		HHg.returnOnCompleteProps(props);
-
-
 		var theAction;
-		theAction = new HHgActionFollowQuad(that, props.control, props.position, _positionInScreenOriginal, props.time, props.ease, props.onComplete);
+		theAction = new HHgActionFollowQuad(that, HHg.returnControlPositionProps(props), HHg.returnPositionProps(props), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), props.onComplete, HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
@@ -1136,11 +1090,8 @@ this.getVisible = function(){
 
 	this.doActionTimer = function(props){
 
-		HHg.returnTimeProps(props);
-		HHg.returnOnCompleteProps(props);
-
 		var theAction;
-		theAction = new HHgActionTimer(that, props.time, props.onComplete);
+		theAction = new HHgActionTimer(that, HHg.returnTimeProps(props) || HHg.returnSpeedNProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 	}

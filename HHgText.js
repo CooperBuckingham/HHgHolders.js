@@ -9,31 +9,29 @@ var HHgText = {};
 
 
 	that.doAddTextParagraphToHolder = function(owner, props){
-		that.returnTextProps(props);
-		that.returnFontSizeProps(props);
-		that.returnFontProps(props);
-		that.returnHAlignProps(props);
-		that.returnVAlignProps(props);
-		HHg.returnColorProps(props);
 
-
-
-		HHgScene.doAddTextDiv(owner, props);
+		HHgScene.doAddTextDiv(owner, {text:that.returnTextProps(props),
+																	 fontSize: that.returnFontSizeProps(props),
+																	 fontStyle: that.returnFontProps(props),
+																	 hAlign: that.returnHAlignProps(props),
+																	 vAlign: that.returnVAlignProps(props),
+																	 color: HHg.returnColorProps(props),
+																	 shadow: that.returnShadowProps(props)
+																	});
 
 	}
 
 	that.doAddTextCanvasToHolder = function(owner, props){
-		that.returnTextProps(props);
-		that.returnFontSizeProps(props);
-		that.returnFontProps(props);
-		that.returnHAlignProps(props);
-		that.returnVAlignProps(props);
-		HHg.returnColorProps(props);
-		that.returnShadowProps(props);
 
-		props.size = {width: 1, height: 1};
-
-		HHgScene.doAddTextToCanvas(owner, props);
+		HHgScene.doAddTextToCanvas(owner, {text:that.returnTextProps(props),
+																	 fontSize: that.returnFontSizeProps(props),
+																	 fontStyle: that.returnFontProps(props),
+																	 hAlign: that.returnHAlignProps(props),
+																	 vAlign: that.returnVAlignProps(props),
+																	 color: HHg.returnColorProps(props),
+																	 shadow: that.returnShadowProps(props),
+																	 size: {width: 1, height: 1}
+																	});
 
 	}
 

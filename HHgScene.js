@@ -334,6 +334,7 @@ function doAddFunctionsToScene(scene){
 		var tempFontSize = props.fontSize * parentScale;
 		child.style.color = props.color ? props.color.returnString() : "black";
 		child.style.fontSize = "" +  + "px";
+		child.style.fontStyle = props.fontStyle
 		child.classList.add(props.fontStyle);
 		child.innerHTML = props.text;
 
