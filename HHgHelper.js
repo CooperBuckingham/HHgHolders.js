@@ -50,7 +50,8 @@ var HHg = {
 	returnPositionProps: function(props){
 
 		if(props instanceof HHgVector2){
-			return props;
+			props = {position: props};
+			return props.position;
 		}
 
 		if(props.position instanceof HHgVector2){
@@ -87,7 +88,10 @@ var HHg = {
 	},
 
 	returnZIndexProps: function(props){
-		if(!isNaN(props) ) return props;
+		if(!isNaN(props) ){
+			props = {zIndex: props};
+			return props.zIndex;
+		}
 
 		if(props.zIndex !== undefined){
 			return props.zIndex;
@@ -104,7 +108,7 @@ var HHg = {
 		}
 
 		if(props.Z !== undefined){
-			props.zIndex = props.z;
+			props.zIndex = props.Z;
 			return props.zIndex;
 		}
 
@@ -115,9 +119,10 @@ var HHg = {
 	returnSizeProps: function(props){
 
 		if(props instanceof HHgVector2){
-			return props;
+			props = {size: props};
+			return props.size;
 		}
-		
+
 		if(props.size instanceof HHgVector2){
 			return props.size;
 		}else if(props.sizeXY instanceof HHgVector2){
@@ -126,11 +131,19 @@ var HHg = {
 		}
 
 		if(props.size !== undefined){
+				if(props.size.w !== undefined){
+					props.size = new HHgVector2(props.size.w, props.size.h);
+					return props.size;
+				}
+				if(props.size.x !== undefined){
+					props.size = new HHgVector2(props.size.x, props.size.y);
+					return props.size;
+				}
 			props.size = new HHgVector2(props.size, props.size);
 			return props.size;
 		}
 
-	
+
 		if(props.w !== undefined){
 			props.size = new HHgVector2(props.w, props.h);
 			return props.size;
@@ -145,7 +158,7 @@ var HHg = {
 			props.size = new HHgVector2(props.width, props.height);
 			return props.size;
 		}
-		
+
 		props.size = new HHgVector2(HHgGameHolder.getWidthOriginal(), HHgGameHolder.getHeightOriginal());
 		return props.size;
 
@@ -153,15 +166,18 @@ var HHg = {
 
 	returnScaleProps: function(props){
 		if(props === undefined){
-			return new HHgVector2(1,1);
+			props = {scale: new HHgVector2(1,1) }
+			return props.scale;
 		}
 
 		if(props instanceof HHgVector2){
-			return props;
+			props = {scale: props};
+			return props.scale;
 		}
 
 		if(!isNaN(props)){
-			return new HHgVector2(props, props);
+			props = {scale: new HHgVector2(props, props)};
+			return props.scale;
 		}
 
 		if(props.scale instanceof HHgVector2){
@@ -191,7 +207,8 @@ var HHg = {
 	returnRotationProps: function(props){
 
 		if(!isNaN(props)){
-			return props;
+			props = {rotation: props};
+			return props.rotation;
 		}
 
 		if(props.rotation !== undefined){
@@ -200,7 +217,7 @@ var HHg = {
 
 		if(props.rot !== undefined){
 			props.rotation = props.rot;
-			return props.rot
+			return props.rotation;
 		}
 
 		if(props.rotate !== undefined){
@@ -216,7 +233,8 @@ var HHg = {
 	returnSpeedProps: function(props){
 
 		if(!isNaN(props)){
-			return props;
+			props = {speed: props};
+			return props.speed;
 		}
 
 		if(props.speed !== undefined){
@@ -235,7 +253,8 @@ var HHg = {
 	returnTimeProps: function(props){
 
 		if(!isNaN(props)){
-			return props;
+			props = {time: props};
+			return props.time;
 		}
 
 		if(props.time !== undefined){
@@ -259,17 +278,17 @@ var HHg = {
 	},
 
 	returnEaseProps: function(props){
-		
+
 
 		if(props.easeIn !== undefined){
-			
+
 		}else if(props.in !== undefined){
 			props.easeIn = props.in;
-			
+
 		}
 
 		if(props.easeOut !== undefined){
-	
+
 		}else if(props.out !== undefined){
 			props.easeOut = props.out;
 		}
@@ -283,13 +302,13 @@ var HHg = {
 			if(!isNaN(props.ease)){
 				props.ease = {easeOut: props.ease, easeIn: props.ease};
 				return props.ease;
-				
+
 			}else{
 				return props.ease;
 			}
-			
+
 		}
-		
+
 		return undefined;
 
 	},
@@ -305,6 +324,11 @@ var HHg = {
 			return props.onComplete;
 		}
 
+		if(props.onFinish){
+			props.onComplete = props.onFinish;
+			return props.onComplete;
+		}
+
 		props.onComplete = undefined;
 
 		return props.onComplete;
@@ -314,7 +338,8 @@ var HHg = {
 	returnControlPositionProps: function(props){
 
 		if(props instanceof HHgVector2){
-			return props;
+			props = {control: props};
+			return props.control;
 		}
 
 		if(props.control instanceof HHgVector2){
@@ -352,12 +377,16 @@ var HHg = {
 	returnColorProps: function(props){
 
 		if(props instanceof HHgColorRGBA === true ){
-			return props;
+			props = {color: props};
+			return props.color;
 		}
-	
+		if(props.color instanceof HHgColorRGBA === true ){
+			return props.color;
+		}
+
 		if(props instanceof HHgColorHSLA === true){
-			props = HHgColorHelper.getRGBfromHSL(props);
-			return props;
+			props = {color: HHgColorHelper.getRGBfromHSL(props)};
+			return props.color;
 		}
 		if(props.color instanceof HHgColorHSLA === true){
 			props.color = HHgColorHelper.getRGBfromHSL(props.color);
@@ -366,7 +395,7 @@ var HHg = {
 
 		function stringTest(test){
 				if(typeof test !== "string") return false;
-				
+
 				if(test[0] === "#"){
 					test = new HHgColorRGBA(HHgColorHelper.getRGBfromHex(test));
 					return test;
@@ -407,8 +436,8 @@ var HHg = {
 
 		test = stringTest(props);
 		if(test){
-			props = test;
-			return props;
+			props = {color: test};
+			return props.color;
 		};
 
 
@@ -440,20 +469,24 @@ var HHg = {
 
 		test = RGBHSLtest(props);
 		if(test){
-			props = test;
-			return props;
+			props = {color: test};
+			return props.color;
 		}
-		
+
 
 		return undefined;
-		
+
 	},
 
 	returnIsScreenPosProps: function(props){
-		if(props === undefined) return false;
+		if(props === undefined){
+			props = {isScreenPos: false};
+			return props.isScreenPos;
+		}
 
 		if(typeof props === "boolean"){
-			return props;
+			props = {isScreenPos: props};
+			return props.isScreenPos;
 		}
 
 		if(props.isScreenPos !== undefined){
@@ -499,7 +532,7 @@ var HHg = {
 		return Math.round(num * places)/places;
 	},
 
-	
+
 
 }
 
