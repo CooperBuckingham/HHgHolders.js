@@ -182,11 +182,9 @@ function HHgActionRotateForever(owner, speed, ease){
 	HHgAction.call(this, owner, null, null, null, ease, null);
 
 	this.perSecondN = speed;
-	var that = this;
 
 	this.whatShouldIDoThisFrame = function(deltaT){
-		console.log(that.perSecondN);
-		owner.setRotationOriginalBy(that.perSecondN * deltaT);
+		owner.setRotationOriginalBy(this.perSecondN * deltaT);
 		//could add ease in option here
 
 	}

@@ -230,7 +230,7 @@ var HHg = {
 
 	},
 
-	returnSpeedProps: function(props){
+	returnSpeedNProps: function(props){
 
 		if(!isNaN(props)){
 			props = {speed: props};
@@ -248,6 +248,45 @@ var HHg = {
 		props.speed = undefined;
 		return undefined;
 
+	},
+
+	returnSpeedXYProps: function(props){
+
+		if(props instanceof HHgVector2){
+			props = {speed: props};
+			return props.speed;
+		}
+
+		if(props.speed instanceof HHgVector2){
+			return props.speed;
+		}else if(props.speedXY instanceof HHgVector2){
+			props.speed = props.speedXY;
+			return props.speed;
+		}
+
+		if(props.speed !== undefined){
+				if(props.speed.x !== undefined){
+					props.speed = new HHgVector2(props.speed.x, props.speed.y);
+					return props.speed;
+				}
+
+			if(props.speed.X  !== undefined){
+				props.speed = new HHgVector2(props.speed.X, props.speed.Y);
+				return props.speed;
+			}
+
+			props.speed = new HHgVector2(props.speed, props.speed);
+			return props.speed;
+		}
+
+
+
+		if(props.speedX  !== undefined){
+			props.speed = new HHgVector2(props.speedX, props.speedY);
+			return props.speed;
+		}
+
+		return props.speed;
 	},
 
 	returnTimeProps: function(props){
