@@ -13,7 +13,7 @@ var HHgScreen = {
 	isLandscapeGame : true,
 };
 
-var HHgTestBoxes = true;
+var HHgTestBoxes = false;
 
 function HHgUpdateHardwareScreen(){
 	//could update landscape etc here
@@ -255,7 +255,6 @@ function doAddFunctionsToScene(scene){
 					holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
 				}
 
-
 				//div.style.width = "" + holder.getWidthNet()  + "px";
 				//div.style.height ="" + holder.getHeightNet() + "px";
 			}
@@ -284,6 +283,19 @@ function doAddFunctionsToScene(scene){
 
 			if(changes.visible === true){
 				scene.doUpdateHolderVisible(holder);
+			}
+
+			if(changes.classList === true){
+				for(var key in holder.classAddingObject){
+					holder.getDiv().classList.add(holder.classAddingObject[key]);
+				}
+				holder.classAddingObject = undefined;
+
+				for(var key in holder.classRemovingObject){
+					holder.getDiv().classList.remove(holder.classRemovingObject[key]);
+				}
+				holder.classRemovingObject = undefined;
+
 			}
 
 
@@ -333,7 +345,7 @@ function doAddFunctionsToScene(scene){
 		var parentScale = owner.getScaleNetForChildScale().getX();
 		var tempFontSize = props.fontSize * parentScale;
 		child.style.color = props.color ? props.color.returnString() : "black";
-		child.style.fontSize = "" +  + "px";
+		child.style.fontSize = "" + tempFontSize + "px";
 		child.style.fontStyle = props.fontStyle
 		child.classList.add(props.fontStyle);
 		child.innerHTML = props.text;
@@ -341,7 +353,7 @@ function doAddFunctionsToScene(scene){
 		child.style.textAlign = props.hAlign;
 		child.style.verticalAlign = props.vAlign;
 
-		parent.style.border = "4px solid green";
+		//parent.style.border = "4px solid green";
 
 		parent.classList.add("textDiv");
 
@@ -349,11 +361,12 @@ function doAddFunctionsToScene(scene){
 		child.id = owner.getHash() + "p";
 
 		if(props.shadow !== undefined){
+
 			props.shadow.x *= parentScale;
 			props.shadow.y *= parentScale;
 			props.shadow.blur *= parentScale;
 
-			child.style.textShadow = "" + props.shadow.x + "px " + props.shadow.y + "px " + props.shadow.blur + "px " + props.shadow.color;
+			child.style.textShadow = "" + props.shadow.x + "px " + props.shadow.y + "px " + props.shadow.blur + "px " + props.shadow.color.returnString();
 		}
 
 		owner.textDiv = parent;

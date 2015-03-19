@@ -50,7 +50,7 @@ var HHgHolder = function(props){
 
 		_mouseable = false,
 		_visible = true,
-		_classList = [],
+		_classList = {},
 
 		_canvas;
 
@@ -63,27 +63,6 @@ var HHgHolder = function(props){
 
 	this.test = "no";
 
-	this.frameUpdates = {
-		positionBy: undefined,
-		rotationBy: undefined,
-		scaleBy: undefined,
-		positionTo: undefined,
-		rotationTo: undefined,
-		scaleTo: undefined,
-		positionAbsolute: undefined,
-	};
-
-	this.changes = {
-		scale: false,
-		position: false,
-		rotation: false,
-		tint: false,
-		backgroundColor: false,
-		visible: false,
-		mouseable: false,
-		zIndex: false,
-	};
-
 	this.resetChanges = function(){
 		this.changes = {
 			scale: false,
@@ -94,8 +73,11 @@ var HHgHolder = function(props){
 			visible: false,
 			mouseable: false,
 			zIndex: false,
+			classList: false,
 		}
 	};
+
+	this.resetChanges();
 
 	this.resetFrameUpdates = function(){
 		this.frameUpdates = {
@@ -109,6 +91,8 @@ var HHgHolder = function(props){
 		}
 
 	};
+
+	this.resetFrameUpdates();
 
 	this.resetFramePositionUpdates = function(){
 		this.frameUpdates.positionBy = undefined;
@@ -170,10 +154,18 @@ var HHgHolder = function(props){
 
 		actionsTotal -= _actions.length;
 		HHgActionManager.doRemoveOwner(that);
+		_actions = {};
 
 		_children = [];
-		_classList = [];
-		_actions = {};
+
+
+
+		for(var key in _classList){
+			this.doRemoveCSSClass(key);
+		}
+
+		_classList = {};
+
 		_mouseable = false;
 		_visible = false;
 
@@ -1169,6 +1161,19 @@ this.getVisible = function(){
 
 	this.doAddCanvasText = this.doAddText = function(props){
 		HHgText.doAddTextCanvasToHolder(this,props);
+	}
+
+
+	//======custom CSS==========
+	this.doAddCSSClass = this.doAddCSSClass = function(className){
+		this.classAddingObject = this.classAddingObject || {};
+		this.classAddingObject[className] = true;
+		this.frameUpdates
+	}
+
+	this.doRemoveCSSClass = this.doRemoveCSSClass = function(className){
+		this.classRemovingObject = this.classRemovingObject || {};
+		this.classRemovingObject[className] = true;
 	}
 
 
