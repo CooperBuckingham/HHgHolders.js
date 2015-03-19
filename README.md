@@ -26,15 +26,21 @@ Though one could easily be added and then use updates on HHgHolders.
 Doc v0.0.5
 //====================================================================
 
+Preface: for the most part, you should not need to modify any engine files
+          except for HHgConfig.js. This file provides the top level settings
+          debug settings, and entry point for custom code.
+
 1. The scene will automatically scale visually to the width of the screen.
   a. But all measurements are done on a point system of 1920/1080.
-    aa. so even if you are on a tiny phone, or in a small browser window, you would still use 1920 as screen width.
-  b. All of these settings can be changed in HHgScene.js
+    aa. so even if you are on a tiny phone, or in a small browser window, you would still commonly use 1920 as screen width.
+  b. All of these settings can be changed in HHgConfig.js
 
 2. HHgLoadingScreen.js is loaded before any engine processing takes place.
+  a. This is the only other file you would need to modify.
 
 3. HHgGame.doStart() is called by the scene once setup is finished.
-  a. Your specific code to start your game goes here.
+  a. Modifying HHgCustomOverride in HHgConfig.js will use the version in HHgConfig as a starting point
+  a. Otherwise the engine will run the default demo doStart() located in HHgGame.js.
 
 4. HHgActionManager runs a loop which essentially has 3 steps per frame:
   a. calculate outcomes of all HHgActions.
@@ -50,7 +56,7 @@ Doc v0.0.5
         HHgReleaseHolder(someHoldervar);
     ab. a holder needs to be added to a holder in order to be visible, and in most cases needs a sprite/image:
       someHolder.doMoveToNewParent({parent: someOtherHolder, position: new HHgVector2(-200,-200), isScreenPos: true});
-      someHolder.doAddSprite("pool");
+      someHolder.doAddSprite("testSprite");
       someHolder.doAddParagraphText({text: "my text", color: {H: 255, S: .5, L: .5, A: 1}, shadow: {color: "black", x: 4, y: 4, blur: 4}});
       someHolder.setMouseable(true);
       someHolder.setIsDraggable(true);
@@ -68,8 +74,8 @@ Doc v0.0.5
 6. HHgGameHolder is the top level Holder in the hierarchy.
   a. any HHgHolders you wish to add to the game and not be parented to another Holder should be parented to this:
     someHolder.doMoveToNewParent({parent: HHgGameHolder, position: {x: 200, y: 200} });
-    aa. providing no parent argument will default to adding to HHgHolder.
-  b. HHgScene is technically an HHgHolder, but scale and position will be incorrect for children
+    aa. providing no parent argument will default to adding to HHgGameHolder.
+  b. HHgScene is technically an HHgHolder, but scale and position will be incorrect for children.
 
 7. Properties Object - most classes and high level functions expect a javascript {} to be passed as arguments.
   a. The HHgHelper object then runs one function per expected argument to process and filter the input
@@ -83,7 +89,7 @@ Doc v0.0.5
     someHolder.doActionRotateBy({rotation: HHg.returnRandomInt(120,720), time: HHg.returnRandomInt(5,35)});
     someHolder.doActionFollowQuad({cx: 0, cy: 540, x: 960, y: -540, time: 10, easeIn: 25, easeOut: 25 });
   b. The holder and the actionManager will handle the rest.
-  c. You can pass a name key/value into the above functions to uniquely name an action on an object.
+  c. You can pass a 'name' key/value into the above functions to uniquely name an action on an object.
     ca. This then allows you to call doRemoveActionByName(name);
   d. passing a key for 'onComplete: someFunction' to the function will cause the passed function to be executed on completion.
   e. HHgHolder has actions for:
@@ -100,16 +106,17 @@ Doc v0.0.5
 10. Values
   a. the xy grid for positioning on the screen, and in Holders is 0,0 centric (default point dimension is 1920/1080)
   b. time is always in seconds
-  c. colors are always eventually in a HHgRGBA object, but most classes and functions will take HSL, RGB, or Hex values
+  c. colors are always eventually in a HHgColorRGBA object, but most classes and functions will take HSL, RGB, or Hex values
     ca. this just means that passing in arguments other than a color object will result in a conversion step.
   d. all position/rotation/scale values are in points, so 1 or 1.5 or .044567. no strings, no trailing "px", etc.
-    da. the engine will handle all of the conversions in the scene. You can modify rounding behavior there though.
+    da. the engine will handle all of the conversions in the scene. You can modify rounding behavior there though if you must.
 
 11. Mouse and Touch
   a. there are built in mouse and touch handlers on HHgMouse.js, the engine will use the correct ones based on device type.
-  b. you should not need to touch HHgMouse.js, instead, override the existing HHgHolder methods:
+  b. you should not need to modify HHgMouse.js, instead, override the existing HHgHolder methods:
     doMouseDown(); doMouseUp(); doStartMouseMove(); doMouseMove(); doEndMouseMove();
   c. the engine calculates a holder as 'touched' based on z-index and canvas pixel alpha;
+    -note: if a holder is set to mouseable, but has no canvas, then the holder width and height will be used.
     ca. but a Holder must have mouseable set to true, which is set to false by default.
       someHolder.setMouseable(true);
   d. for a holder to recieve the move events, it must be set to draggable.
@@ -121,16 +128,18 @@ Doc v0.0.5
   a. all color in the engine eventually comes down to R: 1-255 G: 1-255 B: 1-255 A: 0-1
     aa. and creating a new color object:
       var someColor = new HHgColorRGBA(255,255,255,1);
-    ab. there is also an HSL color object: H: 0-360, S: 0-1, L: 0-1, A: 0-1
-      var someColor = new HHgColorHSLA(360,1,1,1);
+    ab. there is also an HSL color object: H: 0-360, S: 0-100, L: 0-100, A: 0-1
+      var someColor = new HHgColorHSLA(360,100,100,1);
     ac. HHgColorHelper has methods to convert to and from RGB, HSL and Hex
       aca. many functions and classes will do this conversion automatically if you pass in anything other than RGBA
+  b. HHgColor objects also have methods like .lighten(color, percent).
+  c. HHgColorHelper has methods like .blendRGBA(color1, color2, percent).
 
 13. HHgVector2
   a. HHgVector2 is the basis for passing grid coordinates, vectors, and scales.
     var someVector = new HHgVector2(50.5,323.7);
-  b. HHgVector2's contain all functions for vector math, add, subtract, divide, etc.
-    ba. these are also all versioned with aliased and verbose names
+  b. HHgVector2's contain all functions for vector math: add, subtract, divide, etc.
+    ba. these are also all versioned with aliased and verbose names:
     bb. they also return a new vector, and do not modify the existing vector
       var someVector = vector1.returnVectorPlusVector(vector2);
       var someVector = vector1.returnAdd(vector2);
@@ -166,14 +175,20 @@ Doc v0.0.5
   c. HHgActionManager runs a function every frame that receives the delta time since the last frame
     ca. actions already handle all of their updates via this delta
     cb. but you could add another function to the beginning of the list if you were interested in another type of game loop.
+      cba. or physics system, etc.
+  d. you can also use the doAddCSSClass() and doRemoveCSSClass() to use custom CSS class functionality in holders.
+    da. but I don't recommend it, as things like actions and canvases won't always play nice with them.
+  e. the engine uses the file HHgMain.css as it's only css file.
+    ea. this file resets browswer behavior, adds clearfix, and sets up some basic table functionality for text in divs
+    eb. you are welcome to add or change, but be careful of modifying any of the existing css elements, as alot depends on them
 
 15. Usage and Quirks
   a. you'll notice that pretty much any function that you are supposed to interact with start with "do" to do something or "return" to return something
   b. or "get" and "set" for property access. the engine does a lot of secondary computation after properties are set.
-    ba. this requires the use of setter functions instead of standard .access
+    ba. so this requires the use of functions instead of standard .access
   c. most functions require property objects to be passed as arguments {R: 255, G: 255, B: 255};
     ca. but if a function just takes 1 concept, then it usally can be short-handed for faster typing:
-      funcTakesColor(255,255,255);
+      funcTakesColor(255,255,255); or funcTakesColor(new HHgColorRGBA({R:255, G:255, B:255, A:1}));
 
 
 //=============================================================
