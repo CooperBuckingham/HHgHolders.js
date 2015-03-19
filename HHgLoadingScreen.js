@@ -40,8 +40,8 @@ var HHgLoadingScreen = {};
 		var img = new Image();
 
 		img.crossOrigin = "Anonymous";
-		img.src = "testPool.png";
-		
+		img.src = "../HHgEngine/testPool.png";
+
 		insideLoadingDiv.appendChild(canvas);
 
 		img.onload = function() {
@@ -60,7 +60,7 @@ var HHgLoadingScreen = {};
 	HHgLoadingScreen.loadingScreenOff = function(){
 
 	}
-	
+
 
 	HHgLoadingScreen.splashScreenStart();
 

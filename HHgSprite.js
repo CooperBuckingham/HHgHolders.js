@@ -16,15 +16,15 @@ var HHgImageManager = {
 	returnFileName : function(name){
 		switch(name){
 			case "pool":
-			return "testPool.png";
+			return "../HHgEngine/testPool.png";
 			case "soccer":
-			return "testSoccer.png";
+			return "../HHgEngine/testSoccer.png";
 			case "orange":
-			return "testOrange.png";
+			return "../HHgEngine/testOrange.png";
 			case "mouse":
-			return "testMouse.png";
+			return "../HHgEngine/testMouse.png";
 			default:
-			return "testOrange.png";
+			return "../HHgEngine/testOrange.png";
 		}
 	}
 
