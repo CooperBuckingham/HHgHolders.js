@@ -1,3 +1,4 @@
+<pre>
 //====================================================================
 HHgEngine v0.3.2
 by Cooper Buckingham
@@ -8,7 +9,7 @@ traditional HTML and CSS elements but extrapolates them into a standard
 sprite system, akin to Cocos2d or Apple's SpriteKit.
 
 The standard usage is to use only javascript, and then allow the engine
-to handle the rest. But all elements remain as standard <DIV>s so any
+to handle the rest. But all elements remain as standard DIVs so any
 modifications can be made to HTML/CSS/Javascript that would be made to
 a standard web page.
 
@@ -23,6 +24,7 @@ Though one could easily be added and then use updates on HHgHolders.
 
 Doc v0.0.5
 //====================================================================
+
 1. The scene will automatically scale visually to the width of the screen.
 	a. But all measurements are done on a point system of 1920/1080.
 		aa. so even if you are on a tiny phone, or in a small browser window, you would still use 1920 as screen width.
@@ -175,6 +177,7 @@ Doc v0.0.5
 
 //=============================================================
 //END
+</pre>
 
 
 
