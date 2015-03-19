@@ -1,3 +1,4 @@
+
 <pre>
 //====================================================================
 HHgEngine v0.3.2
@@ -151,7 +152,7 @@ Doc v0.0.5
     aa. this text is one of 2 types:
       aaa. someHolder.doAddParagraphText({text: "my text", color: {H: 255, S: .5, L: .5, A: 1}, shadow: {color: "black", x: 4, y: 4, blur: 4}});
       aab. someHolder.doAddCanvasText({text: "my text", color: {H: 255, S: .5, L: .5, A: 1}, shadow: {color: "black", x: 4, y: 4, blur: 4}});
-    ab. paragraph text creates a <pre> (preformatted text) element inside of the div.
+    ab. paragraph text creates a 'pre' (preformatted text) element inside of the div.
       aba. this text is then modified via standard CSS.
       abb. when the div is scaled, the scene recalculates the font size to adjust for the div scale.
       abc. this text is not part of the canvas, and is therefore not subject to mouse/touch tests.
