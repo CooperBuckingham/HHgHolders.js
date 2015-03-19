@@ -1,13 +1,14 @@
-var HHgGame = {};
+
 
 
 (function(){
 
+	if(HHgCustomOverride == true) return;
 
 	HHgGame.doStart = function(){
 		//GAME STARTS HERE
 	console.log("start game");
-	if(true){
+	if(false){
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});
 			theOne.doAddSprite("pool");
@@ -15,9 +16,11 @@ var HHgGame = {};
 			//theOne.setMouseable(true);
 			//theOne.setIsDraggable(true);
 			theOne.doAddCSSClass("testDiv");
+			testBall.doAddParagraphText({text: "" + i, color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 3, y: 3, color: "#000000", blur: 2}});
+
 
 	}
-		if(false){
+		if(true){
 
 			var theOne = HHgGetHolder({w:100,h:100});
 			theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-200,-200), isScreenPos: true});

@@ -1,36 +1,6 @@
 //scene will need pixel multiplier for retina, etc
-var HardwareScreen = {
-	w : window.innerWidth,
-	h : window.innerHeight,
-	//w : window.screen.availWidth,
-	//h : window.screen.availHeight,
-};
 
-var HHgScreen = {
-	w : 1920,
-	h : 1080,
-	maxh : 1440,
-	isLandscapeGame : true,
-};
 
-var HHgTestBoxes = false;
-
-function HHgUpdateHardwareScreen(){
-	//could update landscape etc here
-	//this doesn't get called anywhere currently, but will become part of the dynamic screen/landscape to portrait system.
-	HardwareScreen.w = window.innerWidth;
-	HardwareScreen.h = window.innerHeight;
-	if(HHgScreen.isLandscapeGame === true){
-		HHgScreenDiff.setXY(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
-	}else{
-		//eventually change this to support portrait
-		HHgScreenDiff.setXY(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
-	}
-	HHgPixelScale = HHgGameHolder.getScaleNetForChildScale().getX();
-
-	HHgScene.getDiv().style.maxHeight = "" + HHgGameHolder.getScaleNetForChildScale().getX() * HHgScreen.maxh + "px";
-
-}
 
 var HHgTrackedTouch,
 		HHgScreenSize = new HHgVector2(HHgScreen.w, HHgScreen.h),
@@ -579,10 +549,6 @@ function doAddFunctionsToScene(scene){
 	scene.doesHolderContainPoint = function(holder, xy){
 		var canvas = holder.getCanvas();
 
-		if(canvas === undefined){
-			return true;
-		}
-
 		var mousePos = xy.returnVectorPlusVector(HHgScreenDiff),
 
 		    holderPosNet = holder.getPositionInScreenNet();
@@ -612,19 +578,23 @@ function doAddFunctionsToScene(scene){
 		    if(posY > bottom) return false;
 
 		   //now adjust for scaled canvas
-		   var canvasRatio = new HHgVector2(canvas.width, canvas.height);
+		   if(canvas !== undefined){
+					var canvasRatio = new HHgVector2(canvas.width, canvas.height);
 
-		   canvasRatio = canvasRatio.returnVectorScaledByInverse((new HHgVector2(canvas.clientWidth, canvas.clientHeight)));
+		   		canvasRatio = canvasRatio.returnVectorScaledByInverse((new HHgVector2(canvas.clientWidth, canvas.clientHeight)));
 
-		   posInCanvas = posInCanvas.returnVectorScaledBy(canvasRatio);
+		   		posInCanvas = posInCanvas.returnVectorScaledBy(canvasRatio);
 
-		   if( isAlphaPixel(canvas, posInCanvas.getX(), posInCanvas.getY()) ) return false;
+		   		if( isAlphaPixel(canvas, posInCanvas.getX(), posInCanvas.getY()) ) return false;
 
-		   return true;
+				}
+
+				return true;
+
+
 		};
 
 	scene.returnHoldersUnderPoint = function(xy){
-
 
 		var arr = document.getElementsByClassName("mouseable"),
 
@@ -799,17 +769,22 @@ function doAddFunctionsToScene(scene){
 
 };
 
-//random code findings
-//draw image to canvas, maybe good for per pixel mouse click checking
-/*
-var canvas = document.createElement("canvas");
-canvas.width = yourImageElement.width;
-canvas.height = yourImageElement.height;
-canvas.getContext('2d').drawImage(yourImageElement, 0, 0);
-*/
-//and then get the pixel of that image:
-//canvasElement.getContext('2d').getImageData(x, y, 1, 1).data
+function HHgUpdateHardwareScreen(){
+	//could update landscape etc here
+	//this doesn't get called anywhere currently, but will become part of the dynamic screen/landscape to portrait system.
+	HardwareScreen.w = window.innerWidth;
+	HardwareScreen.h = window.innerHeight;
+	if(HHgScreen.isLandscapeGame === true){
+		HHgScreenDiff.setXY(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
+	}else{
+		//eventually change this to support portrait
+		HHgScreenDiff.setXY(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
+	}
+	HHgPixelScale = HHgGameHolder.getScaleNetForChildScale().getX();
 
+	HHgScene.getDiv().style.maxHeight = "" + HHgGameHolder.getScaleNetForChildScale().getX() * HHgScreen.maxh + "px";
+
+};
 
 
 
