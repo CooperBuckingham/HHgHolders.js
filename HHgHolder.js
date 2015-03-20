@@ -1082,13 +1082,12 @@ this.getVisible = function(){
 //============= MOUSE =================
 
 
-
+	//this will all be overridden for custom games
 	this.doMouseDown = function(){
 
-		//this is all PH test, these are expected to be overridden
 		this.setScaleStored();
 		this.setScaleOriginalBy(.9,.9);
-		this.doActionScaleForever({scaleX: 1.05, scaleY: 1.05, name: "mousedownscale"});
+		this.doActionScaleForever({scaleX: .9, scaleY: .9, name: "mousedownscale"});
 
 	}
 

@@ -171,6 +171,10 @@ var HHg = {
 			return new HHgVector2(props.X, props.Y);
 		}
 
+		if(props.scaleX !== undefined){
+			return new HHgVector2(props.scaleX, props.scaleY);
+		}
+
 		var check;
 		if(props.scale !== undefined){
 			check = HHg.returnScaleProps(props.scale);
