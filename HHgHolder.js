@@ -59,6 +59,8 @@ var HHgHolder = function(props){
 
 	this.fontSizeOriginal = 1;
 	this.fontSizeScaled = 1;
+	this.borderWidthScaled = 0;
+	this.borderWidthOriginal = 0;
 
 	this.isScene = false,
 	this.isDraggable = false;
@@ -766,6 +768,7 @@ this.getVisible = function(){
 			}
 
 			this.fontSizeScaled = this.fontSizeOriginal * _scaleNet.getX();
+			this.borderWidthScaled = this.borderWidthOriginal * _scaleNet.getX();
 
 			this.changes.scale = true;
 
@@ -1164,6 +1167,18 @@ this.getVisible = function(){
 
 	this.doMakeTriangle = function(props){
 		HHgShape.addTriangle(that, props);
+	}
+
+	this.doRemoveShape = function(){
+		HHgShape.removeShape(that);
+	}
+
+	this.doAddOutline = this.doAddBorder = function(props){
+		HHgShape.addBorder(that,props);
+	}
+
+	this.doRemoveOutline = this.doRemoveBorder = function(){
+		HHgShape.addBorder(that, {borderStyle: "none", borderWidth: 0});
 	}
 
 

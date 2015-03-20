@@ -37,7 +37,7 @@ this.B;
 		}else if(this.A !== undefined){
 
 		}else{
-			this.R = 1.0;
+			this.A = 1.0;
 		}
 
 	};
@@ -136,7 +136,7 @@ var HHgColorHSLA = function(props){
 		}else if(this.A !== undefined){
 
 		}else{
-			this.R = 1.0;
+			this.A = 1.0;
 		}
 
 	};
@@ -205,7 +205,7 @@ var HHgColorHelper = {};
 
 	that.getRGBfromHSL = function(h,s,l,a){
 		if(arguments.length === 1 || h instanceof HHgColorHSLA === true){
-			h = h.H; s = h.S; l = h.L;
+			h = h.H; s = h.S; l = h.L; a = h.A;
 		}
 
 		h = (h > 360) ? 360 : h; h = (h < 0) ? 0 : h;
@@ -231,12 +231,16 @@ var HHgColorHelper = {};
 	        B = convertHtoRGB(val2, val1, h - 1/3) * 255;
 	    }
 
-	    return new HHgColorRGBA(R, G, B, a || 1);
+	    if(a === undefined){
+	    	a = 1;
+	    }
+
+	    return new HHgColorRGBA(R, G, B, a);
 	};
 
 	that.getHSLfromRGB = function(r, g, b, a){
 		if(arguments.length === 1 || r instanceof HHgColorRGBA === true){
-			r = r.R; g = r.G; b = r.B;
+			r = r.R; g = r.G; b = r.B; a = r.A;
 		}
 
 
@@ -263,7 +267,11 @@ var HHgColorHelper = {};
 	        H /= 6;
 	    }
 
-	    return new HHgColorHSLA(H * 360, S, L, a || 1);
+	     if(a === undefined){
+	    		a = 1;
+	    	}
+
+	    return new HHgColorHSLA(H * 360, S, L, a);
 	};
 
 	that.getHexFromHSL = function(h,s,l,a){
@@ -334,7 +342,7 @@ var HHgColorHelper = {};
 
 	that.getGrayscaleFromRGBA = function(color){
 		var av = (color.R + color.G + color.B)/3;
-		return new HHgColorRGBA(av,av,av,color.A || 1);
+		return new HHgColorRGBA(av,av,av,color.A);
 	};
 
 
@@ -343,3 +351,4 @@ var HHgColorHelper = {};
 
 var HHgColorRGBAWhite = new HHgColorRGBA({R:255,G:255,B:255});
 var HHgColorRGBABlack = new HHgColorRGBA({R:0,G:0,B:0});
+var HHgColorTransparent = new HHgColorRGBA({R:255,G:255,B:255,A:0});
