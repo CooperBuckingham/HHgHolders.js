@@ -203,9 +203,9 @@ var HHgColorHelper = {};
 
 	var that = HHgColorHelper;
 
-	that.getRGBfromHSL = function(h, s, l){
-		if(arguments.length === 1){
-			h = h.H; s = h.S; l = H.l;
+	that.getRGBfromHSL = function(h,s,l,a){
+		if(arguments.length === 1 || h instanceof HHgColorHSLA === true){
+			h = h.H; s = h.S; l = h.L;
 		}
 
 		h = (h > 360) ? 360 : h; h = (h < 0) ? 0 : h;
@@ -231,14 +231,14 @@ var HHgColorHelper = {};
 	        B = convertHtoRGB(val2, val1, h - 1/3) * 255;
 	    }
 
-	    return {R:R, G:G, B:B};
+	    return new HHgColorRGBA(R, G, B, a || 1);
 	};
 
-	that.getHSLfromRGB = function(r, g, b){
-		if(arguments.length === 1){
+	that.getHSLfromRGB = function(r, g, b, a){
+		if(arguments.length === 1 || r instanceof HHgColorRGBA === true){
 			r = r.R; g = r.G; b = r.B;
 		}
-		console.log("r"+r+" g"+g+" b"+b);
+
 
 		r = (r > 255) ? 255 : r; r = (r < 0) ? 0 : r;
 		g = (g > 255) ? 255 : g; g = (g < 0) ? 0 : g;
@@ -263,16 +263,16 @@ var HHgColorHelper = {};
 	        H /= 6;
 	    }
 
-	    return {H:H * 360,S:S,L:L};
+	    return new HHgColorHSLA(H * 360, S, L, a || 1);
 	};
 
-	that.getHexFromHSL = function(){
+	that.getHexFromHSL = function(h,s,l,a){
 
-		return that.getHexFromRGB(that.getRGBfromHSL(arguments));
+		return that.getHexFromRGB(that.getRGBfromHSL(h,s,l,a));
 
 	};
-	that.getHSLfromHex = function(){
-		return that.getHSLfromRGB(that.getRGBfromHex());
+	that.getHSLfromHex = function(hex){
+		return that.getHSLfromRGB(that.getRGBfromHex(hex));
 	};
 	that.getHexFromRGB = function(r,g,b){
 		if(arguments.length === 1){
@@ -303,7 +303,7 @@ var HHgColorHelper = {};
 		if(G > 255) G = 255;
 		if(B > 255) B = 255;;
 
-		return {R:R,G:G,B:B};
+		return new HHgColorRGBA(R,G,B);
 	};
 
 	that.blendRGBAColors = function(col1, col2, balance){
@@ -315,7 +315,7 @@ var HHgColorHelper = {};
 		B = col2.B * balance + (1 - balance) * col1.B;
 		A = col2.A * balance + (1 - balance) * col1.A;
 
-		return {R:R,G:G,B:B,A:A};
+		return new HHgColorRGBA(R,G,B,A);
 
 	};
 
@@ -328,13 +328,13 @@ var HHgColorHelper = {};
 		L = col2.L * balance + (1 - balance) * col1.L;
 		A = col2.A * balance + (1 - balance) * col1.A;
 
-		return {H:H,S:S,L:L,A:A};
+		return new HHgColorHSLA(H,S,L,A);
 
 	};
 
 	that.getGrayscaleFromRGBA = function(color){
 		var av = (color.R + color.G + color.B)/3;
-		return {R:av,G:av,B:av,A:color.A};
+		return new HHgColorRGBA(av,av,av,color.A || 1);
 	};
 
 
