@@ -207,7 +207,7 @@ function doAddFunctionsToScene(scene){
 			changes = holder.changes;
 
 			if(changes.backgroundColor === true){
-				div.style.backgroundColor = holder.getBackgroundRGBA().returnString();
+				div.style.backgroundColor = holder.getBackgroundColor().returnString();
 
 			}
 			if(changes.tint === true){
@@ -413,7 +413,7 @@ function doAddFunctionsToScene(scene){
 			relX =  e.pageX;
 			relY =  e.pageY;
 			mouseXY = new HHgVector2(relX,relY);
-
+			console.log("mouse down");
 			HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
 			return false;
 		}, false);
@@ -764,6 +764,57 @@ function doAddFunctionsToScene(scene){
 			b: pixel.data[2],
 			a: pixel.data[3]
 		};
+	}
+
+	scene.maskShapeTriangle = function(props){
+
+		if(props.borderRadius === undefined) return;
+
+		var holder = props.holder;
+		var str = "",i,br = props.borderRadius;
+		if(br !== undefined){
+			for( i = 0; i < br.length; i++){
+				str += br[i];
+			}
+		}
+
+		holder.getDiv().style.borderRadius = str;
+
+	}
+	scene.maskShapeEllipse = function(props){
+		if(props.borderRadius === undefined) return;
+
+		var holder = props.holder;
+		var str = "",i,br = props.borderRadius;
+		if(br !== undefined){
+			for( i = 0; i < br.length; i++){
+				str += br[i];
+			}
+		}
+
+		holder.getDiv().style.borderRadius = str;
+	}
+	scene.maskShapeRectangle = function(props){
+		if(props.borderRadius === undefined) return;
+
+		var holder = props.holder;
+		var str = "",i,br = props.borderRadius;
+		if(br !== undefined){
+			for( i = 0; i < br.length; i++){
+
+				if(i == 4){
+					str += " / ";
+				}
+
+				if(br[i] < 1){
+					str += (br[i] * 100) + "% ";
+				}else{
+					str += br[i] * HHgPixelScale + "px ";
+				}
+			}
+		}
+
+		holder.getDiv().style.borderRadius = str;
 	}
 
 

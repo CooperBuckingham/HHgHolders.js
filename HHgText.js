@@ -1,12 +1,15 @@
 
 var HHgText = {};
 
+var HHgDefaultShadowColor = new HHgColorRGBA(0,0,0,.36),
+		HHgDefaultTextColor = new HHgColorRGBA(240,240,240,1),
+		HHgDefaultFontSize = 32;
+		HHgDefaultBackgroundColor = new HHgColorRGBA(150,150,150,1);
+
 (function(){
 
 
 	var that = HHgText;
-
-
 
 	that.doAddTextParagraphToHolder = function(owner, props){
 
@@ -15,7 +18,7 @@ var HHgText = {};
 																	 fontStyle: that.returnFontProps(props),
 																	 hAlign: that.returnHAlignProps(props),
 																	 vAlign: that.returnVAlignProps(props),
-																	 color: HHg.returnColorProps(props),
+																	 color: HHg.returnColorProps(props) || HHgDefaultTextColor,
 																	 shadow: that.returnShadowProps(props)
 																	});
 
@@ -28,7 +31,7 @@ var HHgText = {};
 																	 fontStyle: that.returnFontProps(props),
 																	 hAlign: that.returnHAlignProps(props),
 																	 vAlign: that.returnVAlignProps(props),
-																	 color: HHg.returnColorProps(props),
+																	 color: HHg.returnColorProps(props) || HHgDefaultTextColor,
 																	 shadow: that.returnShadowProps(props),
 																	 size: {width: 1, height: 1}
 																	});
@@ -38,7 +41,9 @@ var HHgText = {};
 	//TODO stroke processing
 
 	that.returnShadowProps = function(props){
-		if(props.shadow === undefined) return props.shadow;
+		if(props === undefined) return undefined;
+
+		if(props.shadow === undefined) return undefined;
 
 			if(props.shadow.x !== undefined){
 				//good to go
@@ -67,7 +72,11 @@ var HHgText = {};
 				props.shadow.blur = parseFloat(props.shadow.radius);
 			}
 
-			props.shadow.color = HHg.returnColorProps(props.shadow);
+			props.shadow.color = HHg.returnColorProps(props.shadow.color);
+
+			if(props.shadow.color === undefined){
+				props.shadow.color === HHgDefaultShadowColor;
+			}
 
 			return props.shadow;
 
@@ -81,12 +90,11 @@ var HHgText = {};
 			return props.text;
 		}
 		if(typeof props.string === "string"){
-			props.text = props.string;
-			return props.text;
+			return props.string;
 		}
 
-		props.text = "EMPTY STRING"; console.log("WARNING: empty string sent to text field");
-		return props.text;
+		return "";
+
 	}
 	that.returnFontSizeProps = function(props){
 		if(typeof props === "number"){
@@ -97,18 +105,16 @@ var HHgText = {};
 		}
 
 		if(typeof props.fontSize === "string"){
-			props.fontSize = parseFloat(props.fontSize);
-			return props.fontSize;
+			return parseFloat(props.fontSize);
 		}
 
-		props.fontSize = 32;
-		return props.fontSize;
+		return HHgDefaultFontSize;
 
 	}
 	that.returnFontProps = function(props){
 		//use some system here
-		props.font = "Helvetica";
-		return props.font;
+		return "Helvetica";
+
 	}
 	that.returnHAlignProps = function(props){
 
@@ -116,24 +122,22 @@ var HHgText = {};
 			case "center":
 			case "middle":
 			case 1:
-			props.hAlign = "center";
+			return "center";
 			break;
 
 			case "left":
 			case 0:
-			props.hAlign = "left";
+			return "left";
 			break;
 
 			case "right":
 			case 2:
-			props.hAlign = "right";
+			return "right";
 			break;
 
 			default:
-			props.hAlign = "center";
+			return "center";
 		}
-
-		return props.hAlign;
 
 	}
 	that.returnVAlignProps = function(props){
@@ -142,24 +146,23 @@ var HHgText = {};
 			case "center":
 			case "middle":
 			case 1:
-			props.vAlign = "middle";
+			return "middle";
 			break;
 
 			case "top":
 			case 0:
-			props.vAlign = "top";
+			return "top";
 			break;
 
 			case "bottom":
 			case 2:
-			props.vAlign = "bottom";
+			return "bottom";
 			break;
 
 			default:
-			props.vAlign = "middle";
+			return "middle";
 		}
 
-		return props.vAlign;
 	}
 
 

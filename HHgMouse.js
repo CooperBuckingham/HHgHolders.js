@@ -92,7 +92,6 @@ var HHgMouse = {};
 	that.doMouseDown = function (holders, xy){
 		that.mouseCircle.doShow(xy);
 
-
 		if(!holders || holders.length < 1){
 
 			return;

@@ -3,15 +3,15 @@ var HHgHolderHashCont = 0;
 var HHgHolder = function(props){
 //props width, height, zIndex, scale(xy or x)
 	HHgHolderHashCont++;
-	if(HHgHolderHashCont > 10000){
+	if(HHgHolderHashCont > 50000){
 		HHgHolderHashCont = 0;
-		console.log("HASH passed 10000");
+		console.log("HASH passed 50000");
 	}
 
-	HHg.returnSizeProps(props);
+	var temp = HHg.returnSizeProps(props) || new HHgVector2(HHgGameHolder.getWidthOriginal(), HHgGameHolder.getHeightOriginal());
 
-	var _widthOriginal = props.size.getX(),
-		_heightOriginal = props.size.getY(),
+	var _widthOriginal = temp.getX(),
+		_heightOriginal = temp.getY(),
 
 		_rotationOriginal = 0,
 		 _rotationNet = 0,
@@ -22,15 +22,13 @@ var HHgHolder = function(props){
 		_backgroundColor,
 		_tintColor,
 
-		_scaleOriginal = HHg.returnScaleProps(props),
+		_scaleOriginal = HHg.returnScaleProps(props) || new HHgVector2(1,1),
 		_scaleNet = _scaleOriginal,
 		_scaleStored = _scaleOriginal,
 
 
 		_scaleIgnoreParentScale = false,
 		_scaleUniformOnly = false,
-
-		_zIndex = props.zIndex || 1,
 		_positionInScreenOriginal = new HHgVector2(0,0),
 		 _positionInParentOriginal  = _positionInScreenOriginal,
 		_positionInScreenNet = _positionInScreenOriginal,
@@ -53,6 +51,11 @@ var HHgHolder = function(props){
 		_classList = {},
 
 		_canvas;
+
+	var _zIndex = HHg.returnZIndexProps(props);
+		if(_zIndex === undefined){
+			_zIndex = 1;
+		}
 
 	this.fontSizeOriginal = 1;
 	this.fontSizeScaled = 1;
@@ -109,13 +112,13 @@ var HHgHolder = function(props){
 	}
 
 	this.setNewStats = function(props){
-		HHg.returnSizeProps(props);
-		HHg.returnZIndexProps(props);
-		_widthOriginal = props.size.getX();
-		_heightOriginal = props.size.getY();
-		_zIndex = props.zIndex || 1;
+		var size = HHg.returnSizeProps(props) || new HHgVector2(HHgGameHolder.getWidthOriginal(), HHgGameHolder.getHeightOriginal());
 
-		_scaleOriginal = HHg.returnScaleProps(props);
+		_widthOriginal = size.getX();
+		_heightOriginal = size.getY();
+		_zIndex = HHg.returnZIndexProps(props) || 1;
+
+		_scaleOriginal = HHg.returnScaleProps(props) || new HHgVector2(1,1);
 	};
 
 	this.killHolder = this.releaseHolder = function(){
@@ -158,8 +161,6 @@ var HHgHolder = function(props){
 
 		_children = [];
 
-
-
 		for(var key in _classList){
 			this.doRemoveCSSClass(key);
 		}
@@ -198,6 +199,7 @@ var HHgHolder = function(props){
 			_heightOriginal = HardwareScreen.w / (HHgScreen.w * HHgScreen.maxh);
 			_parent = "stop";
 			_mouseable = false;
+			this.test = "scene";
 	}
 
 	this.setGameHolder = function(){
@@ -213,6 +215,7 @@ var HHgHolder = function(props){
 			this.getScaleNetForChildPosition = function(){
 				return HHg1Vector;
 			}
+			this.test = "gameholder";
 	}
 
 	this.setCanvas = function(canvas){
@@ -267,7 +270,6 @@ var HHgHolder = function(props){
 		var returnVal = false;
 
 		if(this.frameUpdates.positionAbsolute !== undefined){
-
 			_positionInScreenOriginal = this.frameUpdates.positionAbsolute;
 			returnVal = true;
 
@@ -423,9 +425,9 @@ this.getVisible = function(){
 	return _visible;
 }
 
-		this.setBackgroundRGBA = function(color){
+		this.setBackgroundColor = function(color){
 
-			_backgroundColor = color;
+			_backgroundColor = HHg.returnColorProps(color);
 
 
 			this.changes.backgroundColor = true;
@@ -435,7 +437,7 @@ this.getVisible = function(){
 			}
 
 		}
-		this.getBackgroundRGBA = function(){
+		this.getBackgroundColor = function(){
 			return _backgroundColor;
 		}
 
@@ -604,6 +606,7 @@ this.getVisible = function(){
 		}
 
 		this.setPositionInScreenAbsolute = function(props){
+
 			this.framePositionAbsolute(HHg.returnPositionProps(props));
 		}
 
@@ -966,7 +969,7 @@ this.getVisible = function(){
 	this.doActionMoveForever = function(props){
 
 		var theAction;
-		theAction = new HHgActionMoveForever(that, HHg.returnPositionProps(props) || HHg.returnSpeedXYprops(props), _positionInScreenOriginal, HHg.returnEaseProps(props));
+		theAction = new HHgActionMoveForever(that, (HHg.returnPositionProps(props) || HHg.returnSpeedXYprops(props)), _positionInScreenOriginal, HHg.returnEaseProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
@@ -1028,7 +1031,7 @@ this.getVisible = function(){
 	this.doActionRotateForever = function(props){
 
 		var theAction;
-		theAction = new HHgActionRotateForever(that, HHg.returnRotationProps(props) || HHg.returnSpeedNProps(props), HHg.returnEaseProps(props));
+		theAction = new HHgActionRotateForever(that, (HHg.returnRotationProps(props) || HHg.returnSpeedNProps(props)), HHg.returnEaseProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 	}
@@ -1053,7 +1056,7 @@ this.getVisible = function(){
 	this.doActionScaleForever = function(props){
 
 		var theAction;
-		theAction = new HHgActionScaleForever(that, HHg.returnScaleProps(props) || HHg.returnSpeedXYprops(props), HHg.returnEaseProps(props));
+		theAction = new HHgActionScaleForever(that, (HHg.returnScaleProps(props) || HHg.returnSpeedXYProps(props)), HHg.returnEaseProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 
@@ -1071,7 +1074,7 @@ this.getVisible = function(){
 	this.doActionTimer = function(props){
 
 		var theAction;
-		theAction = new HHgActionTimer(that, HHg.returnTimeProps(props) || HHg.returnSpeedNProps(props), HHg.returnOnCompleteProps(props));
+		theAction = new HHgActionTimer(that, (HHg.returnTimeProps(props) || HHg.returnSpeedNProps(props)), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		doFinalizeAction(theAction);
 	}
@@ -1096,7 +1099,7 @@ this.getVisible = function(){
 
 	}
 
-	this.doStartMouseMove = function(xy){
+	this.doStartMouseMove = function(){
 
 		this.setPositionStored();
 		this.isBeingDragged = true;
@@ -1105,11 +1108,12 @@ this.getVisible = function(){
 	}
 
 	this.doMouseMove = function(){
+
 		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
 
 	}
 
-	this.doEndMouseMove = function(xy){
+	this.doEndMouseMove = function(){
 
 		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
 		this.isBeingDragged = false;
@@ -1151,18 +1155,33 @@ this.getVisible = function(){
 		HHgText.doAddTextCanvasToHolder(this,props);
 	}
 
+	this.doMakeRoundedRectangle = this.doMakeRectangle = function(props){
+		HHgShape.addRectangle(that, props);
+	}
+
+	this.doMakeEllipse = this.doMakeCircle = function(props){
+		HHgShape.addEllipse(that, props);
+	}
+
+	this.doMakeTriangle = function(props){
+		HHgShape.addTriangle(that, props);
+	}
+
+
 
 	//======custom CSS==========
 	this.doAddCSSClass = this.doAddCSSClass = function(className){
 		this.classAddingObject = this.classAddingObject || {};
 		this.classAddingObject[className] = className;
 		this.changes.classList = true;
+		this.doNotifySceneOfUpdates();
 	}
 
 	this.doRemoveCSSClass = this.doRemoveCSSClass = function(className){
 		this.classRemovingObject = this.classRemovingObject || {};
 		this.classRemovingObject[className] = className;
 		this.changes.classList = true;
+		this.doNotifySceneOfUpdates();
 	}
 
 
