@@ -415,6 +415,8 @@ var HHg = {
 
 				}
 
+			if(!isNaN(props)) return undefined;
+
 			if("H" in props){
 				return HHgColorHelper.getRGBfromHSL(props.H, props.S, props.L, props.A || 1);
 			}else if("hue" in props){
@@ -462,13 +464,12 @@ var HHg = {
 
 	},
 
-	returnBorderRadiusProps: function(props){
 
+
+	returnPercentOrPixelProps: function(props){
 		if(props === undefined) return undefined;
-
-
 		if(!isNaN(props)){
-			return [props];
+			return props;
 		}
 
 		if(typeof props === "string"){
@@ -478,26 +479,6 @@ var HHg = {
 				return [parseFloat(props)];
 			}
 		}
-
-			if(typeof props === "string"){
-					if(props[props.length - 1] === "\%"){
-						return [parseFloat(props) / 100];
-					}else{
-						return [parseFloat(props)];
-					}
-				}
-
-		if(props.length === +props.length){
-			for(var i = 0; i < props.length; i++){
-				props[i] = returnBorderRadiusProps(props[i]);
-			}
-
-			return props;
-		}
-
-		if(props.borderRadius !== undefined) return HHg.returnBorderRadiusProps(props.borderRadius);
-
-
 	},
 
 	testVector: function(xy){

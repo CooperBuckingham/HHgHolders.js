@@ -225,6 +225,10 @@ function doAddFunctionsToScene(scene){
 					holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
 				}
 
+				if(holder.borderWidthOriginal > 0){
+					div.style.borderWidth = "" + holder.borderWidthScaled + "px";
+				}
+
 				//div.style.width = "" + holder.getWidthNet()  + "px";
 				//div.style.height ="" + holder.getHeightNet() + "px";
 			}
@@ -305,6 +309,8 @@ function doAddFunctionsToScene(scene){
 
 		HHgSceneDiv.appendChild(div);
 	};
+
+	//====================================================
 
 	scene.doAddTextDiv = function(owner, props){
 
@@ -399,6 +405,9 @@ function doAddFunctionsToScene(scene){
 
 
 	}
+
+
+	//========================================================
 
 	scene.doAddMouseDownAndUpListeners = function(){
 		var wOffset = 0;
@@ -815,6 +824,22 @@ function doAddFunctionsToScene(scene){
 		}
 
 		holder.getDiv().style.borderRadius = str;
+	}
+
+	scene.removeShape = function(holder){
+		holder.getDiv().style.borderRadius = 0;
+	}
+
+	scene.addBorderToHolder = function(props){
+		var bw = props.borderWidth, holder = props.holder;
+		if(bw < .5){
+			bw *= holder.getHeightNet();
+		}
+		props.holder.borderWidthOriginal = bw;
+
+		bw *= HHgPixelScale;
+
+		holder.getDiv().style.border = "" + bw + "px " + props.borderStyle + " " + props.color.returnString();
 	}
 
 
