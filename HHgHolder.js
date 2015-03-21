@@ -49,6 +49,7 @@ var HHgHolder = function(props){
 		_mouseable = false,
 		_visible = true,
 		_classList = {},
+		_soundList = {},
 
 		_canvas;
 
@@ -1197,6 +1198,9 @@ this.getVisible = function(){
 		this.changes.classList = true;
 		this.doNotifySceneOfUpdates();
 	}
+
+	//============ sound ===============
+	this.doPlaySound = HHgAudio.doPlaySound;
 
 
 }
