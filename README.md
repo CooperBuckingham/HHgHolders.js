@@ -193,4 +193,18 @@ Preface: for the most part, you should not need to modify any engine files
 
 //=============================================================
 //END
+
+
+//TEMP EDITS
+HHgAudio
+audio is added to holders. using new, play, pause. Commands are sent to HHgAudio to change volume of master/sound/music
+killing a holder will remove all of its audio. can just use play sound actions.
+
+
+clusters and sequences
+make an action by calling someHolder.makeAction("actionName", props);
+changed action names to be all their sub types of the function names. Can now be called by name instead of function.
+make clusters by calling makeCluster and passing in an array of actions/clusters/sequences
+make sequences by calling makeSequence and passing in an array of actions/clusters/sequences/
+
 </pre>

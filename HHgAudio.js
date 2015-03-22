@@ -22,7 +22,7 @@ var HHgSoundCounter = 0;
       tempSound.play();
     }
 
-    return tempSound.id;
+    return tempSound;
   }
 
   HHgAudio.killSound = function(id){
@@ -142,6 +142,9 @@ var HHgSoundCounter = 0;
   HHgAudio.currentMusic = {};
   HHgAudio.currentSounds = {};
 
+  //ended event
+  //canplay event
+
 }());
 
 var HHgAudioHelper = {
@@ -151,26 +154,33 @@ var HHgAudioHelper = {
 var HHgAudioFileManager = {
   //TEMP
   //process file name
-  getAudio: function(){
-    tempName = HHgAudioCache.getFileName(name)
+  soundCounter: 0,
+  getAudio: function(name){
+    tempName = HHgAudioFileManager.getFileName(name)
    tempSound = new Audio(tempName);
-   tempSound.id = "" + soundCounter + "_" + (+new Date());
+   tempSound.crossOrigin = "Anonymous";
+   tempSound.id = HHg.returnRandomHash(HHgAudioFileManager.soundCounter);
+   HHgAudioFileManager.soundCounter++;
    return tempSound;
   },
+
   releaseAudio: function(){
     //need to TODO
 
-  }
+  },
+
   getFileName: function(name){
     switch(name){
       case "click":
       return "../HHgEngine/click.wav";
+
       case "test":
       return "../HHgEngine/test.wav";
-      default
+
+      default:
       return "../HHgEngine/test.wav";
     }
-  }
+  },
 
 
 }
