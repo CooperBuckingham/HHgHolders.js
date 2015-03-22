@@ -30,13 +30,11 @@ var HHg = {
 	},
 
 	returnRandomInt : function(lowInc, highExcl){
-	return Math.random() * (highExcl - lowInc) + lowInc;
+	return Math.floor(Math.random() * (highExcl - lowInc) + lowInc);
 
 	},
 
-	returnRandomIntLowIncHighExcl : function(lowInc, highExcl){
-		return Math.floor(Math.random() * (highExcl - lowInc) + lowInc);
-	},
+	returnRandomIntLowIncHighExcl : this.returnRandomInt,
 
 	doRemoveThingFromArray: function(arr,thing){
 	for(var i = 0; i < arr.length; i++){
