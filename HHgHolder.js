@@ -35,7 +35,7 @@ var HHgHolder = function(props){
 		_positionStored = _positionInScreenOriginal,
 
 		_children,
-		_actions,
+		_actions, _clusters =[], _sequences=[],
 		_paused,
 
 		_div,
@@ -158,7 +158,7 @@ var HHgHolder = function(props){
 			_children[i].killHolder();
 		}
 
-		actionsTotal -= _actions.length;
+		actionsTotal = 0;
 		HHgActionManager.doRemoveOwner(that);
 		_actions = {};
 
@@ -895,11 +895,10 @@ this.getVisible = function(){
 			throw("tried to add child to a parent not of HHgHolder Class");
 		}
 
-
 		_parent.doAddChild(this);
 
-		this.setRotationOriginalTo(_rotationOriginal);
-		this.setScaleOriginalTo(_scaleOriginal);
+		this.setRotationOriginalBy(_rotationOriginal);
+		this.setScaleOriginalBy(_scaleOriginal);
 
 		if(HHg.returnIsScreenPosProps(props)){
 			_positionInScreenOriginal = props.position;
@@ -911,8 +910,9 @@ this.getVisible = function(){
 }
 
 //============= ACTIONS ================
-	var actionCounter = 0;
+	var counterForNamingActions = 0;
 	var actionsTotal = 0;
+
 	var doFinalizeAction = function(action){
 
 		_actions = _actions || {};
@@ -922,13 +922,21 @@ this.getVisible = function(){
 				return;
 			}
 		}else{
-			action.name = actionCounter;
+			action.name = "" + counterForNamingActions + HHg.returnRandomHash();
 		}
 
-		actionCounter++;
-		actionsTotal++;
-		HHgActionManager.doAddAction(that,action);
+		counterForNamingActions++;
+
+		if(action.isActionCluster || action.isActionSequence){
+			//nothing right now
+		}else{
+			actionsTotal++;
+			HHgActionManager.doAddAction(that,action);
+		}
+
 		_actions[action.name] = action;
+
+		return action.name;
 
 	}
 
@@ -938,24 +946,32 @@ this.getVisible = function(){
 
 	this.doRemoveAction = function(action){
 
-		delete _actions[action.name];
-		actionsTotal--;
-		if(actionsTotal <= 0) HHgActionManager.doRemoveOwner(that);
+		if(action.isActionCluster || action.isActionSequence){
+			for(var i = 0; i < action.props.myActions.length; i++){
+				this.doRemoveActionByName(action.props.myActions[i]);
+			}
+			delete _actions[action.name];
+
+		}else{
+			delete _actions[action.name];
+
+			actionsTotal--;
+			if(actionsTotal <= 0) HHgActionManager.doRemoveOwner(that);
+		}
+
 	}
 	this.doRemoveActionByName = function(name){
 
-		delete _actions[name];
-
-		actionsTotal--;
-		if(actionsTotal <= 0) HHgActionManager.doRemoveOwner(that);
+		 this.doRemoveAction(_actions[name]);
 	}
+
 
 	this.doActionMoveInScreenTo = function(props){
 
 		var theAction;
 		theAction = new HHgActionMoveBy(that, _positionInScreenOriginal.returnVectorSubtractedFromVector(HHg.returnPositionProps(props)), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
 
 
 	}
@@ -965,30 +981,26 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionMoveBy(that, HHg.returnPositionProps(props), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
 
 
 	}
 
-	this.doActionMoveForever = function(props){
+	this.doActionMoveInScreenForever = function(props){
 
 		var theAction;
 		theAction = new HHgActionMoveForever(that, (HHg.returnPositionProps(props) || HHg.returnSpeedXYprops(props)), _positionInScreenOriginal, HHg.returnEaseProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
 
 	}
 
 	this.doActionRotateBy = function(props){
 
-		HHg.returnTimeProps(props);
-		HHg.returnEaseProps(props);
-		HHg.returnOnCompleteProps(props);
-
 		var theAction;
 		theAction = new HHgActionRotateBy(that, HHg.returnRotationProps(props), _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
 
 	}
 
@@ -1008,7 +1020,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
 
 	}
 
@@ -1028,7 +1040,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
 
 	}
 
@@ -1037,7 +1049,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionRotateForever(that, (HHg.returnRotationProps(props) || HHg.returnSpeedNProps(props)), HHg.returnEaseProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
 	}
 
 	this.doActionScaleBy = function(props){
@@ -1045,7 +1057,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionScaleBy(that, HHg.returnScaleProps(props), _scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
 
 	}
 	this.doActionScaleTo = function(props){
@@ -1053,7 +1065,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionScaleBy(that, HHg.returnScaleProps(props).returnVectorScaledByInverse(_scaleOriginal), _scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
 
 	}
 
@@ -1062,7 +1074,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionScaleForever(that, (HHg.returnScaleProps(props) || HHg.returnSpeedXYProps(props)), HHg.returnEaseProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
 
 	}
 
@@ -1071,7 +1083,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionFollowQuad(that, HHg.returnControlPositionProps(props), HHg.returnPositionProps(props), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), props.onComplete, HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
 
 	}
 
@@ -1080,7 +1092,161 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionTimer(that, (HHg.returnTimeProps(props) || HHg.returnSpeedNProps(props)), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		doFinalizeAction(theAction);
+		return doFinalizeAction(theAction);
+	}
+
+	this.doActionPlaySound = function(props){
+		//does this trigger a new sound or existing cached sound. how does sound caching work?
+		//then test storing actions and plaing them later
+		//then test clusters, then test sequences.
+		var test = HHgAudio.newSound("click");
+		console.log(test.duration);
+
+	}
+
+	this.doActionCustom = function(func, time, onComplete){
+		func.bind(this)();
+		return this.doActionTimer({time: time, onComplete: onComplete});
+
+	}
+
+	this.doAction = function(actionName, props){
+		this.returnActionFunction(actionName).call(props);
+	}
+
+	this.returnActionFunction = function(name){
+		switch(name.toLowerCase()){
+			case "timer":
+			return this.doActionTimer.bind(this);
+			case "followquad":
+			return this.doActionFollowQuad.bind(this);
+			case "scaleforever":
+			return this.doActionScaleForever.bind(this);
+			case "scaleto":
+			return this.doActionScaleTo.bind(this);
+			case "scaleby":
+			return this.doActionScaleBy.bind(this);
+			case "rotateforever":
+			return this.doActionRotateForever.bind(this);
+			case "rotaterightto":
+			return this.doActionRotateRightTo.bind(this);
+			case "rotateleftto":
+			return this.doActionRotateLeftTo.bind(this);
+			case "rotateby":
+			return this.doActionRotateBy.bind(this);
+			case "moveinscreenby":
+			return this.doActionMoveInScreenBy.bind(this);
+			case "moveinscreento":
+			return this.doActionMoveInScreenTo.bind(this);
+			case "moveinscreenforever":
+			return this.doActionMoveInScreenForever.bind(this);
+			case "custom":
+			return this.doActionCustom.bind(this);
+			case "playsound":
+			return this.doActionPlaySound.bind(this);
+		}
+	}
+
+	//============= ACTION CLUSTERS AND SEQUENCES =============
+
+	this.makeAction = this.makeStoredAction = this.storeAction = function(actionName, props){
+		return {actionCall: this.returnActionFunction(actionName), props: props};
+	}
+
+	this.doStoredAction = this.callStoredAction = function(storedAction){
+		if(storedAction.isActionCluster){
+			return this.doActionCluster(storedAction);
+		}else if(storedAction.isActionSequence){
+			return this.doActionSequence(storedAction);
+		}else{
+			debugger;
+			return storedAction.actionCall.call(undefined, storedAction.props);
+		}
+
+	}
+
+	this.makeActionCluster = function(storedActions, onComplete, name){
+		var i, key, longestTime = 0, finalActions = [], tempAction,totalActions = 1;
+
+		if(storedActions.length !== +storedActions.length){
+			for(key in storedActions){
+				finalAction.push(storedActions[key]);
+			}
+		}else{
+			finalActions = storedActions;
+		}
+
+			for(i = 0; i < finalActions.length; i++){
+				tempAction = finalActions[i];
+				totalActions++;
+				if(tempAction.props.time > longestTime){
+					longestTime = tempAction.props.time;
+				}
+			}
+
+			finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: onComplete} ));
+			finalActions.isActionCluster = true;
+			finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions};
+			return finalActions;
+
+	}
+
+	this.doActionCluster = function(cluster){
+		var i, tempThing, clusterName, tempName;
+		clusterName = this.doFinalizeAction(cluster);
+
+		for(i = 0; i < cluster.length; i++){
+			tempThing = cluster[i];
+			tempThing.props.name = clusterName + "_CHILD_" + i;
+			cluster.props.myActions.push(this.doStoredAction(tempThing));
+		}
+
+	}
+
+	this.makeActionSequence = function(storedActions, onComplete, name){
+		var i, key, totalTime = 0, finalActions = [], finalSequence = [], tempAction, tempFunction;
+		if(storedActions.length !== +storedActions.length){
+			for(key in storedActions){
+				finalAction.push(storedActions[key]);
+			}
+		}else{
+			finalActions = storedActions;
+		}
+
+		finalActions.actionList = [];
+
+			for(i = 0; i < finalActions.length; i++){
+				tempAction = finalActions[i];
+				totalTime += tempAction.props.time;
+
+				if(i < finalAction.length - 1){
+					tempAction.props.onComplete = function(){
+						that.doStoredAction(finalActions[i+1]);
+					};
+
+				}else{
+					tempAction.props.onComplete = onComplete;
+				}
+			}
+
+			finalActions.isActionSequence = true;
+			finalActions.props = {time: totalTime, name: name, myActions: [], totalActions: finalActions.length};
+			return finalActions;
+
+	}
+
+	this.doActionSequence = function(sequence){
+		var i, tempThing, sequenceName, tempName;
+		sequenceName = this.doFinalizeAction(sequence);
+
+		for(i = 0; i < sequence.length; i++){
+			tempThing = sequence[i];
+			tempThing.props.name = sequenceName + "_CHILD_" + i;
+			sequence.props.myActions.push(tempThing.props.name);
+		}
+
+		this.doFinalizeAction(sequence);
+		this.doStoredAction(sequence[0]);
 	}
 
 //============= MOUSE =================
@@ -1092,6 +1258,7 @@ this.getVisible = function(){
 		this.setScaleStored();
 		this.setScaleOriginalBy(.9,.9);
 		this.doActionScaleForever({scaleX: .9, scaleY: .9, name: "mousedownscale"});
+		this.doActionPlaySound("click");
 
 	}
 
@@ -1182,8 +1349,6 @@ this.getVisible = function(){
 		HHgShape.addBorder(that, {borderStyle: "none", borderWidth: 0});
 	}
 
-
-
 	//======custom CSS==========
 	this.doAddCSSClass = this.doAddCSSClass = function(className){
 		this.classAddingObject = this.classAddingObject || {};
@@ -1200,7 +1365,18 @@ this.getVisible = function(){
 	}
 
 	//============ sound ===============
-	this.doPlaySound = HHgAudio.doPlaySound;
+	this.doAddSound = function(name){
+
+	}
+	this.doPlaySound = function(name){
+
+	}
+	this.doPauseSound = function(name){
+
+	}
+	this.doKillSound = function(name){
+
+	}
 
 
 }

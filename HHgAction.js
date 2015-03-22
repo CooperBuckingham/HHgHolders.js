@@ -70,6 +70,7 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 
 	this.whatShouldIDoThisFrame = function(deltaT){
 		this.timeSoFar += deltaT;
+		debugger;
 
 		if(this.timeSoFar >= this.totalTime){
 

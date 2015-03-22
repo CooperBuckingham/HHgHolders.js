@@ -13,6 +13,17 @@ var HHg = {
 
 		return returnArr;
 	},
+	hashCounter: 0,
+
+	returnRandomHash: function(optional){
+		if(optional === undefined){
+			optional = "" + HHg.hashCounter;
+			HHg.hashCounter++;
+		}else{
+			optional = "" + optional + "_";
+		}
+		return optional + ( +new Date() ) + "_" + HHg.returnRandomInt(100,999) + "_" + HHg.returnRandomInt(100,999) + "_" + HHg.returnRandomInt(100,999) + "r";
+	},
 
 	returnRandomFloatLowIncHighExcl : function(lowInc, highExcl){
 		return Math.random() * (highExcl - lowInc) + lowInc;
