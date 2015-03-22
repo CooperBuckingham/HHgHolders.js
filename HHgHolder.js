@@ -1004,7 +1004,7 @@ this.getVisible = function(){
 	this.doActionRotateBy = function(props){
 
 		var theAction;
-		debugger;
+
 		theAction = new HHgActionRotateBy(that, HHg.returnRotationProps(props), _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		return doFinalizeAction(theAction);
@@ -1080,7 +1080,7 @@ this.getVisible = function(){
 	this.doActionScaleForever = function(props){
 
 		var theAction;
-		theAction = new HHgActionScaleForever(that, (HHg.returnScaleProps(props) || HHg.returnSpeedXYProps(props)), HHg.returnEaseProps(props));
+		theAction = new HHgActionScaleForever(that, (HHg.returnScaleProps(props) || HHg.returnSpeedXYProps(props)), _scaleOriginal, HHg.returnEaseProps(props));
 		theAction.name = props.name;
 		return doFinalizeAction(theAction);
 
@@ -1172,7 +1172,7 @@ this.getVisible = function(){
 
 	}
 
-	this.makeActionCluster = this.makeCluster = function(storedActions, onComplete, name){
+	this.makeActionCluster = this.makeCluster = function(storedActions, name, onComplete){
 		var i, key, longestTime = 0, finalActions = [], tempAction,totalActions = 1;
 
 		if(storedActions.length !== +storedActions.length){
@@ -1210,7 +1210,7 @@ this.getVisible = function(){
 
 	}
 
-	this.makeActionSequence = function(storedActions, onComplete, name){
+	this.makeActionSequence = function(storedActions, name, onComplete){
 		var i, key, totalTime = 0, finalActions = [], finalSequence = [], tempAction, tempFunction;
 		if(storedActions.length !== +storedActions.length){
 			for(key in storedActions){

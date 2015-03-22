@@ -207,7 +207,7 @@ function HHgActionScaleBy(owner, totalDelta, startValue, totalTime, ease, onComp
 
 	//(( (scaleBy - 1U) * %) + 1) * currentScale
 
-	HHgAction.call(this, owner, HHg1Vector.returnVectorSubtractedFromVector(totalDelta), startValue, totalTime, ease, onComplete);
+	HHgAction.call(this, owner, HHg1Vector.returnVectorSubtractedFromVector(totalDelta).returnVectorScaledBy(startValue), startValue, totalTime, ease, onComplete);
 	this.normalizeBy1 = true;
 
 	this.updateFunc = this.owner.setScaleOriginalBy.bind(owner);
@@ -219,14 +219,14 @@ function HHgActionScaleBy(owner, totalDelta, startValue, totalTime, ease, onComp
 HHg.HHgActionCommands.makeChildOfAction(HHgActionScaleBy);
 
 
-function HHgActionScaleForever(owner, vectorPerSecond, ease){
+function HHgActionScaleForever(owner, vectorPerSecond, startValue, ease){
 	HHgAction.call(this, owner, null, null, null, ease, null);
 
-	this.perSecondXY = HHg1Vector.returnVectorSubtractedFromVector(vectorPerSecond);
+	this.perSecondXY = HHg1Vector.returnVectorSubtractedFromVector(vectorPerSecond).returnVectorScaledBy(startValue);
 
 	this.whatShouldIDoThisFrame = function(deltaT){
 
-		owner.setScaleOriginalBy(this.perSecondXY.returnVectorScaledBy(deltaT));
+		owner.setScaleOriginalBy(this.perSecondXY.returnVectorScaledBy(deltaT).returnVectorPlusVector(HHg1Vector));
 		//could add ease in option here
 
 	}
@@ -284,7 +284,7 @@ HHgAction.call(this, owner, undefined, undefined, totalTime, undefined, onComple
 		this.timeSoFar += deltaT;
 
 		if(this.timeSoFar >= this.totalTime){
-			that.finalFrame(this);
+			this.finalFrame(this);
 
 			return;
 		}
