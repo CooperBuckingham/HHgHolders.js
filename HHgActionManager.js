@@ -3,6 +3,8 @@ var HHgForce15FPS = false;
 var HHgPaused = false;
 var HHgTempHolder;
 var HHgTempAction;
+var HHgTempActionObject;
+var HHgTempAction2;
 var HHgShowFPS = true;
 
 var HHgActionManager = {
@@ -20,9 +22,11 @@ var HHgActionManager = {
     for(HHgTempHolder in this._actionList){
       HHgTempHolder= this._actionList[HHgTempHolder];
       if(HHgTempHolder.getPaused() === true) continue;
-
-      for(HHgTempAction in HHgTempHolder.getActions()){
-        HHgTempHolder.getActions()[HHgTempAction].whatShouldIDoThisFrame(interval);
+      HHgTempActionObject = HHgTempHolder.getActions()
+      for(HHgTempAction in HHgTempActionObject){
+        HHgTempAction2 = HHgTempActionObject[HHgTempAction];
+        if(HHgTempAction2.isActionSequence || HHgTempAction2.isActionCluster) continue;
+        HHgTempAction2.whatShouldIDoThisFrame(interval);
       }
 
     }

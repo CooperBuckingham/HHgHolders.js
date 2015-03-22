@@ -1,7 +1,7 @@
 var HHgVector2 = function (x,y){
 	var _x = +x;
 	var _y = +y;
-	var vB;
+	var vBtemp;
 
 	var that = this;
 
@@ -79,52 +79,52 @@ var HHgVector2 = function (x,y){
 
 	}
 	this.returnVectorPlusVector = this.returnAdd = function(){
-		vB = this.parse(arguments);
-		return new HHgVector2(_x + vB.getX(), _y + vB.getY());
+		vBtemp = this.parse(arguments);
+		return new HHgVector2(_x + vBtemp.getX(), _y + vBtemp.getY());
 	}
 	this.plusEquals = this.addEquals = function(){
-		vB = this.parse(arguments);
-		this.setXY(_x + vB.getX(), _y + vB.getY());
+		vBtemp = this.parse(arguments);
+		this.setXY(_x + vBtemp.getX(), _y + vBtemp.getY());
 		return this;
 	}
 	this.minusEquals = this.subtractEquals = function(){
-		vB = this.parse(arguments);
-		this.setXY(_x - vB.getX(), _y - vB.getY());
+		vBtemp = this.parse(arguments);
+		this.setXY(_x - vBtemp.getX(), _y - vBtemp.getY());
 		return this;
 	}
 	this.timesEquals = this.multiplyEquals = function(){
-		vB = this.parse(arguments);
-		this.setXY(_x * vB.getX(), _y * vB.getY());
+		vBtemp = this.parse(arguments);
+		this.setXY(_x * vBtemp.getX(), _y * vBtemp.getY());
 		return this;
 	}
 	this.divideEquals = function(){
-		vB = this.parse(arguments);
-		this.setXY(_x / vB.getX(), _y / vB.getY());
+		vBtemp = this.parse(arguments);
+		this.setXY(_x / vBtemp.getX(), _y / vBtemp.getY());
 		return this;
 	}
 
 	this.returnVectorScaledBy = this.returnMultiply = function(){
-		vB = this.parse(arguments);
+		vBtemp = this.parse(arguments);
 
-		return new HHgVector2(_x * vB.getX(), _y * vB.getY());
+		return new HHgVector2(_x * vBtemp.getX(), _y * vBtemp.getY());
 	}
 	this.returnVectorScaledByInverse = this.returnDivide = function(){
-		vB = this.parse(arguments);
-		return new HHgVector2(_x / vB.getX(), _y / vB.getY());
+		vBtemp = this.parse(arguments);
+		return new HHgVector2(_x / vBtemp.getX(), _y / vBtemp.getY());
 	}
 	this.returnVectorSubtractedFromVector = function(){
-		vB = this.parse(arguments);
-		return new HHgVector2(vB.getX() - _x, vB.getY() - _y);
+		vBtemp = this.parse(arguments);
+		return new HHgVector2(vBtemp.getX() - _x, vBtemp.getY() - _y);
 	}
 
 	this.returnSubtract = function(){
-		vB = this.parse(arguments);
-		return new HHgVector2( _x - vB.getX(), _y - vB.getY() );
+		vBtemp = this.parse(arguments);
+		return new HHgVector2( _x - vBtemp.getX(), _y - vBtemp.getY() );
 	}
 
 	this.hasSameXY = this.isSameAs = this.equals = function(){
-		vB = this.parse(arguments);
-		return _x == vB.getX() && _y == vB.getY();
+		vBtemp = this.parse(arguments);
+		return _x == vBtemp.getX() && _y == vBtemp.getY();
 	}
 
 	this.returnCopy = this.copy = function(){

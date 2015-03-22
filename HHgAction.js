@@ -70,14 +70,18 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 
 	this.whatShouldIDoThisFrame = function(deltaT){
 		this.timeSoFar += deltaT;
-		debugger;
 
 		if(this.timeSoFar >= this.totalTime){
 
 			if(this.isSpecial === true){
 				this.updateFunc(this.lastValue.returnVectorSubtractedFromVector(this.endXY));
 			}else if(this.isXY === true){
-				this.updateFunc(this.lastValue.returnVectorSubtractedFromVector(this.totalDelta));
+				if(this.normalizeBy1){
+					this.updateFunc( this.lastValue.returnVectorSubtractedFromVector(this.totalDelta).returnVectorPlusVector(HHg1Vector) );
+				}else{
+					this.updateFunc(this.lastValue.returnVectorSubtractedFromVector(this.totalDelta));
+				}
+
 			}else{
 				this.updateFunc( this.totalDelta - this.lastValue );
 			}
@@ -119,8 +123,12 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 			this.deltaValue -= this.lastValue;
 			this.lastValue += this.deltaValue;
 		}
+		if(this.normalizeBy1){
+			this.updateFunc(this.deltaValue.returnVectorPlusVector(HHg1Vector));
+		}else{
+			this.updateFunc(this.deltaValue);
+		}
 
-		this.updateFunc(this.deltaValue);
 
 	};
 
@@ -199,8 +207,8 @@ function HHgActionScaleBy(owner, totalDelta, startValue, totalTime, ease, onComp
 
 	//(( (scaleBy - 1U) * %) + 1) * currentScale
 
-
-	HHgAction.call(this, owner, totalDelta, startValue, totalTime, ease, onComplete);
+	HHgAction.call(this, owner, HHg1Vector.returnVectorSubtractedFromVector(totalDelta), startValue, totalTime, ease, onComplete);
+	this.normalizeBy1 = true;
 
 	this.updateFunc = this.owner.setScaleOriginalBy.bind(owner);
 
@@ -218,7 +226,7 @@ function HHgActionScaleForever(owner, vectorPerSecond, ease){
 
 	this.whatShouldIDoThisFrame = function(deltaT){
 
-		owner.setScaleOriginalBy(this.perSecondXY.returnVectorScaledBy(deltaT).returnVectorPlusVector(HHg1Vector));
+		owner.setScaleOriginalBy(this.perSecondXY.returnVectorScaledBy(deltaT));
 		//could add ease in option here
 
 	}
@@ -270,7 +278,7 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionFollowQuad);
 
 function HHgActionTimer(owner, totalTime, onComplete){
 
-HHgAction.call(this, owner, null, null, totalTime, ease, onComplete);
+HHgAction.call(this, owner, undefined, undefined, totalTime, undefined, onComplete);
 
 	this.whatShouldIDoThisFrame = function(deltaT){
 		this.timeSoFar += deltaT;

@@ -7,7 +7,6 @@ var HHgHolder = function(props){
 		HHgHolderHashCont = 0;
 		console.log("HASH passed 50000");
 	}
-
 	var temp = HHg.returnSizeProps(props) || new HHgVector2(HHgGameHolder.getWidthOriginal(), HHgGameHolder.getHeightOriginal());
 
 	var _widthOriginal = temp.getX(),
@@ -332,7 +331,7 @@ var HHgHolder = function(props){
 			returnVal = true;
 		}else if(this.frameUpdates.scaleBy !== undefined){
 
-			_scaleOriginal = _scaleOriginal.returnVectorScaledBy( this.frameUpdates.scaleBy);
+			_scaleOriginal = _scaleOriginal.returnVectorPlusVector( this.frameUpdates.scaleBy);
 			returnVal = true;
 		}
 
@@ -366,7 +365,7 @@ this.frameScaleBy = function(xy){
 
 
 	if(this.frameUpdates.scaleBy){
-		this.frameUpdates.scaleBy = this.frameUpdates.scaleBy.returnVectorScaledBy(xy);
+		this.frameUpdates.scaleBy = this.frameUpdates.scaleBy.returnVectorPlusVector(xy);
 	}else{
 		this.frameUpdates.scaleBy = xy;
 	}
@@ -731,7 +730,14 @@ this.getVisible = function(){
 		this.setScaleOriginalBy = function(props){
 
 
-			this.frameScaleBy(HHg.returnScaleProps(props));
+			this.frameScaleBy( HHg1Vector.returnVectorSubtractedFromVector(HHg.returnScaleProps(props)) ) ;
+
+
+		}
+		this.setScaleOriginalByActionFraction = function(props){
+
+
+			this.frameScaleBy(HHg.returnScaleProps(props).returnVectorPlusVector(HHg1Vector));
 
 
 		}
@@ -898,7 +904,7 @@ this.getVisible = function(){
 		_parent.doAddChild(this);
 
 		this.setRotationOriginalBy(_rotationOriginal);
-		this.setScaleOriginalBy(_scaleOriginal);
+		this.setScaleOriginalBy(HHg1Vector);
 
 		if(HHg.returnIsScreenPosProps(props)){
 			_positionInScreenOriginal = props.position;
@@ -998,6 +1004,7 @@ this.getVisible = function(){
 	this.doActionRotateBy = function(props){
 
 		var theAction;
+		debugger;
 		theAction = new HHgActionRotateBy(that, HHg.returnRotationProps(props), _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		return doFinalizeAction(theAction);
@@ -1055,6 +1062,7 @@ this.getVisible = function(){
 	this.doActionScaleBy = function(props){
 
 		var theAction;
+
 		theAction = new HHgActionScaleBy(that, HHg.returnScaleProps(props), _scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
 		return doFinalizeAction(theAction);
@@ -1159,13 +1167,12 @@ this.getVisible = function(){
 		}else if(storedAction.isActionSequence){
 			return this.doActionSequence(storedAction);
 		}else{
-			debugger;
 			return storedAction.actionCall.call(undefined, storedAction.props);
 		}
 
 	}
 
-	this.makeActionCluster = function(storedActions, onComplete, name){
+	this.makeActionCluster = this.makeCluster = function(storedActions, onComplete, name){
 		var i, key, longestTime = 0, finalActions = [], tempAction,totalActions = 1;
 
 		if(storedActions.length !== +storedActions.length){
@@ -1193,7 +1200,7 @@ this.getVisible = function(){
 
 	this.doActionCluster = function(cluster){
 		var i, tempThing, clusterName, tempName;
-		clusterName = this.doFinalizeAction(cluster);
+		clusterName = doFinalizeAction(cluster);
 
 		for(i = 0; i < cluster.length; i++){
 			tempThing = cluster[i];
@@ -1237,7 +1244,7 @@ this.getVisible = function(){
 
 	this.doActionSequence = function(sequence){
 		var i, tempThing, sequenceName, tempName;
-		sequenceName = this.doFinalizeAction(sequence);
+		sequenceName = doFinalizeAction(sequence);
 
 		for(i = 0; i < sequence.length; i++){
 			tempThing = sequence[i];
@@ -1245,7 +1252,7 @@ this.getVisible = function(){
 			sequence.props.myActions.push(tempThing.props.name);
 		}
 
-		this.doFinalizeAction(sequence);
+		doFinalizeAction(sequence);
 		this.doStoredAction(sequence[0]);
 	}
 
