@@ -57,6 +57,9 @@ var HHgHolder = function(props){
 			_zIndex = 1;
 		}
 
+		var counterForNamingActions = 0;
+	var actionsTotal = 0;
+
 	this.fontSizeOriginal = 1;
 	this.fontSizeScaled = 1;
 	this.borderWidthScaled = 0;
@@ -916,10 +919,8 @@ this.getVisible = function(){
 }
 
 //============= ACTIONS ================
-	var counterForNamingActions = 0;
-	var actionsTotal = 0;
 
-	var doFinalizeAction = function(action){
+	this.doFinalizeAction = function(action){
 
 		_actions = _actions || {};
 		if(action.name){
@@ -934,15 +935,14 @@ this.getVisible = function(){
 		counterForNamingActions++;
 
 		if(action.isActionCluster || action.isActionSequence){
-			//nothing right now
+			_actions[action.name] = action;
+			return {owner: action.props.owner, name: action.name};
 		}else{
+			_actions[action.name] = action;
 			actionsTotal++;
 			HHgActionManager.doAddAction(that,action);
+			return action.name;
 		}
-
-		_actions[action.name] = action;
-
-		return action.name;
 
 	}
 
@@ -977,7 +977,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionMoveBy(that, _positionInScreenOriginal.returnVectorSubtractedFromVector(HHg.returnPositionProps(props)), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 
 
 	}
@@ -987,7 +987,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionMoveBy(that, HHg.returnPositionProps(props), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 
 
 	}
@@ -997,7 +997,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionMoveForever(that, (HHg.returnPositionProps(props) || HHg.returnSpeedXYprops(props)), _positionInScreenOriginal, HHg.returnEaseProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 
 	}
 
@@ -1007,7 +1007,7 @@ this.getVisible = function(){
 
 		theAction = new HHgActionRotateBy(that, HHg.returnRotationProps(props), _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 
 	}
 
@@ -1027,7 +1027,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 
 	}
 
@@ -1047,7 +1047,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 
 	}
 
@@ -1056,7 +1056,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionRotateForever(that, (HHg.returnRotationProps(props) || HHg.returnSpeedNProps(props)), HHg.returnEaseProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 	}
 
 	this.doActionScaleBy = function(props){
@@ -1065,7 +1065,7 @@ this.getVisible = function(){
 
 		theAction = new HHgActionScaleBy(that, HHg.returnScaleProps(props), _scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 
 	}
 	this.doActionScaleTo = function(props){
@@ -1073,7 +1073,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionScaleBy(that, HHg.returnScaleProps(props).returnVectorScaledByInverse(_scaleOriginal), _scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 
 	}
 
@@ -1082,7 +1082,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionScaleForever(that, (HHg.returnScaleProps(props) || HHg.returnSpeedXYProps(props)), _scaleOriginal, HHg.returnEaseProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 
 	}
 
@@ -1091,7 +1091,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionFollowQuad(that, HHg.returnControlPositionProps(props), HHg.returnPositionProps(props), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), props.onComplete, HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 
 	}
 
@@ -1100,7 +1100,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionTimer(that, (HHg.returnTimeProps(props) || HHg.returnSpeedNProps(props)), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
-		return doFinalizeAction(theAction);
+		return this.doFinalizeAction(theAction);
 	}
 
 	this.doActionPlaySound = function(props){
@@ -1158,7 +1158,7 @@ this.getVisible = function(){
 	//============= ACTION CLUSTERS AND SEQUENCES =============
 
 	this.makeAction = this.makeStoredAction = this.storeAction = function(actionName, props){
-		return {actionCall: this.returnActionFunction(actionName), props: props};
+		return {actionCall: this.returnActionFunction(actionName), props: props, owner: this};
 	}
 
 	this.doStoredAction = this.callStoredAction = function(storedAction){
@@ -1167,7 +1167,7 @@ this.getVisible = function(){
 		}else if(storedAction.isActionSequence){
 			return this.doActionSequence(storedAction);
 		}else{
-			return storedAction.actionCall.call(undefined, storedAction.props);
+			return {owner: storedAction.props.owner, name: storedAction.actionCall.call(undefined, storedAction.props)};
 		}
 
 	}
@@ -1193,67 +1193,63 @@ this.getVisible = function(){
 
 			finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: onComplete} ));
 			finalActions.isActionCluster = true;
-			finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions};
+			finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions, owner: this};
 			return finalActions;
 
 	}
 
 	this.doActionCluster = function(cluster){
-		var i, tempThing, clusterName, tempName;
-		clusterName = doFinalizeAction(cluster);
+		var i, tempThing, clusterName;
+
 
 		for(i = 0; i < cluster.length; i++){
 			tempThing = cluster[i];
-			tempThing.props.name = clusterName + "_CHILD_" + i;
 			cluster.props.myActions.push(this.doStoredAction(tempThing));
 		}
+
+		return this.doFinalizeAction(cluster);
 
 	}
 
 	this.makeActionSequence = function(storedActions, name, onComplete){
-		var i, key, totalTime = 0, finalActions = [], finalSequence = [], tempAction, tempFunction;
+		var i, key, finalActions = [], finalSequence = [], tempAction, tempAction2, tempFunction;
 		if(storedActions.length !== +storedActions.length){
 			for(key in storedActions){
-				finalAction.push(storedActions[key]);
+				finalActions.push(storedActions[key]);
 			}
 		}else{
 			finalActions = storedActions;
 		}
 
-		finalActions.actionList = [];
+		finalActions.props = {myActions: [], totalActions: finalActions.length, name: name, time: 0};
 
 			for(i = 0; i < finalActions.length; i++){
 				tempAction = finalActions[i];
-				totalTime += tempAction.props.time;
+				finalActions.props.time += tempAction.props.time;
 
-				if(i < finalAction.length - 1){
-					tempAction.props.onComplete = function(){
-						that.doStoredAction(finalActions[i+1]);
+				if(i < finalActions.length - 1){
+					var newAction = finalActions[i+1];
+					var func = function(sequence, nextAction){
+						sequence.props.myActions.push(this.doStoredAction(nextAction));
 					};
 
+					tempAction.props.onComplete = func.bind(that,finalActions, newAction);
+
 				}else{
-					tempAction.props.onComplete = onComplete;
+					tempAction.props.onComplete = onComplete.bind(that);
 				}
 			}
 
 			finalActions.isActionSequence = true;
-			finalActions.props = {time: totalTime, name: name, myActions: [], totalActions: finalActions.length};
 			return finalActions;
 
 	}
 
 	this.doActionSequence = function(sequence){
-		var i, tempThing, sequenceName, tempName;
-		sequenceName = doFinalizeAction(sequence);
 
-		for(i = 0; i < sequence.length; i++){
-			tempThing = sequence[i];
-			tempThing.props.name = sequenceName + "_CHILD_" + i;
-			sequence.props.myActions.push(tempThing.props.name);
-		}
 
-		doFinalizeAction(sequence);
-		this.doStoredAction(sequence[0]);
+		sequence.props.myActions.push(this.doStoredAction(sequence[0]));
+		return this.doFinalizeAction(sequence);
 	}
 
 //============= MOUSE =================
