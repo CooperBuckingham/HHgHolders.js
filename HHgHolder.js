@@ -951,10 +951,11 @@ this.getVisible = function(){
 	}
 
 	this.doRemoveAction = function(action){
-
+		var tempObject;
 		if(action.isActionCluster || action.isActionSequence){
 			for(var i = 0; i < action.props.myActions.length; i++){
-				this.doRemoveActionByName(action.props.myActions[i]);
+				tempObject = action.props.myActions[i];
+				tempObject.owner.doRemoveActionByName(tempObject.name);
 			}
 			delete _actions[action.name];
 
@@ -1190,10 +1191,13 @@ this.getVisible = function(){
 					longestTime = tempAction.props.time;
 				}
 			}
+			var func = function(){
+				this.props.onComplete();
+			};
 
-			finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: onComplete} ));
+			finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: func.bind(finalActions) } ) );
 			finalActions.isActionCluster = true;
-			finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions, owner: this};
+			finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions, owner: this, onComplete: onComplete};
 			return finalActions;
 
 	}
@@ -1221,7 +1225,7 @@ this.getVisible = function(){
 			finalActions = storedActions;
 		}
 
-		finalActions.props = {myActions: [], totalActions: finalActions.length, name: name, time: 0};
+		finalActions.props = {myActions: [], totalActions: finalActions.length, name: name, time: 0, onComplete: onComplete};
 
 			for(i = 0; i < finalActions.length; i++){
 				tempAction = finalActions[i];
@@ -1236,7 +1240,10 @@ this.getVisible = function(){
 					tempAction.props.onComplete = func.bind(that,finalActions, newAction);
 
 				}else{
-					tempAction.props.onComplete = onComplete.bind(that);
+					var func = function(sequence){
+						sequence.props.onComplete();
+					};
+					tempAction.props.onComplete = func.bind(window, finalActions);
 				}
 			}
 
@@ -1246,7 +1253,6 @@ this.getVisible = function(){
 	}
 
 	this.doActionSequence = function(sequence){
-
 
 		sequence.props.myActions.push(this.doStoredAction(sequence[0]));
 		return this.doFinalizeAction(sequence);
