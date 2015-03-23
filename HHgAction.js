@@ -42,6 +42,9 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 		if(action.onComplete){
 			action.onComplete();
 		}
+		if(action.sequenceChain){
+			action.sequenceChain();
+		}
 
 		action.owner.doRemoveAction(action);
 
