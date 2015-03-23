@@ -188,6 +188,7 @@ function doAddFunctionsToScene(scene){
 
 	}
 
+var TESTTRANSFORM = true;
 
 	scene.doUpdateHolders = function(){
 
@@ -196,6 +197,7 @@ function doAddFunctionsToScene(scene){
 		}
 		var newList = scene._finalDirtyHolders;
 		scene._finalDirtyHolders = {};
+		var transformString = "";
 
 		var holder, div, changes;
 		for(var thing in newList){
@@ -216,35 +218,55 @@ function doAddFunctionsToScene(scene){
 
 			}
 
-			if(changes.scale === true){
+			if(TESTTRANSFORM && holder.firstUpdate === true){
+				if(changes.scale === true || changes.rotation === true || changes.position === true ){
 
-				div.style.width = "" + HHg.roundNumToPlaces(holder.getWidthNet(), 0)  + "px";
-				div.style.height ="" + HHg.roundNumToPlaces(holder.getHeightNet(), 0) + "px";
-
+					transformString = "scale(" + holder.getScaleNetForChildScale().getX() + "," + holder.getScaleNetForChildScale().getY() + ") "
+					transformString = transformString + "rotate(" + holder.getRotationNet() +"deg" +") ";
+					transformString = transformString + "translate(" + holder.getPositionInScreenNet().getX() + "px," + holder.getPositionInScreenNet().getY() + "px)"
+				/*
 				if(holder.paragraph !== undefined){
 					holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
 				}
+				*/
 
-				if(holder.borderWidthOriginal > 0){
-					div.style.borderWidth = "" + holder.borderWidthScaled + "px";
+					if(holder.borderWidthOriginal > 0){
+						div.style.borderWidth = "" + holder.borderWidthScaled + "px";
+					}
 				}
 
-				//div.style.width = "" + holder.getWidthNet()  + "px";
-				//div.style.height ="" + holder.getHeightNet() + "px";
-			}
+			}else{
+				holder.firstUpdate = true;
 
-			if(changes.rotation === true){
-				div.style.transform="rotate(" + HHg.roundNumToPlaces(holder.getRotationNet(), 2) +"deg" +")";
+				if(changes.scale === true ){
 
-			}
+					div.style.width = "" + Math.round(holder.getWidthNet()) + "px";
+					div.style.height = "" + Math.round(holder.getHeightNet()) + "px";
+
+					if(holder.paragraph !== undefined){
+						holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
+					}
+
+					if(holder.borderWidthOriginal > 0){
+						div.style.borderWidth = "" + holder.borderWidthScaled + "px";
+					}
+
+				}
 
 			if(changes.position === true){
 				div.style.left ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getX(),2) +"px";
 				div.style.bottom ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getY(),2) + "px";
+			}
 
-				//div.style.left ="" +  holder.getPositionInScreenNet().getX()  +"px";
-				//div.style.bottom ="" +  holder.getPositionInScreenNet().getY()  + "px";
+			if(changes.rotation === true){
+				//div.style.transform="rotate(" + HHg.roundNumToPlaces(holder.getRotationNet(), 2) +"deg" +")";
+				transformString = transformString + "rotate(" + holder.getRotationNet() +"deg" +")";
+			}
 
+		}
+
+			if(transformString){
+				div.style.transform = transformString;
 			}
 
 			if(changes.zIndex === true){
@@ -308,6 +330,15 @@ function doAddFunctionsToScene(scene){
 		scene._holders[div.id] = holder;
 
 		HHgSceneDiv.appendChild(div);
+
+		//experiment
+		//div.style.width = "" + Math.round(holder.getWidthNet())  + "px";
+		//div.style.height ="" + Math.round(holder.getHeightNet()) + "px";
+
+		//div.style.left ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getX(),2) +"px";
+		//div.style.bottom ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getY(),2) + "px";
+
+
 	};
 
 	//====================================================
