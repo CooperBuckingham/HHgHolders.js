@@ -422,7 +422,7 @@ function doAddFunctionsToScene(scene){
 			relX =  e.pageX;
 			relY =  e.pageY;
 			mouseXY = new HHgVector2(relX,relY);
-			console.log("mouse down");
+
 			HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
 			return false;
 		}, false);
