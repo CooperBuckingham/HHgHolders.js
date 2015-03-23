@@ -281,7 +281,7 @@ var HHg = {
 
 	returnTimeProps: function(props){
 
-		if(props === undefined) return 0;
+		if(props === undefined) return undefined;
 
 
 		if(!isNaN(props)){
@@ -300,7 +300,7 @@ var HHg = {
 			return props.seconds;
 		}
 
-		return 0;
+		return undefined;
 
 	},
 

@@ -978,6 +978,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionMoveBy(that, _positionInScreenOriginal.returnVectorSubtractedFromVector(HHg.returnPositionProps(props)), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 
 
@@ -988,6 +989,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionMoveBy(that, HHg.returnPositionProps(props), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 
 
@@ -998,6 +1000,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionMoveForever(that, (HHg.returnPositionProps(props) || HHg.returnSpeedXYprops(props)), _positionInScreenOriginal, HHg.returnEaseProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 
 	}
@@ -1008,6 +1011,7 @@ this.getVisible = function(){
 
 		theAction = new HHgActionRotateBy(that, HHg.returnRotationProps(props), _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 
 	}
@@ -1028,6 +1032,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 
 	}
@@ -1048,6 +1053,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 
 	}
@@ -1057,6 +1063,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionRotateForever(that, (HHg.returnRotationProps(props) || HHg.returnSpeedNProps(props)), HHg.returnEaseProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 	}
 
@@ -1066,6 +1073,7 @@ this.getVisible = function(){
 
 		theAction = new HHgActionScaleBy(that, HHg.returnScaleProps(props), _scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 
 	}
@@ -1074,6 +1082,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionScaleBy(that, HHg.returnScaleProps(props).returnVectorScaledByInverse(_scaleOriginal), _scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 
 	}
@@ -1083,6 +1092,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionScaleForever(that, (HHg.returnScaleProps(props) || HHg.returnSpeedXYProps(props)), _scaleOriginal, HHg.returnEaseProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 
 	}
@@ -1092,6 +1102,7 @@ this.getVisible = function(){
 		var theAction;
 		theAction = new HHgActionFollowQuad(that, HHg.returnControlPositionProps(props), HHg.returnPositionProps(props), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), props.onComplete, HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 
 	}
@@ -1099,8 +1110,9 @@ this.getVisible = function(){
 	this.doActionTimer = function(props){
 
 		var theAction;
-		theAction = new HHgActionTimer(that, (HHg.returnTimeProps(props) || HHg.returnSpeedNProps(props)), HHg.returnOnCompleteProps(props));
+		theAction = new HHgActionTimer(that, HHg.returnTimeProps(props), HHg.returnOnCompleteProps(props));
 		theAction.name = props.name;
+		theAction.sequenceChain = props.sequenceChain;
 		return this.doFinalizeAction(theAction);
 	}
 
@@ -1195,7 +1207,11 @@ this.getVisible = function(){
 				this.props.onComplete();
 			};
 
-			finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: func.bind(finalActions) } ) );
+			var sFunc = function(){
+				this.props.sequenceChain();
+			}
+
+			finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: func.bind(finalActions), sequenceChain: sFunc.bind(finalActions)  } ) );
 			finalActions.isActionCluster = true;
 			finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions, owner: this, onComplete: onComplete};
 			return finalActions;
@@ -1225,7 +1241,9 @@ this.getVisible = function(){
 			finalActions = storedActions;
 		}
 
-		finalActions.props = {myActions: [], totalActions: finalActions.length, name: name, time: 0, onComplete: onComplete};
+		finalActions.props = {myActions: [], totalActions: finalActions.length, name: name, time: 0, onComplete: onComplete, sequenceChain: function(){}};
+
+		finalActions.push(this.makeAction("timer", {time: 0, onComplete: onComplete}));
 
 			for(i = 0; i < finalActions.length; i++){
 				tempAction = finalActions[i];
@@ -1237,13 +1255,15 @@ this.getVisible = function(){
 						sequence.props.myActions.push(this.doStoredAction(nextAction));
 					};
 
-					tempAction.props.onComplete = func.bind(that,finalActions, newAction);
+					tempAction.props.sequenceChain = func.bind(that,finalActions, newAction);
 
 				}else{
-					var func = function(sequence){
-						sequence.props.onComplete();
+
+					var func = function(){
+						this.props.sequenceChain();
 					};
-					tempAction.props.onComplete = func.bind(window, finalActions);
+
+					tempAction.props.sequenceChain = func.bind(finalActions);
 				}
 			}
 
