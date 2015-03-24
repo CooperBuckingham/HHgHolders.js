@@ -13,6 +13,7 @@ var HHgHolder = function(props){
 	var _widthOriginal = temp.getX(),
 		_heightOriginal = temp.getY(),
 		_sizeOriginal = new HHgVector2(_widthOriginal, _heightOriginal),
+		_sizeOriginalHalf = _sizeOriginal.returnVectorScaledBy(.5),
 
 		_rotationOriginal = 0,
 		 _rotationNet = 0,
@@ -732,10 +733,11 @@ this.getVisible = function(){
 			console.log("size orig: " + _sizeOriginal.pretty());
 	}
 
-
-
 		_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
 		_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
+	  _positionInScreenNet.minusEquals(_sizeOriginalHalf.returnVectorScaledBy(this.getScaleNetForMyPosition()));
+
+
 
 
 		//_positionInScreenNet = _sizeOriginal.returnVectorScaledBy(.5).returnVectorScaledBy(HHgPixelScale).returnVectorSubtractedFromVector(_positionInScreenNet);
@@ -827,10 +829,19 @@ this.getVisible = function(){
 
 			if(_parent.isGameHolder === true){
 				return _scaleOriginal;
-			}else{
+			}
 				return this.getScaleNetForChildScale();
+
+		}
+
+		this.getScaleNetForMyPosition = function(){
+
+
+			if(_parent !== undefined){
+				return _parent.getScaleNetForChildScale();
 			}
 
+			return HHg1Vector;
 		}
 
 		this.doRecalcScale = function(){

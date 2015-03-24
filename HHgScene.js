@@ -237,8 +237,8 @@ function doAddFunctionsToScene(scene){
 				*/
 
 				var adjustedPosition = holder.getPositionInScreenNet();
-				var testAdjust = holder.returnHalfSizeVector();
-				adjustedPosition.minusEquals(testAdjust);
+				//var holderHalfSizeUnscaled = holder.getSizeOriginal().returnVectorScaledBy(.5);
+				//adjustedPosition.minusEquals(holderHalfSizeUnscaled);
 				div.style.left ="" + adjustedPosition.getX() +"px";
 				div.style.bottom ="" + adjustedPosition.getY() + "px";
 
@@ -272,8 +272,8 @@ function doAddFunctionsToScene(scene){
 			if(changes.position === true){
 
 				var adjustedPosition = holder.getPositionInScreenNet();
-				var testAdjust = holder.returnHalfSizeVector();
-				adjustedPosition.minusEquals(testAdjust);
+				//var testAdjust = holder.returnHalfSizeVector();
+				//adjustedPosition.minusEquals(testAdjust);
 				div.style.left ="" + adjustedPosition.getX() +"px";
 				div.style.bottom ="" + adjustedPosition.getY() + "px";
 				if(holder.test = "theTwo"){
