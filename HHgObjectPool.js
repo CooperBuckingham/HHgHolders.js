@@ -14,7 +14,9 @@ var HHgPlaceTestSprite;
 	var runningCount = 0;
 
 	HHgObjectPool.doStart = function(numberOfCachedHolders){
-		numberOfCachedHolders = numberOfCachedHolders || 100;
+
+		//hacking the cache to be empty for now.
+		numberOfCachedHolders = 0;
 
 		for(var i = 0; i < numberOfCachedHolders; i++){
 			tempHolder = new HHgHolder({w:1,h:1});
@@ -23,8 +25,9 @@ var HHgPlaceTestSprite;
 		}
 	};
 
+
 	HHgGetHolder = HHgObjectPool.getHolder = function(props){
-		
+
 
 		for(tempHolder in availablePool){
 			tempHolder2 = availablePool[tempHolder];
@@ -36,13 +39,13 @@ var HHgPlaceTestSprite;
 			return tempHolder2;
 		}
 
-		console.log("WARNING: no available holders, creating new");
+		//console.log("WARNING: no available holders, creating new");
 		return new HHgHolder(props);
 
 	};
 
 	HHgReleaseHolder = HHgObjectPool.releaseHolder = function(holder){
-		
+
 		if(availablePool.hasOwnProperty(holder.getHash())){
 			console.log("WARNING: attempting to release previously released holder");
 			return;
