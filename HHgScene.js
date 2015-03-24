@@ -188,8 +188,6 @@ function doAddFunctionsToScene(scene){
 
 	}
 
-var TESTTRANSFORM = true;
-
 	scene.doUpdateHolders = function(){
 
 		if(scene._finalDirtyHolders.length < 1){
@@ -218,20 +216,38 @@ var TESTTRANSFORM = true;
 
 			}
 
-			if(TESTTRANSFORM && holder.firstUpdate === true){
+			if(HHgTransformsOnly && holder.firstUpdate === true){
 				if(changes.scale === true || changes.rotation === true || changes.position === true ){
 
-					transformString = "scale(" + holder.getScaleNetForChildScale().getX() + "," + holder.getScaleNetForChildScale().getY() + ") "
+					transformString = "scale(" + (holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + (holder.getHeightNet() / parseFloat(div.style.height) ) + ") ";
 					transformString = transformString + "rotate(" + holder.getRotationNet() +"deg" +") ";
-					transformString = transformString + "translate(" + holder.getPositionInScreenNet().getX() + "px," + holder.getPositionInScreenNet().getY() + "px)"
+
+					/*
+					var testTranslate = holder.getPositionInScreenNet();
+					testTranslate = testTranslate.returnVectorSubtractedFromVector( new HHgVector2(parseFloat(div.style.left), parseFloat(div.style.bottom)) );
+					testTranslate.timesEquals(holder.getScaleNetForChildScale());
+					transformString = transformString + "translate(" + testTranslate.getX() + "px," + testTranslate.getY() + "px)"
+					*/
+
+					//testTranslate.minusEquals(holder.returnHalfSizeVector());
 				/*
 				if(holder.paragraph !== undefined){
 					holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
 				}
 				*/
 
+				var adjustedPosition = holder.getPositionInScreenNet();
+				var testAdjust = holder.returnHalfSizeVector();
+				adjustedPosition.minusEquals(testAdjust);
+				div.style.left ="" + adjustedPosition.getX() +"px";
+				div.style.bottom ="" + adjustedPosition.getY() + "px";
+
+				if(holder.test = "theTwo"){
+					console.log(div.style.left, div.style.right);
+				}
+
 					if(holder.borderWidthOriginal > 0){
-						div.style.borderWidth = "" + holder.borderWidthScaled + "px";
+						//div.style.borderWidth = "" + holder.borderWidthScaled + "px";
 					}
 				}
 
@@ -240,8 +256,8 @@ var TESTTRANSFORM = true;
 
 				if(changes.scale === true ){
 
-					div.style.width = "" + Math.round(holder.getWidthNet()) + "px";
-					div.style.height = "" + Math.round(holder.getHeightNet()) + "px";
+					div.style.width = "" + holder.getWidthNet() + "px";
+					div.style.height = "" + holder.getHeightNet() + "px";
 
 					if(holder.paragraph !== undefined){
 						holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
@@ -254,8 +270,15 @@ var TESTTRANSFORM = true;
 				}
 
 			if(changes.position === true){
-				div.style.left ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getX(),2) +"px";
-				div.style.bottom ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getY(),2) + "px";
+
+				var adjustedPosition = holder.getPositionInScreenNet();
+				var testAdjust = holder.returnHalfSizeVector();
+				adjustedPosition.minusEquals(testAdjust);
+				div.style.left ="" + adjustedPosition.getX() +"px";
+				div.style.bottom ="" + adjustedPosition.getY() + "px";
+				if(holder.test = "theTwo"){
+					console.log(div.style.left, div.style.right);
+				}
 			}
 
 			if(changes.rotation === true){

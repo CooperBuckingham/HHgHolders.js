@@ -9,8 +9,10 @@ var HHgHolder = function(props){
 	}
 	var temp = HHg.returnSizeProps(props) || new HHgVector2(HHgGameHolder.getWidthOriginal(), HHgGameHolder.getHeightOriginal());
 
+
 	var _widthOriginal = temp.getX(),
 		_heightOriginal = temp.getY(),
+		_sizeOriginal = new HHgVector2(_widthOriginal, _heightOriginal),
 
 		_rotationOriginal = 0,
 		 _rotationNet = 0,
@@ -59,6 +61,10 @@ var HHgHolder = function(props){
 
 		var counterForNamingActions = 0;
 	var actionsTotal = 0;
+
+	this.getOriginalSize = function(){
+		return _sizeOriginal;
+	};
 
 	this.fontSizeOriginal = 1;
 	this.fontSizeScaled = 1;
@@ -551,7 +557,39 @@ this.getVisible = function(){
 //============ POSITION ==================
 
 
+//EXPERIEMNT
+	this.doRecalcPosition = function(){
+			if(_parent === "stop") return;
 
+			if(_parent == undefined){
+				return;
+			}
+
+				this.convertOriginalToNetPosition();
+
+
+			if(_parent !== undefined){
+
+				_positionInParentOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenOriginal(), 1 *  _parent.getRotationNet() );
+
+				_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInParentOriginal);
+				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(_parent.getScaleNetForChildPosition());
+
+			}
+
+			this.changes.position = true;
+
+
+			if(_children){
+				HHg.doForEach(_children, function(child){
+
+					child.updatePositionFromParentMove();
+
+				});
+			}
+
+		}
+/*
 
 	this.doRecalcPosition = function(){
 			if(_parent === "stop") return;
@@ -584,6 +622,7 @@ this.getVisible = function(){
 			}
 
 		}
+		*/
 
 		this.setPositionStored = function(){
 			_positionStored = _positionInScreenOriginal;
@@ -600,9 +639,7 @@ this.getVisible = function(){
 
 		this.setPositionInScreenTo = function(props){
 
-
 			this.framePositionTo(HHg.returnPositionProps(props));
-
 		}
 
 		this.setPositionInScreenBy = function(props){
@@ -624,7 +661,6 @@ this.getVisible = function(){
 		this.getPositionWithCentering = function(){
 			return that.returnHalfSizeVector().returnVectorPlusVector( _positionInScreenOriginal);
 		}
-
 
 		this.getPositionInParentOriginal = function(){
 			return _positionInParentOriginal;
@@ -685,9 +721,36 @@ this.getVisible = function(){
 
 		}
 
+
+//EXPERIMENT
+
 		this.convertOriginalToNetPosition = function(){
 
-		//note, to specifically use GameHolder position for child here, even though it's asking for position
+		//note, to specifically use GameHolder scale for child here, even though it's asking for position
+		//because the offsets need its relative scale.
+		if(this.test === "testTwo"){
+			console.log("size orig: " + _sizeOriginal.pretty());
+	}
+
+
+
+		_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
+		_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
+
+
+		//_positionInScreenNet = _sizeOriginal.returnVectorScaledBy(.5).returnVectorScaledBy(HHgPixelScale).returnVectorSubtractedFromVector(_positionInScreenNet);
+		//_positionInScreenNet = _positionInScreenNet.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
+//***** working on getting scale to efect posiiton correctly.
+			if(_parent !== undefined){
+
+
+			}
+
+		}
+/*
+		this.convertOriginalToNetPosition = function(){
+
+		//note, to specifically use GameHolder scale for child here, even though it's asking for position
 		//because the offsets need its relative scale.
 			_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
 
@@ -695,10 +758,12 @@ this.getVisible = function(){
 
 				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
 
-				_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
+					_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
+
 			}
 
 		}
+		*/
 //=============== SCALE ================
 
 		this.setScaleStored = function(){
@@ -1155,8 +1220,10 @@ this.getVisible = function(){
 			return this.doActionRotateLeftTo.bind(this);
 			case "rotateby":
 			return this.doActionRotateBy.bind(this);
+			case "moveby":
 			case "moveinscreenby":
 			return this.doActionMoveInScreenBy.bind(this);
+			case "moveto":
 			case "moveinscreento":
 			return this.doActionMoveInScreenTo.bind(this);
 			case "moveinscreenforever":
@@ -1284,16 +1351,16 @@ this.getVisible = function(){
 	//this will all be overridden for custom games
 	this.doMouseDown = function(){
 
-		this.setScaleStored();
-		this.setScaleOriginalBy(.9,.9);
-		this.doActionScaleForever({scaleX: .9, scaleY: .9, name: "mousedownscale"});
-		this.doActionPlaySound("click");
-
+		//this.setScaleStored();
+		//this.setScaleOriginalBy(.9,.9);
+		//this.doActionScaleForever({scaleX: .9, scaleY: .9, name: "mousedownscale"});
+		//this.doActionPlaySound("click");
+		//this.doActionRotateForever({speed:300, name: "mousemoverotate"});
 	}
 
 	this.doMouseUp = function(mouseWasOverWhenReleased){
-		this.setScaleOriginalBy(1.0/0.9,1.0/0.9);
-		this.doRemoveActionByName("mousedownscale");
+		//this.setScaleOriginalBy(1.0/0.9,1.0/0.9);
+		//this.doRemoveActionByName("mousedownscale");
 		this.isBeingDragged = false;
 
 	}
@@ -1302,7 +1369,7 @@ this.getVisible = function(){
 
 		this.setPositionStored();
 		this.isBeingDragged = true;
-		this.doActionRotateForever({speed:300, name: "mousemoverotate"});
+
 
 	}
 
@@ -1316,7 +1383,7 @@ this.getVisible = function(){
 
 		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
 		this.isBeingDragged = false;
-		this.doRemoveActionByName("mousemoverotate");
+		//this.doRemoveActionByName("mousemoverotate");
 	}
 
 
