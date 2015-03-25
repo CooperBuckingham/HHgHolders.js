@@ -27,7 +27,7 @@ var HHgMouse = {};
 	that.doStart = function(){
 
 		that.mouseCircle = HHgGetHolder({w:25,h:25,zIndex: 100});
-		that.mouseCircle.doMoveToNewParent({parent: HHgGameHolder, position: HHg0Vector, isScreenPos: false});
+		that.mouseCircle.doMoveToNewParent({parent: HHgGameHolder, position: HHg0Vector, isScreenPos: true});
 		that.mouseCircle.doAddSprite("mouse");
 		that.mouseCircle.setVisible(false);
 		that.mouseCircle.setMouseable(false);

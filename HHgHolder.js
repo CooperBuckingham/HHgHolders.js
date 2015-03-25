@@ -504,6 +504,13 @@ this.getVisible = function(){
 			return _heightOriginal * _scaleNet.getY();
 		}
 
+		this.getMySizeOffset = function(){
+			return _sizeOriginalHalf.returnVectorScaledBy(this.getScaleNetForMyPosition());
+		}
+		this.getCenterPosition = function(){
+			return _positionInScreenNet.returnVectorPlusVector(this.getMySizeOffset());
+		}
+
 
 		this.getParent = function(){
 			return _parent;
@@ -729,13 +736,10 @@ this.getVisible = function(){
 
 		//note, to specifically use GameHolder scale for child here, even though it's asking for position
 		//because the offsets need its relative scale.
-		if(this.test === "testTwo"){
-			console.log("size orig: " + _sizeOriginal.pretty());
-	}
 
 		_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
 		_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
-	  _positionInScreenNet.minusEquals(_sizeOriginalHalf.returnVectorScaledBy(this.getScaleNetForMyPosition()));
+	  _positionInScreenNet.minusEquals(this.getMySizeOffset());
 
 
 

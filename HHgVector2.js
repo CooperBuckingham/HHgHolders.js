@@ -67,7 +67,6 @@ var HHgVector2 = function (x,y){
 		return ("x: " + _x + " y: " + _y);
 	}
 
-
 	this.setXY = function(xy,y){
 		if(xy instanceof HHgVector2){
 			_x = xy.getX();
