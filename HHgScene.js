@@ -242,10 +242,6 @@ function doAddFunctionsToScene(scene){
 				div.style.left ="" + adjustedPosition.getX() +"px";
 				div.style.bottom ="" + adjustedPosition.getY() + "px";
 
-				if(holder.test = "theTwo"){
-					console.log(div.style.left, div.style.right);
-				}
-
 					if(holder.borderWidthOriginal > 0){
 						//div.style.borderWidth = "" + holder.borderWidthScaled + "px";
 					}
@@ -276,9 +272,7 @@ function doAddFunctionsToScene(scene){
 				//adjustedPosition.minusEquals(testAdjust);
 				div.style.left ="" + adjustedPosition.getX() +"px";
 				div.style.bottom ="" + adjustedPosition.getY() + "px";
-				if(holder.test = "theTwo"){
-					console.log(div.style.left, div.style.right);
-				}
+
 			}
 
 			if(changes.rotation === true){
@@ -414,8 +408,8 @@ function doAddFunctionsToScene(scene){
 		ctx.font = "" + textHeight + "px " + props.font ;
 		textWidth = ctx.measureText(props.text).width * parentScale;
 
-		divWidth = owner.getWidthNet() * 2;
-		divHeight = owner.getHeightNet() * 2;
+		divWidth = owner.getWidthNet() * HHgHoldCanvasUpresScaleBy;
+		divHeight = owner.getHeightNet() * HHgHoldCanvasUpresScaleBy;
 
 
 		if(props.vAlign === "top"){
@@ -476,8 +470,8 @@ function doAddFunctionsToScene(scene){
 			relX =  e.pageX;
 			relY =  e.pageY;
 			mouseXY = new HHgVector2(relX,relY);
-
-			HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
+			mouseXY = scene.convertMouseToHolder(mouseXY);
+			HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),mouseXY );
 			return false;
 		}, false);
 
@@ -487,7 +481,8 @@ function doAddFunctionsToScene(scene){
 			relX = e.pageX;
 			relY = e.pageY;
 			mouseXY = new HHgVector2(relX,relY);
-			HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
+			mouseXY = scene.convertMouseToHolder(mouseXY);
+			HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),mouseXY  );
 			return false;
 		}, false);
 
@@ -500,7 +495,8 @@ function doAddFunctionsToScene(scene){
 		        relX = e.pageX;
 				relY = e.pageY;
 				mouseXY = new HHgVector2(relX,relY);
-				HHgMouse.doMouseCancel( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
+				mouseXY = scene.convertMouseToHolder(mouseXY);
+				HHgMouse.doMouseCancel( scene.returnHoldersUnderPoint( mouseXY),mouseXY );
 		    }
 			//e.preventDefault();
 			//e.stopPropagation();
@@ -518,7 +514,8 @@ function doAddFunctionsToScene(scene){
 			relY = e.pageY;
 
 			mouseXY = new HHgVector2(relX,relY);
-			HHgMouse.doMouseMove( scene.convertMouseToHolder(mouseXY)   );
+			mouseXY = scene.convertMouseToHolder(mouseXY);
+			HHgMouse.doMouseMove( mouseXY  );
 			return false;
 		}, false);
 
@@ -526,13 +523,13 @@ function doAddFunctionsToScene(scene){
 			e.preventDefault();
 
 			touch = e.changedTouches[0];
-			console.log("touch start :" + touch.identifier);
+
 			HHgTrackedTouch = touch.identifier;
 			relX =  touch.pageX;
 			relY =  touch.pageY;
 			mouseXY = new HHgVector2(relX,relY);
-
-			HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),scene.convertMouseToHolder(mouseXY) );
+			mouseXY = scene.convertMouseToHolder(mouseXY);
+			HHgMouse.doMouseDown( scene.returnHoldersUnderPoint(mouseXY),mouseXY );
 			return false;
 		}, false);
 
@@ -546,7 +543,8 @@ function doAddFunctionsToScene(scene){
 					relX =  touchList[i].pageX;
 					relY =  touchList[i].pageY;
 					mouseXY = new HHgVector2(relX,relY);
-					HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
+					mouseXY = scene.convertMouseToHolder(mouseXY);
+					HHgMouse.doMouseUp( scene.returnHoldersUnderPoint( mouseXY),mouseXY  );
 					break;
 				}
 			}
@@ -564,7 +562,8 @@ function doAddFunctionsToScene(scene){
 					relX =  touchList[i].pageX;
 					relY =  touchList[i].pageY;
 					mouseXY = new HHgVector2(relX,relY);
-					HHgMouse.doMouseMove( scene.convertMouseToHolder(mouseXY)   );
+					mouseXY = scene.convertMouseToHolder(mouseXY);
+					HHgMouse.doMouseMove( mouseXY   );
 					break;
 				}
 			}
@@ -583,7 +582,8 @@ function doAddFunctionsToScene(scene){
 					relX =  touchList[i].pageX;
 					relY =  touchList[i].pageY;
 					mouseXY = new HHgVector2(relX,relY);
-					HHgMouse.doMouseCancel( scene.returnHoldersUnderPoint( mouseXY),scene.convertMouseToHolder(mouseXY)  );
+					mouseXY = scene.convertMouseToHolder(mouseXY);
+					HHgMouse.doMouseCancel( scene.returnHoldersUnderPoint( mouseXY),mouseXY  );
 					break;
 				}
 			}
@@ -599,7 +599,7 @@ function doAddFunctionsToScene(scene){
 		xy = xy.returnVectorPlusVector(HHgScreenDiff);
 		xy.setY(HardwareScreen.h -xy.getY() );
 
-
+		//experiment
 		xy = HHgGameHolder.returnHalfSizeVector().returnVectorSubtractedFromVector(xy);
 		xy = xy.returnVectorScaledByInverse(HHgGameHolder.getScaleNetForChildScale());
 		return xy;
@@ -610,27 +610,41 @@ function doAddFunctionsToScene(scene){
 
 
 	scene.doesHolderContainPoint = function(holder, xy){
-		var canvas = holder.getCanvas();
+				var canvas = holder.getCanvas();
 
-		var mousePos = xy.returnVectorPlusVector(HHgScreenDiff),
+		//holders new bounds are
+		//position
+				var holderOriginalSize = holder.getSizeOriginal();
+		    var holderOriginalScale = holder.getScaleOriginal();
+		    var holderFinalSize = holderOriginalSize.returnVectorScaledBy(holderOriginalScale);
+		    var holderHalfSize = holderFinalSize.returnVectorScaledBy(.5);
 
-		    holderPosNet = holder.getPositionInScreenNet();
+				var mousePos = xy.returnCopy();
+				console.log("MOUSE: " + mousePos.pretty());
 
-		    holderPosNet = new HHgVector2(holderPosNet.getX(), HardwareScreen.h - (holderPosNet.getY() + holder.getHeightNet()) );
+		    var holderCenter = holder.getPositionInScreenOriginal();
+		    console.log("CENTER: " + holderCenter.pretty());
 
-		    var centerPoint = holderPosNet.returnVectorPlusVector(holder.returnHalfSizeVector()),
+		    var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(holderCenter, -1 * holder.getRotationNet());
 
-		    mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(centerPoint, -1 * holder.getRotationNet()),
+		    var posInCanvas = holderCenter.returnVectorSubtractedFromVector(mouseFinalRelative);
+		    //var posInCanvasScaled = posInCanvas.returnVectorScaledBy(holderOriginalScale);
 
-		    posInCanvas = holderPosNet.returnVectorSubtractedFromVector(mouseFinalRelative),
 
-		    left = 0,
-		    right = holder.getWidthNet(),
-		    bottom = holder.getHeightNet(),
-		    top = 0,
+//debugger;
+		    posInCanvas.plusEquals(holderHalfSize);
 
-		    posX = posInCanvas.getX(),
-		    posY = posInCanvas.getY();
+		    console.log("HOLDER H: " + holderHalfSize.pretty());
+				console.log("CANVAS: " + posInCanvas.pretty());
+
+		    var left = 0;
+		    var right = holderFinalSize.getX();
+
+		    var top = 0;
+		    var bottom = holderFinalSize.getY();
+
+		    var posX = posInCanvas.getX();
+		    var posY = posInCanvas.getY();
 
 		    if(posX < left) return false;
 
@@ -640,17 +654,24 @@ function doAddFunctionsToScene(scene){
 
 		    if(posY > bottom) return false;
 
+		    console.log("inside canvas");
 		   //now adjust for scaled canvas
 		   if(canvas !== undefined){
+
 					var canvasRatio = new HHgVector2(canvas.width, canvas.height);
+					canvasRatio.timesEquals(holder.getScaleNetForChildScale());
+		   		canvasRatio = canvasRatio.returnVectorScaledByInverse((new HHgVector2(canvas.clientWidth, canvas.clientHeight) ));
 
-		   		canvasRatio = canvasRatio.returnVectorScaledByInverse((new HHgVector2(canvas.clientWidth, canvas.clientHeight)));
+		   		posInCanvas.timesEquals(canvasRatio);
 
-		   		posInCanvas = posInCanvas.returnVectorScaledBy(canvasRatio);
 
-		   		if( isAlphaPixel(canvas, posInCanvas.getX(), posInCanvas.getY()) ) return false;
+		   		//posInCanvas = posInCanvas.returnVectorScaledBy(canvasRatio).returnVectorScaledBy(holder.getScaleNetForChildScale());
+
+
+		   		if( isAlphaPixel(canvas, posInCanvas.getX(), posInCanvas.getY() ) ) return false;
 
 				}
+				console.log("IS NOT ALPHA");
 
 				return true;
 

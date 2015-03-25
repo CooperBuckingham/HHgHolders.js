@@ -4,7 +4,7 @@ var HHgDefaultBorderColor = new HHgColorRGBA(0,0,0,.8);
 
 (function(){
 
-  var shapeData, holder;
+  var shapeData = {}, holder;
   function getShapeData(props){
     shapeData = {};
 
