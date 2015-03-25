@@ -612,30 +612,23 @@ function doAddFunctionsToScene(scene){
 	scene.doesHolderContainPoint = function(holder, xy){
 				var canvas = holder.getCanvas();
 
-		//holders new bounds are
-		//position
 				var holderOriginalSize = holder.getSizeOriginal();
 		    var holderOriginalScale = holder.getScaleOriginal();
 		    var holderFinalSize = holderOriginalSize.returnVectorScaledBy(holderOriginalScale);
 		    var holderHalfSize = holderFinalSize.returnVectorScaledBy(.5);
 
 				var mousePos = xy.returnCopy();
-				console.log("MOUSE: " + mousePos.pretty());
+				//console.log("MOUSE: " + mousePos.pretty());
 
 		    var holderCenter = holder.getPositionInScreenOriginal();
-		    console.log("CENTER: " + holderCenter.pretty());
 
 		    var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(holderCenter, -1 * holder.getRotationNet());
 
 		    var posInCanvas = holderCenter.returnVectorSubtractedFromVector(mouseFinalRelative);
-		    //var posInCanvasScaled = posInCanvas.returnVectorScaledBy(holderOriginalScale);
 
 
-//debugger;
+
 		    posInCanvas.plusEquals(holderHalfSize);
-
-		    console.log("HOLDER H: " + holderHalfSize.pretty());
-				console.log("CANVAS: " + posInCanvas.pretty());
 
 		    var left = 0;
 		    var right = holderFinalSize.getX();
@@ -654,24 +647,18 @@ function doAddFunctionsToScene(scene){
 
 		    if(posY > bottom) return false;
 
-		    console.log("inside canvas");
-		   //now adjust for scaled canvas
+
 		   if(canvas !== undefined){
 
 					var canvasRatio = new HHgVector2(canvas.width, canvas.height);
-					canvasRatio.timesEquals(holder.getScaleNetForChildScale());
-		   		canvasRatio = canvasRatio.returnVectorScaledByInverse((new HHgVector2(canvas.clientWidth, canvas.clientHeight) ));
+					canvasRatio.dividedEquals(holderFinalSize);
 
 		   		posInCanvas.timesEquals(canvasRatio);
-
-
-		   		//posInCanvas = posInCanvas.returnVectorScaledBy(canvasRatio).returnVectorScaledBy(holder.getScaleNetForChildScale());
-
 
 		   		if( isAlphaPixel(canvas, posInCanvas.getX(), posInCanvas.getY() ) ) return false;
 
 				}
-				console.log("IS NOT ALPHA");
+				//console.log("IS NOT ALPHA");
 
 				return true;
 
