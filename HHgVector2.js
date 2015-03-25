@@ -96,7 +96,7 @@ var HHgVector2 = function (x,y){
 		this.setXY(_x * vBtemp.getX(), _y * vBtemp.getY());
 		return this;
 	}
-	this.divideEquals = function(){
+	this.divideEquals = this.dividedEquals = function(){
 		vBtemp = this.parse(arguments);
 		this.setXY(_x / vBtemp.getX(), _y / vBtemp.getY());
 		return this;
