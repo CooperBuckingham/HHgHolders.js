@@ -2,300 +2,239 @@ var HHgHolderHashCont = 0;
 
 var HHgHolder = function(props){
 //props width, height, zIndex, scale(xy or x)
-	HHgHolderHashCont++;
-	if(HHgHolderHashCont > 50000){
-		HHgHolderHashCont = 0;
-		console.log("HASH passed 50000");
+
+HHgHolderHashCont++;
+if(HHgHolderHashCont > 50000){
+	HHgHolderHashCont = 0;
+	console.log("HASH passed 50000");
+}
+var temp = HHg.returnSizeProps(props) || new HHgVector2(HHgGameHolder.getWidthOriginal(), HHgGameHolder.getHeightOriginal());
+this.that = this;
+
+this._widthOriginal = temp.getX();
+this._heightOriginal = temp.getY();
+this._sizeOriginal = new HHgVector2(this._widthOriginal, this._heightOriginal);
+this._sizeOriginalHalf = this._sizeOriginal.returnVectorScaledBy(.5);
+
+this._rotationOriginal = 0;
+this._rotationNet = 0;
+this._rotationStored = 0;
+
+this._parent;
+
+this._backgroundColor;
+this._tintColor;
+
+this._scaleOriginal = HHg.returnScaleProps(props) || new HHgVector2(1,1);
+this._scaleNet = this._scaleOriginal;
+this._scaleStored = this._scaleOriginal;
+
+
+this._scaleIgnoreParentScale = false;
+this._scaleUniformOnly = false;
+this._positionInScreenOriginal = new HHgVector2(0,0);
+this._positionInParentOriginal  = this._positionInScreenOriginal;
+this._positionInScreenNet = this._positionInScreenOriginal;
+this._positionStored = this._positionInScreenOriginal;
+
+this._children;
+this._actions;
+this._clusters =[];
+this._sequences=[];
+this._paused;
+
+this._div;
+
+this._hash = HHgHolderHashCont;
+this._timeStamp = +new Date();
+this._finalHash = "" + this._hash + "_" + this._timeStamp;
+
+this._mouseable = false;
+this._visible = true;
+this._classList = {};
+this._soundList = {};
+
+this._canvas;
+
+this._zIndex = HHg.returnZIndexProps(props);
+if(this._zIndex === undefined){
+	this._zIndex = 1;
+}
+
+this._counterForNamingActions = 0;
+this._actionsTotal = 0;
+
+this.fontSizeOriginal = 1;
+this.fontSizeScaled = 1;
+this.borderWidthScaled = 0;
+this.borderWidthOriginal = 0;
+
+this.isScene = false,
+this.isDraggable = false;
+this.isBeingDragged = false;
+
+this.test = "no";
+
+
+this.resetChanges = function(){
+	this.changes = {
+		scale: false,
+		position: false,
+		rotation: false,
+		tint: false,
+		backgroundColor: false,
+		visible: false,
+		mouseable: false,
+		zIndex: false,
+		classList: false,
 	}
-	var temp = HHg.returnSizeProps(props) || new HHgVector2(HHgGameHolder.getWidthOriginal(), HHgGameHolder.getHeightOriginal());
+};
 
+this.resetChanges();
 
-	var _widthOriginal = temp.getX(),
-		_heightOriginal = temp.getY(),
-		_sizeOriginal = new HHgVector2(_widthOriginal, _heightOriginal),
-		_sizeOriginalHalf = _sizeOriginal.returnVectorScaledBy(.5),
-
-		_rotationOriginal = 0,
-		 _rotationNet = 0,
-		_rotationStored = 0,
-
-		_parent,
-
-		_backgroundColor,
-		_tintColor,
-
-		_scaleOriginal = HHg.returnScaleProps(props) || new HHgVector2(1,1),
-		_scaleNet = _scaleOriginal,
-		_scaleStored = _scaleOriginal,
-
-
-		_scaleIgnoreParentScale = false,
-		_scaleUniformOnly = false,
-		_positionInScreenOriginal = new HHgVector2(0,0),
-		 _positionInParentOriginal  = _positionInScreenOriginal,
-		_positionInScreenNet = _positionInScreenOriginal,
-		_positionStored = _positionInScreenOriginal,
-
-		_children,
-		_actions, _clusters =[], _sequences=[],
-		_paused,
-
-		_div,
-
-		_hash = HHgHolderHashCont,
-		_timeStamp = +new Date(),
-		_finalHash = "" + _hash + "_" + _timeStamp,
-
-		that = this,
-
-		_mouseable = false,
-		_visible = true,
-		_classList = {},
-		_soundList = {},
-
-		_canvas;
-
-	var _zIndex = HHg.returnZIndexProps(props);
-		if(_zIndex === undefined){
-			_zIndex = 1;
-		}
-
-		var counterForNamingActions = 0;
-	var actionsTotal = 0;
-
-	this.getOriginalSize = function(){
-		return _sizeOriginal;
-	};
-
-	this.fontSizeOriginal = 1;
-	this.fontSizeScaled = 1;
-	this.borderWidthScaled = 0;
-	this.borderWidthOriginal = 0;
-
-	this.isScene = false,
-	this.isDraggable = false;
-	this.isBeingDragged = false;
-
-	this.test = "no";
-
-	this.resetChanges = function(){
-		this.changes = {
-			scale: false,
-			position: false,
-			rotation: false,
-			tint: false,
-			backgroundColor: false,
-			visible: false,
-			mouseable: false,
-			zIndex: false,
-			classList: false,
-		}
-	};
-
-	this.resetChanges();
-
-	this.resetFrameUpdates = function(){
-		this.frameUpdates = {
-			positionBy: undefined,
-			rotationBy: undefined,
-			scaleBy: undefined,
-			positionTo: undefined,
-			rotationTo: undefined,
-			scaleTo: undefined,
-			positionAbsolute: undefined,
-		}
-
-	};
-
-	this.resetFrameUpdates();
-
-	this.resetFramePositionUpdates = function(){
-		this.frameUpdates.positionBy = undefined;
-		this.frameUpdates.positionTo = undefined;
-		this.frameUpdates.positionAbsolute = undefined;
+this.resetFrameUpdates = function(){
+	this.frameUpdates = {
+		positionBy: undefined,
+		rotationBy: undefined,
+		scaleBy: undefined,
+		positionTo: undefined,
+		rotationTo: undefined,
+		scaleTo: undefined,
+		positionAbsolute: undefined,
 	}
 
-	this.setIsDraggable = function(bool){
-		this.isDraggable = bool;
-	}
+};
 
-	this.getIsDraggable = function(){
-		return this.isDraggable;
-	}
+this.resetFrameUpdates();
 
-	this.setNewStats = function(props){
-		var size = HHg.returnSizeProps(props) || new HHgVector2(HHgGameHolder.getWidthOriginal(), HHgGameHolder.getHeightOriginal());
+};
 
-		_widthOriginal = size.getX();
-		_heightOriginal = size.getY();
-		_zIndex = HHg.returnZIndexProps(props) || 1;
+(function(){
 
-		_scaleOriginal = HHg.returnScaleProps(props) || new HHgVector2(1,1);
-	};
+var p = HHgHolder.prototype;
 
-	this.killHolder = this.releaseHolder = function(){
-		_widthOriginal = w;
-		_heightOriginal = h;
+p.getOriginalSize = function(){
+  return this._sizeOriginal;
+};
 
-		_rotationOriginal = 0;
-		_rotationNet = 0;
-		_rotationStored = 0;
+p.resetFramePositionUpdates = function(){
+  this.frameUpdates.positionBy = undefined;
+  this.frameUpdates.positionTo = undefined;
+  this.frameUpdates.positionAbsolute = undefined;
+}
 
-		_backgroundColor = undefined;
-		_tintColor = undefined;
+p.setIsDraggable = function(bool){
+  this.isDraggable = bool;
+}
 
-		if(_parent) _parent.doRemoveChild(this);
+p.getIsDraggable = function(){
+  return this.isDraggable;
+}
 
-		_parent = undefined;
+p.setPaused = function(bool){
 
-		_scaleOriginal = 1;
-		_scaleNet = 1;
-		_scaleStored = 1;
+  this._paused = bool;
+  for(var i =0; i < this._children.length; i++){
+    this._children[i].setPaused(bool);
+  }
+}
 
+p.getPaused = function(){
+  return this._paused;
+}
 
-		_scaleIgnoreParentScale = false;
-		_scaleUniformOnly = false;
+p.setScene = function(){
+  this._scaleOriginal = new HHgVector2(1,1);
+  this._scaleNet = this._scaleOriginal;
+  this._widthOriginal = HardwareScreen.w;
+  this._heightOriginal = HardwareScreen.w / (HHgScreen.w * HHgScreen.maxh);
+  this._parent = "stop";
+  this._mouseable = false;
+  this.test = "scene";
+}
 
-		_zIndex = -1;
-		_positionInScreenOriginal = HHg10000Vector;
-		_positionInParentOriginal  = _positionInScreenOriginal;
-		_positionInScreenNet = _positionInScreenOriginal;
-		_positionStored = _positionInScreenOriginal;
+p.setGameHolder = function(){
 
+  this._scaleOriginal = new HHgVector2(HardwareScreen.w / HHgScreen.w, HardwareScreen.w / HHgScreen.w);
+  HHgPixelScale = this._scaleOriginal.getX();
+  this._scaleNet = this._scaleOriginal;
+  this._widthOriginal = HHgScreen.w;
+  this._heightOriginal = HHgScreen.h;
+  this._parent = HHgScene;
+  this._mouseable = false;
+  this.isGameHolder = true;
+  this.getScaleNetForChildPosition = function(){
+    return HHg1Vector;
+  }
+  this.test = "gameholder";
+}
 
-		for(var i = 0; i < _children.length; i++){
-			_children[i].killHolder();
-		}
+p.setCanvas = function(canvas){
+  this._canvas = canvas;
+}
 
-		actionsTotal = 0;
-		HHgActionManager.doRemoveOwner(that);
-		_actions = {};
+p.getCanvas = function(){
+  return this._canvas;
+}
 
-		_children = [];
+p.doFrameDump = function(){
 
-		for(var key in _classList){
-			this.doRemoveCSSClass(key);
-		}
+  if(this.frameDumpScale()){
+    this.doRecalcScale();
+  }
 
-		_classList = {};
+  if(this.frameDumpRotation()){
+    this.doRecalcRotation();
+  }
 
-		_mouseable = false;
-		_visible = false;
+  if(this.frameDumpPosition() || this.isBeingDragged === true){
 
-		this.isScene = false;
+    this.doRecalcPosition();
+  }else{
 
-		this.test = "no";
+    this.updatePositionFromParentMove();
 
-		this.resetFrameUpdates();
+  }
 
-		this.resetChanges();
-	}
-
-
-	this.setPaused = function(bool){
-
-		_paused = bool;
-		for(var i =0; i < _children.length; i++){
-			_children[i].setPaused(bool);
-		}
-	}
-
-	this.getPaused = function(){
-		return _paused;
-	}
-
-	this.setScene = function(){
-			_scaleOriginal = new HHgVector2(1,1);
-			_scaleNet = _scaleOriginal;
-			_widthOriginal = HardwareScreen.w;
-			_heightOriginal = HardwareScreen.w / (HHgScreen.w * HHgScreen.maxh);
-			_parent = "stop";
-			_mouseable = false;
-			this.test = "scene";
-	}
-
-	this.setGameHolder = function(){
-
-			_scaleOriginal = new HHgVector2(HardwareScreen.w / HHgScreen.w, HardwareScreen.w / HHgScreen.w);
-			HHgPixelScale = _scaleOriginal.getX();
-			_scaleNet = _scaleOriginal;
-			_widthOriginal = HHgScreen.w;
-			_heightOriginal = HHgScreen.h;
-			_parent = HHgScene;
-			_mouseable = false;
-			this.isGameHolder = true;
-			this.getScaleNetForChildPosition = function(){
-				return HHg1Vector;
-			}
-			this.test = "gameholder";
-	}
-
-	this.setCanvas = function(canvas){
-		_canvas = canvas;
-	}
-
-	this.getCanvas = function(){
-		return _canvas;
-	}
-
-	this.doFrameDump = function(){
-
-		if(this.frameDumpScale()){
-			this.doRecalcScale();
-		}
-
-		if(this.frameDumpRotation()){
-			this.doRecalcRotation();
-		}
-
-		if(this.frameDumpPosition() || this.isBeingDragged === true){
-
-			this.doRecalcPosition();
-		}else{
-
-			this.updatePositionFromParentMove();
-
-		}
-
-		this.doMarkForFinalPass();
+  this.doMarkForFinalPass();
 
 
-	}
+}
 
-	this.doMarkForFinalPass = function(){
-		//pulling this out and doing a second pass
-		HHgScene.addToFinalPassList(this);
+p.doMarkForFinalPass = function(){
+    //pulling this out and doing a second pass
+    HHgScene.addToFinalPassList(this);
 
-		if(_children){
+    if(this._children){
 
-				for(var i = 0; i < _children.length; i++){
-					_children[i].updatePositionFromParentMove();
-					_children[i].doMarkForFinalPass();
-				}
+      for(var i = 0; i < this._children.length; i++){
+        this._children[i].updatePositionFromParentMove();
+        this._children[i].doMarkForFinalPass();
+      }
 
-		}
+    }
 
-	}
+  }
 
-	this.frameDumpPosition = function(){
+	p.frameDumpPosition = function(){
 
 		var returnVal = false;
 
 		if(this.frameUpdates.positionAbsolute !== undefined){
-			_positionInScreenOriginal = this.frameUpdates.positionAbsolute;
+			this._positionInScreenOriginal = this.frameUpdates.positionAbsolute;
 			returnVal = true;
 
 		}else if(this.isBeingDragged === true){
 			//won't allow other types of position updates
 		}else if(this.frameUpdates.positionTo !== undefined){
 
-			_positionInScreenOriginal = this.frameUpdates.positionTo;
+			this._positionInScreenOriginal = this.frameUpdates.positionTo;
 
 
 			returnVal = true;
 		}else if(this.frameUpdates.positionBy !== undefined ){
 
-			_positionInScreenOriginal = _positionInScreenOriginal.returnVectorPlusVector( this.frameUpdates.positionBy);
+			this._positionInScreenOriginal = this._positionInScreenOriginal.returnVectorPlusVector( this.frameUpdates.positionBy);
 
 			returnVal = true;
 		}
@@ -309,17 +248,17 @@ var HHgHolder = function(props){
 	}
 
 
-	this.frameDumpRotation = function(){
+	p.frameDumpRotation = function(){
 
 		var returnVal = false;
 
 		if(this.frameUpdates.rotationTo !== undefined){
 
-			_rotationOriginal = this.frameUpdates.rotationTo;
+			this._rotationOriginal = this.frameUpdates.rotationTo;
 			returnVal = true;
 		}else if(this.frameUpdates.rotationBy !== undefined){
 
-			_rotationOriginal += this.frameUpdates.rotationBy;
+			this._rotationOriginal += this.frameUpdates.rotationBy;
 			returnVal = true;
 		}
 
@@ -332,16 +271,16 @@ var HHgHolder = function(props){
 	}
 
 
-	this.frameDumpScale = function(){
+	p.frameDumpScale = function(){
 		var returnVal = false;
 
 		if(this.frameUpdates.scaleTo !== undefined){
 
-			_scaleOriginal = this.frameUpdates.scaleTo;
+			this._scaleOriginal = this.frameUpdates.scaleTo;
 			returnVal = true;
 		}else if(this.frameUpdates.scaleBy !== undefined){
 
-			_scaleOriginal = _scaleOriginal.returnVectorPlusVector( this.frameUpdates.scaleBy);
+			this._scaleOriginal = this._scaleOriginal.returnVectorPlusVector( this.frameUpdates.scaleBy);
 			returnVal = true;
 		}
 
@@ -353,212 +292,208 @@ var HHgHolder = function(props){
 
 	}
 
-this.framePositionBy = function(xy){
-	if(this.frameUpdates.positionBy){
-		this.frameUpdates.positionBy = this.frameUpdates.positionBy.returnVectorPlusVector(xy);
-	}else{
-		this.frameUpdates.positionBy = xy;
+	p.framePositionBy = function(xy){
+		if(this.frameUpdates.positionBy){
+			this.frameUpdates.positionBy = this.frameUpdates.positionBy.returnVectorPlusVector(xy);
+		}else{
+			this.frameUpdates.positionBy = xy;
+		}
+
+		this.doNotifySceneOfUpdates();
 	}
+	p.frameRotationBy = function(val){
+		if(this.frameUpdates.rotationBy){
+			this.frameUpdates.rotationBy += val;
+		}else{
+			this.frameUpdates.rotationBy = val;
+		}
 
-	that.doNotifySceneOfUpdates();
-}
-this.frameRotationBy = function(val){
-	if(this.frameUpdates.rotationBy){
-		this.frameUpdates.rotationBy += val;
-	}else{
-		this.frameUpdates.rotationBy = val;
+		this.doNotifySceneOfUpdates();
 	}
-
-	that.doNotifySceneOfUpdates();
-}
-this.frameScaleBy = function(xy){
+	p.frameScaleBy = function(xy){
 
 
-	if(this.frameUpdates.scaleBy){
-		this.frameUpdates.scaleBy = this.frameUpdates.scaleBy.returnVectorPlusVector(xy);
-	}else{
-		this.frameUpdates.scaleBy = xy;
-	}
-
-	that.doNotifySceneOfUpdates();
-}
-
-this.framePositionTo = function(xy){
-
-	this.frameUpdates.positionTo = xy;
-	that.doNotifySceneOfUpdates();
-}
-
-this.frameRotationTo = function(val){
-	this.frameUpdates.rotationTo = val;
-	that.doNotifySceneOfUpdates();
-}
-
-this.frameScaleTo = function(xy){
-	this.frameUpdates.scaleTo = xy;
-	that.doNotifySceneOfUpdates();
-}
-
-this.framePositionAbsolute = function(xy){
-	this.frameUpdates.positionAbsolute = xy;
-	that.doNotifySceneOfUpdates();
-}
-
-
-
-
-this.getHash = function(){
-	return _finalHash;
-}
-this.setMouseable = function(mouseable){
-	_mouseable = mouseable;
-	this.changes.mouseable = true;
-	if(_div){
+		if(this.frameUpdates.scaleBy){
+			this.frameUpdates.scaleBy = this.frameUpdates.scaleBy.returnVectorPlusVector(xy);
+		}else{
+			this.frameUpdates.scaleBy = xy;
+		}
 
 		this.doNotifySceneOfUpdates();
 	}
 
-}
-this.getMouseable = function(){
-	return _mouseable;
-}
+	p.framePositionTo = function(xy){
 
-this.setVisible = function(val){
-	_visible = val;
-	this.changes.visible = true;
-	if(_div){
+		this.frameUpdates.positionTo = xy;
 		this.doNotifySceneOfUpdates();
-
 	}
 
+	p.frameRotationTo = function(val){
+		this.frameUpdates.rotationTo = val;
+		this.doNotifySceneOfUpdates();
+	}
 
-}
-this.getVisible = function(){
-	return _visible;
-}
+	p.frameScaleTo = function(xy){
+		this.frameUpdates.scaleTo = xy;
+		this.doNotifySceneOfUpdates();
+	}
 
-		this.setBackgroundColor = function(color){
+	p.framePositionAbsolute = function(xy){
+		this.frameUpdates.positionAbsolute = xy;
+		this.doNotifySceneOfUpdates();
+	}
 
-			_backgroundColor = HHg.returnColorProps(color);
+	p.getHash = function(){
+		return this._finalHash;
+	}
+	p.setMouseable = function(mouseable){
+		this._mouseable = mouseable;
+		this.changes.mouseable = true;
+		if(this._div){
 
-
-			this.changes.backgroundColor = true;
-
-			if(_parent !== undefined){
-				that.doNotifySceneOfUpdates();
-			}
-
-		}
-		this.getBackgroundColor = function(){
-			return _backgroundColor;
-		}
-
-		this.setTintToRGBA = function(color){
-			console.log("setting tint: " + color.pretty());
-			this.changes.tint = true;
-			if(_parent !== undefined){
-				that.doNotifySceneOfUpdates();
-			}
-			_tintColor = color;
+			this.doNotifySceneOfUpdates();
 		}
 
-		this.setTintByRGBA = function(color, percent){
-			this.changes.tint = true;
-			if(_parent !== undefined){
-				that.doNotifySceneOfUpdates();
-			}
-			if(_tintColor){
-				_tintColor.blendColorIn(color,percent);
-			}else{
-				this.setTintToRGBA(color);
-			}
+	}
+	p.getMouseable = function(){
+		return this._mouseable;
+	}
+
+	p.setVisible = function(val){
+		this._visible = val;
+		this.changes.visible = true;
+		if(this._div){
+			this.doNotifySceneOfUpdates();
 
 		}
-		this.getTintRGBA = function(){
-			return _tintColor;
+
+
+	}
+	p.getVisible = function(){
+		return this._visible;
+	}
+
+	p.setBackgroundColor = function(color){
+
+		this._backgroundColor = HHg.returnColorProps(color);
+
+
+		this.changes.backgroundColor = true;
+
+		if(this._parent !== undefined){
+			this.doNotifySceneOfUpdates();
 		}
+
+	}
+	p.getBackgroundColor = function(){
+		return this._backgroundColor;
+	}
+
+	p.setTintToRGBA = function(color){
+		this.changes.tint = true;
+		if(this._parent !== undefined){
+			this.doNotifySceneOfUpdates();
+		}
+		this._tintColor = color;
+	}
+
+	p.setTintByRGBA = function(color, percent){
+		this.changes.tint = true;
+		if(this._parent !== undefined){
+			this.doNotifySceneOfUpdates();
+		}
+		if(this._tintColor){
+			this._tintColor.blendColorIn(color,percent);
+		}else{
+			this.setTintToRGBA(color);
+		}
+
+	}
+	p.getTintRGBA = function(){
+		return this._tintColor;
+	}
 
 		//do we want these to be calculations if the holder is holding things?
-		this.getWidthOriginal = function(){
-			return _widthOriginal;
+		p.getWidthOriginal = function(){
+			return this._widthOriginal;
 		}
 
 
-		this.getHeightOriginal = function(){
-			return _heightOriginal;
+		p.getHeightOriginal = function(){
+			return this._heightOriginal;
 		}
 
-		this.getSizeOriginal = function(){
-			return new HHgVector2(_widthOriginal, _heightOriginal);
+		p.getSizeOriginal = function(){
+			return new HHgVector2(this._widthOriginal, this._heightOriginal);
 		}
 
-		this.getSizeNet = function(){
+		p.getSizeNet = function(){
 			return new HHgVector2(this.getWidthNet(), this.getHeightNet());
 		}
 
-		this.getWidthNet = function(){
-			return _widthOriginal * _scaleNet.getX();
+		p.getWidthNet = function(){
+			return this._widthOriginal * this._scaleNet.getX();
 		}
 
-		this.getHeightNet = function(){
-			return _heightOriginal * _scaleNet.getY();
+		p.getHeightNet = function(){
+			return this._heightOriginal * this._scaleNet.getY();
 		}
 
-		this.getMySizeOffset = function(){
-			return _sizeOriginalHalf.returnVectorScaledBy(this.getScaleNetForMyPosition());
+		p.getMySizeOffset = function(){
+			return this._sizeOriginalHalf.returnVectorScaledBy(this.getScaleNetForMyPosition());
 		}
-		this.getCenterPosition = function(){
-			return _positionInScreenNet.returnVectorPlusVector(this.getMySizeOffset());
-		}
-
-
-		this.getParent = function(){
-			return _parent;
+		p.getCenterPosition = function(){
+			return this._positionInScreenNet.returnVectorPlusVector(this.getMySizeOffset());
 		}
 
-		this.getHalfWidth = function(){
-			return that.getWidthNet() / 2;
+
+		p.getParent = function(){
+			return this._parent;
 		}
 
-		this.getHalfHeight = function(){
-			return that.getHeightNet() / 2;
+		p.getHalfWidth = function(){
+			return this.getWidthNet() / 2;
 		}
 
-		this.getZIndex = function(){
-			return _zIndex;
+		p.getHalfHeight = function(){
+			return this.getHeightNet() / 2;
 		}
 
-		this.setZIndexTo = function(z, doNotUpdateChildren){
+		p.getZIndex = function(){
+			return this._zIndex;
+		}
+
+		p.setZIndexTo = function(z, doNotUpdateChildren){
 			//***this needs more logic, like regarding children
 
 			this.changes.zIndex = true;
-			_zIndex = z;
-			that.doNotifySceneOfUpdates();
+			this._zIndex = z;
+			this.doNotifySceneOfUpdates();
 			if(doNotUpdateChildren !== true){
-				for(var i = 0; i < _children.length; i++){
-					_children[i].setZIndexTo(z);
+				for(var i = 0; i < this._children.length; i++){
+					this._children[i].setZIndexTo(z);
 				}
 			}
 		}
 
-		this.setZIndexBy = function(z, doNotUpdateChildren){
+		p.setZIndexBy = function(z, doNotUpdateChildren){
 			this.changes.zIndex = true;
-			_zIndex+= z;
-			that.doNotifySceneOfUpdates();
+			this._zIndex+= z;
+			this.doNotifySceneOfUpdates();
 			if(doNotUpdateChildren !== true){
-				for(var i = 0; i < _children.length; i++){
-					_children[i].setZIndexBy(z);
+				for(var i = 0; i < this._children.length; i++){
+					this._children[i].setZIndexBy(z);
 				}
 			}
 		}
 
 
-		this.setDiv = function(div){
-			_div = div;
+		p.setDiv = function(div){
+			this._div = div;
 		}
 
-		this.getDiv = function(){
-			return _div;
+		p.getDiv = function(){
+			return this._div;
 		}
 
 
@@ -566,37 +501,37 @@ this.getVisible = function(){
 
 
 //EXPERIEMNT
-	this.doRecalcPosition = function(){
-			if(_parent === "stop") return;
+p.doRecalcPosition = function(){
+	if(this._parent === "stop") return;
 
-			if(_parent == undefined){
-				return;
-			}
+	if(this._parent == undefined){
+		return;
+	}
 
-				this.convertOriginalToNetPosition();
-
-
-			if(_parent !== undefined){
-
-				_positionInParentOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenOriginal(), 1 *  _parent.getRotationNet() );
-
-				_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInParentOriginal);
-				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(_parent.getScaleNetForChildPosition());
-
-			}
-
-			this.changes.position = true;
+	this.convertOriginalToNetPosition();
 
 
-			if(_children){
-				HHg.doForEach(_children, function(child){
+	if(this._parent !== undefined){
 
-					child.updatePositionFromParentMove();
+		this._positionInParentOriginal = this._positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( this._parent.getPositionInScreenOriginal(), 1 *  this._parent.getRotationNet() );
 
-				});
-			}
+		this._positionInParentOriginal = this._parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(this._positionInParentOriginal);
+		this._positionInParentOriginal = this._positionInParentOriginal.returnVectorScaledByInverse(this._parent.getScaleNetForChildPosition());
 
-		}
+	}
+
+	this.changes.position = true;
+
+
+	if(this._children){
+		HHg.doForEach(this._children, function(child){
+
+			child.updatePositionFromParentMove();
+
+		});
+	}
+
+}
 /*
 
 	this.doRecalcPosition = function(){
@@ -632,84 +567,84 @@ this.getVisible = function(){
 		}
 		*/
 
-		this.setPositionStored = function(){
-			_positionStored = _positionInScreenOriginal;
+		p.setPositionStored = function(){
+			this._positionStored = this._positionInScreenOriginal;
 		}
 
-		this.getPositionStored = function(){
-			return _positionStored;
+		p.getPositionStored = function(){
+			return this._positionStored;
 		}
 
-		this.setPositionToStored = function(){
-			that.setPositionInScreenTo(_positionStored);
+		p.setPositionToStored = function(){
+			this.setPositionInScreenTo(this._positionStored);
 		}
 
 
-		this.setPositionInScreenTo = function(props){
+		p.setPositionInScreenTo = function(props){
 
 			this.framePositionTo(HHg.returnPositionProps(props));
 		}
 
-		this.setPositionInScreenBy = function(props){
+		p.setPositionInScreenBy = function(props){
 
 			this.framePositionBy(HHg.returnPositionProps(props));
 		}
 
-		this.setPositionInScreenAbsolute = function(props){
+		p.setPositionInScreenAbsolute = function(props){
 
 			this.framePositionAbsolute(HHg.returnPositionProps(props));
 		}
 
 
-		this.getPositionInScreenOriginal = function(){
+		p.getPositionInScreenOriginal = function(){
 
-			return _positionInScreenOriginal;
+			return this._positionInScreenOriginal;
 		}
 
-		this.getPositionWithCentering = function(){
-			return that.returnHalfSizeVector().returnVectorPlusVector( _positionInScreenOriginal);
+		p.getPositionWithCentering = function(){
+			return this.returnHalfSizeVector().returnVectorPlusVector( this._positionInScreenOriginal);
 		}
 
-		this.getPositionInParentOriginal = function(){
-			return _positionInParentOriginal;
+		p.getPositionInParentOriginal = function(){
+			return this._positionInParentOriginal;
 		}
 
-		this.getPositionInScreenNet = function(){
+		p.getPositionInScreenNet = function(){
 
-			return _positionInScreenNet;
+			return this._positionInScreenNet;
 		}
 
-		this.setPositionInParentTo = function(props)
+		p.setPositionInParentTo = function(props)
 		{
 
-				_positionInParentOriginal = HHg.returnPositionProps(props);
+			this._positionInParentOriginal = HHg.returnPositionProps(props);
 
-				this.doNotifySceneOfUpdates();
+			this.doNotifySceneOfUpdates();
 
-				this.resetFramePositionUpdates();
+			this.resetFramePositionUpdates();
 
-				this.updatePositionFromParentMove();
+			this.updatePositionFromParentMove();
 
 
 		}
 
-		this.updatePositionFromParentMove = function(){
+		p.updatePositionFromParentMove = function(){
 
 			//****
 			if(this.isBeingDragged === true){
 				return;
 			}
 
-				_positionInScreenOriginal = _positionInParentOriginal;
+			this._positionInScreenOriginal = this._positionInParentOriginal;
 
 
-			if(_parent !== undefined){
+			if(this._parent !== undefined){
 
 
-				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorScaledBy(_parent.getScaleNetForChildPosition());
-				_positionInScreenOriginal = _parent.getPositionInScreenOriginal().returnVectorPlusVector(_positionInScreenOriginal);
+				this._positionInScreenOriginal = this._positionInScreenOriginal.returnVectorScaledBy(this._parent.getScaleNetForChildPosition());
+				this._positionInScreenOriginal = this._parent.getPositionInScreenOriginal().returnVectorPlusVector(this._positionInScreenOriginal);
 
-				_positionInScreenOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenOriginal() , -1 * _parent.getRotationNet() );
+				this._positionInScreenOriginal = this._positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( this._parent.getPositionInScreenOriginal() , -1 * this._parent.getRotationNet() );
 
 
 				this.convertOriginalToNetPosition();
@@ -719,8 +654,8 @@ this.getVisible = function(){
 
 			this.changes.position = true;
 
-			if(_children){
-				HHg.doForEach(_children, function(child){
+			if(this._children){
+				HHg.doForEach(this._children, function(child){
 
 					child.updatePositionFromParentMove();
 
@@ -732,14 +667,14 @@ this.getVisible = function(){
 
 //EXPERIMENT
 
-		this.convertOriginalToNetPosition = function(){
+p.convertOriginalToNetPosition = function(){
 
 		//note, to specifically use GameHolder scale for child here, even though it's asking for position
 		//because the offsets need its relative scale.
 
-		_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
-		_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
-	  _positionInScreenNet.minusEquals(this.getMySizeOffset());
+		this._positionInScreenNet = this._positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
+		this._positionInScreenNet = this._positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
+		this._positionInScreenNet.minusEquals(this.getMySizeOffset());
 
 
 
@@ -747,12 +682,12 @@ this.getVisible = function(){
 		//_positionInScreenNet = _sizeOriginal.returnVectorScaledBy(.5).returnVectorScaledBy(HHgPixelScale).returnVectorSubtractedFromVector(_positionInScreenNet);
 		//_positionInScreenNet = _positionInScreenNet.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
 //***** working on getting scale to efect posiiton correctly.
-			if(_parent !== undefined){
+		if(this._parent !== undefined){
 
-
-			}
 
 		}
+
+}
 /*
 		this.convertOriginalToNetPosition = function(){
 
@@ -772,154 +707,154 @@ this.getVisible = function(){
 		*/
 //=============== SCALE ================
 
-		this.setScaleStored = function(){
-			_scaleStored = _scaleOriginal;
-		}
+p.setScaleStored = function(){
+	this._scaleStored = this._scaleOriginal;
+}
 
-		this.getScaleStored = function(){
-			return _scaleStored;
-		}
+p.getScaleStored = function(){
+	return this._scaleStored;
+}
 
-		this.setScaleToStored = function(){
-			that.setScaleOriginalTo(_scaleStored);
-		}
+p.setScaleToStored = function(){
+	this.setScaleOriginalTo(this._scaleStored);
+}
 
-		this.returnHalfSizeVector = function(){
-			return new HHgVector2(that.getHalfWidth(), that.getHalfHeight());
-		}
-
-
-		this.getScaleOriginal = function(){
-			return _scaleOriginal;
-		}
-
-		this.setScaleOriginalTo = function(props){
+p.returnHalfSizeVector = function(){
+	return new HHgVector2(this.getHalfWidth(), this.getHalfHeight());
+}
 
 
-			this.frameScaleTo(HHg.returnScaleProps(props));
+p.getScaleOriginal = function(){
+	return this._scaleOriginal;
+}
+
+p.setScaleOriginalTo = function(props){
 
 
-		}
-
-		this.setScaleOriginalBy = function(props){
+	this.frameScaleTo(HHg.returnScaleProps(props));
 
 
-			this.frameScaleBy( HHg1Vector.returnVectorSubtractedFromVector(HHg.returnScaleProps(props)) ) ;
+}
+
+p.setScaleOriginalBy = function(props){
 
 
-		}
-		this.setScaleOriginalByActionFraction = function(props){
+	this.frameScaleBy( HHg1Vector.returnVectorSubtractedFromVector(HHg.returnScaleProps(props)) ) ;
 
 
-			this.frameScaleBy(HHg.returnScaleProps(props).returnVectorPlusVector(HHg1Vector));
+}
+p.setScaleOriginalByActionFraction = function(props){
 
 
-		}
-
-		this.getScaleNetForChildScale = function(){
-			_scaleNet = _scaleIgnoreParentScale ? _scale / _parent.getScaleNetForChildPosition() : _scaleNet;
-
-			if(_scaleUniformOnly === true){
-				var larger = _scaleNet.getX() > _scaleNet.geY() ? _scaleNet.getX() : _scaleNet.getY();
-
-				_scaleNet = new HHgVector2(larger, larger);
-			}
+	this.frameScaleBy(HHg.returnScaleProps(props).returnVectorPlusVector(HHg1Vector));
 
 
-			return _scaleNet;
-		}
+}
 
-		this.getScaleNetForChildPosition = function(){
+p.getScaleNetForChildScale = function(){
+	this._scaleNet = this._scaleIgnoreParentScale ? this._scale / this._parent.getScaleNetForChildPosition() : this._scaleNet;
 
-			if(_parent.isGameHolder === true){
-				return _scaleOriginal;
-			}
-				return this.getScaleNetForChildScale();
+	if(this._scaleUniformOnly === true){
+		var larger = this._scaleNet.getX() > this._scaleNet.geY() ? this._scaleNet.getX() : this._scaleNet.getY();
 
-		}
-
-		this.getScaleNetForMyPosition = function(){
+		this._scaleNet = new HHgVector2(larger, larger);
+	}
 
 
-			if(_parent !== undefined){
-				return _parent.getScaleNetForChildScale();
-			}
+	return this._scaleNet;
+}
 
-			return HHg1Vector;
-		}
+p.getScaleNetForChildPosition = function(){
 
-		this.doRecalcScale = function(){
+	if(this._parent.isGameHolder === true){
+		return this._scaleOriginal;
+	}
+	return this.getScaleNetForChildScale();
 
-			_scaleNet = _scaleOriginal;
+}
 
-
-			if(_parent !== undefined){
-				_scaleNet = _parent.getScaleNetForChildScale().returnVectorScaledBy(_scaleNet);
-			}
-
-			this.fontSizeScaled = this.fontSizeOriginal * _scaleNet.getX();
-			this.borderWidthScaled = this.borderWidthOriginal * _scaleNet.getX();
-
-			this.changes.scale = true;
+p.getScaleNetForMyPosition = function(){
 
 
-			if(_children){
-				HHg.doForEach(_children, function(child){
+	if(this._parent !== undefined){
+		return this._parent.getScaleNetForChildScale();
+	}
 
-					child.doRecalcScale();
-				});
-			}
-		}
+	return HHg1Vector;
+}
+
+p.doRecalcScale = function(){
+
+	this._scaleNet = this._scaleOriginal;
+
+
+	if(this._parent !== undefined){
+		this._scaleNet = this._parent.getScaleNetForChildScale().returnVectorScaledBy(this._scaleNet);
+	}
+
+	this.fontSizeScaled = this.fontSizeOriginal * this._scaleNet.getX();
+	this.borderWidthScaled = this.borderWidthOriginal * this._scaleNet.getX();
+
+	this.changes.scale = true;
+
+
+	if(this._children){
+		HHg.doForEach(this._children, function(child){
+
+			child.doRecalcScale();
+		});
+	}
+}
 	//=============== ROTATION ====================
 
-		this.setRotationStored = function(){
-			_rotationStored = _rotationOriginal;
-		}
+	p.setRotationStored = function(){
+		this._rotationStored = this._rotationOriginal;
+	}
 
-		this.getRotationStored = function(){
-			return _rotationStored;
-		}
+	p.getRotationStored = function(){
+		return this._rotationStored;
+	}
 
-		this.setRotationToStored = function(){
-			this.setRotationOriginalTo(_rotationStored);
-		}
+	p.setRotationToStored = function(){
+		this.setRotationOriginalTo(this._rotationStored);
+	}
 
-		this.setRotationOriginalTo = function(props){
-
-
-			this.frameRotationTo(HHg.returnRotationProps(props) % 360);
-		}
-
-		this.setRotationOriginalBy = function(props){
-
-			this.frameRotationBy(HHg.returnRotationProps(props) % 360);
-		}
+	p.setRotationOriginalTo = function(props){
 
 
-		this.getRotationOriginal = function(){
-			return _rotationOriginal;
-		}
+		this.frameRotationTo(HHg.returnRotationProps(props) % 360);
+	}
+
+	p.setRotationOriginalBy = function(props){
+
+		this.frameRotationBy(HHg.returnRotationProps(props) % 360);
+	}
 
 
-		this.getRotationNet = function(){
-			return _rotationNet;
-		}
+	p.getRotationOriginal = function(){
+		return this._rotationOriginal;
+	}
 
-		this.doRecalcRotation = function(){
+
+	p.getRotationNet = function(){
+		return this._rotationNet;
+	}
+
+	p.doRecalcRotation = function(){
 			//now called as frame dump
-			if(_parent === "stop") return;
+			if(this._parent === "stop") return;
 
-			_rotationNet = _rotationOriginal;
+			this._rotationNet = this._rotationOriginal;
 
-			if(_parent !== undefined){
-				_rotationNet += _parent.getRotationNet();
+			if(this._parent !== undefined){
+				this._rotationNet += this._parent.getRotationNet();
 			}
 
 			this.changes.rotation = true;
 
 
-			if(_children){
-				HHg.doForEach(_children, function(child){
+			if(this._children){
+				HHg.doForEach(this._children, function(child){
 					child.doRecalcRotation();
 
 				});
@@ -929,37 +864,37 @@ this.getVisible = function(){
 
 //==================== management
 
-		this.doNotifySceneOfUpdates = function(){
+p.doNotifySceneOfUpdates = function(){
 
 			//*** disabling this and moving to the frame buffer thing
 			//HHgScene.doUpdateThisHolder(that);
 
-			HHgScene.doAddToDirtyList(that);
+			HHgScene.doAddToDirtyList(this);
 
 		}
 
-		this.doAddChild = function (child){
+		p.doAddChild = function (child){
 			//this should be a private method
-			_children = _children || [];
+			this._children = this._children || [];
 			if(child instanceof HHgHolder !== true){
 				throw("Tried to add a child not of HHgHolder Class");
 				return;
 			}
 
-			_children.push(child);
+			this._children.push(child);
 
 		}
 
-	this.doRemoveChild = function(child){
+		p.doRemoveChild = function(child){
 		//this should be a private method
-		return HHg.doRemoveThingFromArray(_children, child);
+		return HHg.doRemoveThingFromArray(this._children, child);
 
 	}
 
-	this.doMoveToNewParent = this.doAddToNewParent = function(props){
+	p.doMoveToNewParent = p.doAddToNewParent = function(props){
 		//newParent, xy, isScreenPos
 
-		if(_parent === "stop"){
+		if(this._parent === "stop"){
 			return;
 		}
 
@@ -970,233 +905,236 @@ this.getVisible = function(){
 
 		HHg.returnPositionProps(props, HHg0Vector);
 
-		if(_parent === undefined){
+		if(this._parent === undefined){
 			HHgScene.doAddThisHolder(this);
 		}else{
-			_parent.doRemoveChild(this);
+			this._parent.doRemoveChild(this);
 
 		}
 
-		_parent = props.parent || HHgGameHolder;
+		this._parent = props.parent || HHgGameHolder;
 
 
-		if(_parent instanceof HHgHolder !== true){
+		if(this._parent instanceof HHgHolder !== true){
 			throw("tried to add child to a parent not of HHgHolder Class");
 		}
 
-		_parent.doAddChild(this);
+		this._parent.doAddChild(this);
 
-		this.setRotationOriginalBy(_rotationOriginal);
+		this.setRotationOriginalBy(this._rotationOriginal);
 		this.setScaleOriginalBy(HHg1Vector);
 
 		if(HHg.returnIsScreenPosProps(props)){
-			_positionInScreenOriginal = props.position;
-			that.setPositionInScreenTo(props.position)
+			this._positionInScreenOriginal = props.position;
+			this.setPositionInScreenTo(props.position)
 		}else{
-			that.setPositionInParentTo(props.position)
+			this.setPositionInParentTo(props.position)
 		}
 
-}
+	}
 
 //============= ACTIONS ================
 
-	this.doFinalizeAction = function(action){
+p.doFinalizeAction = function(action){
 
-		_actions = _actions || {};
-		if(action.name){
-			if(_actions.hasOwnProperty(action.name)){
-				console.log("WARNING: Action with name: " + action.name + " already exists on Holder");
-				return;
-			}
-		}else{
-			action.name = "" + counterForNamingActions + HHg.returnRandomHash();
+	this._actions = this._actions || {};
+	if(action.name){
+		if(this._actions.hasOwnProperty(action.name)){
+			console.log("WARNING: Action with name: " + action.name + " already exists on Holder");
+			return;
 		}
+	}else{
+		action.name = "" + this._counterForNamingActions + HHg.returnRandomHash();
+	}
 
-		counterForNamingActions++;
+	this._counterForNamingActions++;
 
-		if(action.isActionCluster || action.isActionSequence){
-			_actions[action.name] = action;
-			return {owner: action.props.owner, name: action.name};
-		}else{
-			_actions[action.name] = action;
-			actionsTotal++;
-			HHgActionManager.doAddAction(that,action);
-			return action.name;
+	if(action.isActionCluster || action.isActionSequence){
+		this._actions[action.name] = action;
+		return {owner: action.props.owner, name: action.name};
+	}else{
+		this._actions[action.name] = action;
+		this._actionsTotal++;
+		HHgActionManager.doAddAction(this,action);
+		return action.name;
+	}
+
+}
+
+p.getActions = function(){
+	return this._actions;
+}
+
+p.doRemoveAction = function(action){
+	var tempObject;
+	if(action.isActionCluster || action.isActionSequence){
+		for(var i = 0; i < action.props.myActions.length; i++){
+			tempObject = action.props.myActions[i];
+			tempObject.owner.doRemoveActionByName(tempObject.name);
 		}
+		delete this._actions[action.name];
 
-	}
+	}else{
+		delete this._actions[action.name];
 
-	this.getActions = function(){
-		return _actions;
-	}
-
-	this.doRemoveAction = function(action){
-		var tempObject;
-		if(action.isActionCluster || action.isActionSequence){
-			for(var i = 0; i < action.props.myActions.length; i++){
-				tempObject = action.props.myActions[i];
-				tempObject.owner.doRemoveActionByName(tempObject.name);
-			}
-			delete _actions[action.name];
-
-		}else{
-			delete _actions[action.name];
-
-			actionsTotal--;
-			if(actionsTotal <= 0) HHgActionManager.doRemoveOwner(that);
+		this._actionsTotal--;
+		if(this._actionsTotal <= 0){
+			this.actionTotal = 0;
+			HHgActionManager.doRemoveOwner(this);
 		}
-
-	}
-	this.doRemoveActionByName = function(name){
-
-		 this.doRemoveAction(_actions[name]);
 	}
 
+}
+p.doRemoveActionByName = function(name){
 
-	this.doActionMoveInScreenTo = function(props){
-
-		var theAction;
-		theAction = new HHgActionMoveBy(that, _positionInScreenOriginal.returnVectorSubtractedFromVector(HHg.returnPositionProps(props)), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
+	this.doRemoveAction(this._actions[name]);
+}
 
 
+p.doActionMoveInScreenTo = function(props){
+
+	var theAction;
+	theAction = new HHgActionMoveBy(this, this._positionInScreenOriginal.returnVectorSubtractedFromVector(HHg.returnPositionProps(props)), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
+
+
+}
+
+p.doActionMoveInScreenBy = function(props){
+
+	var theAction;
+	theAction = new HHgActionMoveBy(this, HHg.returnPositionProps(props), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
+
+
+}
+
+p.doActionMoveInScreenForever = function(props){
+
+	var theAction;
+	theAction = new HHgActionMoveForever(this, (HHg.returnPositionProps(props) || HHg.returnSpeedXYprops(props)), this._positionInScreenOriginal, HHg.returnEaseProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
+
+}
+
+p.doActionRotateBy = function(props){
+
+	var theAction;
+
+	theAction = new HHgActionRotateBy(this, HHg.returnRotationProps(props), this._rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
+
+}
+
+p.doActionRotateLeftTo = function(props){
+
+	var degrees = HHg.returnRotationProps(props) % 360;
+	if(degrees > 180){
+		degrees = -(degrees - 180);
 	}
 
-	this.doActionMoveInScreenBy = function(props){
-
-		var theAction;
-		theAction = new HHgActionMoveBy(that, HHg.returnPositionProps(props), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
-
-
+	if(degrees < _rotationOriginal){
+		degrees = degrees - this._rotationOriginal;
+	}else{
+		degrees = -(360 - Math.abs(this._rotationOriginal - degrees) );
 	}
 
-	this.doActionMoveInScreenForever = function(props){
+	var theAction;
+	theAction = new HHgActionRotateBy(this, degrees, this._rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
 
-		var theAction;
-		theAction = new HHgActionMoveForever(that, (HHg.returnPositionProps(props) || HHg.returnSpeedXYprops(props)), _positionInScreenOriginal, HHg.returnEaseProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
+}
 
+p.doActionRotateRightTo = function(props){
+
+	var degrees = HHg.returnRotationProps(props) % 360;
+	if(degrees > 180){
+		degrees = -(degrees - 180);
 	}
 
-	this.doActionRotateBy = function(props){
-
-		var theAction;
-
-		theAction = new HHgActionRotateBy(that, HHg.returnRotationProps(props), _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
-
+	if(degrees > this._rotationOriginal){
+		degrees = degrees - this._rotationOriginal;
+	}else{
+		degrees = -(360 - Math.abs(this._rotationOriginal - degrees) );
 	}
 
-	this.doActionRotateLeftTo = function(props){
+	var theAction;
+	theAction = new HHgActionRotateBy(this, degrees, this._rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
 
-			var degrees = HHg.returnRotationProps(props) % 360;
-			if(degrees > 180){
-				degrees = -(degrees - 180);
-			}
+}
 
-			if(degrees < _rotationOriginal){
-				degrees = degrees - _rotationOriginal;
-			}else{
-				degrees = -(360 - Math.abs(_rotationOriginal - degrees) );
-			}
+p.doActionRotateForever = function(props){
 
-		var theAction;
-		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
+	var theAction;
+	theAction = new HHgActionRotateForever(this, (HHg.returnRotationProps(props) || HHg.returnSpeedNProps(props)), HHg.returnEaseProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
+}
 
-	}
+p.doActionScaleBy = function(props){
 
-	this.doActionRotateRightTo = function(props){
+	var theAction;
 
-			var degrees = HHg.returnRotationProps(props) % 360;
-			if(degrees > 180){
-				degrees = -(degrees - 180);
-			}
+	theAction = new HHgActionScaleBy(this, HHg.returnScaleProps(props), this._scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
 
-			if(degrees > _rotationOriginal){
-				degrees = degrees - _rotationOriginal;
-			}else{
-				degrees = -(360 - Math.abs(_rotationOriginal - degrees) );
-			}
+}
+p.doActionScaleTo = function(props){
 
-		var theAction;
-		theAction = new HHgActionRotateBy(that, degrees, _rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
+	var theAction;
+	theAction = new HHgActionScaleBy(this, HHg.returnScaleProps(props).returnVectorScaledByInverse(this._scaleOriginal), this._scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
 
-	}
+}
 
-	this.doActionRotateForever = function(props){
+p.doActionScaleForever = function(props){
 
-		var theAction;
-		theAction = new HHgActionRotateForever(that, (HHg.returnRotationProps(props) || HHg.returnSpeedNProps(props)), HHg.returnEaseProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
-	}
+	var theAction;
+	theAction = new HHgActionScaleForever(this, (HHg.returnScaleProps(props) || HHg.returnSpeedXYProps(props)), this._scaleOriginal, HHg.returnEaseProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
 
-	this.doActionScaleBy = function(props){
+}
 
-		var theAction;
+p.doActionFollowQuad = function(props){
 
-		theAction = new HHgActionScaleBy(that, HHg.returnScaleProps(props), _scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
+	var theAction;
+	theAction = new HHgActionFollowQuad(this, HHg.returnControlPositionProps(props), HHg.returnPositionProps(props), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), props.onComplete, HHg.returnOnCompleteProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
 
-	}
-	this.doActionScaleTo = function(props){
+}
 
-		var theAction;
-		theAction = new HHgActionScaleBy(that, HHg.returnScaleProps(props).returnVectorScaledByInverse(_scaleOriginal), _scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
+p.doActionTimer = function(props){
 
-	}
+	var theAction;
+	theAction = new HHgActionTimer(this, HHg.returnTimeProps(props), HHg.returnOnCompleteProps(props));
+	theAction.name = props.name;
+	theAction.sequenceChain = props.sequenceChain;
+	return this.doFinalizeAction(theAction);
+}
 
-	this.doActionScaleForever = function(props){
-
-		var theAction;
-		theAction = new HHgActionScaleForever(that, (HHg.returnScaleProps(props) || HHg.returnSpeedXYProps(props)), _scaleOriginal, HHg.returnEaseProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
-
-	}
-
-	this.doActionFollowQuad = function(props){
-
-		var theAction;
-		theAction = new HHgActionFollowQuad(that, HHg.returnControlPositionProps(props), HHg.returnPositionProps(props), _positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), props.onComplete, HHg.returnOnCompleteProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
-
-	}
-
-	this.doActionTimer = function(props){
-
-		var theAction;
-		theAction = new HHgActionTimer(that, HHg.returnTimeProps(props), HHg.returnOnCompleteProps(props));
-		theAction.name = props.name;
-		theAction.sequenceChain = props.sequenceChain;
-		return this.doFinalizeAction(theAction);
-	}
-
-	this.doActionPlaySound = function(props){
+p.doActionPlaySound = function(props){
 		//does this trigger a new sound or existing cached sound. how does sound caching work?
 		//then test storing actions and plaing them later
 		//then test clusters, then test sequences.
@@ -1205,17 +1143,17 @@ this.getVisible = function(){
 
 	}
 
-	this.doActionCustom = function(func, time, onComplete){
+	p.doActionCustom = function(func, time, onComplete){
 		func.bind(this)();
 		return this.doActionTimer({time: time, onComplete: onComplete});
 
 	}
 
-	this.doAction = function(actionName, props){
+	p.doAction = function(actionName, props){
 		this.returnActionFunction(actionName).call(props);
 	}
 
-	this.returnActionFunction = function(name){
+	p.returnActionFunction = function(name){
 		switch(name.toLowerCase()){
 			case "timer":
 			return this.doActionTimer.bind(this);
@@ -1252,11 +1190,11 @@ this.getVisible = function(){
 
 	//============= ACTION CLUSTERS AND SEQUENCES =============
 
-	this.makeAction = this.makeStoredAction = this.storeAction = function(actionName, props){
+	p.makeAction = p.makeStoredAction = p.storeAction = function(actionName, props){
 		return {actionCall: this.returnActionFunction(actionName), props: props, owner: this};
 	}
 
-	this.doStoredAction = this.callStoredAction = function(storedAction){
+	p.doStoredAction = p.callStoredAction = function(storedAction){
 		if(storedAction.isActionCluster){
 			return this.doActionCluster(storedAction);
 		}else if(storedAction.isActionSequence){
@@ -1267,7 +1205,7 @@ this.getVisible = function(){
 
 	}
 
-	this.makeActionCluster = this.makeCluster = function(storedActions, name, onComplete){
+	p.makeActionCluster = p.makeCluster = function(storedActions, name, onComplete){
 		var i, key, longestTime = 0, finalActions = [], tempAction,totalActions = 1;
 
 		if(storedActions.length !== +storedActions.length){
@@ -1278,29 +1216,29 @@ this.getVisible = function(){
 			finalActions = storedActions;
 		}
 
-			for(i = 0; i < finalActions.length; i++){
-				tempAction = finalActions[i];
-				totalActions++;
-				if(tempAction.props.time > longestTime){
-					longestTime = tempAction.props.time;
-				}
+		for(i = 0; i < finalActions.length; i++){
+			tempAction = finalActions[i];
+			totalActions++;
+			if(tempAction.props.time > longestTime){
+				longestTime = tempAction.props.time;
 			}
-			var func = function(){
-				this.props.onComplete();
-			};
+		}
+		var func = function(){
+			this.props.onComplete();
+		};
 
-			var sFunc = function(){
-				this.props.sequenceChain();
-			}
+		var sFunc = function(){
+			this.props.sequenceChain();
+		}
 
-			finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: func.bind(finalActions), sequenceChain: sFunc.bind(finalActions)  } ) );
-			finalActions.isActionCluster = true;
-			finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions, owner: this, onComplete: onComplete};
-			return finalActions;
+		finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: func.bind(finalActions), sequenceChain: sFunc.bind(finalActions)  } ) );
+		finalActions.isActionCluster = true;
+		finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions, owner: this, onComplete: onComplete};
+		return finalActions;
 
 	}
 
-	this.doActionCluster = function(cluster){
+	p.doActionCluster = function(cluster){
 		var i, tempThing, clusterName;
 
 
@@ -1313,7 +1251,7 @@ this.getVisible = function(){
 
 	}
 
-	this.makeActionSequence = function(storedActions, name, onComplete){
+	p.makeActionSequence = function(storedActions, name, onComplete){
 		var i, key, finalActions = [], finalSequence = [], tempAction, tempAction2, tempFunction;
 		if(storedActions.length !== +storedActions.length){
 			for(key in storedActions){
@@ -1327,34 +1265,34 @@ this.getVisible = function(){
 
 		finalActions.push(this.makeAction("timer", {time: 0, onComplete: onComplete}));
 
-			for(i = 0; i < finalActions.length; i++){
-				tempAction = finalActions[i];
-				finalActions.props.time += tempAction.props.time;
+		for(i = 0; i < finalActions.length; i++){
+			tempAction = finalActions[i];
+			finalActions.props.time += tempAction.props.time;
 
-				if(i < finalActions.length - 1){
-					var newAction = finalActions[i+1];
-					var func = function(sequence, nextAction){
-						sequence.props.myActions.push(this.doStoredAction(nextAction));
-					};
+			if(i < finalActions.length - 1){
+				var newAction = finalActions[i+1];
+				var func = function(sequence, nextAction){
+					sequence.props.myActions.push(this.doStoredAction(nextAction));
+				};
 
-					tempAction.props.sequenceChain = func.bind(that,finalActions, newAction);
+				tempAction.props.sequenceChain = func.bind(this,finalActions, newAction);
 
-				}else{
+			}else{
 
-					var func = function(){
-						this.props.sequenceChain();
-					};
+				var func = function(){
+					this.props.sequenceChain();
+				};
 
-					tempAction.props.sequenceChain = func.bind(finalActions);
-				}
+				tempAction.props.sequenceChain = func.bind(finalActions);
 			}
+		}
 
-			finalActions.isActionSequence = true;
-			return finalActions;
+		finalActions.isActionSequence = true;
+		return finalActions;
 
 	}
 
-	this.doActionSequence = function(sequence){
+	p.doActionSequence = function(sequence){
 
 		sequence.props.myActions.push(this.doStoredAction(sequence[0]));
 		return this.doFinalizeAction(sequence);
@@ -1364,7 +1302,7 @@ this.getVisible = function(){
 
 
 	//this will all be overridden for custom games
-	this.doMouseDown = function(){
+	p.doMouseDown = function(){
 
 		//this.setScaleStored();
 		//this.setScaleOriginalBy(.9,.9);
@@ -1373,14 +1311,14 @@ this.getVisible = function(){
 		//this.doActionRotateForever({speed:300, name: "mousemoverotate"});
 	}
 
-	this.doMouseUp = function(mouseWasOverWhenReleased){
+	p.doMouseUp = function(mouseWasOverWhenReleased){
 		//this.setScaleOriginalBy(1.0/0.9,1.0/0.9);
 		//this.doRemoveActionByName("mousedownscale");
 		this.isBeingDragged = false;
 
 	}
 
-	this.doStartMouseMove = function(){
+	p.doStartMouseMove = function(){
 
 		this.setPositionStored();
 		this.isBeingDragged = true;
@@ -1388,13 +1326,13 @@ this.getVisible = function(){
 
 	}
 
-	this.doMouseMove = function(){
+	p.doMouseMove = function(){
 
 		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
 
 	}
 
-	this.doEndMouseMove = function(){
+	p.doEndMouseMove = function(){
 
 		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
 		this.isBeingDragged = false;
@@ -1404,7 +1342,7 @@ this.getVisible = function(){
 
 	//======visibility =========
 
-	this.doShow = function(xy,y){
+	p.doShow = function(xy,y){
 
 		this.setVisible(true);
 		if(xy !== undefined){
@@ -1417,58 +1355,58 @@ this.getVisible = function(){
 		}
 
 	}
-	this.doHide = function(){
+	p.doHide = function(){
 
-		that.setVisible(false);
+		this.setVisible(false);
 
 	}
 
-	this.doAddSprite = function(name, whitePixelTintRGB){
+	p.doAddSprite = function(name, whitePixelTintRGB){
 		HHgSprite.doAddSpriteToHolder(this,name,whitePixelTintRGB);
 	}
 
-	this.doAddParagraphText = function(props){
+	p.doAddParagraphText = function(props){
 
 		HHgText.doAddTextParagraphToHolder(this,props);
 	}
 
-	this.doAddCanvasText = this.doAddText = function(props){
+	p.doAddCanvasText = p.doAddText = function(props){
 		HHgText.doAddTextCanvasToHolder(this,props);
 	}
 
-	this.doMakeRoundedRectangle = this.doMakeRectangle = function(props){
-		HHgShape.addRectangle(that, props);
+	p.doMakeRoundedRectangle = p.doMakeRectangle = function(props){
+		HHgShape.addRectangle(this, props);
 	}
 
-	this.doMakeEllipse = this.doMakeCircle = function(props){
-		HHgShape.addEllipse(that, props);
+	p.doMakeEllipse = p.doMakeCircle = function(props){
+		HHgShape.addEllipse(this, props);
 	}
 
-	this.doMakeTriangle = function(props){
-		HHgShape.addTriangle(that, props);
+	p.doMakeTriangle = function(props){
+		HHgShape.addTriangle(this, props);
 	}
 
 	this.doRemoveShape = function(){
-		HHgShape.removeShape(that);
+		HHgShape.removeShape(this);
 	}
 
-	this.doAddOutline = this.doAddBorder = function(props){
-		HHgShape.addBorder(that,props);
+	p.doAddOutline = p.doAddBorder = function(props){
+		HHgShape.addBorder(this,props);
 	}
 
-	this.doRemoveOutline = this.doRemoveBorder = function(){
-		HHgShape.addBorder(that, {borderStyle: "none", borderWidth: 0});
+	p.doRemoveOutline = p.doRemoveBorder = function(){
+		HHgShape.addBorder(this, {borderStyle: "none", borderWidth: 0});
 	}
 
 	//======custom CSS==========
-	this.doAddCSSClass = this.doAddCSSClass = function(className){
+	p.doAddCSSClass = p.doAddCSSClass = function(className){
 		this.classAddingObject = this.classAddingObject || {};
 		this.classAddingObject[className] = className;
 		this.changes.classList = true;
 		this.doNotifySceneOfUpdates();
 	}
 
-	this.doRemoveCSSClass = this.doRemoveCSSClass = function(className){
+	p.doRemoveCSSClass = p.doRemoveCSSClass = function(className){
 		this.classRemovingObject = this.classRemovingObject || {};
 		this.classRemovingObject[className] = className;
 		this.changes.classList = true;
@@ -1476,21 +1414,21 @@ this.getVisible = function(){
 	}
 
 	//============ sound ===============
-	this.doAddSound = function(name){
+	p.doAddSound = function(name){
 
 	}
-	this.doPlaySound = function(name){
+	p.doPlaySound = function(name){
 
 	}
-	this.doPauseSound = function(name){
+	p.doPauseSound = function(name){
 
 	}
-	this.doKillSound = function(name){
+	p.doKillSound = function(name){
 
 	}
 
 
-}
+}());
 
 
 
