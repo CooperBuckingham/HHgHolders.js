@@ -1,148 +1,185 @@
-var HHgVector2 = function (x,y){
-	var _x = +x;
-	var _y = +y;
-	var vBtemp;
+function HHgVector2 (x,y){
+	this._x = x;
+	this._y = y;
+	this.vBtemp;
+	this.that = this;
+};
 
-	var that = this;
-
-	this.returnCopy = function(){
-		return new HHgVector(_x, _y);
-	}
-
-	this.returnVectorLength = function(){
-		return Math.sqrt(_x * _x + _y * _y);
-	}
-
-	this.returnUnitVector = function(){
-		return new HHgVector2(_x / this.returnVectorLength(), _y / this.returnVectorLength());
-	}
-
-	this.returnDistanceToVector = function(vB){
-
-		return Math.sqrt( (_x-vB.getX())*(_x-vB.getX()) + (_y-vB.getY())*(_y-vB.getY()) );
-	}
-
-	this.getX = function(){
-		return _x;
-	}
-	this.setX = function(newX){
-		_x = newX;
-		//_x = Math.round( newX * 10) / 10;
-	}
-
-	this.setXAdd = function(newX){
-		_x += newX;
-	}
-
-	this.getY = function(){
-		return _y;
-	}
-	this.setY = function(newY){
-		_y = newY;
-		//_y =   Math.round( newY * 10) / 10;
-	}
-	this.setYAdd = function(newY){
-		_y += newY;
-	}
-
-
-	this.returnVectorAtDistanceToVector = function(vB, dis){
-
-		var vAB = new HHgVector2(vB.getX() - _x,vB.getY() - _y );
-		var finalVector = new HHgVector2(vAB.returnUnitVector().getX() * dis, vAB.returnUnitVector().getY() * dis );
-		return this.returnVectorPlusVector(finalVector);
-
-	}
-
-	this.returnVectorRotatedAroundVectorAtAngle = function(vB, angle){
-		var rads = HHg.doDegreesToRads(angle),
-			vBx = vB.getX(),
-			vBy = vB.getY();
-
-		return new HHgVector2( (Math.cos(rads) * (_x - vBx) - Math.sin(rads) * (_y - vBy) + vBx),
-								(Math.sin(rads) * (_x - vBx) + Math.cos(rads) * (_y - vBy) + vBy) );
-	}
-
-	this.returnPretty = this.pretty = function(){
-		return ("x: " + _x + " y: " + _y);
-	}
-
-	this.setXY = function(xy,y){
-		if(xy instanceof HHgVector2){
-			_x = xy.getX();
-			_y = xy.getY();
-		}else{
-			_x = +xy;
-			_y = +y;
-		}
-
-	}
-	this.returnVectorPlusVector = this.returnAdd = function(){
-		vBtemp = this.parse(arguments);
-		return new HHgVector2(_x + vBtemp.getX(), _y + vBtemp.getY());
-	}
-	this.plusEquals = this.addEquals = function(){
-		vBtemp = this.parse(arguments);
-		this.setXY(_x + vBtemp.getX(), _y + vBtemp.getY());
-		return this;
-	}
-	this.minusEquals = this.subtractEquals = function(){
-		vBtemp = this.parse(arguments);
-		this.setXY(_x - vBtemp.getX(), _y - vBtemp.getY());
-		return this;
-	}
-	this.timesEquals = this.multiplyEquals = function(){
-		vBtemp = this.parse(arguments);
-		this.setXY(_x * vBtemp.getX(), _y * vBtemp.getY());
-		return this;
-	}
-	this.divideEquals = this.dividedEquals = function(){
-		vBtemp = this.parse(arguments);
-		this.setXY(_x / vBtemp.getX(), _y / vBtemp.getY());
-		return this;
-	}
-
-	this.returnVectorScaledBy = this.returnMultiply = function(){
-		vBtemp = this.parse(arguments);
-
-		return new HHgVector2(_x * vBtemp.getX(), _y * vBtemp.getY());
-	}
-	this.returnVectorScaledByInverse = this.returnDivide = function(){
-		vBtemp = this.parse(arguments);
-		return new HHgVector2(_x / vBtemp.getX(), _y / vBtemp.getY());
-	}
-	this.returnVectorSubtractedFromVector = function(){
-		vBtemp = this.parse(arguments);
-		return new HHgVector2(vBtemp.getX() - _x, vBtemp.getY() - _y);
-	}
-
-	this.returnSubtract = function(){
-		vBtemp = this.parse(arguments);
-		return new HHgVector2( _x - vBtemp.getX(), _y - vBtemp.getY() );
-	}
-
-	this.hasSameXY = this.isSameAs = this.equals = function(){
-		vBtemp = this.parse(arguments);
-		return _x == vBtemp.getX() && _y == vBtemp.getY();
-	}
-
-	this.returnCopy = this.copy = function(){
-		return new HHgVector2(_x, _y);
-	}
-
-	this.parse = function(arg){
-
-		if(arg[0] instanceof HHgVector2 === false){
-			if(arg[1] !== undefined){
-				return new HHgVector2(arg[0], arg[1])
-			}else{
-				return new HHgVector2(arg[0], arg[0])
-			}
-		}else{
-			return arg[0];
-		}
-	}
-
-
-
+function Rectangle() {
+  this._animating = false;
 }
+
+Rectangle.prototype = Object.create(Rectangle.prototype, {
+  animating: {
+    get: function() {
+      console.log('Rectangle.prototype.animating get');
+      return this._animating;
+    },
+
+    set: function(value) {
+      console.log('Rectangle.prototype.animating set');
+      this._animating = value;
+    }
+  }
+});
+
+
+HHgVector2.prototype = Object.create(HHgVector2.prototype, {
+		x: {
+			get: function(){
+				return this._x;
+			},
+			set: function(val){
+				this._x = val;
+			}
+		},
+		y: {
+			get: function(){
+				return this._y;
+			},
+			set: function(val){
+				this._y = val;
+			}
+		},
+		xy: {
+			get: function(){
+				return {x: this._x,y: this._y};
+			},
+			set: function(xy, y){
+				if(xy instanceof HHgVector2){
+					this.x = xy.x;
+					this.y = xy.y;
+				}else if(!isNaN(y)){
+					this.x = xy;
+					this.y = y;
+				}else if(!isNaN(xy)){
+					this.x = xy;
+					this.y = xy;
+				}else{
+					this.x = xy.x;
+					this.y = xy.y;
+				}
+			}
+		},
+		length: {
+			get: function(){
+				return Math.sqrt(this.x * this.x + this.y * this.y);
+			},
+			set: function(){
+				console.log("NO SET METHOD for Vector Length")
+			},
+		}
+	});
+
+(function(){
+
+	var p = HHgVector2.prototype;
+
+		p.getCopy = function(){
+			return new HHgVector2(this.x, this.y);
+		};
+
+		p.getUnit = function(){
+			return new HHgVector2(this.x / this.length, this.y / this.length);
+		};
+
+		p.getDistanceTo = function(vB){
+			return Math.sqrt( (this.x-vB.x)*(this.x-vB.x) + (this.y-vB.y)*(this.y-vB.y) );
+		};
+		p.getVectorAtDistance = function(vB, dis){
+
+			this.vBtemp = new HHgVector2(vB.x - this.x,vB.y - this.y );
+			this.vBTemp = new HHgVector2(vBtemp.getUnit().x * dis, vAB.getUnit().y * dis );
+			return this.plus(this.vBTemp);
+		};
+
+		p.getVectorRotated = function(vB, angle){
+			angle = HHg.doDegreesToRads(angle);
+			return new HHgVector2( (Math.cos(angle) * (this.x - vB.x) - Math.sin(angle) * (this.y - vB.y) + vB.x),
+				(Math.sin(angle) * (this.x - vB.x) + Math.cos(angle) * (this.y - vB.y) + vB.y) );
+		};
+
+		p.getPretty = function(){
+			return ("x: " + this.x + " y: " + this.y);
+		};
+
+		p.plus = function(){
+			this.vBtemp = this.parse(arguments);
+			return new HHgVector2(this.x + this.vBtemp.x, this.y + this.vBtemp.y);
+		};
+		//add: this.plus,
+
+		p.plusEquals = function(){
+			this.vBtemp = this.parse(arguments);
+			this.xy = (this.x + this.vBtemp.x, this.y + this.vBtemp.y);
+			return this;
+		};
+		//addEquals: this.plusEquals,
+
+		p.minus = function(){
+			this.vBtemp = this.parse(arguments);
+			return new HHgVector2( this.x - this.vBtemp.x, this.y - this.vBtemp.y );
+		};
+		//subract: this.minus,
+
+		p.minusEquals = function(){
+			this.vBtemp = this.parse(arguments);
+			this.xy=(this.x - this.vBtemp.x, this.y - this.vBtemp.y);
+			return this;
+		};
+		//subtractEquals: this.minusEquals,
+
+		p.times = function(){
+			this.vBtemp = this.parse(arguments);
+			return new HHgVector2(this.x * this.vBtemp.x, this.y * this.vBtemp.y);
+		};
+		//multiply: this.times,
+
+		p.timesEquals = function(){
+			this.vBtemp = this.parse(arguments);
+			this.xy = (this.x * this.vBtemp.x, this.y * this.vBtemp.y);
+			return this;
+		};
+		//multiplyEquals: this.timesEquals,
+
+		p.dividedBy = function(){
+			this.vBtemp = this.parse(arguments);
+			return new HHgVector2(this.x / this.vBtemp.x, this.y / this.vBtemp.y);
+		};
+		//dividedBy: this.divide,
+
+		p.dividedEquals = function(){
+			this.vBtemp = this.parse(arguments);
+			this.xy = (this.x / this.vBtemp.x, this.y / this.vBtemp.y);
+			return this;
+		};
+		//dividedEquals: this.divideEquals,
+
+		p.subtractedFrom = function(){
+			this.vBtemp = this.parse(arguments);
+			return new HHgVector2(this.vBtemp.x - this.x, this.vBtemp.y - this.y);
+		};
+
+		p.isEqual = function(){
+			this.vBtemp = this.parse(arguments);
+			return this.x === this.vBtemp.x && this.y === this.vBtemp.y;
+		};
+
+		p.parse = function(arg){
+
+			if(arg[0] instanceof HHgVector2 === false){
+				if(arg[1] !== undefined){
+					return new HHgVector2(arg[0], arg[1])
+				}else{
+					return new HHgVector2(arg[0], arg[0])
+				}
+			}else{
+				return arg[0];
+			}
+		};
+
+}());
+
+
+
+

@@ -11,10 +11,10 @@ if(HHgHolderHashCont > 50000){
 var temp = HHg.returnSizeProps(props) || new HHgVector2(HHgGameHolder.getWidthOriginal(), HHgGameHolder.getHeightOriginal());
 this.that = this;
 
-this._widthOriginal = temp.getX();
-this._heightOriginal = temp.getY();
+this._widthOriginal = temp.x;
+this._heightOriginal = temp.y;
 this._sizeOriginal = new HHgVector2(this._widthOriginal, this._heightOriginal);
-this._sizeOriginalHalf = this._sizeOriginal.returnVectorScaledBy(.5);
+this._sizeOriginalHalf = this._sizeOriginal.times(.5);
 
 this._rotationOriginal = 0;
 this._rotationNet = 0;
@@ -28,7 +28,6 @@ this._tintColor;
 this._scaleOriginal = HHg.returnScaleProps(props) || new HHgVector2(1,1);
 this._scaleNet = this._scaleOriginal;
 this._scaleStored = this._scaleOriginal;
-
 
 this._scaleIgnoreParentScale = false;
 this._scaleUniformOnly = false;
@@ -156,7 +155,7 @@ p.setScene = function(){
 p.setGameHolder = function(){
 
   this._scaleOriginal = new HHgVector2(HardwareScreen.w / HHgScreen.w, HardwareScreen.w / HHgScreen.w);
-  HHgPixelScale = this._scaleOriginal.getX();
+  HHgPixelScale = this._scaleOriginal.x;
   this._scaleNet = this._scaleOriginal;
   this._widthOriginal = HHgScreen.w;
   this._heightOriginal = HHgScreen.h;
@@ -234,7 +233,7 @@ p.doMarkForFinalPass = function(){
 			returnVal = true;
 		}else if(this.frameUpdates.positionBy !== undefined ){
 
-			this._positionInScreenOriginal = this._positionInScreenOriginal.returnVectorPlusVector( this.frameUpdates.positionBy);
+			this._positionInScreenOriginal = this._positionInScreenOriginal.plus( this.frameUpdates.positionBy);
 
 			returnVal = true;
 		}
@@ -280,7 +279,7 @@ p.doMarkForFinalPass = function(){
 			returnVal = true;
 		}else if(this.frameUpdates.scaleBy !== undefined){
 
-			this._scaleOriginal = this._scaleOriginal.returnVectorPlusVector( this.frameUpdates.scaleBy);
+			this._scaleOriginal = this._scaleOriginal.plus( this.frameUpdates.scaleBy);
 			returnVal = true;
 		}
 
@@ -294,7 +293,7 @@ p.doMarkForFinalPass = function(){
 
 	p.framePositionBy = function(xy){
 		if(this.frameUpdates.positionBy){
-			this.frameUpdates.positionBy = this.frameUpdates.positionBy.returnVectorPlusVector(xy);
+			this.frameUpdates.positionBy = this.frameUpdates.positionBy.plus(xy);
 		}else{
 			this.frameUpdates.positionBy = xy;
 		}
@@ -314,7 +313,7 @@ p.doMarkForFinalPass = function(){
 
 
 		if(this.frameUpdates.scaleBy){
-			this.frameUpdates.scaleBy = this.frameUpdates.scaleBy.returnVectorPlusVector(xy);
+			this.frameUpdates.scaleBy = this.frameUpdates.scaleBy.plus(xy);
 		}else{
 			this.frameUpdates.scaleBy = xy;
 		}
@@ -432,18 +431,18 @@ p.doMarkForFinalPass = function(){
 		}
 
 		p.getWidthNet = function(){
-			return this._widthOriginal * this._scaleNet.getX();
+			return this._widthOriginal * this._scaleNet.x;
 		}
 
 		p.getHeightNet = function(){
-			return this._heightOriginal * this._scaleNet.getY();
+			return this._heightOriginal * this._scaleNet.y;
 		}
 
 		p.getMySizeOffset = function(){
-			return this._sizeOriginalHalf.returnVectorScaledBy(this.getScaleNetForMyPosition());
+			return this._sizeOriginalHalf.times(this.getScaleNetForMyPosition());
 		}
 		p.getCenterPosition = function(){
-			return this._positionInScreenNet.returnVectorPlusVector(this.getMySizeOffset());
+			return this._positionInScreenNet.plus(this.getMySizeOffset());
 		}
 
 
@@ -513,10 +512,10 @@ p.doRecalcPosition = function(){
 
 	if(this._parent !== undefined){
 
-		this._positionInParentOriginal = this._positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( this._parent.getPositionInScreenOriginal(), 1 *  this._parent.getRotationNet() );
+		this._positionInParentOriginal = this._positionInScreenOriginal.getVectorRotated( this._parent.getPositionInScreenOriginal(), 1 *  this._parent.getRotationNet() );
 
-		this._positionInParentOriginal = this._parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(this._positionInParentOriginal);
-		this._positionInParentOriginal = this._positionInParentOriginal.returnVectorScaledByInverse(this._parent.getScaleNetForChildPosition());
+		this._positionInParentOriginal = this._parent.getPositionInScreenOriginal().subtractedFrom(this._positionInParentOriginal);
+		this._positionInParentOriginal = this._positionInParentOriginal.dividedBy(this._parent.getScaleNetForChildPosition());
 
 	}
 
@@ -549,7 +548,7 @@ p.doRecalcPosition = function(){
 				_positionInParentOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenOriginal(), 1 *  _parent.getRotationNet() );
 
 				_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInParentOriginal);
-				_positionInParentOriginal = _positionInParentOriginal.returnVectorScaledByInverse(_parent.getScaleNetForChildPosition());
+				_positionInParentOriginal = _positionInParentOriginal.timesInverse(_parent.getScaleNetForChildPosition());
 
 			}
 
@@ -602,7 +601,7 @@ p.doRecalcPosition = function(){
 		}
 
 		p.getPositionWithCentering = function(){
-			return this.returnHalfSizeVector().returnVectorPlusVector( this._positionInScreenOriginal);
+			return this.returnHalfSizeVector().plus( this._positionInScreenOriginal);
 		}
 
 		p.getPositionInParentOriginal = function(){
@@ -641,10 +640,10 @@ p.doRecalcPosition = function(){
 			if(this._parent !== undefined){
 
 
-				this._positionInScreenOriginal = this._positionInScreenOriginal.returnVectorScaledBy(this._parent.getScaleNetForChildPosition());
-				this._positionInScreenOriginal = this._parent.getPositionInScreenOriginal().returnVectorPlusVector(this._positionInScreenOriginal);
+				this._positionInScreenOriginal = this._positionInScreenOriginal.times(this._parent.getScaleNetForChildPosition());
+				this._positionInScreenOriginal = this._parent.getPositionInScreenOriginal().plus(this._positionInScreenOriginal);
 
-				this._positionInScreenOriginal = this._positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( this._parent.getPositionInScreenOriginal() , -1 * this._parent.getRotationNet() );
+				this._positionInScreenOriginal = this._positionInScreenOriginal.getVectorRotated( this._parent.getPositionInScreenOriginal() , -1 * this._parent.getRotationNet() );
 
 
 				this.convertOriginalToNetPosition();
@@ -672,15 +671,15 @@ p.convertOriginalToNetPosition = function(){
 		//note, to specifically use GameHolder scale for child here, even though it's asking for position
 		//because the offsets need its relative scale.
 
-		this._positionInScreenNet = this._positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
-		this._positionInScreenNet = this._positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
+		this._positionInScreenNet = this._positionInScreenOriginal.times(HHgGameHolder.getScaleNetForChildScale());
+		this._positionInScreenNet = this._positionInScreenNet.plus(HHgGameHolder.returnHalfSizeVector());
 		this._positionInScreenNet.minusEquals(this.getMySizeOffset());
 
 
 
 
-		//_positionInScreenNet = _sizeOriginal.returnVectorScaledBy(.5).returnVectorScaledBy(HHgPixelScale).returnVectorSubtractedFromVector(_positionInScreenNet);
-		//_positionInScreenNet = _positionInScreenNet.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
+		//_positionInScreenNet = _sizeOriginal.times(.5).times(HHgPixelScale).returnVectorSubtractedFromVector(_positionInScreenNet);
+		//_positionInScreenNet = _positionInScreenNet.times(HHgGameHolder.getScaleNetForChildScale());
 //***** working on getting scale to efect posiiton correctly.
 		if(this._parent !== undefined){
 
@@ -693,11 +692,11 @@ p.convertOriginalToNetPosition = function(){
 
 		//note, to specifically use GameHolder scale for child here, even though it's asking for position
 		//because the offsets need its relative scale.
-			_positionInScreenNet = _positionInScreenOriginal.returnVectorScaledBy(HHgGameHolder.getScaleNetForChildScale());
+			_positionInScreenNet = _positionInScreenOriginal.times(HHgGameHolder.getScaleNetForChildScale());
 
 			if(_parent !== undefined){
 
-				_positionInScreenNet = _positionInScreenNet.returnVectorPlusVector(HHgGameHolder.returnHalfSizeVector());
+				_positionInScreenNet = _positionInScreenNet.plus(HHgGameHolder.returnHalfSizeVector());
 
 					_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
 
@@ -739,23 +738,23 @@ p.setScaleOriginalTo = function(props){
 p.setScaleOriginalBy = function(props){
 
 
-	this.frameScaleBy( HHg1Vector.returnVectorSubtractedFromVector(HHg.returnScaleProps(props)) ) ;
+	this.frameScaleBy( HHg1Vector.subtractedFrom(HHg.returnScaleProps(props)) ) ;
 
 
 }
 p.setScaleOriginalByActionFraction = function(props){
 
 
-	this.frameScaleBy(HHg.returnScaleProps(props).returnVectorPlusVector(HHg1Vector));
+	this.frameScaleBy(HHg.returnScaleProps(props).plus(HHg1Vector));
 
 
 }
 
 p.getScaleNetForChildScale = function(){
-	this._scaleNet = this._scaleIgnoreParentScale ? this._scale / this._parent.getScaleNetForChildPosition() : this._scaleNet;
+	this._scaleNet = this._scaleIgnoreParentScale ? this._scaleOriginal / this._parent.getScaleNetForChildPosition() : this._scaleNet;
 
 	if(this._scaleUniformOnly === true){
-		var larger = this._scaleNet.getX() > this._scaleNet.geY() ? this._scaleNet.getX() : this._scaleNet.getY();
+		var larger = this._scaleNet.x > this._scaleNet.y ? this._scaleNet.x : this._scaleNet.y;
 
 		this._scaleNet = new HHgVector2(larger, larger);
 	}
@@ -789,11 +788,11 @@ p.doRecalcScale = function(){
 
 
 	if(this._parent !== undefined){
-		this._scaleNet = this._parent.getScaleNetForChildScale().returnVectorScaledBy(this._scaleNet);
+		this._scaleNet = this._parent.getScaleNetForChildScale().times(this._scaleNet);
 	}
 
-	this.fontSizeScaled = this.fontSizeOriginal * this._scaleNet.getX();
-	this.borderWidthScaled = this.borderWidthOriginal * this._scaleNet.getX();
+	this.fontSizeScaled = this.fontSizeOriginal * this._scaleNet.x;
+	this.borderWidthScaled = this.borderWidthOriginal * this._scaleNet.x;
 
 	this.changes.scale = true;
 
@@ -1098,7 +1097,7 @@ p.doActionScaleBy = function(props){
 p.doActionScaleTo = function(props){
 
 	var theAction;
-	theAction = new HHgActionScaleBy(this, HHg.returnScaleProps(props).returnVectorScaledByInverse(this._scaleOriginal), this._scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
+	theAction = new HHgActionScaleBy(this, HHg.returnScaleProps(props).timesInverse(this._scaleOriginal), this._scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 	theAction.name = props.name;
 	theAction.sequenceChain = props.sequenceChain;
 	return this.doFinalizeAction(theAction);
@@ -1328,13 +1327,13 @@ p.doActionPlaySound = function(props){
 
 	p.doMouseMove = function(){
 
-		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
+		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
 
 	}
 
 	p.doEndMouseMove = function(){
 
-		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.returnVectorPlusVector(HHgMouse.draggingOffsetXY));
+		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
 		this.isBeingDragged = false;
 		//this.doRemoveActionByName("mousemoverotate");
 	}
