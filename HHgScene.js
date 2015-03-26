@@ -182,7 +182,7 @@ function doAddFunctionsToScene(scene){
 		scene._dirtyHolders = {};
 
 		for(var thing in newList){
-			newList[thing].doFrameDump();
+			newList[thing].doFrameDump.call(newList[thing]);
 		}
 		newList = {};
 
@@ -614,6 +614,7 @@ function doAddFunctionsToScene(scene){
 
 				var holderOriginalSize = holder.getSizeOriginal();
 		    var holderOriginalScale = holder.getScaleOriginal();
+		    //var holderOriginalScale = holder.getScaleOriginal().returnVectorScaledBy(holder.getParent().getScaleNetForChildScale());
 		    var holderFinalSize = holderOriginalSize.returnVectorScaledBy(holderOriginalScale);
 		    var holderHalfSize = holderFinalSize.returnVectorScaledBy(.5);
 
