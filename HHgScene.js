@@ -2,10 +2,12 @@
 
 
 
-var HHgTrackedTouch,
-		HHgScreenSize = new HHgVector2(HHgScreen.w, HHgScreen.h),
-	  HHgScreenSizeHalf = HHgScreenSize.returnVectorScaledBy(.5),
-	  testContainer, showDebugSquares;
+var HHgTrackedTouch;
+var	HHgScreenSize = new HHgVector2(HHgScreen.w, HHgScreen.h);
+var	HHgScreenSizeHalf = HHgScreenSize.times(.5);
+//hmm;
+var	testContainer;
+var showDebugSquares;
 
 var HHgScene, HHgSceneDiv, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector, HHg1Vector, HHg10000Vector, HHgHalfVector, HHgTestDiv, HHgPixelScale;
 var HHgTopHolder = document.getElementById("all");
@@ -117,7 +119,7 @@ HHgSceneDoStart = function(){
 
 		HHgScreenDiffPlus = new HHgVector2(0, ((HardwareScreen.w / HHgScreen.w * HHgScreen.maxh) - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w)))/2 );
 
-		HHgSceneDiv.style.top = "" + HHgScreenDiffPlus.getY() + "px";
+		HHgSceneDiv.style.top = "" + HHgScreenDiffPlus.y + "px";
 
 		HHgGameHolder.doNotifySceneOfUpdates = function(){};
 		HHgGameHolder.setPositionInParentTo = function(){};
@@ -131,7 +133,7 @@ HHgSceneDoStart = function(){
 		}
 
 		HHgGameHolder.setGameHolder();
-		HHgPixelScale = HHgGameHolder.getScaleNetForChildScale().getX();
+		HHgPixelScale = HHgGameHolder.getScaleNetForChildScale().x;
 	}
 
 	buildHolderFromScratch();
@@ -226,7 +228,7 @@ function doAddFunctionsToScene(scene){
 					var testTranslate = holder.getPositionInScreenNet();
 					testTranslate = testTranslate.returnVectorSubtractedFromVector( new HHgVector2(parseFloat(div.style.left), parseFloat(div.style.bottom)) );
 					testTranslate.timesEquals(holder.getScaleNetForChildScale());
-					transformString = transformString + "translate(" + testTranslate.getX() + "px," + testTranslate.getY() + "px)"
+					transformString = transformString + "translate(" + testTranslate.x + "px," + testTranslate.y + "px)"
 					*/
 
 					//testTranslate.minusEquals(holder.returnHalfSizeVector());
@@ -237,10 +239,10 @@ function doAddFunctionsToScene(scene){
 				*/
 
 				var adjustedPosition = holder.getPositionInScreenNet();
-				//var holderHalfSizeUnscaled = holder.getSizeOriginal().returnVectorScaledBy(.5);
+				//var holderHalfSizeUnscaled = holder.getSizeOriginal().times(.5);
 				//adjustedPosition.minusEquals(holderHalfSizeUnscaled);
-				div.style.left ="" + adjustedPosition.getX() +"px";
-				div.style.bottom ="" + adjustedPosition.getY() + "px";
+				div.style.left ="" + adjustedPosition.x +"px";
+				div.style.bottom ="" + adjustedPosition.y + "px";
 
 					if(holder.borderWidthOriginal > 0){
 						//div.style.borderWidth = "" + holder.borderWidthScaled + "px";
@@ -270,8 +272,8 @@ function doAddFunctionsToScene(scene){
 				var adjustedPosition = holder.getPositionInScreenNet();
 				//var testAdjust = holder.returnHalfSizeVector();
 				//adjustedPosition.minusEquals(testAdjust);
-				div.style.left ="" + adjustedPosition.getX() +"px";
-				div.style.bottom ="" + adjustedPosition.getY() + "px";
+				div.style.left ="" + adjustedPosition.x +"px";
+				div.style.bottom ="" + adjustedPosition.y + "px";
 
 			}
 
@@ -352,8 +354,8 @@ function doAddFunctionsToScene(scene){
 		//div.style.width = "" + Math.round(holder.getWidthNet())  + "px";
 		//div.style.height ="" + Math.round(holder.getHeightNet()) + "px";
 
-		//div.style.left ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getX(),2) +"px";
-		//div.style.bottom ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().getY(),2) + "px";
+		//div.style.left ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().x,2) +"px";
+		//div.style.bottom ="" + HHg.roundNumToPlaces(holder.getPositionInScreenNet().y,2) + "px";
 
 
 	};
@@ -366,7 +368,7 @@ function doAddFunctionsToScene(scene){
 		owner.getDiv().appendChild(parent);
 		var child = document.createElement("pre");
 		parent.appendChild(child);
-		var parentScale = owner.getScaleNetForChildScale().getX();
+		var parentScale = owner.getScaleNetForChildScale().x;
 		var tempFontSize = props.fontSize * parentScale;
 		child.style.color = props.color ? props.color.returnString() : "black";
 		child.style.fontSize = "" + tempFontSize + "px";
@@ -403,7 +405,7 @@ function doAddFunctionsToScene(scene){
 
 		var ctx = owner.getCanvas().getContext("2d"), x, y, textWidth, textHeight, divWidth, divHeight;
 		console.log("debug");
-		var parentScale = owner.getScaleNetForChildScale().getX();
+		var parentScale = owner.getScaleNetForChildScale().x;
 		textHeight = props.fontSize * parentScale;
 		ctx.font = "" + textHeight + "px " + props.font ;
 		textWidth = ctx.measureText(props.text).width * parentScale;
@@ -596,12 +598,12 @@ function doAddFunctionsToScene(scene){
 
 	scene.convertMouseToHolder = function(xy){
 
-		xy = xy.returnVectorPlusVector(HHgScreenDiff);
-		xy.setY(HardwareScreen.h -xy.getY() );
+		xy = xy.plus(HHgScreenDiff);
+		xy.y = HardwareScreen.h - xy.y;
 
 		//experiment
-		xy = HHgGameHolder.returnHalfSizeVector().returnVectorSubtractedFromVector(xy);
-		xy = xy.returnVectorScaledByInverse(HHgGameHolder.getScaleNetForChildScale());
+		xy = HHgGameHolder.returnHalfSizeVector().subtractedFrom(xy);
+		xy = xy.dividedBy(HHgGameHolder.getScaleNetForChildScale());
 		return xy;
 
 
@@ -614,31 +616,29 @@ function doAddFunctionsToScene(scene){
 
 				var holderOriginalSize = holder.getSizeOriginal();
 		    var holderOriginalScale = holder.getScaleOriginal();
-		    //var holderOriginalScale = holder.getScaleOriginal().returnVectorScaledBy(holder.getParent().getScaleNetForChildScale());
-		    var holderFinalSize = holderOriginalSize.returnVectorScaledBy(holderOriginalScale);
-		    var holderHalfSize = holderFinalSize.returnVectorScaledBy(.5);
+		    //var holderOriginalScale = holder.getScaleOriginal().times(holder.getParent().getScaleNetForChildScale());
+		    var holderFinalSize = holderOriginalSize.times(holderOriginalScale);
+		    var holderHalfSize = holderFinalSize.times(.5);
 
-				var mousePos = xy.returnCopy();
+				var mousePos = xy.getCopy();
 				//console.log("MOUSE: " + mousePos.pretty());
 
 		    var holderCenter = holder.getPositionInScreenOriginal();
 
-		    var mouseFinalRelative = mousePos.returnVectorRotatedAroundVectorAtAngle(holderCenter, -1 * holder.getRotationNet());
+		    var mouseFinalRelative = mousePos.getVectorRotated(holderCenter, -1 * holder.getRotationNet());
 
-		    var posInCanvas = holderCenter.returnVectorSubtractedFromVector(mouseFinalRelative);
-
-
+		    var posInCanvas = holderCenter.subtractedFrom(mouseFinalRelative);
 
 		    posInCanvas.plusEquals(holderHalfSize);
 
 		    var left = 0;
-		    var right = holderFinalSize.getX();
+		    var right = holderFinalSize.x;
 
 		    var top = 0;
-		    var bottom = holderFinalSize.getY();
+		    var bottom = holderFinalSize.y;
 
-		    var posX = posInCanvas.getX();
-		    var posY = posInCanvas.getY();
+		    var posX = posInCanvas.x;
+		    var posY = posInCanvas.y;
 
 		    if(posX < left) return false;
 
@@ -656,7 +656,7 @@ function doAddFunctionsToScene(scene){
 
 		   		posInCanvas.timesEquals(canvasRatio);
 
-		   		if( isAlphaPixel(canvas, posInCanvas.getX(), posInCanvas.getY() ) ) return false;
+		   		if( isAlphaPixel(canvas, posInCanvas.x, posInCanvas.y ) ) return false;
 
 				}
 				//console.log("IS NOT ALPHA");
@@ -669,7 +669,6 @@ function doAddFunctionsToScene(scene){
 	scene.returnHoldersUnderPoint = function(xy){
 
 		var arr = document.getElementsByClassName("mouseable"),
-
 
 		mArr = [],
 		highestZ = -100,
@@ -919,9 +918,9 @@ function HHgUpdateHardwareScreen(){
 		//eventually change this to support portrait
 		HHgScreenDiff.setXY(0, (HardwareScreen.h - (HHgScreen.h * (HardwareScreen.w / HHgScreen.w) ))/2);
 	}
-	HHgPixelScale = HHgGameHolder.getScaleNetForChildScale().getX();
+	HHgPixelScale = HHgGameHolder.getScaleNetForChildScale().x;
 
-	HHgScene.getDiv().style.maxHeight = "" + HHgGameHolder.getScaleNetForChildScale().getX() * HHgScreen.maxh + "px";
+	HHgScene.getDiv().style.maxHeight = "" + HHgGameHolder.getScaleNetForChildScale().x * HHgScreen.maxh + "px";
 
 };
 

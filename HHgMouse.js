@@ -65,7 +65,7 @@ var HHgMouse = {};
 			that.dragging = holder;
 			that.draggingOriginalPosXY = holder.getPositionInScreenOriginal();
 			that.draggingMouseOriginalPosXY = xy;
-			that.draggingOffsetXY = xy.returnVectorSubtractedFromVector(that.draggingOriginalPosXY);
+			that.draggingOffsetXY = xy.subtractedFrom(that.draggingOriginalPosXY);
 		}
 
 	}

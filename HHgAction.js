@@ -78,12 +78,12 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 		if(this.timeSoFar >= this.totalTime){
 
 			if(this.isSpecial === true){
-				this.updateFunc(this.lastValue.returnVectorSubtractedFromVector(this.endXY));
+				this.updateFunc(this.lastValue.subtractedFrom(this.endXY));
 			}else if(this.isXY === true){
 				if(this.normalizeBy1){
-					this.updateFunc( this.lastValue.returnVectorSubtractedFromVector(this.totalDelta).returnVectorPlusVector(HHg1Vector) );
+					this.updateFunc( this.lastValue.subtractedFrom(this.totalDelta).plus(HHg1Vector) );
 				}else{
-					this.updateFunc(this.lastValue.returnVectorSubtractedFromVector(this.totalDelta));
+					this.updateFunc(this.lastValue.subtractedFrom(this.totalDelta));
 				}
 
 			}else{
@@ -119,7 +119,7 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 				this.deltaValue = this.tempXY.returnSubtract(this.lastValue);
 				this.lastValue = this.tempXY;
 		}else if(this.isXY === true){
-			this.deltaValue = this.totalDelta.returnMultiply(this.lastPercent);
+			this.deltaValue = this.totalDelta.times(this.lastPercent);
 			this.deltaValue.minusEquals(this.lastValue);
 			this.lastValue.plusEquals(this.deltaValue);
 		}else{
@@ -128,7 +128,7 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 			this.lastValue += this.deltaValue;
 		}
 		if(this.normalizeBy1){
-			this.updateFunc(this.deltaValue.returnVectorPlusVector(HHg1Vector));
+			this.updateFunc(this.deltaValue.plus(HHg1Vector));
 		}else{
 			this.updateFunc(this.deltaValue);
 		}
@@ -169,7 +169,7 @@ function HHgActionMoveForever(owner, vectorPerSecond, ease){
 
 	this.whatShouldIDoThisFrame = function(deltaT){
 
-		owner.setPositionInScreenBy(this.perSecondXY.returnVectorScaledBy(deltaT));
+		owner.setPositionInScreenBy(this.perSecondXY.times(deltaT));
 		//could add ease in option here
 	}
 
@@ -211,7 +211,7 @@ function HHgActionScaleBy(owner, totalDelta, startValue, totalTime, ease, onComp
 
 	//(( (scaleBy - 1U) * %) + 1) * currentScale
 
-	HHgAction.call(this, owner, HHg1Vector.returnVectorSubtractedFromVector(totalDelta).returnVectorScaledBy(startValue), startValue, totalTime, ease, onComplete);
+	HHgAction.call(this, owner, HHg1Vector.subtractedFrom(totalDelta).times(startValue), startValue, totalTime, ease, onComplete);
 	this.normalizeBy1 = true;
 
 	this.updateFunc = this.owner.setScaleOriginalBy.bind(owner);
@@ -226,11 +226,11 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionScaleBy);
 function HHgActionScaleForever(owner, vectorPerSecond, startValue, ease){
 	HHgAction.call(this, owner, null, null, null, ease, null);
 
-	this.perSecondXY = HHg1Vector.returnVectorSubtractedFromVector(vectorPerSecond).returnVectorScaledBy(startValue);
+	this.perSecondXY = HHg1Vector.subtractedFrom(vectorPerSecond).times(startValue);
 
 	this.whatShouldIDoThisFrame = function(deltaT){
 
-		owner.setScaleOriginalBy(this.perSecondXY.returnVectorScaledBy(deltaT).returnVectorPlusVector(HHg1Vector));
+		owner.setScaleOriginalBy(this.perSecondXY.times(deltaT).plus(HHg1Vector));
 		//could add ease in option here
 
 	}
