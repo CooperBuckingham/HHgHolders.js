@@ -517,7 +517,8 @@ function doAddFunctionsToScene(scene){
 
 			mouseXY = new HHgVector2(relX,relY);
 			mouseXY = scene.convertMouseToHolder(mouseXY);
-			HHgMouse.doMouseMove( mouseXY  );
+
+			HHgMouse.doMouseMove( mouseXY );
 			return false;
 		}, false);
 

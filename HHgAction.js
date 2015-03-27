@@ -36,8 +36,13 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 		if(ease.easeOut !== undefined) this.easeOutPercent = ease.easeOut;
 
 	}
+};
 
-	this.finalFrame = function(action){
+(function(){
+
+	var p = HHgAction.prototype;
+
+	p.finalFrame = function(action){
 
 		if(action.onComplete){
 			action.onComplete();
@@ -51,7 +56,7 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 
 	};
 
-	this.setEase = function(){
+	p.setEase = function(){
 		if(this.easeInPercent > 0){
 			this.easeInTime = this.totalTime * this.easeInPercent;
 		}else{
@@ -72,7 +77,7 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 	};
 
 
-	this.whatShouldIDoThisFrame = function(deltaT){
+	p.whatShouldIDoThisFrame = function(deltaT){
 		this.timeSoFar += deltaT;
 
 		if(this.timeSoFar >= this.totalTime){
@@ -137,7 +142,7 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 	};
 
 
-}
+}());
 
 HHg.HHgActionCommands = {
 	makeChildOfAction : function(subclass){

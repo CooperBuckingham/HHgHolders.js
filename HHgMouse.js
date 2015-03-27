@@ -81,7 +81,6 @@ var HHgMouse = {};
 	that.doMouseMove = function (xy){
 		that.mouseCircle.doHide();
 
-
 		if(that.dragging){
 			that.doUpdateVars(xy);
 			that.dragging.doMouseMove();

@@ -45,21 +45,9 @@ HHgVector2.prototype = Object.create(HHgVector2.prototype, {
 			get: function(){
 				return {x: this._x,y: this._y};
 			},
-			set: function(xy, y){
-				if(xy instanceof HHgVector2){
-					this.x = xy.x;
-					this.y = xy.y;
-				}else if(!isNaN(y)){
-					this.x = xy;
-					this.y = y;
-				}else if(!isNaN(xy)){
-					this.x = xy;
-					this.y = xy;
-				}else{
-					this.x = xy.x;
-					this.y = xy.y;
+			set: function(){
+					console.log("No set for xy, use setXY()");
 				}
-			}
 		},
 		length: {
 			get: function(){
@@ -74,6 +62,20 @@ HHgVector2.prototype = Object.create(HHgVector2.prototype, {
 (function(){
 
 	var p = HHgVector2.prototype;
+
+		p.setXY = function(xy,y){
+			if(xy instanceof HHgVector2 === true || typeof xy === "object"){
+				this.x = xy.x;
+				this.y = xy.y;
+			}else if(!isNaN(y)){
+				this.x = xy;
+				this.y = y;
+			}else{
+				this.x = xy;
+				this.y = xy;
+			}
+
+		};
 
 		p.getCopy = function(){
 			return new HHgVector2(this.x, this.y);
@@ -99,8 +101,8 @@ HHgVector2.prototype = Object.create(HHgVector2.prototype, {
 				(Math.sin(angle) * (this.x - vB.x) + Math.cos(angle) * (this.y - vB.y) + vB.y) );
 		};
 
-		p.getPretty = function(){
-			return ("x: " + this.x + " y: " + this.y);
+		p.pretty = function(){
+			return ("x: " + Math.floor(this.x * 10000)/10000 + " y: " + Math.floor(this.y * 10000)/10000);
 		};
 
 		p.plus = function(){
@@ -111,7 +113,7 @@ HHgVector2.prototype = Object.create(HHgVector2.prototype, {
 
 		p.plusEquals = function(){
 			this.vBtemp = this.parse(arguments);
-			this.xy = (this.x + this.vBtemp.x, this.y + this.vBtemp.y);
+			this.setXY(this.x + this.vBtemp.x, this.y + this.vBtemp.y);
 			return this;
 		};
 		//addEquals: this.plusEquals,
@@ -124,7 +126,7 @@ HHgVector2.prototype = Object.create(HHgVector2.prototype, {
 
 		p.minusEquals = function(){
 			this.vBtemp = this.parse(arguments);
-			this.xy=(this.x - this.vBtemp.x, this.y - this.vBtemp.y);
+			this.setXY(this.x - this.vBtemp.x, this.y - this.vBtemp.y);
 			return this;
 		};
 		//subtractEquals: this.minusEquals,
@@ -137,12 +139,12 @@ HHgVector2.prototype = Object.create(HHgVector2.prototype, {
 
 		p.timesEquals = function(){
 			this.vBtemp = this.parse(arguments);
-			this.xy = (this.x * this.vBtemp.x, this.y * this.vBtemp.y);
+			this.setXY(this.x * this.vBtemp.x, this.y * this.vBtemp.y);
 			return this;
 		};
 		//multiplyEquals: this.timesEquals,
 
-		p.dividedBy = function(){
+		p.dividedBy = p.divide = function(){
 			this.vBtemp = this.parse(arguments);
 			return new HHgVector2(this.x / this.vBtemp.x, this.y / this.vBtemp.y);
 		};
@@ -150,7 +152,7 @@ HHgVector2.prototype = Object.create(HHgVector2.prototype, {
 
 		p.dividedEquals = function(){
 			this.vBtemp = this.parse(arguments);
-			this.xy = (this.x / this.vBtemp.x, this.y / this.vBtemp.y);
+			this.setXY(this.x / this.vBtemp.x, this.y / this.vBtemp.y);
 			return this;
 		};
 		//dividedEquals: this.divideEquals,
