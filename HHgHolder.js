@@ -221,6 +221,7 @@ p.doMarkForFinalPass = function(){
 
 		if(this.frameUpdates.positionAbsolute !== undefined){
 			this._positionInScreenOriginal = this.frameUpdates.positionAbsolute;
+			console.log(this._positionInScreenOriginal.pretty());
 			returnVal = true;
 
 		}else if(this.isBeingDragged === true){
@@ -359,6 +360,9 @@ p.doMarkForFinalPass = function(){
 	}
 
 	p.setVisible = function(val){
+		if(this._visible === val){
+			return;
+		}
 		this._visible = val;
 		this.changes.visible = true;
 		if(this._div){
@@ -590,7 +594,7 @@ p.doRecalcPosition = function(){
 		}
 
 		p.setPositionInScreenAbsolute = function(props){
-
+			//console.log(HHg.returnPositionProps(props).pretty());
 			this.framePositionAbsolute(HHg.returnPositionProps(props));
 		}
 
@@ -670,10 +674,11 @@ p.convertOriginalToNetPosition = function(){
 
 		//note, to specifically use GameHolder scale for child here, even though it's asking for position
 		//because the offsets need its relative scale.
-
+		//console.log("O " + this._positionInScreenOriginal.pretty());
 		this._positionInScreenNet = this._positionInScreenOriginal.times(HHgGameHolder.getScaleNetForChildScale());
 		this._positionInScreenNet = this._positionInScreenNet.plus(HHgGameHolder.returnHalfSizeVector());
 		this._positionInScreenNet.minusEquals(this.getMySizeOffset());
+		//console.log("N " + this._positionInScreenNet.pretty());
 
 
 
@@ -993,7 +998,7 @@ p.doRemoveActionByName = function(name){
 p.doActionMoveInScreenTo = function(props){
 
 	var theAction;
-	theAction = new HHgActionMoveBy(this, this._positionInScreenOriginal.returnVectorSubtractedFromVector(HHg.returnPositionProps(props)), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
+	theAction = new HHgActionMoveBy(this, this._positionInScreenOriginal.subtractedFrom(HHg.returnPositionProps(props)), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 	theAction.name = props.name;
 	theAction.sequenceChain = props.sequenceChain;
 	return this.doFinalizeAction(theAction);
@@ -1326,7 +1331,7 @@ p.doActionPlaySound = function(props){
 	}
 
 	p.doMouseMove = function(){
-
+		//console.log(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY).pretty());
 		this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
 
 	}
