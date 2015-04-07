@@ -16,15 +16,15 @@ var HHgImageManager = {
 	returnFileName : function(name){
 		switch(name){
 			case "pool":
-			return "../HHgEngine/testPool.png";
+			return HHgPathPrefix + "testPool.png";
 			case "soccer":
-			return "../HHgEngine/testSoccer.png";
+			return HHgPathPrefix + "testSoccer.png";
 			case "orange":
-			return "../HHgEngine/testOrange.png";
+			return HHgPathPrefix + "testOrange.png";
 			case "mouse":
-			return "../HHgEngine/testMouse.png";
+			return HHgPathPrefix + "testMouse.png";
 			default:
-			return "../HHgEngine/testOrange.png";
+			return HHgPathPrefix + "testOrange.png";
 		}
 	}
 

@@ -221,7 +221,7 @@ p.doMarkForFinalPass = function(){
 
 		if(this.frameUpdates.positionAbsolute !== undefined){
 			this._positionInScreenOriginal = this.frameUpdates.positionAbsolute;
-			console.log(this._positionInScreenOriginal.pretty());
+
 			returnVal = true;
 
 		}else if(this.isBeingDragged === true){
@@ -643,10 +643,9 @@ p.doRecalcPosition = function(){
 
 			if(this._parent !== undefined){
 
-
 				this._positionInScreenOriginal = this._positionInScreenOriginal.times(this._parent.getScaleNetForChildPosition());
-				this._positionInScreenOriginal = this._parent.getPositionInScreenOriginal().plus(this._positionInScreenOriginal);
 
+				this._positionInScreenOriginal = this._parent.getPositionInScreenOriginal().plus(this._positionInScreenOriginal);
 				this._positionInScreenOriginal = this._positionInScreenOriginal.getVectorRotated( this._parent.getPositionInScreenOriginal() , -1 * this._parent.getRotationNet() );
 
 
@@ -674,18 +673,12 @@ p.convertOriginalToNetPosition = function(){
 
 		//note, to specifically use GameHolder scale for child here, even though it's asking for position
 		//because the offsets need its relative scale.
-		//console.log("O " + this._positionInScreenOriginal.pretty());
 		this._positionInScreenNet = this._positionInScreenOriginal.times(HHgGameHolder.getScaleNetForChildScale());
 		this._positionInScreenNet = this._positionInScreenNet.plus(HHgGameHolder.returnHalfSizeVector());
-		this._positionInScreenNet.minusEquals(this.getMySizeOffset());
-		//console.log("N " + this._positionInScreenNet.pretty());
 
 
+		this._positionInScreenNet.minusEquals(this._sizeOriginalHalf.times(HHgPixelScale));
 
-
-		//_positionInScreenNet = _sizeOriginal.times(.5).times(HHgPixelScale).returnVectorSubtractedFromVector(_positionInScreenNet);
-		//_positionInScreenNet = _positionInScreenNet.times(HHgGameHolder.getScaleNetForChildScale());
-//***** working on getting scale to efect posiiton correctly.
 		if(this._parent !== undefined){
 
 
@@ -759,11 +752,10 @@ p.getScaleNetForChildScale = function(){
 	this._scaleNet = this._scaleIgnoreParentScale ? this._scaleOriginal / this._parent.getScaleNetForChildPosition() : this._scaleNet;
 
 	if(this._scaleUniformOnly === true){
-		var larger = this._scaleNet.x > this._scaleNet.y ? this._scaleNet.x : this._scaleNet.y;
+		var larger = (this._scaleNet.x > this._scaleNet.y) ? this._scaleNet.x : this._scaleNet.y;
 
 		this._scaleNet = new HHgVector2(larger, larger);
 	}
-
 
 	return this._scaleNet;
 }
@@ -771,14 +763,17 @@ p.getScaleNetForChildScale = function(){
 p.getScaleNetForChildPosition = function(){
 
 	if(this._parent.isGameHolder === true){
+		if(this.test = "testOne"){
+			console.log(this._scaleOriginal.pretty());
+		}
 		return this._scaleOriginal;
 	}
+
 	return this.getScaleNetForChildScale();
 
 }
 
 p.getScaleNetForMyPosition = function(){
-
 
 	if(this._parent !== undefined){
 		return this._parent.getScaleNetForChildScale();
@@ -902,12 +897,19 @@ p.doNotifySceneOfUpdates = function(){
 			return;
 		}
 
+		if(props === undefined){
+			props = {};
+		}
+
 		if(props.parent === "stop"){
 			HHgScene.doAddThisHolder(this);
 			return;
 		}
 
-		HHg.returnPositionProps(props, HHg0Vector);
+		props.position = HHg.returnPositionProps(props, HHg0Vector);
+		if(props.position === undefined){
+			props.position = HHg0Vector;
+		}
 
 		if(this._parent === undefined){
 			HHgScene.doAddThisHolder(this);
