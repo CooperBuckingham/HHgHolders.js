@@ -1,10 +1,10 @@
 var HHgColorRGBA = function(props){
 	var temp, that = this;
 
-this.A;
-this.R;
-this.G;
-this.B;
+	this.A;
+	this.R;
+	this.G;
+	this.B;
 
 	this.setRGBA = function(props){
 		props = HHg.returnColorProps(props);
@@ -43,58 +43,65 @@ this.B;
 	};
 
 
-		if(arguments.length > 1){
+	if(arguments.length > 1){
 
-			this.R = arguments[0];
-			this.G = arguments[1];
-			this.B = arguments[2];
-			arguments[3] !== undefined ? this.A = arguments[3] : this.A = 1.0;
+		this.R = arguments[0];
+		this.G = arguments[1];
+		this.B = arguments[2];
+		arguments[3] !== undefined ? this.A = arguments[3] : this.A = 1.0;
 
 
-		}else{
+	}else{
 
-			this.setRGBA(props);
+		this.setRGBA(props);
 
-		}
+	}
+};
 
-	this.lighten = function(percent){
+(function(){
+	var p = HHgColorRGBA.prototype;
+
+
+
+	p.lighten = function(percent){
 		this.R*=percent; this.G*=percent; this.B*=percent;
 	}
-	this.darken = function(percent){
+	p.darken = function(percent){
 		if(percent < 0){
 			percent = 1 + percent;
 		}
 		this.R*=percent; this.G*=percent; this.B*=percent;
 	}
 
-	this.blendColorIn = function(color, percent){
+	p.blendColorIn = function(color, percent){
 		this.setRGBA( HHgColorHelper.blendRGBAColors(this, color, percent));
 	};
 
-	this.setToHexString = function(hex){
+	p.setToHexString = function(hex){
 		this.setRGBA(HHgColorHelper.getRGBfromHex(hex));
 
 	};
 
-	this.getHexString = function(){
+	p.getHexString = function(){
 		return HHgColorHelper.getHexFromRGB(this);
 	};
 
-	this.returnSimpleObject = function(){
+	p.returnSimpleObject = function(){
 		return {R: this.R, G: this.G, B: this.B, A: this.A};
 	};
 
 
-	this.returnCopy = function(){
+	p.returnCopy = function(){
 		return new HHgColor({R: this.R, G: this.G,B: this.B,A: this.A});
 	};
-	this.returnString = function(){
+	p.returnString = function(){
 		return "rgba(" + this.R + "," + this.G + "," + this.B + "," + this.A +")";
 	};
-	this.pretty = function(){
+	p.pretty = function(){
 		return this.returnString();
 	};
-};
+
+}());
 
 var HHgColorHSLA = function(props){
 	var temp;
@@ -106,7 +113,7 @@ var HHgColorHSLA = function(props){
 
 
 	this.setHSLA = function(props){
-			props = HHg.returnColorProps(props);
+		props = HHg.returnColorProps(props);
 
 		if(props.H !== undefined){
 			this.H = props.H
@@ -141,59 +148,63 @@ var HHgColorHSLA = function(props){
 
 	};
 
-		if(arguments.length > 1){
+	if(arguments.length > 1){
 
-			this.H = arguments[0];
-			this.S = arguments[1];
-			this.L = arguments[2];
-			arguments[3] !== undefined ? this.A = arguments[3] : this.A = 1.0;
+		this.H = arguments[0];
+		this.S = arguments[1];
+		this.L = arguments[2];
+		arguments[3] !== undefined ? this.A = arguments[3] : this.A = 1.0;
 
-		}else{
+	}else{
 
-			this.setHSLA(props);
+		this.setHSLA(props);
 
-		};
+	};
+};
+
+(function(){
 
 
-	this.lighten = function(percent){
+	var p = HHgColorHSLA.prototype;
+
+	p.lighten = function(percent){
 		this.L*=percent;
 	}
-	this.darken = function(percent){
+	p.darken = function(percent){
 		if(percent < 0){
 			percent = 1 + percent;
 		}
 		this.L*=percent;
 	}
 
-	this.blendColorIn = function(color, percent){
+	p.blendColorIn = function(color, percent){
 		this.setHSLA(HHgColorHelper.blendHSLAColors(this,color,percent));
 	};
 
-	this.setToHexString = function(hex){
+	p.setToHexString = function(hex){
 		this.setHSLA(HHgColorHelper.getHSLfromHex(hex));
 
 	};
 
-	this.getHexString = function(){
+	p.getHexString = function(){
 		return HHgColorHelper.getHexFromRGB(this);
 	};
 
-	this.returnSimpleObject = function(){
+	p.returnSimpleObject = function(){
 		return {H: this.H, S: this.S, L: this.L, A: this.A};
 	};
 
-
-	this.returnCopy = function(){
+	p.returnCopy = function(){
 		return new HHgColor({H: this.H, S: this.S,L: this.L,A: this.A});
 	};
-	this.returnString = function(){
+	p.returnString = function(){
 		return "hsla(" + this.H + ", " + (100 * this.S) + "%, " + (100 * this.L) + "%, " + this.A +")";
 	};
-	this.pretty = function(){
+	p.pretty = function(){
 		return this.returnString();
 	};
 
-};
+})();
 
 var HHgColorHelper = {};
 
@@ -212,30 +223,30 @@ var HHgColorHelper = {};
 		s = (s > 1.0) ? 1.0 : s; s = (s < 0) ? 0 : s;
 		l = (l > 1.0) ? 1.0 : l; l = (l < 0) ? 0 : l;
 
-	    if(s == 0){
-	        R = G = B = l;
-	    }else{
-	        function convertHtoRGB(p, q, t){
-	            if(t < 0) t += 1;
-	            if(t > 1) t -= 1;
-	            if(t < 1/6) return p + (q - p) * 6 * t;
-	            if(t < 1/2) return q;
-	            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-	            return p;
-	        }
+		if(s == 0){
+			R = G = B = l;
+		}else{
+			function convertHtoRGB(p, q, t){
+				if(t < 0) t += 1;
+				if(t > 1) t -= 1;
+				if(t < 1/6) return p + (q - p) * 6 * t;
+				if(t < 1/2) return q;
+				if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+				return p;
+			}
 
-	        val1 = (l < 0.5) ? l * (1 + s) : l + s - l * s;
-	        val2 = 2 * l - val1;
-	        R = convertHtoRGB(val2, val1, h + 1/3) * 255;
-	        G = convertHtoRGB(val2, val1, h) * 255;
-	        B = convertHtoRGB(val2, val1, h - 1/3) * 255;
-	    }
+			val1 = (l < 0.5) ? l * (1 + s) : l + s - l * s;
+			val2 = 2 * l - val1;
+			R = convertHtoRGB(val2, val1, h + 1/3) * 255;
+			G = convertHtoRGB(val2, val1, h) * 255;
+			B = convertHtoRGB(val2, val1, h - 1/3) * 255;
+		}
 
-	    if(a === undefined){
-	    	a = 1;
-	    }
+		if(a === undefined){
+			a = 1;
+		}
 
-	    return new HHgColorRGBA(R, G, B, a);
+		return new HHgColorRGBA(R, G, B, a);
 	};
 
 	that.getHSLfromRGB = function(r, g, b, a){
@@ -248,30 +259,30 @@ var HHgColorHelper = {};
 		g = (g > 255) ? 255 : g; g = (g < 0) ? 0 : g;
 		b = (b > 255) ? 255 : b; b = (b < 0) ? 0 : b;
 
-	    r /= 255; g /= 255; b /= 255;
+		r /= 255; g /= 255; b /= 255;
 
-	    max = Math.max(r, g, b);
-	    min = Math.min(r, g, b);
-	    L = (max + min) / 2;
+		max = Math.max(r, g, b);
+		min = Math.min(r, g, b);
+		L = (max + min) / 2;
 
-	    if(max == min){
-	        H = S = 0;
-	    }else{
-	        val1 = max - min;
-	        S = (L > 0.5) ? val1 / (2 - max - min) : val1 / (max + min);
-	        switch(max){
-	            case r: H = (g - b) / val1 + (g < b ? 6 : 0); break;
-	            case g: H = (b - r) / val1 + 2; break;
-	            case b: H = (r - g) / val1 + 4; break;
-	        }
-	        H /= 6;
-	    }
+		if(max == min){
+			H = S = 0;
+		}else{
+			val1 = max - min;
+			S = (L > 0.5) ? val1 / (2 - max - min) : val1 / (max + min);
+			switch(max){
+				case r: H = (g - b) / val1 + (g < b ? 6 : 0); break;
+				case g: H = (b - r) / val1 + 2; break;
+				case b: H = (r - g) / val1 + 4; break;
+			}
+			H /= 6;
+		}
 
-	     if(a === undefined){
-	    		a = 1;
-	    	}
+		if(a === undefined){
+			a = 1;
+		}
 
-	    return new HHgColorHSLA(H * 360, S, L, a);
+		return new HHgColorHSLA(H * 360, S, L, a);
 	};
 
 	that.getHexFromHSL = function(h,s,l,a){

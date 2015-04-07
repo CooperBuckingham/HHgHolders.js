@@ -40,7 +40,7 @@ var HHgLoadingScreen = {};
 		var img = new Image();
 
 		img.crossOrigin = "Anonymous";
-		img.src = "../HHgEngine/testPool.png";
+		img.src = "testPool.png";
 
 		insideLoadingDiv.appendChild(canvas);
 

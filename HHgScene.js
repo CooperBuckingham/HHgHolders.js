@@ -404,7 +404,7 @@ function doAddFunctionsToScene(scene){
 	scene.doAddTextToCanvas = function(owner, props){
 
 		var ctx = owner.getCanvas().getContext("2d"), x, y, textWidth, textHeight, divWidth, divHeight;
-		console.log("debug");
+
 		var parentScale = owner.getScaleNetForChildScale().x;
 		textHeight = props.fontSize * parentScale;
 		ctx.font = "" + textHeight + "px " + props.font ;
@@ -640,6 +640,10 @@ function doAddFunctionsToScene(scene){
 
 		    var posX = posInCanvas.x;
 		    var posY = posInCanvas.y;
+		    if(holder.test === "testTwo"){
+		    	console.log(posInCanvas.pretty());
+		    }
+
 
 		    if(posX < left) return false;
 
@@ -802,7 +806,7 @@ function doAddFunctionsToScene(scene){
 				return 255*(1 - 2*(1-a)*(1-b));
 			}
 
-			console.log(color);
+
 
 			for(var i = 0; i < imgData.data.length; i+=4){
 
