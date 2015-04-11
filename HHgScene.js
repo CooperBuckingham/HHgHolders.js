@@ -196,6 +196,7 @@ function doAddFunctionsToScene(scene){
 
           var adjustedPosition = holder.getPositionInScreenNet().minus(startPosition);
           adjustedPosition.dividedEquals(holder.getScaleOriginal());
+          adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
           console.log("actual final translate: " + adjustedPosition.pretty());
 
           transformString = transformString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
