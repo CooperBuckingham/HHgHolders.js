@@ -54,10 +54,10 @@ var HHgGame = {doStart: function(){
       theOne.doAddBorder(5);
       var rotate1 = theOne.makeAction("rotateBy", {rotation: 90, time: 5});
       var move1 = theOne.makeAction("moveBy", {positionX: 960, positionY: 540 , time: 5});
-      var scale1 = theOne.makeAction("scaleBy", {scale: 5, time: 2});
+      var scale1 = theOne.makeAction("scaleBy", {scale: 3, time: 2});
       //theOne.doStoredAction(rotate1);
       //theOne.doStoredAction(move1);
-      //theOne.doStoredAction(scale1);
+      theOne.doStoredAction(scale1);
 
 
       var theTwo = HHgGetHolder({w:100,h:100, test: "testTwo"});
@@ -66,14 +66,14 @@ var HHgGame = {doStart: function(){
       theTwo.setIsDraggable(true);
       //theTwo.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       theTwo.test = "testTwo";
-      theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
-      //theTwo.doAddSprite("pool");
+      //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
+      theTwo.doAddSprite("pool");
       var rotate = theTwo.makeAction("rotateBy", {rotation: 180, time: 5});
       var move = theTwo.makeAction("moveTo", {positionX: -1920, positionY: -1080, time: 10});
       var scale = theTwo.makeAction("scaleBy", {scale: 2, time: 1});
       //theTwo.doStoredAction(rotate);
       //theTwo.doStoredAction(move);
-      //theTwo.doStoredAction(scale);
+      theTwo.doStoredAction(scale);
 
 
    console.log("HELLO USER! Custom override is on");
