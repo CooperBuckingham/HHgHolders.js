@@ -614,20 +614,25 @@ scene.doesHolderContainPoint = function(holder, xy){
 
   var mouseFinalRelative = mousePos.getVectorRotated(holderCenter, -1 * holder.getRotationNet());
 
-
+//still need to test with rotation
   var holderAbsoluteSize = new HHgVector2(holder.getWidthNet(), holder.getHeightNet());
   holderAbsoluteSize.dividedEquals(HHgPixelScale);
 
+  var holderBottomLeft = holderCenter.minus(holderAbsoluteSize.dividedBy(2))
+
+  mouseFinalRelative.minusEquals(holderBottomLeft); //this is just off by half the size
+
   if(holder.test === "testTwo"){
-    console.log("mouse final " + mouseFinalRelative.pretty());
-    console.log("adjusted size " + holderAbsoluteSize.pretty());
+    console.log("holder center: " + holderCenter.pretty());
+    console.log("holder bottom left: " + holderBottomLeft.pretty());
+     console.log("mouse final " + mouseFinalRelative.pretty());
+  //   console.log("adjusted size " + holderAbsoluteSize.pretty());
   }
 
   var left = 0;
   var right = holderAbsoluteSize.x;
-
-  var top = holderAbsoluteSize.y;
   var bottom = 0;
+  var top = holderAbsoluteSize.y;
 
   var posX = mouseFinalRelative.x;
   var posY = mouseFinalRelative.y;
@@ -640,9 +645,9 @@ if(posY > top) return false;
 
 if(posY < bottom) return false;
 
-if(holder.test === "testTwo"){
-  console.log("in holder");
-}
+// if(holder.test === "testTwo"){
+//   console.log("in holder");
+// }
 
 if(canvas !== undefined){
 
@@ -656,10 +661,9 @@ if(canvas !== undefined){
   if( isAlphaPixel(canvas, mouseFinalRelative.x, mouseFinalRelative.y ) ) return false;
 
 }
-console.log("IS NOT ALPHA");
+// console.log("IS NOT ALPHA");
 
 return true;
-
 
 };
 
@@ -797,8 +801,6 @@ function tintCanvasByOverlay(canvas, color){
 
     return 255*(1 - 2*(1-a)*(1-b));
   }
-
-
 
   for(var i = 0; i < imgData.data.length; i+=4){
 
