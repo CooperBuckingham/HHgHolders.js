@@ -57,7 +57,7 @@ var HHgGame = {doStart: function(){
       var scale1 = theOne.makeAction("scaleBy", {scale: 5, time: 2});
       //theOne.doStoredAction(rotate1);
       //theOne.doStoredAction(move1);
-      theOne.doStoredAction(scale1);
+      //theOne.doStoredAction(scale1);
 
 
       var theTwo = HHgGetHolder({w:100,h:100, test: "testTwo"});

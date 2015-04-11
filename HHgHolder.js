@@ -1318,19 +1318,25 @@ p.doStartMouseMove = function(){
 
   this.setPositionStored();
   this.isBeingDragged = true;
+  console.log("MOUSE START");
 
 
 }
 
 p.doMouseMove = function(){
-//console.log(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY).pretty());
-this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
-
+  //console.log(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY).pretty());
+  this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
+  if(this.test = "testTwo"){
+  console.log("MOUSE MOVE " + this._positionInScreenOriginal.pretty());
+}
 }
 
 p.doEndMouseMove = function(){
 
   this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
+  if(this.test = "testTwo"){
+    console.log("MOUSE END: " + this._positionInScreenOriginal.pretty());
+  }
   this.isBeingDragged = false;
 //this.doRemoveActionByName("mousemoverotate");
 }

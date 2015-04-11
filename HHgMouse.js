@@ -1,7 +1,5 @@
 
 
-
-
 var HHgMouse = {};
 
 (function(){
@@ -21,8 +19,6 @@ var HHgMouse = {};
 	that.lastFrameTime;
 	that.thisFrameTime;
 	that.mouseCircle;
-
-
 
 	that.doStart = function(){
 
