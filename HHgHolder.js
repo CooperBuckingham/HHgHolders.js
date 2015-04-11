@@ -591,7 +591,6 @@ p.setPositionInScreenAbsolute = function(props){
 this.framePositionAbsolute(HHg.returnPositionProps(props));
 }
 
-
 p.getPositionInScreenOriginal = function(){
 
   return this._positionInScreenOriginal;
@@ -612,7 +611,6 @@ p.getPositionInScreenNet = function(){
 
 p.setPositionInParentTo = function(props)
 {
-
   this._positionInParentOriginal = HHg.returnPositionProps(props);
 
   this.doNotifySceneOfUpdates();
@@ -620,8 +618,6 @@ p.setPositionInParentTo = function(props)
   this.resetFramePositionUpdates();
 
   this.updatePositionFromParentMove();
-
-
 }
 
 p.updatePositionFromParentMove = function(){
@@ -1327,7 +1323,7 @@ p.doMouseMove = function(){
   //console.log(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY).pretty());
   this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
   if(this.test = "testTwo"){
-  console.log("MOUSE MOVE " + this._positionInScreenOriginal.pretty());
+  //console.log("MOUSE MOVE " + this._positionInScreenOriginal.pretty());
 }
 }
 
@@ -1335,7 +1331,7 @@ p.doEndMouseMove = function(){
 
   this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
   if(this.test = "testTwo"){
-    console.log("MOUSE END: " + this._positionInScreenOriginal.pretty());
+    //console.log("MOUSE END: " + this._positionInScreenOriginal.pretty());
   }
   this.isBeingDragged = false;
 //this.doRemoveActionByName("mousemoverotate");
