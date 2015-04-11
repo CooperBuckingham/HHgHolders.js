@@ -137,7 +137,6 @@ function doAddFunctionsToScene(scene){
   scene.doAddToDirtyList = function(holder){
     scene._dirtyHolders[holder.getHash()] = holder;
   };
-
   scene.doUpdateHolderMouseable = function(holder){
     holder.getMouseable() ? holder.getDiv().classList.add("mouseable") : holder.getDiv().classList.remove("mouseable");
   };
@@ -186,18 +185,20 @@ function doAddFunctionsToScene(scene){
         tintCanvasByFill( holder.getCanvas(), holder.getTintRGBA().returnString() );
       }
 
+      //=============== Begin conditional for transform types
       if(HHgTransformsOnly && holder.firstUpdate === true){
         if(changes.scale === true || changes.rotation === true || changes.position === true ){
 
-          transformString = "scale(" + ( holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + Math.round(holder.getHeightNet() / parseFloat(div.style.height) ) + ") ";
+          transformString = "scale(" + ( holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + (holder.getHeightNet() / parseFloat(div.style.height) ) + ") ";
           transformString = transformString + "rotate(" + holder.getRotationNet() + "deg" +") ";
-          var adjustedPosition = holder.getPositionInScreenNet();
-          //temp test for transform position
-          transformString = transformString + "translate(" + adjustedPosition.x + "px, " + adjustedPosition.y + "px) ";
 
-          var adjustedPosition = holder.getPositionInScreenNet();
-          div.style.left ="" + adjustedPosition.x + "px";
-          div.style.bottom ="" + adjustedPosition.y + "px";
+          var startPosition = holder._startPositionForTranslate;
+
+          var adjustedPosition = holder.getPositionInScreenNet().minus(startPosition);
+          adjustedPosition.dividedEquals(holder.getScaleOriginal());
+          console.log("actual final translate: " + adjustedPosition.pretty());
+
+          transformString = transformString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
         }
         /*
         var testTranslate = holder.getPositionInScreenNet();
@@ -226,18 +227,17 @@ function doAddFunctionsToScene(scene){
           }
         }
         if(changes.position === true){
-
           var adjustedPosition = holder.getPositionInScreenNet();
-          //var testAdjust = holder.returnHalfSizeVector();
-          //adjustedPosition.minusEquals(testAdjust);
           div.style.left ="" + adjustedPosition.x +"px";
           div.style.bottom ="" + adjustedPosition.y + "px";
+          holder._startPositionForTranslate = adjustedPosition;
         }
         if(changes.rotation === true){
-          //div.style.transform="rotate(" + HHg.roundNumToPlaces(holder.getRotationNet(), 2) +"deg" +")";
+
           transformString = transformString + "rotate(" + holder.getRotationNet() +"deg" +")";
         }
       }
+      //======== END Conditional for transform types
 
       if(transformString){
         div.style.transform = transformString;
