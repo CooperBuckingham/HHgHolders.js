@@ -54,10 +54,10 @@ var HHgGame = {doStart: function(){
       theOne.doAddBorder(5);
       var rotate1 = theOne.makeAction("rotateBy", {rotation: 90, time: 5});
       var move1 = theOne.makeAction("moveBy", {positionX: 960, positionY: 540 , time: 5});
-      var scale1 = theOne.makeAction("scaleBy", {scale: 1, time: 2});
+      var scale1 = theOne.makeAction("scaleBy", {scale: 2, time: 2});
       //theOne.doStoredAction(rotate1);
       //theOne.doStoredAction(move1);
-      //theOne.doStoredAction(scale1);
+      theOne.doStoredAction(scale1);
 
 
       var theTwo = HHgGetHolder({w:100,h:100, test: "testTwo"});
@@ -70,7 +70,7 @@ var HHgGame = {doStart: function(){
       theTwo.doAddSprite("pool");
       var rotate = theTwo.makeAction("rotateBy", {rotation: 180, time: 5});
       var move = theTwo.makeAction("moveTo", {positionX: -1920, positionY: -1080, time: 10});
-      var scale = theTwo.makeAction("scaleBy", {scale: 10, time: 1});
+      var scale = theTwo.makeAction("scaleBy", {scale: 2, time: 1});
       //theTwo.doStoredAction(rotate);
       //theTwo.doStoredAction(move);
       theTwo.doStoredAction(scale);
