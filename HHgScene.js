@@ -191,32 +191,12 @@ function doAddFunctionsToScene(scene){
 
           transformString = "scale(" + ( holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + (holder.getHeightNet() / parseFloat(div.style.height) ) + ") ";
           transformString = transformString + "rotate(" + holder.getRotationNet() + "deg" +") ";
+          //this is the replacement translate system
+          var adjustedPosition = holder.getPositionInScreenNet().minus(holder._startPositionForTranslate);
+          adjustedPosition.dividedEquals(holder.getScaleOriginal());
+          adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
 
-          var useTransform = true;
-
-          if(useTransform){
-            var startPosition = holder._startPositionForTranslate;
-            var adjustedPosition = holder.getPositionInScreenNet().minus(startPosition);
-            //with this line out, child workds perfectly, but parent is all over the place
-            adjustedPosition.dividedEquals(holder.getScaleOriginal());
-            //adjustedPosition.timesEquals(HHgPixelScale);
-            adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
-
-            // if(holder.getParent().test !== "gameHolder"){
-            //   adjustedPosition.dividedEquals(holder.getParent().getScaleOriginal());
-            //    //adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
-            // }else{
-            //   adjustedPosition.timesEquals(HHgPixelScale);
-            // }
-
-            transformString = transformString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
-          }else{
-            var adjustedPosition = holder.getPositionInScreenNet();
-            div.style.left ="" + adjustedPosition.x +"px";
-            div.style.bottom ="" + adjustedPosition.y + "px";
-          }
-
-
+          transformString = transformString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
         }
       }else{
         holder.firstUpdate = true;
@@ -238,7 +218,6 @@ function doAddFunctionsToScene(scene){
           holder._startPositionForTranslate = adjustedPosition;
         }
         if(changes.rotation === true){
-
           transformString = transformString + "rotate(" + holder.getRotationNet() +"deg" +")";
         }
       }
