@@ -631,7 +631,7 @@ this._positionInScreenOriginal = this._positionInParentOriginal;
 
 
 if(this._parent !== undefined){
-
+  console.log("parent update");
   this._positionInScreenOriginal = this._positionInScreenOriginal.times(this._parent.getScaleNetForChildPosition());
 
   this._positionInScreenOriginal = this._parent.getPositionInScreenOriginal().plus(this._positionInScreenOriginal);
@@ -665,7 +665,7 @@ p.convertOriginalToNetPosition = function(){
 this._positionInScreenNet = this._positionInScreenOriginal.times(HHgGameHolder.getScaleNetForChildScale());
 this._positionInScreenNet = this._positionInScreenNet.plus(HHgGameHolder.returnHalfSizeVector());
 
-
+//***parent scale is affecting child movement proportionately, is that because of this? //maybe in move by parent, but no
 this._positionInScreenNet.minusEquals(this._sizeOriginalHalf.times(HHgPixelScale));
 
 if(this._parent !== undefined){
@@ -715,26 +715,14 @@ p.getScaleOriginal = function(){
 }
 
 p.setScaleOriginalTo = function(props){
-
-
   this.frameScaleTo(HHg.returnScaleProps(props));
-
-
 }
 
 p.setScaleOriginalBy = function(props){
-
-
   this.frameScaleBy( HHg1Vector.subtractedFrom(HHg.returnScaleProps(props)) ) ;
-
-
 }
 p.setScaleOriginalByActionFraction = function(props){
-
-
   this.frameScaleBy(HHg.returnScaleProps(props).plus(HHg1Vector));
-
-
 }
 
 p.getScaleNetForChildScale = function(){
