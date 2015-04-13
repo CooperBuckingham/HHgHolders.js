@@ -192,28 +192,32 @@ function doAddFunctionsToScene(scene){
           transformString = "scale(" + ( holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + (holder.getHeightNet() / parseFloat(div.style.height) ) + ") ";
           transformString = transformString + "rotate(" + holder.getRotationNet() + "deg" +") ";
 
-          var startPosition = holder._startPositionForTranslate;
+          var useTransform = true;
 
-          var adjustedPosition = holder.getPositionInScreenNet().minus(startPosition);
-          adjustedPosition.dividedEquals(holder.getScaleOriginal());
-          adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
-          console.log("actual final translate: " + adjustedPosition.pretty());
+          if(useTransform){
+            var startPosition = holder._startPositionForTranslate;
+            var adjustedPosition = holder.getPositionInScreenNet().minus(startPosition);
+            //with this line out, child workds perfectly, but parent is all over the place
+            adjustedPosition.dividedEquals(holder.getScaleOriginal());
+            //adjustedPosition.timesEquals(HHgPixelScale);
+            adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
 
-          transformString = transformString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
+            // if(holder.getParent().test !== "gameHolder"){
+            //   adjustedPosition.dividedEquals(holder.getParent().getScaleOriginal());
+            //    //adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
+            // }else{
+            //   adjustedPosition.timesEquals(HHgPixelScale);
+            // }
+
+            transformString = transformString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
+          }else{
+            var adjustedPosition = holder.getPositionInScreenNet();
+            div.style.left ="" + adjustedPosition.x +"px";
+            div.style.bottom ="" + adjustedPosition.y + "px";
+          }
+
+
         }
-        /*
-        var testTranslate = holder.getPositionInScreenNet();
-        testTranslate = testTranslate.returnVectorSubtractedFromVector( new HHgVector2(parseFloat(div.style.left), parseFloat(div.style.bottom)) );
-        testTranslate.timesEquals(holder.getScaleNetForChildScale());
-        transformString = transformString + "translate(" + testTranslate.x + "px," + testTranslate.y + "px)"
-        */
-
-        //testTranslate.minusEquals(holder.returnHalfSizeVector());
-        /*
-        if(holder.paragraph !== undefined){
-        holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
-        }
-        */
       }else{
         holder.firstUpdate = true;
         if(changes.scale === true ){
