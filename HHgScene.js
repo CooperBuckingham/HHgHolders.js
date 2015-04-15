@@ -190,19 +190,13 @@ function doAddFunctionsToScene(scene){
       if(holder.firstUpdate !== true){
          holder.firstUpdate = true;
          holder.setPaused(false);
-        //if(changes.scale === true ){
+
           div.style.width = "" + holder.getWidthNet() + "px";
           div.style.height = "" + holder.getHeightNet() + "px";
-          //insideDiv.style.width = "" + holder.getWidthNet() + "px";
-          //insideDiv.style.height = "" + holder.getHeightNet() + "px";
-        //}
-        //if(changes.position === true){
-          //change this to start position
+
           div.style.left ="" + holder._startPositionForTranslate.x +"px";
           div.style.bottom ="" + holder._startPositionForTranslate.y + "px";
 
-        //}
-          //these now are just used on init
           if(holder.paragraph !== undefined){
             holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
           }
@@ -212,16 +206,12 @@ function doAddFunctionsToScene(scene){
       }
 
       //=============== Begin conditional for transform types
-      //if(HHgTransformsOnly && holder.firstUpdate === true){
         if(changes.scale === true || changes.rotation === true || changes.position === true ){
 
-          //insideTransformString = "scale(" + ( holder.getWidthNet() /  parseFloat(insideDiv.style.width) ) + "," + (holder.getHeightNet() / parseFloat(insideDiv.style.height) ) + ") ";
           outsideTransformString = "scale(" + ( holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + (holder.getHeightNet() / parseFloat(div.style.height) ) + ") ";
-          insideTransformString = insideTransformString + "rotate(" + holder.getRotationNet() + "deg" +") ";
-          //this is the replacement translate system
+          //outsideTransformString = outsideTransformString + "rotate(" + holder.getParent().getRotationOriginal() + "deg" +") ";
+          insideTransformString = insideTransformString + "rotate(" + holder.getRotationOriginal() + "deg" +") ";
 
-          //currently, the last chunk of an action doesn't get called, so at low frame rate, the object misses by alot
-          //
           var adjustedPosition = holder.getPositionInScreenNet().minus(holder._startPositionForTranslate);
           adjustedPosition.dividedEquals(holder.getScaleOriginal());
           adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
@@ -229,7 +219,6 @@ function doAddFunctionsToScene(scene){
           outsideTransformString = outsideTransformString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
           //outsideTransformString = outsideTransformString + "translate3d(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px, 0px) ";
         }
-     // }
       //======== END Conditional for transform types
 
       if(outsideTransformString){

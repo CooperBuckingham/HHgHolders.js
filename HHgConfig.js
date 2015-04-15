@@ -26,8 +26,9 @@ if(HHgOrientationLandscape){
     };
 }
 
-var HHgTransformsOnly = true;
 var HHgHoldCanvasUpresScaleBy = 2;
+var HHgForceHardwareRendering = false; //this will improve performance for some situations, like tranlating position
+//NOTE: but note that it will cause elements like "borders" and "fonts", to scale as rasterized images.
 
 var HHgTestBoxes = false;
 
@@ -68,9 +69,9 @@ var HHgGame = {doStart: function(){
       theOne.test = "testone";
       theOne.doMakeRectangle({borderRadius: 15, color: "green"});
       theOne.doAddBorder(5);
-      var rotate1 = theOne.makeAction("rotateBy", {rotation: 720, time: 10});
+      var rotate1 = theOne.makeAction("rotateBy", {rotation: 360, time: 5});
       var move1 = theOne.makeAction("moveBy", {positionX: 480, positionY: 270 , time: .1});
-      var scale1 = theOne.makeAction("scaleBy", {scale:4, time: 10});
+      var scale1 = theOne.makeAction("scaleBy", {scale:2, time: 5});
       theOne.doStoredAction(rotate1);
       //theOne.doStoredAction(move1);
       theOne.doStoredAction(scale1);
@@ -83,12 +84,12 @@ var HHgGame = {doStart: function(){
       theTwo.test = "testTwo";
       //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
       theTwo.doAddSprite("pool");
-      var rotate = theTwo.makeAction("rotateBy", {rotation: 45, time: 1});
+      var rotate = theTwo.makeAction("rotateBy", {rotation: 180, time: 5});
       var move = theTwo.makeAction("moveBy", {positionX: -480, positionY: -270, time: 3});
-      var scale = theTwo.makeAction("scaleBy", {scale:2, time: 1});
-      //theTwo.doStoredAction(rotate);
+      var scale = theTwo.makeAction("scaleBy", {scale:.5, time: 5});
+      theTwo.doStoredAction(rotate);
       //theTwo.doStoredAction(move);
-      //theTwo.doStoredAction(scale);
+      theTwo.doStoredAction(scale);
 
       //setTimeout(theOne.doStoredAction.bind(theOne, scale1), 1000);
       // setTimeout(theTwo.doStoredAction.bind(theTwo, scale), 3000);

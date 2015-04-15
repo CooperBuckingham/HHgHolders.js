@@ -34,8 +34,6 @@ var HHg = {
 
 	},
 
-	returnRandomIntLowIncHighExcl : this.returnRandomInt,
-
 	doRemoveThingFromArray: function(arr,thing){
 	for(var i = 0; i < arr.length; i++){
 		if(arr[i] === thing){

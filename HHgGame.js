@@ -44,7 +44,7 @@
 
 			var randomSprite = function(holder){
 
-				var int1 = HHg.returnRandomIntLowIncHighExcl(0,3);
+				var int1 = HHg.returnRandomInt(0,3);
 				var name = "orange";
 				if(int1 === 0){
 					name = "soccer";
@@ -57,13 +57,13 @@
 
 			for(var i = 0; i < 25; i++){
 
-				var size = HHg.returnRandomIntLowIncHighExcl(60,220);
+				var size = HHg.returnRandomInt(60,220);
 
-				var posx = HHg.returnRandomIntLowIncHighExcl(-1000,1000);
-				var posy = HHg.returnRandomIntLowIncHighExcl(-500,500);
+				var posx = HHg.returnRandomInt(-1000,1000);
+				var posy = HHg.returnRandomInt(-500,500);
 				var testBall = HHgGetHolder({w:size,h:size});
 
-				testBall.doMoveToNewParent( {parent: listOfHolders[ HHg.returnRandomIntLowIncHighExcl(0, listOfHolders.length) ] , position: new HHgVector2(posx, posy) });
+				testBall.doMoveToNewParent( {parent: listOfHolders[ HHg.returnRandomInt(0, listOfHolders.length) ] , position: new HHgVector2(posx, posy) });
 				randomSprite(testBall);
 				testBall.setMouseable(true);
 				testBall.setIsDraggable(true);
