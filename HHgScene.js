@@ -167,64 +167,73 @@ function doAddFunctionsToScene(scene){
     }
     var newList = scene._finalDirtyHolders;
     scene._finalDirtyHolders = {};
-    var transformString = "";
+    var outsideTransformString = "";
+    var insideTransformString = "";
 
-    var holder, div, changes;
+    var holder, div, insideDiv, changes;
     for(var thing in newList){
       holder = newList[thing];
 
       if(holder.getDiv() === undefined) return;
 
       div = holder.getDiv();
+      insideDiv = holder.getInsideDiv();
       changes = holder.changes;
 
       if(changes.backgroundColor === true){
-        div.style.backgroundColor = holder.getBackgroundColor().returnString();
+        insideDiv.style.backgroundColor = holder.getBackgroundColor().returnString();
       }
       if(changes.tint === true){
         tintCanvasByFill( holder.getCanvas(), holder.getTintRGBA().returnString() );
       }
 
-      //=============== Begin conditional for transform types
-      if(HHgTransformsOnly && holder.firstUpdate === true){
-        if(changes.scale === true || changes.rotation === true || changes.position === true ){
 
-          transformString = "scale(" + ( holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + (holder.getHeightNet() / parseFloat(div.style.height) ) + ") ";
-          transformString = transformString + "rotate(" + holder.getRotationNet() + "deg" +") ";
-          //this is the replacement translate system
-          var adjustedPosition = holder.getPositionInScreenNet().minus(holder._startPositionForTranslate);
-          adjustedPosition.dividedEquals(holder.getScaleOriginal());
-          adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
-
-          transformString = transformString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
-        }
-      }else{
-        holder.firstUpdate = true;
-        if(changes.scale === true ){
+      if(holder.firstUpdate !== true){
+         holder.firstUpdate = true;
+         holder.setPaused(false);
+        //if(changes.scale === true ){
           div.style.width = "" + holder.getWidthNet() + "px";
           div.style.height = "" + holder.getHeightNet() + "px";
+        //}
+        //if(changes.position === true){
+          //change this to start position
+          div.style.left ="" + holder._startPositionForTranslate.x +"px";
+          div.style.bottom ="" + holder._startPositionForTranslate.y + "px";
 
+        //}
+          //these now are just used on init
           if(holder.paragraph !== undefined){
             holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
           }
           if(holder.borderWidthOriginal > 0){
             div.style.borderWidth = "" + holder.borderWidthScaled + "px";
           }
-        }
-        if(changes.position === true){
-          var adjustedPosition = holder.getPositionInScreenNet();
-          div.style.left ="" + adjustedPosition.x +"px";
-          div.style.bottom ="" + adjustedPosition.y + "px";
-          holder._startPositionForTranslate = adjustedPosition;
-        }
-        if(changes.rotation === true){
-          transformString = transformString + "rotate(" + holder.getRotationNet() +"deg" +")";
-        }
       }
+
+      //=============== Begin conditional for transform types
+      //if(HHgTransformsOnly && holder.firstUpdate === true){
+        if(changes.scale === true || changes.rotation === true || changes.position === true ){
+
+          outsideTransformString = "scale(" + ( holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + (holder.getHeightNet() / parseFloat(div.style.height) ) + ") ";
+          insideTransformString = "rotate(" + holder.getRotationNet() + "deg" +") ";
+          //this is the replacement translate system
+
+          //currently, the last chunk of an action doesn't get called, so at low frame rate, the object misses by alot
+          //
+          var adjustedPosition = holder.getPositionInScreenNet().minus(holder._startPositionForTranslate);
+          adjustedPosition.dividedEquals(holder.getScaleOriginal());
+          adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
+
+          outsideTransformString = outsideTransformString + "translate3d(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px, 0px) ";
+        }
+     // }
       //======== END Conditional for transform types
 
-      if(transformString){
-        div.style.transform = transformString;
+      if(outsideTransformString){
+        div.style.transform = outsideTransformString;
+      }
+      if(insideTransformString){
+        insideDiv.style.transform = insideTransformString;
       }
 
       if(changes.zIndex === true){
@@ -265,15 +274,26 @@ function doAddFunctionsToScene(scene){
     }
 
     var div = document.createElement("div");
+    var insideDiv = document.createElement("div");
     holder.setDiv(div);
+    holder.setInsideDiv(insideDiv);
     div.style.display ="inline-block";
     div.style.position = "absolute";
+    div.appendChild(insideDiv);
+    insideDiv.style.display="inline-block";
+    insideDiv.style.width ="100%";
+    insideDiv.style.height ="100%";
+    insideDiv.style.position = "absolute";
+    insideDiv.style.left = "0";
+    insideDiv.style.bottom = "0";
 
     if(HHgTestBoxes === true){
       div.style.border = "2px solid black";
+      //insideDiv.style.border = "2px solid blue";
     }
 
     div.id = holder.getHash();
+    insideDiv.id = holder.getHash() + "i";
     scene.addToFinalPassList(holder);
     scene._holders[div.id] = holder;
     HHgSceneDiv.appendChild(div);
@@ -283,7 +303,7 @@ function doAddFunctionsToScene(scene){
 
   scene.doAddTextDiv = function(owner, props){
     var parent = document.createElement("div");
-    owner.getDiv().appendChild(parent);
+    owner.getInsideDiv().appendChild(parent);
     var child = document.createElement("pre");
     parent.appendChild(child);
     var parentScale = owner.getScaleNetForChildScale().x;
@@ -569,7 +589,7 @@ function doAddFunctionsToScene(scene){
     //holder.getDiv().style.backgroundImage = "url(" + fileName +")";
     var img = new Image();
     img.src = fileName;
-    holder.getDiv().appendChild(img);
+    holder.getInsideDiv().appendChild(img);
   };
 
   scene.setCanvasImageForHolder = function(holder, fileName, whitePixelTintColor){
@@ -577,7 +597,7 @@ function doAddFunctionsToScene(scene){
     canvas.classList.add("canvasAsSprite");
     var ctx = canvas.getContext('2d');
     canvas.classList.add(holder.getHash());
-    var div = holder.getDiv();
+    var div = holder.getInsideDiv();
     canvas.width  = 2 * holder.getWidthNet();
     canvas.height = 2 * holder.getHeightNet();
     var color = whitePixelTintColor;
@@ -667,7 +687,7 @@ function doAddFunctionsToScene(scene){
         str += br[i];
       }
     }
-    holder.getDiv().style.borderRadius = str;
+    holder.getInsideDiv().style.borderRadius = str;
   };
 
   scene.maskShapeEllipse = function(props){
@@ -681,7 +701,7 @@ function doAddFunctionsToScene(scene){
       }
     }
 
-    holder.getDiv().style.borderRadius = str;
+    holder.getInsideDiv().style.borderRadius = str;
   };
 
   scene.maskShapeRectangle = function(props){
@@ -703,11 +723,11 @@ function doAddFunctionsToScene(scene){
         }
       }
     }
-    holder.getDiv().style.borderRadius = str;
+    holder.getInsideDiv().style.borderRadius = str;
   };
 
   scene.removeShape = function(holder){
-    holder.getDiv().style.borderRadius = 0;
+    holder.getInsideDiv().style.borderRadius = 0;
   };
 
   scene.addBorderToHolder = function(props){
@@ -717,7 +737,7 @@ function doAddFunctionsToScene(scene){
     }
     props.holder.borderWidthOriginal = bw;
     bw *= HHgPixelScale;
-    holder.getDiv().style.border = "" + bw + "px " + props.borderStyle + " " + props.color.returnString();
+    holder.getInsideDiv().style.border = "" + bw + "px " + props.borderStyle + " " + props.color.returnString();
   };
 };
 

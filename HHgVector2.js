@@ -5,24 +5,6 @@ function HHgVector2 (x,y){
 	this.that = this;
 };
 
-function Rectangle() {
-  this._animating = false;
-}
-
-Rectangle.prototype = Object.create(Rectangle.prototype, {
-  animating: {
-    get: function() {
-      console.log('Rectangle.prototype.animating get');
-      return this._animating;
-    },
-
-    set: function(value) {
-      console.log('Rectangle.prototype.animating set');
-      this._animating = value;
-    }
-  }
-});
-
 
 HHgVector2.prototype = Object.create(HHgVector2.prototype, {
 		x: {

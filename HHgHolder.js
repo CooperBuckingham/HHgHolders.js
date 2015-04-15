@@ -40,9 +40,10 @@ this._children;
 this._actions;
 this._clusters =[];
 this._sequences=[];
-this._paused;
+this._paused = true;
 
 this._div;
+this._insideDiv;
 
 this._hash = HHgHolderHashCont;
 this._timeStamp = +new Date();
@@ -73,7 +74,6 @@ this.isDraggable = false;
 this.isBeingDragged = false;
 
 this.test = "no";
-
 
 this.resetChanges = function(){
   this.changes = {
@@ -133,6 +133,8 @@ this.resetFrameUpdates();
   p.setPaused = function(bool){
 
     this._paused = bool;
+    if(this._children === undefined) return;
+
     for(var i =0; i < this._children.length; i++){
       this._children[i].setPaused(bool);
     }
@@ -347,7 +349,6 @@ p.setMouseable = function(mouseable){
   this._mouseable = mouseable;
   this.changes.mouseable = true;
   if(this._div){
-
     this.doNotifySceneOfUpdates();
   }
 
@@ -487,15 +488,18 @@ p.setZIndexBy = function(z, doNotUpdateChildren){
 
 p.setDiv = function(div){
   this._div = div;
-}
-
+};
 p.getDiv = function(){
   return this._div;
-}
-
+};
+p.setInsideDiv = function(insideDiv){
+  this._insideDiv = insideDiv;
+};
+p.getInsideDiv = function(insideDiv){
+  return this._insideDiv;
+};
 
 //============ POSITION ==================
-
 
 //EXPERIEMNT
 p.doRecalcPosition = function(){
@@ -575,7 +579,6 @@ p.setPositionToStored = function(){
   this.setPositionInScreenTo(this._positionStored);
 }
 
-
 p.setPositionInScreenTo = function(props){
 
   this.framePositionTo(HHg.returnPositionProps(props));
@@ -629,17 +632,12 @@ if(this.isBeingDragged === true){
 
 this._positionInScreenOriginal = this._positionInParentOriginal;
 
-
 if(this._parent !== undefined){
-  console.log("parent update");
   this._positionInScreenOriginal = this._positionInScreenOriginal.times(this._parent.getScaleNetForChildPosition());
-
   this._positionInScreenOriginal = this._parent.getPositionInScreenOriginal().plus(this._positionInScreenOriginal);
   this._positionInScreenOriginal = this._positionInScreenOriginal.getVectorRotated( this._parent.getPositionInScreenOriginal() , -1 * this._parent.getRotationNet() );
 
-
   this.convertOriginalToNetPosition();
-
 
 }
 
@@ -708,7 +706,6 @@ p.setScaleToStored = function(){
 p.returnHalfSizeVector = function(){
   return new HHgVector2(this.getHalfWidth(), this.getHalfHeight());
 }
-
 
 p.getScaleOriginal = function(){
   return this._scaleOriginal;
@@ -825,7 +822,6 @@ if(this._parent !== undefined){
 
 this.changes.rotation = true;
 
-
 if(this._children){
   HHg.doForEach(this._children, function(child){
     child.doRecalcRotation();
@@ -903,6 +899,9 @@ this._parent.doAddChild(this);
 
 this.setRotationOriginalBy(this._rotationOriginal);
 this.setScaleOriginalBy(HHg1Vector);
+
+this.setPositionInScreenTo(new HHgVector2(0,0));
+this._startPositionForTranslate = this._positionInScreenNet;
 
 if(HHg.returnIsScreenPosProps(props)){
   this._positionInScreenOriginal = props.position;

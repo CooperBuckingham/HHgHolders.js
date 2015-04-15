@@ -1,5 +1,6 @@
 var HHgForce30FPS = false; //these are for testing only, as they bypass the animationframe loop
 var HHgForce15FPS = false;
+var HHgForce5FPS = false;
 var HHgPaused = false;
 var HHgTempHolder;
 var HHgTempAction;
@@ -63,60 +64,54 @@ var HHgActionManager = {
 })();
 
 
-
-
-
-
-
 HHgActionManager.actionLoop = function( animateActions ) {
 
-    var lastFrameTime = window.performance.now();
+    var lastFrameTime;
     var deltaT;
     var lowEnd = 1; //1 //.01
-    var highEnd = 40; //160
+    var highEnd = 160; //160
 
     function recurse( thisFrameTime ) {
 
         window.requestAnimationFrame(recurse);
 
-        thisFrameTime = thisFrameTime && thisFrameTime > 480 ? thisFrameTime : window.performance.now();
+        thisFrameTime = thisFrameTime && thisFrameTime > 5000 ? thisFrameTime : window.performance.now();
+        lastFrameTime = lastFrameTime || thisFrameTime;
 
         deltaT = thisFrameTime - lastFrameTime;
 
-
-        if ( deltaT >  highEnd){
+        if (deltaT >  highEnd){
           deltaT = highEnd;
         }
 
         if(deltaT > lowEnd){
-
           animateActions(deltaT);
           lastFrameTime = thisFrameTime;
         }
 
-  }
+    }
   recurse();
 
 };
 
-
-
-
 HHgActionManager.doStart = function(){
   var i;
 
-  if(HHgForce30FPS || HHgForce15FPS){
+  if(HHgForce30FPS || HHgForce15FPS || HHgForce5FPS){
     var interval = 1.0 / 30.0,
         frameInterval = interval * 1000.0;
 
-
-    if(HHgForce15FPS){
+   if(HHgForce15FPS){
       interval = 1.0 / 15.0;
       frameInterval = interval * 1000.0;
     }
 
-    window.setInterval(function(){
+    if(HHgForce5FPS){
+      interval = 1.0 / 5.0;
+      frameInterval = interval * 1000.0;
+    }
 
+    window.setInterval(function(){
 
        if(!HHgPaused){
 
@@ -125,7 +120,6 @@ HHgActionManager.doStart = function(){
         HHgScene.doEndOfFrame();
         HHgScene.doUpdateHolders();
        }
-
 
     }, frameInterval );
 

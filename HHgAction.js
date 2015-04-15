@@ -100,7 +100,6 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 			return;
 		}
 
-
 		if(this.timeSoFar < this.easeInTime){
 
 			this.deltaPercent = this.easeInPercent * ( deltaT/this.easeInTime * ( this.timeSoFar/this.easeInTime ) );
@@ -109,7 +108,6 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 		}else if(this.timeSoFar > this.totalTime - this.easeOutTime ){
 
 			this.deltaPercent = this.easeOutPercent * ( deltaT/this.easeOutTime * ( (this.totalTime - this.timeSoFar)/this.easeOutTime) );
-
 
 		}else{
 
