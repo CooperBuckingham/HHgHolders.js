@@ -791,7 +791,6 @@ p.setRotationToStored = function(){
 
 p.setRotationOriginalTo = function(props){
 
-
   this.frameRotationTo(HHg.returnRotationProps(props) % 360);
 }
 
