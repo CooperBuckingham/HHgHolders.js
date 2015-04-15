@@ -187,13 +187,14 @@ function doAddFunctionsToScene(scene){
         tintCanvasByFill( holder.getCanvas(), holder.getTintRGBA().returnString() );
       }
 
-
       if(holder.firstUpdate !== true){
          holder.firstUpdate = true;
          holder.setPaused(false);
         //if(changes.scale === true ){
           div.style.width = "" + holder.getWidthNet() + "px";
           div.style.height = "" + holder.getHeightNet() + "px";
+          //insideDiv.style.width = "" + holder.getWidthNet() + "px";
+          //insideDiv.style.height = "" + holder.getHeightNet() + "px";
         //}
         //if(changes.position === true){
           //change this to start position
@@ -214,8 +215,9 @@ function doAddFunctionsToScene(scene){
       //if(HHgTransformsOnly && holder.firstUpdate === true){
         if(changes.scale === true || changes.rotation === true || changes.position === true ){
 
+          //insideTransformString = "scale(" + ( holder.getWidthNet() /  parseFloat(insideDiv.style.width) ) + "," + (holder.getHeightNet() / parseFloat(insideDiv.style.height) ) + ") ";
           outsideTransformString = "scale(" + ( holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + (holder.getHeightNet() / parseFloat(div.style.height) ) + ") ";
-          insideTransformString = "rotate(" + holder.getRotationNet() + "deg" +") ";
+          insideTransformString = insideTransformString + "rotate(" + holder.getRotationNet() + "deg" +") ";
           //this is the replacement translate system
 
           //currently, the last chunk of an action doesn't get called, so at low frame rate, the object misses by alot
@@ -224,7 +226,8 @@ function doAddFunctionsToScene(scene){
           adjustedPosition.dividedEquals(holder.getScaleOriginal());
           adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
 
-          outsideTransformString = outsideTransformString + "translate3d(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px, 0px) ";
+          outsideTransformString = outsideTransformString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
+          //outsideTransformString = outsideTransformString + "translate3d(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px, 0px) ";
         }
      // }
       //======== END Conditional for transform types

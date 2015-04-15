@@ -29,7 +29,7 @@ if(HHgOrientationLandscape){
 var HHgTransformsOnly = true;
 var HHgHoldCanvasUpresScaleBy = 2;
 
-var HHgTestBoxes = true;
+var HHgTestBoxes = false;
 
 var HHgCustomOverride = true; //change this to true and game will begin in start function below
 var HHgGame = {doStart: function(){
@@ -71,9 +71,9 @@ var HHgGame = {doStart: function(){
       var rotate1 = theOne.makeAction("rotateBy", {rotation: 720, time: 10});
       var move1 = theOne.makeAction("moveBy", {positionX: 480, positionY: 270 , time: .1});
       var scale1 = theOne.makeAction("scaleBy", {scale:4, time: 10});
-      //theOne.doStoredAction(rotate1);
-      theOne.doStoredAction(move1);
-      //theOne.doStoredAction(scale1);
+      theOne.doStoredAction(rotate1);
+      //theOne.doStoredAction(move1);
+      theOne.doStoredAction(scale1);
 
       var theTwo = HHgGetHolder({w:100,h:100, test: "testTwo"});
       theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(480,270), isScreenPos: true});
