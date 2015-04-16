@@ -189,7 +189,7 @@ function doAddFunctionsToScene(scene){
 
       if(holder.firstUpdate !== true){
          holder.firstUpdate = true;
-         holder.setPaused(false);
+
 
           div.style.width = "" + holder.getWidthNet() + "px";
           div.style.height = "" + holder.getHeightNet() + "px";

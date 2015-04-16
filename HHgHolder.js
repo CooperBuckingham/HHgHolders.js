@@ -40,7 +40,7 @@ this._children;
 this._actions;
 this._clusters =[];
 this._sequences=[];
-this._paused = true;
+this._paused = false;
 
 this._div;
 this._insideDiv;
