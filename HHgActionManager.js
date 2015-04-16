@@ -22,7 +22,7 @@ var HHgActionManager = {
 
     for(HHgTempHolder in this._actionList){
       HHgTempHolder= this._actionList[HHgTempHolder];
-      if(HHgTempHolder.getPaused() === true) continue;
+      if(HHgTempHolder.getPaused() === true || HHgTempHolder.firstUpdate !== true) continue;
       HHgTempActionObject = HHgTempHolder.getActions()
       for(HHgTempAction in HHgTempActionObject){
         HHgTempAction2 = HHgTempActionObject[HHgTempAction];
