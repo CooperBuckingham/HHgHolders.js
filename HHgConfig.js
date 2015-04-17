@@ -30,7 +30,7 @@ var HHgHoldCanvasUpresScaleBy = 2;
 var HHgForceHardwareRendering = false; //this will improve performance for some situations, like tranlating position
 //NOTE: but note that it will cause elements like "borders" and "fonts", to scale as rasterized images.
 
-var HHgTestBoxes = true;
+var HHgTestBoxes = false;
 
 var HHgCustomOverride = true; //change this to true and game will begin in start function below
 var HHgGame = {doStart: function(){
@@ -62,34 +62,50 @@ var HHgGame = {doStart: function(){
     lineUp.doMakeRectangle({color: "black"});
 
     var theOne = HHgGetHolder({w:100,h:100});
-      theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(0,0), isScreenPos: true});
+      theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-480,-270), isScreenPos: true});
       theOne.setMouseable(true);
       theOne.setIsDraggable(true);
       //theOne.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
-      theOne.test = "testone";
+      theOne.test = "testOne";
       theOne.doMakeRectangle({borderRadius: 15, color: "green"});
       theOne.doAddBorder(5);
-      var rotate1 = theOne.makeAction("rotateBy", {rotation: -720, time: 20});
+      var rotate1 = theOne.makeAction("rotateBy", {rotation: -1440, time: 40});
       var move1 = theOne.makeAction("moveBy", {positionX: 480, positionY: 270 , time: .1});
-      var scale1 = theOne.makeAction("scaleBy", {scale:.5, time: 5});
-      //theOne.doStoredAction(rotate1);
-      theOne.doStoredAction(move1);
+      var scale1 = theOne.makeAction("scaleBy", {scale:1.5, time: 5});
+      theOne.doStoredAction(rotate1);
+      //theOne.doStoredAction(move1);
       //theOne.doStoredAction(scale1);
 
       var theTwo = HHgGetHolder({w:100,h:100, test: "testTwo"});
-      theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(480,270), isScreenPos: true});
+      theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(0,0), isScreenPos: true});
       theTwo.setMouseable(true);
       theTwo.setIsDraggable(true);
       //theTwo.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       theTwo.test = "testTwo";
       //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
       theTwo.doAddSprite("pool");
-      var rotate = theTwo.makeAction("rotateBy", {rotation: 720, time: 20});
-      var move = theTwo.makeAction("moveBy", {positionX: -480, positionY: -270, time: 3});
-      var scale = theTwo.makeAction("scaleBy", {scale:.5, time: 5});
-      //theTwo.doStoredAction(rotate);
-      //theTwo.doStoredAction(move);
-      //theTwo.doStoredAction(scale);
+      var rotate2 = theTwo.makeAction("rotateBy", {rotation: -1440, time: 20});
+      var move2 = theTwo.makeAction("moveBy", {positionX: -480, positionY: -270, time: 3});
+      var scale2 = theTwo.makeAction("scaleBy", {scale:.85, time: 5});
+      theTwo.doStoredAction(rotate2);
+      //theTwo.doStoredAction(move2);
+      //theTwo.doStoredAction(scale2);
+
+      var theThree = HHgGetHolder({w:100,h:100, test: "testThree"});
+      theThree.doMoveToNewParent({parent: theTwo,position: new HHgVector2(100,100), isScreenPos: true});
+      theThree.setMouseable(true);
+      theThree.setIsDraggable(true);
+      //theTwo.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
+      theThree.test = "testThree";
+      //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
+      theThree.doAddSprite("pool");
+      var rotate3 = theThree.makeAction("rotateBy", {rotation: -1440, time: 10});
+      var move3 = theThree.makeAction("moveBy", {positionX: -480, positionY: -270, time: 3});
+      var scale3 = theThree.makeAction("scaleBy", {scale:.85, time: 5});
+      theThree.doStoredAction(rotate3);
+      //theTwo.doStoredAction(move3);
+      //theTwo.doStoredAction(scale3);
+
 
       //setTimeout(theOne.doStoredAction.bind(theOne, scale1), 1000);
       // setTimeout(theTwo.doStoredAction.bind(theTwo, scale), 3000);

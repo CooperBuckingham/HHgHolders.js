@@ -59,7 +59,7 @@ HHgVector2.prototype = Object.create(HHgVector2.prototype, {
 
 		};
 
-		p.getCopy = function(){
+		p.getCopy = p.copy = function(){
 			return new HHgVector2(this.x, this.y);
 		};
 
