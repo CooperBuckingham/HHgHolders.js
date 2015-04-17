@@ -58,7 +58,6 @@ HHgSceneDoStart = function(){
     div.style.height = "" + HardwareScreen.w / HHgScreen.w * HHgScreen.maxh + "px";
 
     div.style.left ="" + 0 +"px";
-
     div.style.top = "" + ((HardwareScreen.h - (HardwareScreen.w / HHgScreen.w * HHgScreen.maxh)) / 2) + "px";
 
     HHgScene._holders[div.id] = HHgScene;
@@ -162,16 +161,16 @@ function doAddFunctionsToScene(scene){
   };
 
   scene.doUpdateHolders = function(){
+    //this handles all visual udpates per frame for holders
     if(scene._finalDirtyHolders.length < 1){
       return;
     }
     var newList = scene._finalDirtyHolders;
     scene._finalDirtyHolders = {};
-    var outsideTransformString = "";
-    var insideTransformString = "";
 
     var holder, div, insideDiv, changes;
     for(var thing in newList){
+
       holder = newList[thing];
 
       if(holder.getDiv() === undefined) return;
@@ -188,8 +187,9 @@ function doAddFunctionsToScene(scene){
       }
 
       if(holder.firstUpdate !== true){
+        //this positions and scales the object on inital placement
+        //after it will only use the transforms for divs
          holder.firstUpdate = true;
-
 
           div.style.width = "" + holder.getWidthNet() + "px";
           div.style.height = "" + holder.getHeightNet() + "px";
@@ -205,28 +205,33 @@ function doAddFunctionsToScene(scene){
           }
       }
 
+
+
       //=============== Begin conditional for transform types
         if(changes.scale === true || changes.rotation === true || changes.position === true ){
+          //the inside div only handles visuals and self rotation
+          insideDiv.style.transform = "rotate(" + holder.getRotationNet() + "deg" +")";
 
-          outsideTransformString = "scale(" + ( holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + (holder.getHeightNet() / parseFloat(div.style.height) ) + ") ";
-          //outsideTransformString = outsideTransformString + "rotate(" + holder.getParent().getRotationOriginal() + "deg" +") ";
-          insideTransformString = insideTransformString + "rotate(" + holder.getRotationOriginal() + "deg" +") ";
+          //experiment
+          //holder._startPositionForTranslate = holder.getParent()._adjustedPosition;
 
-          var adjustedPosition = holder.getPositionInScreenNet().minus(holder._startPositionForTranslate);
-          adjustedPosition.dividedEquals(holder.getScaleOriginal());
-          adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
+          //the outside div handles position and scale, and both of these are affected by parent scale, rotation, and pos
 
-          outsideTransformString = outsideTransformString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
+
+          //var adjustedPosition = holder.getPositionInScreenNet().minus(holder._startPositionForTranslate);
+          var adjustedPosition = holder.getPositionInScreenNet().copy();
+            adjustedPosition.dividedEquals(holder.getScaleOriginal());
+            adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
+
+          //  if(holder.test === "testThree"){
+          //   console.log("Exit Here", holder);
+          //   return;
+          // }
+
+          div.style.transform = "scale(" + ( holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + (holder.getHeightNet() / parseFloat(div.style.height) ) + ") "+ "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
           //outsideTransformString = outsideTransformString + "translate3d(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px, 0px) ";
         }
       //======== END Conditional for transform types
-
-      if(outsideTransformString){
-        div.style.transform = outsideTransformString;
-      }
-      if(insideTransformString){
-        insideDiv.style.transform = insideTransformString;
-      }
 
       if(changes.zIndex === true){
         div.style.zIndex = "" + holder.getZIndex();

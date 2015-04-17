@@ -532,40 +532,7 @@ p.doRecalcPosition = function(){
   }
 
 }
-/*
 
-this.doRecalcPosition = function(){
-if(_parent === "stop") return;
-
-if(_parent == undefined){
-return;
-}
-
-this.convertOriginalToNetPosition();
-
-
-if(_parent !== undefined){
-
-_positionInParentOriginal = _positionInScreenOriginal.returnVectorRotatedAroundVectorAtAngle( _parent.getPositionInScreenOriginal(), 1 *  _parent.getRotationNet() );
-
-_positionInParentOriginal = _parent.getPositionInScreenOriginal().returnVectorSubtractedFromVector(_positionInParentOriginal);
-_positionInParentOriginal = _positionInParentOriginal.timesInverse(_parent.getScaleNetForChildPosition());
-
-}
-
-this.changes.position = true;
-
-
-if(_children){
-HHg.doForEach(_children, function(child){
-
-child.updatePositionFromParentMove();
-
-});
-}
-
-}
-*/
 
 p.setPositionStored = function(){
   this._positionStored = this._positionInScreenOriginal;
@@ -672,23 +639,7 @@ if(this._parent !== undefined){
 }
 
 }
-/*
-this.convertOriginalToNetPosition = function(){
 
-//note, to specifically use GameHolder scale for child here, even though it's asking for position
-//because the offsets need its relative scale.
-_positionInScreenNet = _positionInScreenOriginal.times(HHgGameHolder.getScaleNetForChildScale());
-
-if(_parent !== undefined){
-
-_positionInScreenNet = _positionInScreenNet.plus(HHgGameHolder.returnHalfSizeVector());
-
-_positionInScreenNet = that.returnHalfSizeVector().returnVectorSubtractedFromVector(_positionInScreenNet);
-
-}
-
-}
-*/
 //=============== SCALE ================
 
 p.setScaleStored = function(){
@@ -740,7 +691,8 @@ p.getScaleNetForChildPosition = function(){
     return this._scaleOriginal;
   }
 
-  return this.getScaleNetForChildScale();
+  //return this.getScaleNetForChildScale();
+  return this._parent.getScaleNetForChildPosition().times(this.getScaleOriginal());
 
 }
 
@@ -799,14 +751,16 @@ p.setRotationOriginalBy = function(props){
   this.frameRotationBy(HHg.returnRotationProps(props) % 360);
 }
 
-
 p.getRotationOriginal = function(){
-  return this._rotationOriginal;
+  return this._rotationOriginal % 360;
 }
-
 
 p.getRotationNet = function(){
   return this._rotationNet;
+}
+
+p.getParentRotation = function(){
+  return this._parent.getRotationOriginal();
 }
 
 p.doRecalcRotation = function(){
@@ -1302,14 +1256,11 @@ p.doStartMouseMove = function(){
   this.isBeingDragged = true;
   console.log("MOUSE START");
 
-
 }
 
 p.doMouseMove = function(){
-  //console.log(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY).pretty());
   this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
   if(this.test = "testTwo"){
-  //console.log("MOUSE MOVE " + this._positionInScreenOriginal.pretty());
 }
 }
 
@@ -1317,7 +1268,6 @@ p.doEndMouseMove = function(){
 
   this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
   if(this.test = "testTwo"){
-    //console.log("MOUSE END: " + this._positionInScreenOriginal.pretty());
   }
   this.isBeingDragged = false;
 //this.doRemoveActionByName("mousemoverotate");
