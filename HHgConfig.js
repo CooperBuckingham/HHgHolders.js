@@ -69,42 +69,42 @@ var HHgGame = {doStart: function(){
       theOne.test = "testOne";
       theOne.doMakeRectangle({borderRadius: 15, color: "green"});
       theOne.doAddBorder(5);
-      var rotate1 = theOne.makeAction("rotateBy", {rotation: -1440, time: 40});
-      var move1 = theOne.makeAction("moveBy", {positionX: 480, positionY: 270 , time: .1});
-      var scale1 = theOne.makeAction("scaleBy", {scale:1.5, time: 5});
+      var rotate1 = theOne.makeAction("rotateBy", {rotation: -360, time: 10});
+      var move1 = theOne.makeAction("moveBy", {positionX: 480, positionY: 270 , time: 10});
+      var scale1 = theOne.makeAction("scaleBy", {scale:1, time: 10});
       theOne.doStoredAction(rotate1);
-      //theOne.doStoredAction(move1);
-      //theOne.doStoredAction(scale1);
+      theOne.doStoredAction(move1);
+      theOne.doStoredAction(scale1);
 
       var theTwo = HHgGetHolder({w:100,h:100, test: "testTwo"});
-      theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(0,0), isScreenPos: true});
+      theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(100,100), isScreenPos: false});
       theTwo.setMouseable(true);
       theTwo.setIsDraggable(true);
       //theTwo.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       theTwo.test = "testTwo";
       //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
       theTwo.doAddSprite("pool");
-      var rotate2 = theTwo.makeAction("rotateBy", {rotation: -1440, time: 20});
-      var move2 = theTwo.makeAction("moveBy", {positionX: -480, positionY: -270, time: 3});
-      var scale2 = theTwo.makeAction("scaleBy", {scale:.85, time: 5});
+      var rotate2 = theTwo.makeAction("rotateBy", {rotation: -360, time: 10});
+      var move2 = theTwo.makeAction("moveBy", {positionX: 100, positionY: 100, time: 10});
+      var scale2 = theTwo.makeAction("scaleBy", {scale:.5, time: 10});
       theTwo.doStoredAction(rotate2);
       //theTwo.doStoredAction(move2);
-      //theTwo.doStoredAction(scale2);
+      theTwo.doStoredAction(scale2);
 
       var theThree = HHgGetHolder({w:100,h:100, test: "testThree"});
-      theThree.doMoveToNewParent({parent: theTwo,position: new HHgVector2(100,100), isScreenPos: true});
+      theThree.doMoveToNewParent({parent: theTwo,position: new HHgVector2(100,100), isScreenPos: false});
       theThree.setMouseable(true);
       theThree.setIsDraggable(true);
       //theTwo.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       theThree.test = "testThree";
       //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
       theThree.doAddSprite("pool");
-      var rotate3 = theThree.makeAction("rotateBy", {rotation: -1440, time: 10});
-      var move3 = theThree.makeAction("moveBy", {positionX: -480, positionY: -270, time: 3});
-      var scale3 = theThree.makeAction("scaleBy", {scale:.85, time: 5});
+      var rotate3 = theThree.makeAction("rotateBy", {rotation: -360, time: 10});
+      var move3 = theThree.makeAction("moveBy", {positionX: 100, positionY: 100, time: 10});
+      var scale3 = theThree.makeAction("scaleBy", {scale:.5, time: 10});
       theThree.doStoredAction(rotate3);
       //theTwo.doStoredAction(move3);
-      //theTwo.doStoredAction(scale3);
+      theTwo.doStoredAction(scale3);
 
 
       //setTimeout(theOne.doStoredAction.bind(theOne, scale1), 1000);
