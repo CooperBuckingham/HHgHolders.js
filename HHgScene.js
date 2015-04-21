@@ -193,9 +193,11 @@ function doAddFunctionsToScene(scene){
 
           div.style.width = "" + holder.getWidthNet() + "px";
           div.style.height = "" + holder.getHeightNet() + "px";
-
           div.style.left ="" + holder._startPositionForTranslate.x +"px";
           div.style.bottom ="" + holder._startPositionForTranslate.y + "px";
+
+          insideDiv.style.width = "" + holder.getWidthNet() + "px";
+          insideDiv.style.height = "" + holder.getHeightNet() + "px";
 
           if(holder.paragraph !== undefined){
             holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
@@ -203,32 +205,44 @@ function doAddFunctionsToScene(scene){
           if(holder.borderWidthOriginal > 0){
             div.style.borderWidth = "" + holder.borderWidthScaled + "px";
           }
+
+
       }
-
-
-
       //=============== Begin conditional for transform types
         if(changes.scale === true || changes.rotation === true || changes.position === true ){
           //the inside div only handles visuals and self rotation
-          insideDiv.style.transform = "rotate(" + holder.getRotationNet() + "deg" +")";
+          var scaleX = holder.getWidthNet() /  parseFloat(insideDiv.style.width);
+          var scaleY = holder.getHeightNet() / parseFloat(insideDiv.style.height);
 
-          //experiment
-          //holder._startPositionForTranslate = holder.getParent()._adjustedPosition;
+          var scaleString = "scale(" + scaleX + "," + scaleY + ") ";
 
-          //the outside div handles position and scale, and both of these are affected by parent scale, rotation, and pos
+          // var am90 = holder.getRotationNet() % 180;
+          // var am90 = Math.abs(am90 - 90);
+          // var pVal = am90/90;
+
+          var insideScaleStringX = "";
+          var insideScaleStringY = "";
+          if(holder.test !== "gameholder" && holder.test !== "scene"){
+            scaleString = "";
+             var insideScaleStringX = "scaleY("+(  scaleY ) +")";
+             var insideScaleStringY = "scaleX("+(  scaleX ) +")";
+          };
 
 
-          //var adjustedPosition = holder.getPositionInScreenNet().minus(holder._startPositionForTranslate);
+          var insideSkewStringX = "skewX("+( 0 ) +"deg)";
+          var insideSkewStringY = "skewY("+( 0)  +"deg)";
+          var insideSkewString = insideSkewStringX + " " + insideSkewStringY;
+          var insideScaleString = insideScaleStringX + " " + insideScaleStringY;
+
+          insideDiv.style.transform = "rotate(" + holder.getRotationNet() + "deg" +") " + insideScaleString + " " + insideSkewString;
           var adjustedPosition = holder.getPositionInScreenNet().copy();
-            adjustedPosition.dividedEquals(holder.getScaleOriginal());
-            adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
+            //adjustedPosition.dividedEquals(holder.getScaleOriginal());
+            //adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
+            //the above 2 string are from when outer div handled the scaling
+            //but this meant that that rotation on inner div was screwing up scale
 
-          //  if(holder.test === "testThree"){
-          //   console.log("Exit Here", holder);
-          //   return;
-          // }
+            div.style.transform =  scaleString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
 
-          div.style.transform = "scale(" + ( holder.getWidthNet() /  parseFloat(div.style.width) ) + "," + (holder.getHeightNet() / parseFloat(div.style.height) ) + ") "+ "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
           //outsideTransformString = outsideTransformString + "translate3d(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px, 0px) ";
         }
       //======== END Conditional for transform types
@@ -278,15 +292,15 @@ function doAddFunctionsToScene(scene){
     div.style.position = "absolute";
     div.appendChild(insideDiv);
     insideDiv.style.display="inline-block";
-    insideDiv.style.width ="100%";
-    insideDiv.style.height ="100%";
+    // insideDiv.style.width ="100%";
+    // insideDiv.style.height ="100%";
     insideDiv.style.position = "absolute";
     insideDiv.style.left = "0";
     insideDiv.style.bottom = "0";
 
     if(HHgTestBoxes === true){
       div.style.border = "2px solid black";
-      //insideDiv.style.border = "2px solid blue";
+      insideDiv.style.border = "2px solid blue";
     }
 
     div.id = holder.getHash();
@@ -507,21 +521,23 @@ function doAddFunctionsToScene(scene){
     var canvas = holder.getCanvas();
     var mousePos = xy.getCopy();
     var holderCenter = holder.getPositionInScreenOriginal();
-    var mouseFinalRelative = mousePos.getVectorRotated(holderCenter, -1 * holder.getRotationNet());
+    var mouseFinalRelative = mousePos.getVectorRotated(holderCenter, holder.getRotationNet());
 
-    //still need to test with rotation
     var holderAbsoluteSize = new HHgVector2(holder.getWidthNet(), holder.getHeightNet());
     holderAbsoluteSize.dividedEquals(HHgPixelScale);
-
     var holderBottomLeft = holderCenter.minus(holderAbsoluteSize.dividedBy(2));
     mouseFinalRelative.minusEquals(holderBottomLeft); //this is just off by half the size
 
-    if(holder.test === "testTwo"){
-      console.log("holder center: " + holderCenter.pretty());
-      console.log("holder bottom left: " + holderBottomLeft.pretty());
-      console.log("mouse final " + mouseFinalRelative.pretty());
-    //   console.log("adjusted size " + holderAbsoluteSize.pretty());
-    }
+
+    // if(holder.test === "testTwo"){
+    //   console.log("==============");
+    //   console.log("Ab size " + holderAbsoluteSize.pretty());
+    //   console.log("rotation: ", holder.getRotationNet());
+    //   console.log("holder center: " + holderCenter.pretty());
+    //   console.log("holder bottom left: " + holderBottomLeft.pretty());
+    //   console.log("mouse final " + mouseFinalRelative.pretty());
+    // //   console.log("adjusted size " + holderAbsoluteSize.pretty());
+    // }
 
     var left = 0;
     var right = holderAbsoluteSize.x;
@@ -703,16 +719,13 @@ function doAddFunctionsToScene(scene){
 
   scene.maskShapeRectangle = function(props){
     if(props.borderRadius === undefined) return;
-
     var holder = props.holder;
     var str = "",i,br = props.borderRadius;
     if(br !== undefined){
       for( i = 0; i < br.length; i++){
-
         if(i == 4){
           str += " / ";
         }
-
         if(br[i] < 1){
           str += (br[i] * 100) + "% ";
         }else{
@@ -736,7 +749,7 @@ function doAddFunctionsToScene(scene){
     bw *= HHgPixelScale;
     holder.getInsideDiv().style.border = "" + bw + "px " + props.borderStyle + " " + props.color.returnString();
   };
-};
+ };
 
 function HHgUpdateHardwareScreen(){
   //could update landscape etc here

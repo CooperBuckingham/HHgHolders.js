@@ -4,139 +4,136 @@ var HHgMouse = {};
 
 (function(){
 
-	var that = HHgMouse;
+  var that = HHgMouse;
 
-	that.clickedDownOn;
-	that.draggingOriginalPosXY;
-	that.draggingMouseOriginalPosXY;
-	that.draggingOffsetXY;
+  that.clickedDownOn;
+  that.draggingOriginalPosXY;
+  that.draggingMouseOriginalPosXY;
+  that.draggingOffsetXY;
 
-	that.dragging;
-	that.lastMousePosXY;
+  that.dragging;
+  that.lastMousePosXY;
+  that.thisMousePosXY;
 
-	that.thisMousePosXY;
+  that.lastFrameTime;
+  that.thisFrameTime;
+  that.mouseCircle;
 
-	that.lastFrameTime;
-	that.thisFrameTime;
-	that.mouseCircle;
+  that.doStart = function(){
 
-	that.doStart = function(){
+    that.mouseCircle = HHgGetHolder({w:25,h:25,zIndex: 100});
+    that.mouseCircle.doMoveToNewParent({parent: HHgGameHolder, position: HHg0Vector, isScreenPos: true});
+    that.mouseCircle.doAddSprite("mouse");
+    that.mouseCircle.setVisible(false);
+    that.mouseCircle.setMouseable(false);
+    HHgScene.doAddMouseDownAndUpListeners();
+  }
 
-		that.mouseCircle = HHgGetHolder({w:25,h:25,zIndex: 100});
-		that.mouseCircle.doMoveToNewParent({parent: HHgGameHolder, position: HHg0Vector, isScreenPos: true});
-		that.mouseCircle.doAddSprite("mouse");
-		that.mouseCircle.setVisible(false);
-		that.mouseCircle.setMouseable(false);
+  that.doResetVars = function(){
+    that.clickedDownOn = undefined;
+    that.lastMousePosXY = undefined;
 
-		HHgScene.doAddMouseDownAndUpListeners();
+    that.thisMousePosXY = undefined;
 
-	}
-
-	that.doResetVars = function(){
-		that.clickedDownOn = undefined;
-		that.lastMousePosXY = undefined;
-
-		that.thisMousePosXY = undefined;
-
-		that.lastFrameTime = undefined;
-		that.thisFrameTime = undefined;
-		that.dragging = undefined;
-		that.draggingOriginalPosXY = undefined;
-		that.draggingMouseOriginalPosXY = undefined;
-		that.draggingOffsetXY = undefined;
+    that.lastFrameTime = undefined;
+    that.thisFrameTime = undefined;
+    that.dragging = undefined;
+    that.draggingOriginalPosXY = undefined;
+    that.draggingMouseOriginalPosXY = undefined;
+    that.draggingOffsetXY = undefined;
 
 
-	}
+  }
 
-	that.doSetVars = function(holder, xy){
+  that.doSetVars = function(holder, xy){
 
-		that.clickedDownOn = holder;
-		that.lastMousePosXY = xy;
+    that.clickedDownOn = holder;
+    that.lastMousePosXY = xy;
 
-		that.thisMousePosXY = xy;
-		that.thisFrameTime = window.performance.now();
-		that.lastFrameTime = that.thisFrameTime;
+    that.thisMousePosXY = xy;
+    that.thisFrameTime = window.performance.now();
+    that.lastFrameTime = that.thisFrameTime;
 
-		if(holder.isDraggable){
-			that.dragging = holder;
-			that.draggingOriginalPosXY = holder.getPositionInScreenOriginal();
-			that.draggingMouseOriginalPosXY = xy;
-			that.draggingOffsetXY = xy.subtractedFrom(that.draggingOriginalPosXY);
-		}
+    if(holder.isDraggable){
+      that.dragging = holder;
+      that.draggingOriginalPosXY = holder.getPositionInScreenOriginal();
+      that.draggingMouseOriginalPosXY = xy;
+      that.draggingOffsetXY = xy.subtractedFrom(that.draggingOriginalPosXY);
+    }
 
-	}
+  }
 
-	that.doUpdateVars = function(xy){
-		that.lastMousePosXY = that.thisMousePosXY;
-		that.thisMousePosXY = xy;
-		that.lastFrameTime = that.thisFrameTime;
-		that.thisFrameTime = window.performance.now();
+  that.doUpdateVars = function(xy){
+    that.lastMousePosXY = that.thisMousePosXY;
+    that.thisMousePosXY = xy;
+    that.lastFrameTime = that.thisFrameTime;
+    that.thisFrameTime = window.performance.now();
 
-	}
+  }
 
-	that.doMouseMove = function (xy){
-		that.mouseCircle.doHide();
+  that.doMouseMove = function (xy){
+    that.mouseCircle.doHide();
 
-		if(that.dragging){
-			that.doUpdateVars(xy);
-			that.dragging.doMouseMove();
-		}
+    if(that.dragging){
+      that.doUpdateVars(xy);
+      that.dragging.doMouseMove();
+    }
 
-	}
+  }
 
-	that.doMouseDown = function (holders, xy){
-		that.mouseCircle.doShow(xy);
+  that.doMouseDown = function (holders, xy){
+    that.mouseCircle.doShow(xy);
 
-		if(!holders || holders.length < 1){
+    if(!holders || holders.length < 1){
 
-			return;
-		}
+      return;
+    }
 
-			that.doSetVars(holders[0], xy);
-			that.clickedDownOn.doMouseDown();
+      that.doSetVars(holders[0], xy);
+      that.clickedDownOn.doMouseDown();
 
-			if(that.clickedDownOn.isDraggable){
-				that.clickedDownOn.doStartMouseMove();
-			}
+      if(that.clickedDownOn.isDraggable){
+        that.clickedDownOn.doStartMouseMove();
+      }
 
-	}
-	var isOverClickedDown = false;
+  }
+  var isOverClickedDown = false;
 
-	that.doMouseUp = function (holders, xy){
+  that.doMouseUp = function (holders, xy){
 
-		that.mouseCircle.doHide();
-		that.doUpdateVars(xy);
+    that.mouseCircle.doHide();
+    that.doUpdateVars(xy);
 
-		if(that.clickedDownOn === undefined){
-			return;
-		}
+    if(that.clickedDownOn === undefined){
+      return;
+    }
 
-		if(holders ){
-			for(var i = 0; i < holders.length; i++){
-				if(holders[i] === that.clickedDownOn){
+    if(holders ){
+      for(var i = 0; i < holders.length; i++){
+        if(holders[i] === that.clickedDownOn){
 
-					isOverClickedDown = true;
-					break;
-				}
-			}
-		}
+          isOverClickedDown = true;
+          break;
+        }
+      }
+    }
 
-		that.clickedDownOn.doMouseUp(isOverClickedDown);
+    that.clickedDownOn.doMouseUp(isOverClickedDown);
 
-		if(that.dragging){
-			that.dragging.doEndMouseMove();
-		}
+    if(that.dragging){
+      that.dragging.doEndMouseMove();
+    }
 
-		isOverClickedDown = false;
+    isOverClickedDown = false;
 
-		that.doResetVars();
+    that.doResetVars();
 
-	}
+  }
 
-	that.doMouseCancel = function(holders, xy){
+  that.doMouseCancel = function(holders, xy){
 
-		that.doMouseUp(holders, xy);
-	}
+    that.doMouseUp(holders, xy);
+  }
 
 
 })();
