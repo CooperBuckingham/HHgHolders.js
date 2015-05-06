@@ -19,6 +19,9 @@ var HHg = {
     if(optional === undefined){
       optional = "" + HHg.hashCounter;
       HHg.hashCounter++;
+      if(HHg.hashCounter > 50000){
+        HHg.hashCounter = 0;
+      }
     }else{
       optional = "" + optional + "_";
     }

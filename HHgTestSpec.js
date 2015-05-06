@@ -16,7 +16,9 @@
 
 //BUGS
   //fonts and font shadows now fuzzing on scale
-  //investigate net scale on test holder click system
+    //add text positinging system
+
+  //rotation adding forever
 
 
 
@@ -79,6 +81,7 @@
     //play sound
 
 //colors
+  //HSL RGB HEX
 
 //mouse
   //click on holder

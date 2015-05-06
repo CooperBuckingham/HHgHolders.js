@@ -204,10 +204,12 @@ function doAddFunctionsToScene(scene){
           insideDiv.style.height = "" + holder.getHeightNet() + "px";
 
           if(holder.paragraph !== undefined){
-            holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
+            //style test***
+            //holder.paragraph.style.fontSize = "" + holder.fontSizeScaled + "px";
           }
           if(holder.borderWidthOriginal > 0){
-            div.style.borderWidth = "" + holder.borderWidthScaled + "px";
+            //style test***
+            //div.style.borderWidth = "" + holder.borderWidthScaled + "px";
           }
 
 
