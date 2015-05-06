@@ -1,17 +1,26 @@
 //HHgTestSpec.js
-//TODO - test actions cluster
-//test text scaling
+//TODO tests
+  //test actions cluster
+  //test text scaling
+  //parent rotation and scale should change child movement actions/directions?
 
-//add sound
-//add sprite map system
-//add object pool
-//add sound pool
-//add persistence
-//add collision
-//add physics
-//add server hook
+//TODO features
+  //add sound
+  //add sprite map system
+  //add object pool
+  //add sound pool
+  //add persistence
+  //add collision
+  //add physics
+  //add server hook
+
+//BUGS
+  //fonts and font shadows now fuzzing on scale
+  //investigate net scale on test holder click system
 
 
+
+// TEST SUITES
 //Holders - set values
 
   //screen
