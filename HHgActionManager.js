@@ -26,17 +26,13 @@ var HHgActionManager = {
       HHgTempActionObject = HHgTempHolder.getActions()
       for(HHgTempAction in HHgTempActionObject){
         HHgTempAction2 = HHgTempActionObject[HHgTempAction];
-        if(HHgTempAction2.isActionSequence || HHgTempAction2.isActionCluster) continue;
+        if(HHgTempAction2.isActionSequence || HHgTempAction2.isActionCluster || HHgTempAction2.paused === true) continue;
         HHgTempAction2.whatShouldIDoThisFrame(interval);
       }
-
     }
   }
-
-
 };
 
-// copyright Paul Irish 2015
 (function(){
   if ("performance" in window == false) {
       window.performance = {};
@@ -54,7 +50,6 @@ var HHgActionManager = {
     }
   }
 })();
-
 
 HHgActionManager.actionLoop = function( animateActions ) {
     var lastFrameTime;
@@ -97,33 +92,20 @@ HHgActionManager.doStart = function(){
     }
 
     window.setInterval(function(){
-
        if(!HHgPaused){
-
         HHgActionManager.doActionsForHolders(interval);
-
         HHgScene.doEndOfFrame();
         HHgScene.doUpdateHolders();
        }
-
     }, frameInterval );
-
   }else{
-
       this.actionLoop(function( deltaT ) {
-
-        //ADD CUSTOM OR ADDITIONAL GAME LOOP HERE
-        //IE PHYSICS SYSTEM UPDATES
         HHgActionManager.doActionsForHolders(deltaT/1000);
         HHgScene.doEndOfFrame();
         HHgScene.doUpdateHolders();
-
-
-
       } );
   }
-
-}
+};
 
 
 

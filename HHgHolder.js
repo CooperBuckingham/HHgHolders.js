@@ -239,9 +239,11 @@ var HHgHolder = function(props){
     var returnVal = false;
     if(this.frameUpdates.scaleTo !== undefined){
       this._scaleOriginal = this.frameUpdates.scaleTo;
+      this._scaleOriginal.zeroFloor();
       returnVal = true;
     }else if(this.frameUpdates.scaleBy !== undefined){
       this._scaleOriginal = this._scaleOriginal.plus( this.frameUpdates.scaleBy);
+      this._scaleOriginal.zeroFloor();
       returnVal = true;
     }
 
@@ -268,6 +270,7 @@ var HHgHolder = function(props){
     this.doNotifySceneOfUpdates();
   }
   p.frameScaleBy = function(xy){
+
     if(this.frameUpdates.scaleBy){
       this.frameUpdates.scaleBy = this.frameUpdates.scaleBy.plus(xy);
     }else{
@@ -287,6 +290,7 @@ var HHgHolder = function(props){
   };
 
   p.frameScaleTo = function(xy){
+
     this.frameUpdates.scaleTo = xy;
     this.doNotifySceneOfUpdates();
   };
@@ -772,6 +776,7 @@ var HHgHolder = function(props){
         tempObject = action.props.myActions[i];
         tempObject.owner.doRemoveActionByName(tempObject.name);
       }
+      //TODO refactor to not use delete
       delete this._actions[action.name];
 
     }else{
@@ -1054,15 +1059,16 @@ var HHgHolder = function(props){
   //============= MOUSE =================
   //this will all be overridden for custom games
   p.doMouseDown = function(){
-    //this.setScaleStored();
-    //this.setScaleOriginalBy(.9,.9);
-    //this.doActionScaleForever({scaleX: .9, scaleY: .9, name: "mousedownscale"});
+    this.setScaleStored();
+    this.setScaleOriginalBy(.9,.9);
+    //this.doActionScaleForever({scaleX: .95, scaleY: .95, name: "mousedownscale"});
     //this.doActionPlaySound("click");
-    //this.doActionRotateForever({speed:300, name: "mousemoverotate"});
+    //this.doActionRotateForever({speed:-300, name: "mousemoverotate"});
   }
 
   p.doMouseUp = function(mouseWasOverWhenReleased){
-    //this.setScaleOriginalBy(1.0/0.9,1.0/0.9);
+    this.setScaleOriginalBy(1.0/0.9,1.0/0.9);
+    //this.doRemoveActionByName("mousemoverotate");
     //this.doRemoveActionByName("mousedownscale");
     this.isBeingDragged = false;
   };
@@ -1070,7 +1076,7 @@ var HHgHolder = function(props){
   p.doStartMouseMove = function(){
     this.setPositionStored();
     this.isBeingDragged = true;
-    console.log("MOUSE START");
+    //console.log("MOUSE START");
   };
 
   p.doMouseMove = function(){

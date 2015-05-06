@@ -153,6 +153,11 @@ HHgVector2.prototype = Object.create(HHgVector2.prototype, {
       }
     };
 
+    p.zeroFloor = function(){
+      if(this._x < 0) this._x = 0;
+      if(this._y < 0) this._y = 0;
+    };
+
 }());
 
 

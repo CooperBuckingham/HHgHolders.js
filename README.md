@@ -42,13 +42,13 @@ Preface: for the most part, you should not need to modify any engine files
   a. Modifying HHgCustomOverride in HHgConfig.js will use the version in HHgConfig as a starting point
   a. Otherwise the engine will run the default demo doStart() located in HHgGame.js.
 
-4. HHgActionManager runs a loop which essentially has 3 steps per frame:
+4. HHgActionManager runs a requestAnimationFrame loop which has 3 steps per frame:
   a. calculate outcomes of all HHgActions.
   b. calculate final results of these on all HHgHolders.
   c. tell scene to update all visual elements.
 
 5. HHgHolder is the only visual element in the engine.
-  a. It holds images/sprites, color, text/paragraph text, or other HHgHolders
+  a. It holds images/sprites, color, text/paragraph text, or other HHgHolders:
     var someHolder = new HHgHolder({w: 100, h: 100});
     aa. but unless you specifally choose not to use it, you should use the ObjectPool to get holders:
       var someHolder = var HHgGetHolder({w: 100, h: 100});
@@ -98,18 +98,19 @@ Preface: for the most part, you should not need to modify any engine files
     doActionMoveInScreenTo(x,y, time); doActionMoveInScreenBy(); doActionMoveForever(vector per second);
     doActionScaleTo(positive value, positive value, time); doActionScaleBy(positive value, positive value); doActionScaleForever(scale per second);
     doActionFollowQuad(vector control, vector destination, time); //creates a quadratic path using the current xy, a control xy, and final xy
+   f. //TODO add info about saving actions, clusters and sequences.
 
 9. Timers - do not use setTimeOut or setInterval anywhere, as this will cause things to fall out of sync
   9a. Instead call a timer action on an HHgHolder
     someHolder.doActionTimer({time: 10, onComplete: someFunc});
 
 10. Values
-  a. the xy grid for positioning on the screen, and in Holders is 0,0 centric (default point dimension is 1920/1080)
+  a. the xy grid for positioning on the screen, and in Holders is 0,0 centric with Y-up x,y coordinates (default point dimension is 1920/1080)
   b. time is always in seconds
   c. colors are always eventually in a HHgColorRGBA object, but most classes and functions will take HSL, RGB, or Hex values
     ca. this just means that passing in arguments other than a color object will result in a conversion step.
   d. all position/rotation/scale values are in points, so 1 or 1.5 or .044567. no strings, no trailing "px", etc.
-    da. the engine will handle all of the conversions in the scene. You can modify rounding behavior there though if you must.
+    da. the engine will handle all of the conversions in the scene.
 
 11. Mouse and Touch
   a. there are built in mouse and touch handlers on HHgMouse.js, the engine will use the correct ones based on device type.
@@ -135,7 +136,7 @@ Preface: for the most part, you should not need to modify any engine files
   b. HHgColor objects also have methods like .lighten(color, percent).
   c. HHgColorHelper has methods like .blendRGBA(color1, color2, percent).
 
-13. HHgVector2
+13. HHgVector2 //TODO update vector names and functions
   a. HHgVector2 is the basis for passing grid coordinates, vectors, and scales.
     var someVector = new HHgVector2(50.5,323.7);
   b. HHgVector2's contain all functions for vector math: add, subtract, divide, etc.

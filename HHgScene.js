@@ -1,15 +1,12 @@
-//scene will need pixel multiplier for retina, etc
+//================= HHgScene ===================
+// this is the only file that talks to the DOM.
+// it handles converting game data and logic into visuals
+// essentially using the DOM, divs, and canvas, as the engine renderer
 
+HHgScreenSize = new HHgVector2(HHgScreen.w, HHgScreen.h);
+HHgScreenSizeHalf = HHgScreenSize.times(.5);
 
-var HHgTrackedTouch;
-var	HHgScreenSize = new HHgVector2(HHgScreen.w, HHgScreen.h);
-var	HHgScreenSizeHalf = HHgScreenSize.times(.5);
-//hmm;
-var	testContainer;
-var showDebugSquares;
-
-var HHgScene, HHgSceneDiv, HHgGameHolder, HHgScreenDiff, HHgScreenDiffPlus, HHg0Vector, HHg1Vector, HHg10000Vector, HHgHalfVector, HHgTestDiv, HHgPixelScale;
-var HHgTopHolder = document.getElementById("all");
+HHgTopHolder = document.getElementById("all");
 
 HHgTopHolder.style.width = "" + HardwareScreen.w +"px";
 HHgTopHolder.style.height = "" + HardwareScreen.h +"px";
@@ -96,7 +93,9 @@ HHgSceneDoStart = function(){
     HHgSceneDiv.appendChild(div);
     //from here on out the game holder is now the scene div other holders are added to
     HHgSceneDiv = div;
-    HHgSceneDiv.style.border = "2px dashed black";
+    if(HHgTestDashSceneDiv){
+      HHgSceneDiv.style.border = "2px dashed black";
+    }
 
     HHgScene.doAddChild(HHgGameHolder);
     div.classList.add("game-holder");
