@@ -1,7 +1,12 @@
 //================= HHgScene ===================
-// this is the only file that talks to the DOM.
+// this is the only file that interfaces with the DOM.
 // it handles converting game data and logic into visuals
-// essentially using the DOM, divs, and canvas, as the engine renderer
+// essentially using the DOM, divs, and canvas, as the engine renderer.
+// it also processes mouse/click/touch and translates the data
+// into game space passing all info to HHgMouse
+//
+// there's no reason to modify anything here, unless you wanted to
+// use a completely different platform than the DOM.
 
 HHgScreenSize = new HHgVector2(HHgScreen.w, HHgScreen.h);
 HHgScreenSizeHalf = HHgScreenSize.times(.5);
@@ -474,7 +479,6 @@ function doAddFunctionsToScene(scene){
       }, false);
 
     HHgTopHolder.addEventListener("touchmove", function(e){
-      //this will become a "can drag" check
       e.preventDefault();
       touchList = e.changedTouches;
       for(i = 0; i < touchList; i++){

@@ -33,7 +33,7 @@ var HHgGame = {doStart: function(){
     lineUp.doMakeRectangle({color: "black"});
   }
 
-  //START TEST
+  //==================== ACTION TESTS ==================
   if(false){
     var theOne = HHgGetHolder({w:100,h:100});
       theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(0,0), isScreenPos: true});

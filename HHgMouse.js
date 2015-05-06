@@ -71,21 +71,34 @@ var HHgMouse = {};
 
   }
 
+  that.testIfInScene = function(xy){
+    if(xy.y < HHgScreen.maxh / -2 || xy.y > HHgScreen.maxh / 2){
+      return false;
+    }
+    return true;
+  }
+
   that.doMouseMove = function (xy){
+    if(!that.testIfInScene(xy)){
+      that.doMouseCancel(undefined, xy);
+      return;
+    }
     that.mouseCircle.doHide();
 
     if(that.dragging){
       that.doUpdateVars(xy);
       that.dragging.doMouseMove();
     }
-
   }
 
   that.doMouseDown = function (holders, xy){
+    if(!that.testIfInScene(xy)){
+      that.doMouseCancel(undefined, xy);
+      return;
+    }
     that.mouseCircle.doShow(xy);
 
     if(!holders || holders.length < 1){
-
       return;
     }
 
