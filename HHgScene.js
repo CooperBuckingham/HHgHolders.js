@@ -531,7 +531,7 @@ function doAddFunctionsToScene(scene){
     var holderAbsoluteSize = new HHgVector2(holder.getWidthNet(), holder.getHeightNet());
     holderAbsoluteSize.dividedEquals(HHgPixelScale);
     var holderBottomLeft = holderCenter.minus(holderAbsoluteSize.dividedBy(2));
-    mouseFinalRelative.minusEquals(holderBottomLeft); //this is just off by half the size
+    mouseFinalRelative.minusEquals(holderBottomLeft);
 
 
     // if(holder.test === "testTwo"){

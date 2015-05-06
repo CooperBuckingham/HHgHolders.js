@@ -924,7 +924,7 @@ var HHgHolder = function(props){
   };
 
   p.doAction = function(actionName, props){
-    this.returnActionFunction(actionName).call(props);
+    this.returnActionFunction(actionName).call(this,props);
   };
 
   p.returnActionFunction = function(name){
@@ -1018,6 +1018,10 @@ var HHgHolder = function(props){
     return this.doFinalizeAction(cluster);
   };
 
+  p.doActionClusterForever = function(cluster){
+    //TODO: implement repeating clusters
+  }
+
   p.makeActionSequence = function(storedActions, name, onComplete){
     var i, key, finalActions = [], finalSequence = [], tempAction, tempAction2, tempFunction;
     if(storedActions.length !== +storedActions.length){
@@ -1055,6 +1059,10 @@ var HHgHolder = function(props){
     sequence.props.myActions.push(this.doStoredAction(sequence[0]));
     return this.doFinalizeAction(sequence);
   };
+
+  p.doActionSequenceForever = function(sequence){
+    //TODO: implement repeat sequence forever
+  }
 
   //============= MOUSE =================
   //this will all be overridden for custom games
