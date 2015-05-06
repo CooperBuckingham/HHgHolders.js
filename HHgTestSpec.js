@@ -13,6 +13,8 @@
   //add collision
   //add physics
   //add server hook
+  //add alignment system
+    //maybe default "left edge, top edge" etc gets.
 
 //BUGS
   //fonts and font shadows now fuzzing on scale

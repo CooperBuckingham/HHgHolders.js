@@ -33,7 +33,7 @@ var HHgGame = {doStart: function(){
     lineUp.doMakeRectangle({color: "black"});
   }
     //==================== TEXT TESTS ==================
-  if(true){
+  if(false){
     var theOne = HHgGetHolder({w:100,h:100});
       theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(0,0), isScreenPos: true});
       theOne.setMouseable(true);
@@ -92,66 +92,85 @@ var HHgGame = {doStart: function(){
     }
 
   //==================== ACTION TESTS ==================
-  if(false){
-    var theOne = HHgGetHolder({w:100,h:100});
-      theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(0,0), isScreenPos: true});
-      theOne.setMouseable(true);
-      theOne.setIsDraggable(true);
-      //theOne.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
-      theOne.test = "testOne";
-      theOne.doMakeRectangle({borderRadius: 15, color: "green"});
-      theOne.doAddBorder(5);
-      var rotate1 = theOne.makeAction("rotateBy", {rotation: -360, time: 10});
-      var move1 = theOne.makeAction("moveBy", {positionX: 480, positionY: 270 , time: 10});
-      var scale1 = theOne.makeAction("scaleBy", {scaleX:1, scaleY: 3, time: 10});
-      theOne.doStoredAction(rotate1);
-      theOne.doStoredAction(move1);
-      theOne.doStoredAction(scale1);
+  if(true){
+    var parMoving = HHgGetHolder({w:100,h:100});
+    parMoving.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-960,540), isScreenPos: true});
+    parMoving.doMakeRectangle({borderRadius: 15, color: "green"});
+    parMoving.doAddBorder(5);
+    var rotate1 = parMoving.makeAction("rotateBy", {rotation: 360, time: 5});
+    var move1 = parMoving.makeAction("moveBy", {positionX: 960, positionY: -540 , time: 5});
+    var scale1 = parMoving.makeAction("scaleBy", {scaleX:1, scaleY: 1, time: 10});
+    parMoving.doStoredAction(rotate1);
+    parMoving.doStoredAction(move1);
+    //parMoving.doStoredAction(scale1);
 
-      var theTwo = HHgGetHolder({w:100,h:100, test: "testTwo"});
-      theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(0,0), isScreenPos: true});
-      theTwo.setMouseable(true);
-      theTwo.setIsDraggable(true);
-      //theTwo.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
-      theTwo.test = "testTwo";
-      //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
-      theTwo.doAddSprite("pool");
-      var rotate2 = theTwo.makeAction("rotateBy", {rotation: 360, time: 10});
-      var move2 = theTwo.makeAction("moveBy", {positionX: 100, positionY: 100, time: 10});
-      var scale2 = theTwo.makeAction("scaleBy", {scaleX: 1, scaleY: 1/3, time: 10});
-      theTwo.doStoredAction(rotate2);
-      theTwo.doStoredAction(move2);
-      theTwo.doStoredAction(scale2);
+    var childMoving = HHgGetHolder({w:100,h:100, test: "testTwo"});
+    childMoving.doMoveToNewParent({parent: parMoving,position: new HHgVector2(50,50), isScreenPos: false});
+    childMoving.doAddBorder(5);
+    childMoving.doMakeRectangle({borderRadius: 15, color: "red"});
+    var rotate2 = childMoving.makeAction("rotateBy", {rotation: 180, time: 10});
+    var move2 = childMoving.makeAction("moveBy", {positionX: 500, positionY: 0, time: 10});
+    var scale2 = childMoving.makeAction("scaleBy", {scaleX: 1, scaleY: 1, time: 10});
+    //childMoving.doStoredAction(rotate2);
+    //childMoving.doStoredAction(move2);
+    //childMoving.doStoredAction(scale2);
 
-      var theThree = HHgGetHolder({w:100,h:100, test: "testThree"});
-      theThree.doMoveToNewParent({parent: theTwo,position: new HHgVector2(0,100), isScreenPos: false});
-      theThree.setMouseable(true);
-      theThree.setIsDraggable(true);
-      //theTwo.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
-      theThree.test = "testThree";
-      //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
-      theThree.doAddSprite("soccer");
-      var rotate3 = theThree.makeAction("rotateBy", {rotation: -360, time: 10});
-      var move3 = theThree.makeAction("moveBy", {positionX: 100, positionY: 100, time: 10});
-      var scale3 = theThree.makeAction("scaleBy", {scale:1, time: 10});
-      theThree.doStoredAction(rotate3);
-      theTwo.doStoredAction(move3);
-      //theTwo.doStoredAction(scale3);
+    var parMoving = HHgGetHolder({w:200,h:200});
+    parMoving.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(960,-540), isScreenPos: true});
+    parMoving.doMakeRectangle({borderRadius: 30, color: "green"});
+    parMoving.doAddBorder(10);
+    var rotate1 = parMoving.makeAction("rotateBy", {rotation: -360, time: 5});
+    var move1 = parMoving.makeAction("moveBy", {positionX: -960, positionY: 540 , time: 5});
+    var scale1 = parMoving.makeAction("scaleBy", {scaleX:.5, scaleY: .5, time: 5});
+    parMoving.doStoredAction(rotate1);
+    parMoving.doStoredAction(move1);
+    parMoving.doStoredAction(scale1);
 
+    var childMoving = HHgGetHolder({w:200,h:200, test: "testTwo"});
+    childMoving.doMoveToNewParent({parent: parMoving,position: new HHgVector2(100,100), isScreenPos: false});
+    childMoving.doAddBorder(10);
+    childMoving.doMakeRectangle({borderRadius: 30, color: "red"});
+    var rotate2 = childMoving.makeAction("rotateBy", {rotation: 180, time: 10});
+    var move2 = childMoving.makeAction("moveBy", {positionX: 500, positionY: 0, time: 10});
+    var scale2 = childMoving.makeAction("scaleBy", {scaleX: 1, scaleY: 1, time: 10});
+    //childMoving.doStoredAction(rotate2);
+    //childMoving.doStoredAction(move2);
+    //childMoving.doStoredAction(scale2);
 
-      //setTimeout(theOne.doStoredAction.bind(theOne, scale1), 1000);
-      // setTimeout(theTwo.doStoredAction.bind(theTwo, scale), 3000);
+    var parMoving = HHgGetHolder({w:50,h:50});
+    parMoving.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-960,-540), isScreenPos: true});
+    parMoving.doMakeRectangle({borderRadius: 7.5, color: "green"});
+    parMoving.doAddBorder(2.5);
+    var rotate1 = parMoving.makeAction("rotateBy", {rotation: -360, time: 5});
+    var move1 = parMoving.makeAction("moveBy", {positionX: 960, positionY: 540 , time: 5});
+    var scale1 = parMoving.makeAction("scaleBy", {scaleX:2, scaleY: 2, time: 5});
+    parMoving.doStoredAction(rotate1);
+    parMoving.doStoredAction(move1);
+    parMoving.doStoredAction(scale1);
 
-      //setTimeout(theOne.doStoredAction.bind(theOne, move1), 5000);
-      //setTimeout(theTwo.doStoredAction.bind(theTwo, move), 5000);
-      //setTimeout(theTwo.doStoredAction.bind(theTwo, rotate), 3000);
-      //setTimeout(theTwo.doStoredAction.bind(theTwo, move), 5000);
+    var childMoving = HHgGetHolder({w:25,h:25, test: "testTwo"});
+    childMoving.doMoveToNewParent({parent: parMoving,position: new HHgVector2(25,25), isScreenPos: false});
+    childMoving.doAddBorder(1.25);
+    childMoving.doMakeRectangle({borderRadius: 3.75, color: "red"});
+    var rotate2 = childMoving.makeAction("rotateBy", {rotation: 180, time: 10});
+    var move2 = childMoving.makeAction("moveBy", {positionX: 500, positionY: 0, time: 10});
+    var scale2 = childMoving.makeAction("scaleBy", {scaleX: 2, scaleY: 2, time: 5});
+    //childMoving.doStoredAction(rotate2);
+    //childMoving.doStoredAction(move2);
+    childMoving.doStoredAction(scale2);
 
+    var parMovingTarget = HHgGetHolder({w:100,h:100});
+    parMovingTarget.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(0,0), isScreenPos: true});
+    parMovingTarget.doMakeRectangle({borderRadius: 15, color: "green"});
+    parMovingTarget.doAddBorder(5);
 
-      //****there may be issues with placement by parent or absolute placement, when dragging, maybe id conflicts or someting, in rotate demo
-      //something about dragging a child is somehow affecting the parent.
-      return;
-    }
+    var childMovingTarget = HHgGetHolder({w:100,h:100, test: "testTwo"});
+    childMovingTarget.doMoveToNewParent({parent: theOne,position: new HHgVector2(50,50), isScreenPos: false});
+    childMovingTarget.doAddBorder(5);
+    childMovingTarget.doMakeRectangle({borderRadius: 15, color: "red"});
+
+    return;
+  }
     //END TEST
 
 //============================ PERFORMANCE ROTATION TEST =====================
