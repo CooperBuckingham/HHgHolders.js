@@ -32,6 +32,64 @@ var HHgGame = {doStart: function(){
     lineUp.doMoveToNewParent({position: new HHgVector2(0,270)});
     lineUp.doMakeRectangle({color: "black"});
   }
+    //==================== TEXT TESTS ==================
+  if(true){
+    var theOne = HHgGetHolder({w:100,h:100});
+      theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(0,0), isScreenPos: true});
+      theOne.setMouseable(true);
+      theOne.setIsDraggable(true);
+      theOne.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
+      theOne.test = "testOne";
+      theOne.doMakeRectangle({borderRadius: 15, color: "green"});
+      theOne.doAddBorder(5);
+      var rotate1 = theOne.makeAction("rotateBy", {rotation: -360, time: 10});
+      var move1 = theOne.makeAction("moveBy", {positionX: 480, positionY: 270 , time: 10});
+      var scale1 = theOne.makeAction("scaleBy", {scaleX:1, scaleY: 3, time: 10});
+      theOne.doStoredAction(rotate1);
+      theOne.doStoredAction(move1);
+      theOne.doStoredAction(scale1);
+
+      var theTwo = HHgGetHolder({w:100,h:100, test: "testTwo"});
+      theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(0,0), isScreenPos: true});
+      theTwo.setMouseable(true);
+      theTwo.setIsDraggable(true);
+      theTwo.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
+      theTwo.test = "testTwo";
+      //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
+      theTwo.doAddSprite("pool");
+      var rotate2 = theTwo.makeAction("rotateBy", {rotation: 360, time: 10});
+      var move2 = theTwo.makeAction("moveBy", {positionX: 100, positionY: 100, time: 10});
+      var scale2 = theTwo.makeAction("scaleBy", {scaleX: 1, scaleY: 1/3, time: 10});
+      theTwo.doStoredAction(rotate2);
+      theTwo.doStoredAction(move2);
+      theTwo.doStoredAction(scale2);
+
+      var theThree = HHgGetHolder({w:100,h:100, test: "testThree"});
+      theThree.doMoveToNewParent({parent: theTwo,position: new HHgVector2(0,100), isScreenPos: false});
+      theThree.setMouseable(true);
+      theThree.setIsDraggable(true);
+      theTwo.doAddParagraphText({text: "HELLO USER!\nCustom Override is on", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
+      theThree.test = "testThree";
+      //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
+      theThree.doAddSprite("soccer");
+      var rotate3 = theThree.makeAction("rotateBy", {rotation: -360, time: 10});
+      var move3 = theThree.makeAction("moveBy", {positionX: 100, positionY: 100, time: 10});
+      var scale3 = theThree.makeAction("scaleBy", {scale:1, time: 10});
+      theThree.doStoredAction(rotate3);
+      theTwo.doStoredAction(move3);
+      //theTwo.doStoredAction(scale3);
+
+
+      //setTimeout(theOne.doStoredAction.bind(theOne, scale1), 1000);
+      // setTimeout(theTwo.doStoredAction.bind(theTwo, scale), 3000);
+
+      //setTimeout(theOne.doStoredAction.bind(theOne, move1), 5000);
+      //setTimeout(theTwo.doStoredAction.bind(theTwo, move), 5000);
+      //setTimeout(theTwo.doStoredAction.bind(theTwo, rotate), 3000);
+      //setTimeout(theTwo.doStoredAction.bind(theTwo, move), 5000);
+
+      return;
+    }
 
   //==================== ACTION TESTS ==================
   if(false){
@@ -92,11 +150,12 @@ var HHgGame = {doStart: function(){
 
       //****there may be issues with placement by parent or absolute placement, when dragging, maybe id conflicts or someting, in rotate demo
       //something about dragging a child is somehow affecting the parent.
+      return;
     }
     //END TEST
 
 //============================ PERFORMANCE ROTATION TEST =====================
-    if(true){
+    if(false){
 
       var theOne = HHgGetHolder({w:100,h:100});
       theOne.doMoveToNewParent({position: new HHgVector2(0,800), isScreenPos: false});
@@ -136,7 +195,7 @@ var HHgGame = {doStart: function(){
         testBall.setMouseable(true);
         testBall.setIsDraggable(true);
 
-        testBall.doAddCSSClass("testDiv");
+        //testBall.doAddCSSClass("testDiv");
 
         //testBall.doActionRotateBy({rotation:360,time: 30});
 
@@ -145,6 +204,7 @@ var HHgGame = {doStart: function(){
 
         listOfHolders.push(testBall)
       }
+      return;
     }
     //END TEST
 

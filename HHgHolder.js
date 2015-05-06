@@ -1,11 +1,11 @@
-var HHgHolderHashCont = 0;
+var HHgHolderHashCount = 0;
 
 var HHgHolder = function(props){
   //props width, height, zIndex, scale(xy or x)
 
-  HHgHolderHashCont++;
-  if(HHgHolderHashCont > 50000){
-    HHgHolderHashCont = 0;
+  HHgHolderHashCount++;
+  if(HHgHolderHashCount > 50000){
+    HHgHolderHashCount = 0;
     console.log("HASH passed 50000");
   }
   this.that = this;
@@ -32,7 +32,7 @@ var HHgHolder = function(props){
   this._scaleIgnoreParentScale = false;
   this._scaleUniformOnly = false;
   this._positionInScreenOriginal = new HHgVector2(0,0);
-  this._positionInParentOriginal  = this._positionInScreenOriginal;
+  this._positionInParentOriginal  = new HHgVector2(0,0);
   this._positionInScreenNet = this._positionInScreenOriginal;
   this._positionStored = this._positionInScreenOriginal;
 
@@ -45,7 +45,7 @@ var HHgHolder = function(props){
   this._div;
   this._insideDiv;
 
-  this._hash = HHgHolderHashCont;
+  this._hash = HHgHolderHashCount;
   this._timeStamp = +new Date();
   this._finalHash = "" + this._hash + "_" + this._timeStamp;
 
@@ -1060,16 +1060,16 @@ var HHgHolder = function(props){
   //this will all be overridden for custom games
   p.doMouseDown = function(){
     this.setScaleStored();
-    this.setScaleOriginalBy(.9,.9);
-    //this.doActionScaleForever({scaleX: .95, scaleY: .95, name: "mousedownscale"});
+
+    this.doActionScaleForever({scaleX:1.1, scaleY: 1.1, name: "mousedownscale"});
     //this.doActionPlaySound("click");
     //this.doActionRotateForever({speed:-300, name: "mousemoverotate"});
   }
 
   p.doMouseUp = function(mouseWasOverWhenReleased){
-    this.setScaleOriginalBy(1.0/0.9,1.0/0.9);
+
     //this.doRemoveActionByName("mousemoverotate");
-    //this.doRemoveActionByName("mousedownscale");
+    this.doRemoveActionByName("mousedownscale");
     this.isBeingDragged = false;
   };
 
@@ -1081,8 +1081,6 @@ var HHgHolder = function(props){
 
   p.doMouseMove = function(){
     this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
-    if(this.test = "testTwo"){
-    }
   };
 
   p.doEndMouseMove = function(){
