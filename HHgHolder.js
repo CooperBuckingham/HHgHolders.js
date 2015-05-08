@@ -1069,7 +1069,7 @@ var HHgHolder = function(props){
   p.doMouseDown = function(){
     this.setScaleStored();
 
-    this.doActionScaleForever({scaleX:1.1, scaleY: 1.1, name: "mousedownscale"});
+    //this.doActionScaleForever({scaleX:1.1, scaleY: 1.1, name: "mousedownscale"});
     //this.doActionPlaySound("click");
     //this.doActionRotateForever({speed:-300, name: "mousemoverotate"});
   }
@@ -1077,7 +1077,7 @@ var HHgHolder = function(props){
   p.doMouseUp = function(mouseWasOverWhenReleased){
 
     //this.doRemoveActionByName("mousemoverotate");
-    this.doRemoveActionByName("mousedownscale");
+    //this.doRemoveActionByName("mousedownscale");
     this.isBeingDragged = false;
   };
 

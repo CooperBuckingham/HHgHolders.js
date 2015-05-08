@@ -15,10 +15,12 @@
   //add server hook
   //add alignment system
     //maybe default "left edge, top edge" etc gets.
+    //align to parent top, center bottom
 
 //BUGS
   //fonts and font shadows now fuzzing on scale
     //add text positinging system
+    //adding paragraph text doesn't check to see if p text already exists
 
   //rotation adding forever
 
