@@ -334,6 +334,21 @@ function doAddFunctionsToScene(scene){
     child.style.textAlign = props.hAlign;
     child.style.verticalAlign = props.vAlign;
     parent.classList.add("textDiv");
+    if(props.hAlign === "center"){
+      parent.classList.add("textCenter");
+    }else if(props.hAlign === "right"){
+      parent.classList.add("textRight");
+    }else{
+      parent.classList.add("textLeft");
+    }
+    if(props.vAlign === "middle"){
+      parent.classList.add("textMiddle");
+    }else if(props.vAlign === "bottom"){
+      parent.classList.add("textBottom");
+    }else{
+      parent.classList.add("textTop");
+    }
+
     parent.id = owner.getHash() + "t";
     child.id = owner.getHash() + "p";
 
