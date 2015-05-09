@@ -170,8 +170,16 @@ var HHgHolder = function(props){
     this._canvas = canvas;
   };
 
+  p.setTextCanvas = function(canvas){
+    this._textCanvas = canvas;
+  };
+
   p.getCanvas = function(){
     return this._canvas;
+  };
+
+  p.getTextCanvas = function(){
+    return this._textCanvas;
   };
 
   p.doFrameDump = function(){
