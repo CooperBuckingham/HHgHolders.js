@@ -16,6 +16,7 @@
   //add alignment system
     //maybe default "left edge, top edge" etc gets.
     //align to parent top, center bottom
+  //9 slice
 
 //BUGS
   //fonts and font shadows now fuzzing on scale

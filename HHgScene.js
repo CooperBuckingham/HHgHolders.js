@@ -172,7 +172,8 @@ function doAddFunctionsToScene(scene){
     var newList = scene._finalDirtyHolders;
     scene._finalDirtyHolders = {};
 
-    var holder, div, insideDiv, changes;
+    var holder, div, insideDiv, changes, scaleX, scaleY, scaleString, insideScaleStringX, insideScaleStringY, insideSkewStringX, insideSkewStringY, insideSkewString, insideScaleString, insideTransformString, adjustedPosition, divTransformString;
+
     for(var thing in newList){
 
       holder = newList[thing];
@@ -217,39 +218,44 @@ function doAddFunctionsToScene(scene){
       //=============== Begin conditional for transform types
         if(changes.scale === true || changes.rotation === true || changes.position === true ){
           //the inside div only handles visuals and self rotation
-          var scaleX = holder.getWidthNet() /  parseFloat(insideDiv.style.width);
-          var scaleY = holder.getHeightNet() / parseFloat(insideDiv.style.height);
+          scaleX = holder.getWidthNet() /  parseFloat(insideDiv.style.width);
+          scaleY = holder.getHeightNet() / parseFloat(insideDiv.style.height);
 
-          var scaleString = "scale(" + scaleX + "," + scaleY + ") ";
+          scaleString = "scale(" + scaleX + "," + scaleY + ") ";
 
           // var am90 = holder.getRotationNet() % 180;
           // var am90 = Math.abs(am90 - 90);
           // var pVal = am90/90;
 
-          var insideScaleStringX = "";
-          var insideScaleStringY = "";
+          insideScaleStringX = "";
+          insideScaleStringY = "";
           if(holder.test !== "gameholder" && holder.test !== "scene"){
             scaleString = "";
-             var insideScaleStringX = "scaleY("+(  scaleY ) +")";
-             var insideScaleStringY = "scaleX("+(  scaleX ) +")";
+             insideScaleStringX = "scaleY("+(  scaleY ) +")";
+             insideScaleStringY = "scaleX("+(  scaleX ) +")";
           };
 
+          insideSkewStringX = "skewX("+( 0 ) +"deg)";
+          insideSkewStringY = "skewY("+( 0)  +"deg)";
+          insideSkewString = insideSkewStringX + " " + insideSkewStringY;
+          insideScaleString = insideScaleStringX + " " + insideScaleStringY;
+          insideTransformString = "rotate(" + holder.getRotationNet() + "deg" +") " + insideScaleString + " " + insideSkewString;
 
-          var insideSkewStringX = "skewX("+( 0 ) +"deg)";
-          var insideSkewStringY = "skewY("+( 0)  +"deg)";
-          var insideSkewString = insideSkewStringX + " " + insideSkewStringY;
-          var insideScaleString = insideScaleStringX + " " + insideScaleStringY;
+          insideDiv.style.webkitTransform = insideTransformString;
+          insideDiv.style.MozTransform = insideTransformString;
+          insideDiv.style.msTransform = insideTransformString;
+          insideDiv.style.OTransform = insideTransformString;
+          insideDiv.style.transform = insideTransformString;
 
-          insideDiv.style.transform = "rotate(" + holder.getRotationNet() + "deg" +") " + insideScaleString + " " + insideSkewString;
-          var adjustedPosition = holder.getPositionInScreenNet().copy();
-            //adjustedPosition.dividedEquals(holder.getScaleOriginal());
-            //adjustedPosition.dividedEquals(holder.getParent().getScaleNetForChildPosition());
-            //the above 2 string are from when outer div handled the scaling
-            //but this meant that that rotation on inner div was screwing up scale
+          adjustedPosition = holder.getPositionInScreenNet().copy();
 
-            div.style.transform =  scaleString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
+          divTransformString = scaleString + "translate(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px) ";
+          div.style.webkitTransform = divTransformString;
+          div.style.MozTransform = divTransformString;
+          div.style.msTransform = divTransformString;
+          div.style.OTransform = divTransformString;
+          div.style.transform = divTransformString;
 
-          //outsideTransformString = outsideTransformString + "translate3d(" + adjustedPosition.x + "px, " + (-adjustedPosition.y) + "px, 0px) ";
         }
       //======== END Conditional for transform types
 
@@ -323,7 +329,7 @@ function doAddFunctionsToScene(scene){
     owner.getInsideDiv().appendChild(parent);
     var child = document.createElement("pre");
     parent.appendChild(child);
-    var parentScale = owner.getScaleNetForChildScale().x;
+    var parentScale = owner.getScaleNetForChildScale().x * HHgPixelScale;
     var tempFontSize = props.fontSize * parentScale;
     child.style.color = props.color ? props.color.returnString() : "black";
     child.style.fontSize = "" + tempFontSize + "px";
@@ -365,51 +371,69 @@ function doAddFunctionsToScene(scene){
   };
 
   scene.doAddTextToCanvas = function(owner, props){
-    var ctx = owner.getCanvas().getContext("2d"), x, y, textWidth, textHeight, divWidth, divHeight;
+    var can = owner.getCanvas();
+    if(!can){
+      console.log("div has no current canvas");
+      //TODO: add functionality to create canvas here if none exists;
+      return;
+    }
+    var ctx = can.getContext("2d"), x, y, textWidth, textHeight, divWidth, divHeight;
     var parentScale = owner.getScaleNetForChildScale().x;
-    textHeight = props.fontSize * parentScale;
-    ctx.font = "" + textHeight + "px " + props.font ;
-    textWidth = ctx.measureText(props.text).width * parentScale;
 
-    divWidth = owner.getWidthNet() * HHgHoldCanvasUpresScaleBy;
+    var lines = props.text.split("\n");
+
+    var lineHeight = props.fontSize * parentScale * HHgHoldCanvasUpresScaleBy;
+    ctx.font = "" + lineHeight + "px " + props.fontStyle;
+    textHeight = lineHeight * lines.length;
+     divWidth = owner.getWidthNet() * HHgHoldCanvasUpresScaleBy;
     divHeight = owner.getHeightNet() * HHgHoldCanvasUpresScaleBy;
+
 
     if(props.vAlign === "top"){
       y = 0;
-      ctx.textBaseline = "top";
+      ctx.textBaseline = "bottom";
     }else if(props.vAlign === "middle"){
       y = (divHeight - textHeight) / 2;
-      ctx.textBaseline = "middle";
-    }else{
-      y = divHeight;
       ctx.textBaseline = "bottom";
-    }
-
-    if(props.hAlign === "left"){
-      x = 0;
-      ctx.textAlign = "left";
-    }else if(props.hAlign === "center"){
-      x = (divWidth - textWidth) / 2;
-      ctx.textAlign = "center";
     }else{
-      x = divWidth;
+      y = divHeight - textHeight;
+      ctx.textBaseline = "top";
 
-      ctx.textAlign = "right";
     }
 
     if(props.shadow !== undefined){
-      ctx.shadowOffsetX = props.shadow.x * parentScale;
-      ctx.shadowOffsetY = props.shadow.y  * parentScale;
-      ctx.shadowColor = props.shadow.color;
-      ctx.shadowBlur = props.shadow.blur  * parentScale;
+      ctx.shadowOffsetX = props.shadow.x * parentScale * HHgHoldCanvasUpresScaleBy;
+      ctx.shadowOffsetY = props.shadow.y  * parentScale * HHgHoldCanvasUpresScaleBy;
+      ctx.shadowColor = props.shadow.color.returnString();
+      ctx.shadowBlur = props.shadow.blur  * parentScale * HHgHoldCanvasUpresScaleBy;
     }
 
     if(props.stroke !== undefined){
-      ctx.strokeStyle = props.stroke.color;
+      ctx.strokeStyle = props.stroke.color.returnString();
       ctx.lineWidth = props.stroke.width;
       ctx.strokeText(props.text, x, y);
     }
-    ctx.fillText(props.text,x,y);
+
+    ctx.fillStyle = props.color.returnString();
+
+
+
+    for(var i = 0; i < lines.length; i++){
+      textWidth = ctx.measureText(lines[i]).width * parentScale;
+        if(props.hAlign === "left"){
+          x = 0;
+        }else if(props.hAlign === "center"){
+          x = (divWidth - textWidth) / 2;
+        }else{
+          x = divWidth;
+        }
+
+      ctx.globalCompositeOperation="destination-over";
+      ctx.fillText(lines[i],x,y + (lineHeight * (i+1)));
+
+    }
+
+
   };
   //========================================================
 
@@ -786,6 +810,12 @@ function HHgUpdateHardwareScreen(){
   HHgScene.getDiv().style.maxHeight = "" + HHgGameHolder.getScaleNetForChildScale().x * HHgScreen.maxh + "px";
 };
 
+/*element.style.webkitTransform = "";
+element.style.MozTransform = "";
+element.style.msTransform = "";
+element.style.OTransform = "";
+element.style.transform = "";
+*/
 
 
 
