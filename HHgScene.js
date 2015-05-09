@@ -371,43 +371,77 @@ function doAddFunctionsToScene(scene){
   };
 
   scene.doAddTextToCanvas = function(owner, props){
-    var can = owner.getCanvas();
-    if(!can){
-      console.log("div has no current canvas");
-      //TODO: add functionality to create canvas here if none exists;
-      can = document.createElement('canvas');
-      can.classList.add("canvasAsSprite");
-      can.classList.add(owner.getHash());
-      can.width  = HHgHoldCanvasUpresScaleBy * owner.getWidthNet();
-      can.height = HHgHoldCanvasUpresScaleBy * owner.getHeightNet();
-      owner.getInsideDiv().appendChild(can);
+    var x, y, textWidth, textHeight;
 
-      owner.setCanvas(can);
-    }
+    var can = document.createElement('canvas');
+
+    can.classList.add(owner.getHash());
+
+    owner.getInsideDiv().appendChild(can);
+    var parentScale = owner.getScaleNetForChildScale().x * HHgPixelScale;
+    var width = owner.getWidthNet() * parentScale;
+    var height = owner.getHeightNet() * parentScale;
+    can.width  = width;
+    can.height = height;
+    can.classList.add("canvasAsText");
+
+    owner.setTextCanvas(can);
     var ctx = can.getContext("2d");
-    var x, y, textWidth, textHeight, divWidth, divHeight;
-    var parentScale = owner.getScaleNetForChildScale().x;
 
     var lines = props.text.split("\n");
 
-    var lineHeight = props.fontSize * parentScale * HHgHoldCanvasUpresScaleBy;
+    var lineHeight = props.fontSize * parentScale;
     ctx.font = "" + lineHeight + "px " + props.fontStyle;
     textHeight = lineHeight * lines.length;
-     divWidth = owner.getWidthNet() * HHgHoldCanvasUpresScaleBy;
-    divHeight = owner.getHeightNet() * HHgHoldCanvasUpresScaleBy;
 
 
     if(props.vAlign === "top"){
       y = 0;
       ctx.textBaseline = "bottom";
     }else if(props.vAlign === "middle"){
-      y = (divHeight - textHeight) / 2;
-      ctx.textBaseline = "bottom";
+      y = (can.width - textHeight) / 2;
+      ctx.textBaseline = "midle";
     }else{
-      y = divHeight - textHeight;
-      ctx.textBaseline = "top";
+      y = can.width - textHeight;
+      ctx.textBaseline = "bottom";
 
     }
+
+    if(props.shadow !== undefined){
+      ctx.shadowOffsetX = props.shadow.x * parentScale;
+      ctx.shadowOffsetY = props.shadow.y  * parentScale;
+      ctx.shadowColor = props.shadow.color.returnString();
+      ctx.shadowBlur = props.shadow.blur  * parentScale;
+    }
+
+    if(props.stroke !== undefined){
+      ctx.strokeStyle = props.stroke.color.returnString();
+      ctx.lineWidth = props.stroke.width * parentScale;
+      ctx.strokeText(props.text, x, y);
+    }
+
+    ctx.fillStyle = props.color.returnString();
+
+
+    for(var i = 0; i < lines.length; i++){
+      textWidth = ctx.measureText(lines[i]).width;
+
+        if(props.hAlign === "left"){
+          x = 0;
+        }else if(props.hAlign === "center"){
+          x = (can.width - textWidth) / 2;
+        }else{
+          x = can.width;
+        }
+
+      //ctx.globalCompositeOperation="destination-over";
+      ctx.fillText(lines[i],x,y + (lineHeight * (i+1)));
+    }
+
+  };
+
+  scene.doAddShadowToCanvas = function(canvas, props){
+    var ctx = canvas.getContext("2d");
 
     if(props.shadow !== undefined){
       ctx.shadowOffsetX = props.shadow.x * parentScale * HHgHoldCanvasUpresScaleBy;
@@ -415,34 +449,11 @@ function doAddFunctionsToScene(scene){
       ctx.shadowColor = props.shadow.color.returnString();
       ctx.shadowBlur = props.shadow.blur  * parentScale * HHgHoldCanvasUpresScaleBy;
     }
-
-    if(props.stroke !== undefined){
-      ctx.strokeStyle = props.stroke.color.returnString();
-      ctx.lineWidth = props.stroke.width;
-      ctx.strokeText(props.text, x, y);
-    }
-
-    ctx.fillStyle = props.color.returnString();
-
-
-
-    for(var i = 0; i < lines.length; i++){
-      textWidth = ctx.measureText(lines[i]).width * parentScale;
-        if(props.hAlign === "left"){
-          x = 0;
-        }else if(props.hAlign === "center"){
-          x = (divWidth - textWidth) / 2;
-        }else{
-          x = divWidth;
-        }
-
-      ctx.globalCompositeOperation="destination-over";
-      ctx.fillText(lines[i],x,y + (lineHeight * (i+1)));
-
-    }
-
-
   };
+
+  scene.doRemoveShadowFromCanvas = function(canvas){
+
+  }
   //========================================================
 
   scene.doAddMouseDownAndUpListeners = function(){
