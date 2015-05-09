@@ -38,6 +38,7 @@ var HHgGame = {doStart: function(){
       textOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-600,400), isScreenPos: true});
       textOne.setMouseable(true);
       textOne.setIsDraggable(true);
+      textOne.doAddSprite("pool");
       textOne.doAddParagraphText({text: "X\nX\nX", color: "#cccccc", vAlign: "top", hAlign: "right", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       textOne.doAddBorder(5);
 
@@ -45,6 +46,7 @@ var HHgGame = {doStart: function(){
       textOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-600,0), isScreenPos: true});
       textOne.setMouseable(true);
       textOne.setIsDraggable(true);
+      textOne.doAddSprite("pool");
       textOne.doAddParagraphText({text: "WWWWWXWWWWW\nWWWWWWWWWWXWWWWWWWWWW\nWWWWWXWWWWW", color: "#cccccc", vAlign: "bottom", hAlign: "right", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       textOne.doAddBorder(5);
 

@@ -375,9 +375,17 @@ function doAddFunctionsToScene(scene){
     if(!can){
       console.log("div has no current canvas");
       //TODO: add functionality to create canvas here if none exists;
-      return;
+      can = document.createElement('canvas');
+      can.classList.add("canvasAsSprite");
+      can.classList.add(owner.getHash());
+      can.width  = HHgHoldCanvasUpresScaleBy * owner.getWidthNet();
+      can.height = HHgHoldCanvasUpresScaleBy * owner.getHeightNet();
+      owner.getInsideDiv().appendChild(can);
+
+      owner.setCanvas(can);
     }
-    var ctx = can.getContext("2d"), x, y, textWidth, textHeight, divWidth, divHeight;
+    var ctx = can.getContext("2d");
+    var x, y, textWidth, textHeight, divWidth, divHeight;
     var parentScale = owner.getScaleNetForChildScale().x;
 
     var lines = props.text.split("\n");
@@ -655,8 +663,8 @@ function doAddFunctionsToScene(scene){
     var ctx = canvas.getContext('2d');
     canvas.classList.add(holder.getHash());
     var div = holder.getInsideDiv();
-    canvas.width  = 2 * holder.getWidthNet();
-    canvas.height = 2 * holder.getHeightNet();
+    canvas.width  = HHgHoldCanvasUpresScaleBy * holder.getWidthNet();
+    canvas.height = HHgHoldCanvasUpresScaleBy * holder.getHeightNet();
     var color = whitePixelTintColor;
 
     holder.setCanvas(canvas);
