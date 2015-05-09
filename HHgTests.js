@@ -47,7 +47,7 @@ var HHgGame = {doStart: function(){
       textOne.setMouseable(true);
       textOne.setIsDraggable(true);
       textOne.doAddSprite("pool");
-      textOne.doAddParagraphText({text: "WWWWWXWWWWW\nWWWWWWWWWWXWWWWWWWWWW\nWWWWWXWWWWW", color: "#cccccc", vAlign: "bottom", hAlign: "right", fontSize: "50", shadow: {x: 5, y: 5, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
+      textOne.doAddParagraphText({text: "WWWWWXWWWWW\nWWWWWWWWWWXWWWWWWWWWW\nWWWWWXWWWWW", color: "#cccccc", vAlign: "center", hAlign: "right", fontSize: "50", shadow: {x: 5, y: 5, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       textOne.doAddBorder(5);
 
       var textOne = HHgGetHolder({w:400,h:400});
@@ -55,15 +55,15 @@ var HHgGame = {doStart: function(){
       textOne.setMouseable(true);
       textOne.setIsDraggable(true);
       textOne.doAddSprite("pool");
-      textOne.doAddCanvasText({text: "X\nX\nX", color: "#cccccc", vAlign: "middle", hAlign: "left", fontSize: "50", shadow: {x: 5, y: 5, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
+      textOne.doAddCanvasText({text: "X\nX\nX", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 5, y: 5, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       textOne.doAddBorder(5);
 
        var textOne = HHgGetHolder({w:400,h:400});
-      textOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(600,0), isScreenPos: true});
+      textOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(0,0), isScreenPos: true});
       textOne.setMouseable(true);
       textOne.setIsDraggable(true);
       textOne.doAddSprite("pool");
-      textOne.doAddCanvasText({text: "111X111\n2222X2222\n33333X33333", color: "#cccccc", vAlign: "middle", hAlign: "left", fontSize: "50", shadow: {x: 5, y: 5, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
+      textOne.doAddCanvasText({text: "11111111111X11111111111\n2222X2222\n3333333333X3333333333", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 5, y: 5, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       textOne.doAddBorder(5);
 
     // var theOne = HHgGetHolder({w:100,h:100});

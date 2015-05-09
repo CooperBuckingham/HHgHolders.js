@@ -394,17 +394,13 @@ function doAddFunctionsToScene(scene){
     ctx.font = "" + lineHeight + "px " + props.fontStyle;
     textHeight = lineHeight * lines.length;
 
-
+    ctx.textBaseline = "bottom";
     if(props.vAlign === "top"){
       y = 0;
-      ctx.textBaseline = "bottom";
     }else if(props.vAlign === "middle"){
-      y = (can.width - textHeight) / 2;
-      ctx.textBaseline = "midle";
+      y = (height - textHeight) / 2;
     }else{
-      y = can.width - textHeight;
-      ctx.textBaseline = "bottom";
-
+      y = height - textHeight;
     }
 
     if(props.shadow !== undefined){
@@ -422,22 +418,35 @@ function doAddFunctionsToScene(scene){
 
     ctx.fillStyle = props.color.returnString();
 
-
+    var widest = 0;
     for(var i = 0; i < lines.length; i++){
       textWidth = ctx.measureText(lines[i]).width;
-
+      if(textWidth > widest){
+        widest = textWidth;
+      }
         if(props.hAlign === "left"){
           x = 0;
+          ctx.textAlign = "left";
         }else if(props.hAlign === "center"){
-          x = (can.width - textWidth) / 2;
+          x = width / 2;
+          ctx.textAlign = "center";
         }else{
-          x = can.width;
+          x = width;
+          ctx.textAlign = "right";
         }
 
       //ctx.globalCompositeOperation="destination-over";
       ctx.fillText(lines[i],x,y + (lineHeight * (i+1)));
     }
 
+    // if(widest > width){
+    //   ctx.scale(width / widest, width/widest);
+    // }
+
+  };
+
+  scene.flipCanvasH = function(canvas){
+    canvas.getContext("2d").scale(-1,1);
   };
 
   scene.doAddShadowToCanvas = function(canvas, props){
@@ -449,6 +458,7 @@ function doAddFunctionsToScene(scene){
       ctx.shadowColor = props.shadow.color.returnString();
       ctx.shadowBlur = props.shadow.blur  * parentScale * HHgHoldCanvasUpresScaleBy;
     }
+    //ctx.globalCompositeOperation="destination-over";
   };
 
   scene.doRemoveShadowFromCanvas = function(canvas){
