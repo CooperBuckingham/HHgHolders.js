@@ -33,7 +33,7 @@ var HHgHoldCanvasUpresScaleBy = 2;
 //DISABLED FOR NOW
 var HHgForceHardwareRendering = false;
 
-var HHgTestBoxes = false;
+
 
 
 

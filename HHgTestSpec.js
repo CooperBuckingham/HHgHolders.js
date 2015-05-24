@@ -7,6 +7,7 @@
 //TODO features
   //add sound
   //add sprite map system
+  //add frame by frame sequencing for holder sprite animations
   //add object pool
   //add sound pool
   //add persistence

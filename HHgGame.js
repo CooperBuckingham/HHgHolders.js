@@ -25,5 +25,16 @@
       // an action (move, rotate, scale, sound, timer) (sequence or cluster)
       // text (paragraph or canvas text)
       // override mouse down/ move/ up functions on holder
-  }
+  };
+
+  //called at the beginning of every frame by HHgActionManager
+  //note, it's not neccessary to use the game loop
+  //holder actions are already calculated per frame
+  //and events are processed at the end of every frame
+  //but if you wanted to add a physics system or the like
+  //doLoop is the hook into the requestAnimationFrame loop
+  HHgGame.doLoop = function(deltaTime){
+
+  };
+
 })();

@@ -59,7 +59,7 @@ HHgActionManager.actionLoop = function( animateActions ) {
 
     function recurse( thisFrameTime ) {
         window.requestAnimationFrame(recurse);
-        thisFrameTime = thisFrameTime && thisFrameTime > 5000 ? thisFrameTime : window.performance.now();
+        thisFrameTime = thisFrameTime && thisFrameTime > highEnd ? thisFrameTime : window.performance.now();
         lastFrameTime = lastFrameTime || thisFrameTime;
         deltaT = thisFrameTime - lastFrameTime;
 
@@ -93,6 +93,7 @@ HHgActionManager.doStart = function(){
 
     window.setInterval(function(){
        if(!HHgPaused){
+        HHgGame.doLoop(interval);
         HHgActionManager.doActionsForHolders(interval);
         HHgScene.doEndOfFrame();
         HHgScene.doUpdateHolders();
@@ -100,6 +101,7 @@ HHgActionManager.doStart = function(){
     }, frameInterval );
   }else{
       this.actionLoop(function( deltaT ) {
+        HHgGame.doLoop(deltaT/1000);
         HHgActionManager.doActionsForHolders(deltaT/1000);
         HHgScene.doEndOfFrame();
         HHgScene.doUpdateHolders();
