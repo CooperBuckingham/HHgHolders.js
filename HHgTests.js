@@ -1,6 +1,7 @@
 
 var HHgTestDashSceneDiv = true;
 var HHgShowTestGrid = true;
+var HHgTestBoxes = false;
 
 var HHgTestsOverride = true; //change this to true and game will begin in start function below
 var HHgGame = {doStart: function(){
