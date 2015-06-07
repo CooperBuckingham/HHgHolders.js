@@ -204,6 +204,7 @@ function HHgActionTimer(owner, totalTime, onComplete){
   this.whatShouldIDoThisFrame = function(deltaT){
     this.timeSoFar += deltaT;
     if(this.timeSoFar >= this.totalTime){
+
       this.finalFrame(this);
       return;
     }

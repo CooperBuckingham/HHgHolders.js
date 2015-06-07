@@ -270,4 +270,71 @@ html .textDiv.textBottom pre{
 
 }
 
+/*THIS IS ALL FOR HHGHOLDER WEB DEPLOY, YOU CAN USE FOR YOUR OWN DEMO OR REMOVE*/
+
+#WEBSITE_NAV{
+  border-bottom: 1px solid white;
+  display: inline;
+  background-color: black;
+  width: 100%;
+  height: 3em;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  text-align: right;
+  vertical-align: middle;
+}
+
+#WEBSITE_NAV_BOX{
+  margin-top:.8em;
+  padding-right: 1em;
+
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.WEBSITE_BUTTON{
+  margin-left: 1em;
+
+  text-decoration: none;
+  background-color: transparent;
+  color: gray;
+  font-size: 1.4em;
+ /* font-weight: bold;*/
+}
+
+.WEBSITE_BUTTON:hover{
+  color: white;
+}
+
+.WEBSITE_BUTTON_ACTIVE{
+  color: #cc4444;
+}
+
+#WEBSITE_LOWER{
+border-top: 1px solid white;
+  display: inline;
+  background-color: black;
+  width: 100%;
+  height: 3em;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  text-align: right;
+  vertical-align: middle;
+}
+
+#WEBSITE_LOWER_BOX{
+   margin-top:.8em;
+  padding-right: 1em;
+
+  display: inline-block;
+  vertical-align: middle;
+
+  text-decoration: none;
+  background-color: transparent;
+  color: gray;
+  font-size: 1.2em;
+}
+
 

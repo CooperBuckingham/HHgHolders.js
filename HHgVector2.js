@@ -119,12 +119,12 @@ HHgVector2.prototype = Object.create(HHgVector2.prototype, {
       return this;
     };
 
-    p.dividedBy = p.divide = function(){
+    p.dividedBy = p.divide = p.timesInverse = function(){
       this.vBtemp = this.parse(arguments);
       return new HHgVector2(this.x / this.vBtemp.x, this.y / this.vBtemp.y);
     };
 
-    p.dividedEquals = function(){
+    p.dividedEquals = p.timesInverseEquals = function(){
       this.vBtemp = this.parse(arguments);
       this.setXY(this.x / this.vBtemp.x, this.y / this.vBtemp.y);
       return this;

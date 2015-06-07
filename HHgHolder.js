@@ -440,6 +440,7 @@ var HHgHolder = function(props){
     this._zIndex+= z;
     this.doNotifySceneOfUpdates();
     if(doNotUpdateChildren !== true){
+      if(!this._children) return;
       for(var i = 0; i < this._children.length; i++){
         this._children[i].setZIndexBy(z);
       }
@@ -797,6 +798,7 @@ var HHgHolder = function(props){
     }
   };
   p.doRemoveActionByName = function(name){
+    if(!this._actions) return;
     this.doRemoveAction(this._actions[name]);
   };
 
@@ -1069,7 +1071,11 @@ var HHgHolder = function(props){
   };
 
   p.doActionSequenceForever = function(sequence){
-    //TODO: implement repeat sequence forever
+
+    var storedSequence = sequence;
+    sequence.push(sequence);
+    //var customAct = this.makeAction("custom")
+    this.doActionSequence(sequence);
   }
 
   //============= MOUSE =================

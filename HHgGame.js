@@ -1,11 +1,10 @@
 
 
 
-(function(){
 
-  //Setting test override in HHgTests.js disables this file
+  //Setting test override in HHgTests.js disables this file for testing
   //otherwise it's the hook in for all custom gameplay
-  if(HHgTestsOverride === true) return;
+  if(window.HHgTestsOverride !== true){
 
   HHgGame.doStart = function(){
 
@@ -27,7 +26,8 @@
       // override mouse down/ move/ up functions on holder
   };
 
-  //called at the beginning of every frame by HHgActionManager
+
+   //called at the beginning of every frame by HHgActionManager
   //note, it's not neccessary to use the game loop
   //holder actions are already calculated per frame
   //and events are processed at the end of every frame
@@ -36,5 +36,6 @@
   HHgGame.doLoop = function(deltaTime){
 
   };
+}
 
-})();
+

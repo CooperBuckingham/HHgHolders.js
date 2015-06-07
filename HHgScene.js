@@ -127,6 +127,7 @@ HHgSceneDoStart = function(){
   };
   buildHolderFromScratch();
   //ALL CUSTOM GAME CODE START IN THIS FUNCTION:
+  console.log(HHgGame);
   HHgGame.doStart();
 };
 

@@ -353,6 +353,14 @@ var HHg = {
       return props.onFinish;
     }
 
+    if(props.cb){
+      return props.cb;
+    }
+
+    if(props.callback){
+      return props.callback;
+    }
+
     return undefined;
 
   },
