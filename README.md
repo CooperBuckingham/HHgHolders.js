@@ -1,30 +1,31 @@
 
 <pre>
 //====================================================================
-HHgEngine v0.5
+HHgHolders.js v0.5.1
 by Cooper Buckingham
-HeavyHandedGames.com
+HHgHolders.com
 
-This is a full service, 2d engine, written in javascript, that makes use of all
-traditional HTML and CSS elements but extrapolates them into a standard
-sprite system, akin to Cocos2d or Apple's SpriteKit, focusing on
+This is a 2d object oriented engine, written in javascript. It only uses
+the DOM for rendering. While extrapolating everything else into a standard
+sprite system, akin to Cocos2d or Apple's SpriteKit, that focuses on
 sprites and actions.
 
-The standard usage is to use only javascript, and then allow the engine
-to handle the rest. But all elements remain as standard DIVs so any
-modifications can be made to HTML/CSS/Javascript that would be made to
-a standard web page.
+The standard usage is to simply use the HHgHolder class and then allow the engine
+to handle the rest. You get to completely ignore HTML and CSS. But all elements
+remain as standard DIVs behind the scenes, so any modifications can be made to
+HTML/CSS/Javascript that would be made to a standard web page.
 
 The engine functions entirely independantly of the DOM, except for HHgScene.js
 which updates all the dirty visible elements per frame. HHgScene could be modified
-to "translate" the engine's data into any one of a number of visual forms.
+to "translate" the engine's data into any one of a number of visual forms/renderers.
+The rest of engine is agnostic.
 
 The engine is most notably missing a physics system, but in general is not
 really designed to be a thousands of things bouncing and updating engine.
 Though one could easily be added and then use updates on HHgHolders.
 
 
-Doc v0.1
+Doc v0.1.5
 //====================================================================
 
 Preface: for the most part, you should not need to modify many engine files
