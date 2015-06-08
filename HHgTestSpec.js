@@ -18,6 +18,7 @@
     //maybe default "left edge, top edge" etc gets.
     //align to parent top, center bottom
   //9 slice
+  //killing holders needs to clean up actions they are running
 
 //BUGS
   //fonts and font shadows now fuzzing on scale

@@ -89,7 +89,7 @@ console.log("TEST", HHgTestBodyData);
     buttonList[4].innerHTML = "DEMO3";
     buttonList[4].setAttribute('href', "./index3.html");
     buttonList[5].innerHTML = "HHG";
-    buttonList[5].setAttribute('href', "http://heavyhandedgames.com");
+    buttonList[5].setAttribute('href', "http://www.heavyhandedgames.com");
 
     document.body.appendChild(nav);
     document.body.appendChild(lower);

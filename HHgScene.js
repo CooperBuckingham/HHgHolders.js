@@ -521,8 +521,9 @@ function doAddFunctionsToScene(scene){
 
     HHgTopHolder.addEventListener("touchstart", function(e){
         e.preventDefault();
-        touch = e.changedTouches[0];
 
+        touch = e.changedTouches[0];
+        //also e.targetTouches, and e.touches
         HHgTrackedTouch = touch.identifier;
         relX =  touch.pageX;
         relY =  touch.pageY;
@@ -538,6 +539,7 @@ function doAddFunctionsToScene(scene){
 
       for(i = 0; i < touchList.length; i++){
         if(touchList[i].identifier === HHgTrackedTouch){
+
           relX =  touchList[i].pageX;
           relY =  touchList[i].pageY;
           mouseXY = new HHgVector2(relX,relY);
@@ -552,7 +554,8 @@ function doAddFunctionsToScene(scene){
     HHgTopHolder.addEventListener("touchmove", function(e){
       e.preventDefault();
       touchList = e.changedTouches;
-      for(i = 0; i < touchList; i++){
+
+      for(i = 0; i < touchList.length; i++){
         if(touchList[i].identifier === HHgTrackedTouch){
           relX =  touchList[i].pageX;
           relY =  touchList[i].pageY;
@@ -565,6 +568,7 @@ function doAddFunctionsToScene(scene){
       return false;
       }, false);
 
+    //does this also need "touchleave"?
     HHgTopHolder.addEventListener("touchcancel", function(e){
       e.preventDefault();
       touchList = e.changedTouches;
