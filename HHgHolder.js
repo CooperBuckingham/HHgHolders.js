@@ -934,41 +934,45 @@ var HHgHolder = function(props){
   };
 
   p.doAction = function(actionName, props){
+    if(typeof actionName === "object"){
+      this.doStoredAction(actionName);
+      return;
+    }
     this.returnActionFunction(actionName).call(this,props);
   };
 
   p.returnActionFunction = function(name){
     switch(name.toLowerCase()){
       case "timer":
-      return this.doActionTimer.bind(this);
+      return this.doActionTimer;
       case "followquad":
-      return this.doActionFollowQuad.bind(this);
+      return this.doActionFollowQuad;
       case "scaleforever":
-      return this.doActionScaleForever.bind(this);
+      return this.doActionScaleForever;
       case "scaleto":
-      return this.doActionScaleTo.bind(this);
+      return this.doActionScaleTo;
       case "scaleby":
-      return this.doActionScaleBy.bind(this);
+      return this.doActionScaleBy;
       case "rotateforever":
-      return this.doActionRotateForever.bind(this);
+      return this.doActionRotateForever;
       case "rotaterightto":
-      return this.doActionRotateRightTo.bind(this);
+      return this.doActionRotateRightTo;
       case "rotateleftto":
-      return this.doActionRotateLeftTo.bind(this);
+      return this.doActionRotateLeftTo;
       case "rotateby":
-      return this.doActionRotateBy.bind(this);
+      return this.doActionRotateBy;
       case "moveby":
       case "moveinscreenby":
-      return this.doActionMoveInScreenBy.bind(this);
+      return this.doActionMoveInScreenBy;
       case "moveto":
       case "moveinscreento":
-      return this.doActionMoveInScreenTo.bind(this);
+      return this.doActionMoveInScreenTo;
       case "moveinscreenforever":
-      return this.doActionMoveInScreenForever.bind(this);
+      return this.doActionMoveInScreenForever;
       case "custom":
-      return this.doActionCustom.bind(this);
+      return this.doActionCustom;
       case "playsound":
-      return this.doActionPlaySound.bind(this);
+      return this.doActionPlaySound;
     }
   };
 
@@ -984,7 +988,7 @@ var HHgHolder = function(props){
     }else if(storedAction.isActionSequence){
       return this.doActionSequence(storedAction);
     }else{
-      return {owner: storedAction.props.owner, name: storedAction.actionCall.call(undefined, storedAction.props)};
+      return {owner: storedAction.props.owner, name: storedAction.actionCall.call(this, storedAction.props)};
     }
   };
 
@@ -1030,6 +1034,8 @@ var HHgHolder = function(props){
 
   p.doActionClusterForever = function(cluster){
     //TODO: implement repeating clusters
+    cluster.repeatF = true;
+    //cluster.repeatN = {count}
   }
 
   p.makeActionSequence = function(storedActions, name, onComplete){

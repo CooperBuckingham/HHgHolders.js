@@ -6,7 +6,7 @@ var HHgTestDashSceneDiv = false;
 
 var HHgShowTestGrid = false;
 var HHgTestBoxes = false;
-var HHgDoWebsiteDemoDeploy = true;
+var HHgDoWebsiteDemoDeploy = false;
 var HHgActionDummy;
 
 
@@ -186,95 +186,28 @@ console.log("TEST", HHgTestBodyData);
       return;
     }
 
-    if(HHgTestBodyData === "2"){
-      var colorPicker = ["#111111", "#000000", "#110000", "#090909", "#151515","#000000", "#190009", "#190900", "#191105", "#222222", "#161616" ];
-            var colorPicker2 = ["#ffffff", "#ffffff", "#ffffff", "#ff6644", "#cccccc","#aaaaaa", "#ffffff", "#ffffff", "#gggggg", "#aaaaaa", "#bbbbbb" ];
-
-
-            var tWidth = 1920;
-            var tHeight = 1080;
-            var tSide = Math.floor( 1920 / 30);
-
-            function colorRandom(){
-              return Math.floor((Math.random() * colorPicker.length - 1) + 1);
-            }
-
-            function changeBlock(){
-              if(Math.random() > .7){
-                return true;
-              }
-              return false;
-            }
-
-            function randomTime(){
-              return (Math.random() * 100);
-            }
-
-            HHgGame.doNewColorLoop = function (){
-              var arr = HHgGame.demoDivs;
-              for(var i = 0; i < arr.length; i++){
-                if(changeBlock() === true){
-                   arr[i].setBackgroundColor(colorPicker[colorRandom()]);
-                }
-              }
-
-              var func = function(){
-                HHgGame.doNewColorLoop();
-              }
-              var time = randomTime()/1000;
-              if(!HHgActionDummy){
-                var temp = HHgGetHolder({w:0,y:0});
-                temp.doAddToNewParent();
-                HHgActionDummy = temp;
-              }
-
-              HHgActionDummy.doActionTimer({cb:func, time: time});
-            }
-
-            HHgGame.demoDivs = [];
-            var xNum = 1920 / tSide * .5
-            var yNum = 1920 / tSide * .5
-
-              var doMouseDown = function(){
-              this.doRemoveActionByName("mousedownscale");
-              this.setScaleStored();
-              this.setZIndexBy(1);
-              this.doAddBorder({width: 2, color: "white"});
-              this.doActionScaleForever({scaleX:2, scaleY: 2, name: "mousedownscale"});
-              //this.doActionPlaySound("click");
-              //this.doActionRotateForever({speed:-300, name: "mousemoverotate"});
-            }
-
-            var doMouseUp = function(mouseWasOverWhenReleased){
-              this.doRemoveActionByName("mousedownscale");
-              this.doActionScaleForever({scaleX:.94, scaleY: .94, name: "mousedownscale"});
-
-              this.isBeingDragged = false;
-            };
-
-
-            for(var x = -xNum; x < xNum; x++){
-
-              for(var y = -yNum; y < yNum; y++){
-
-                topPos = y * tSide + tSide * .5;
-                leftPos = x * tSide + tSide * .5;
-                var holder = HHgGetHolder({w: tSide -1, h: tSide -1});
-                HHgGame.demoDivs.push(holder);
-                holder.doAddToNewParent({x:leftPos,y:topPos});
-                holder.doMakeRectangle({color:colorPicker[colorRandom()] });
-                holder.setIsDraggable( true);
-                holder.setMouseable(true);
-                holder.doMouseDown = doMouseDown;
-                holder.doMouseUp = doMouseUp;
-
-              }
-            }
-
-            HHgGame.doNewColorLoop();
-    }
-
   //==================== ACTION TESTS ==================
+  if(true){
+   var thing = HHgGetHolder({w:100,h:100});
+   var test = HHgGetHolder({w:50, h:50});
+   thing.doMoveToNewParent();
+   thing.doMakeRectangle({borderRadius: 10, color:"green"});
+   test.doMoveToNewParent({x: -100, y: -100});
+   test.doMakeRectangle({borderRadius: 5, color:"red"});
+   var grow = thing.makeAction("scaleBy", {scale: 2, time: 2});
+   var move = thing.makeAction("moveBy", {x: 100, y: 100, time: 2});
+   var shrink = thing.makeAction("scaleTo", {scale: 1, time: 2});
+   //var seq = thing.makeActionSequence([grow, move, shrink]);
+   //var seq2 = thing.makeActionSequence([grow, move, shrink]);
+   //var move2 = thing.makeAction("moveBy", {x: 100, y: 100, time: 2});
+   //var seqAll = thing.makeActionSequence([grow, move, shrink, move2]);
+   //thing.doActionSequence(seqAll);
+   thing.doAction(grow);
+   setTimeout(thing.doAction.bind(thing, grow), 3000);
+   test.doAction(grow);
+
+  }
+
   if(false){
     var parMoving = HHgGetHolder({w:100,h:100});
     parMoving.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-960,540), isScreenPos: true});
@@ -371,7 +304,95 @@ console.log("TEST", HHgTestBodyData);
   }
     //END TEST
 
-    if(HHgTestBodyData === "3"){
+    if(HHgTestBodyData === "2" && HHgDoWebsiteDemoDeploy){
+      var colorPicker = ["#111111", "#000000", "#110000", "#090909", "#151515","#000000", "#190009", "#190900", "#191105", "#222222", "#161616" ];
+      var colorPicker2 = ["#ffffff", "#ffffff", "#ffffff", "#ff6644", "#cccccc","#aaaaaa", "#ffffff", "#ffffff", "#gggggg", "#aaaaaa", "#bbbbbb" ];
+
+
+      var tWidth = 1920;
+      var tHeight = 1080;
+      var tSide = Math.floor( 1920 / 30);
+
+      function colorRandom(){
+        return Math.floor((Math.random() * colorPicker.length - 1) + 1);
+      }
+
+      function changeBlock(){
+        if(Math.random() > .7){
+          return true;
+        }
+        return false;
+      }
+
+      function randomTime(){
+        return (Math.random() * 100);
+      }
+
+      HHgGame.doNewColorLoop = function (){
+        var arr = HHgGame.demoDivs;
+        for(var i = 0; i < arr.length; i++){
+          if(changeBlock() === true){
+             arr[i].setBackgroundColor(colorPicker[colorRandom()]);
+          }
+        }
+
+        var func = function(){
+          HHgGame.doNewColorLoop();
+        }
+        var time = randomTime()/1000;
+        if(!HHgActionDummy){
+          var temp = HHgGetHolder({w:0,y:0});
+          temp.doAddToNewParent();
+          HHgActionDummy = temp;
+        }
+
+        HHgActionDummy.doActionTimer({cb:func, time: time});
+      }
+
+      HHgGame.demoDivs = [];
+      var xNum = 1920 / tSide * .5
+      var yNum = 1920 / tSide * .5
+
+        var doMouseDown = function(){
+        this.doRemoveActionByName("mousedownscale");
+        this.setScaleStored();
+        this.setZIndexBy(1);
+        this.doAddBorder({width: 2, color: "white"});
+        this.doActionScaleForever({scaleX:2, scaleY: 2, name: "mousedownscale"});
+        //this.doActionPlaySound("click");
+        //this.doActionRotateForever({speed:-300, name: "mousemoverotate"});
+      }
+
+      var doMouseUp = function(mouseWasOverWhenReleased){
+        this.doRemoveActionByName("mousedownscale");
+        this.doActionScaleForever({scaleX:.94, scaleY: .94, name: "mousedownscale"});
+
+        this.isBeingDragged = false;
+      };
+
+
+      for(var x = -xNum; x < xNum; x++){
+
+        for(var y = -yNum; y < yNum; y++){
+
+          topPos = y * tSide + tSide * .5;
+          leftPos = x * tSide + tSide * .5;
+          var holder = HHgGetHolder({w: tSide -1, h: tSide -1});
+          HHgGame.demoDivs.push(holder);
+          holder.doAddToNewParent({x:leftPos,y:topPos});
+          holder.doMakeRectangle({color:colorPicker[colorRandom()] });
+          holder.setIsDraggable( true);
+          holder.setMouseable(true);
+          holder.doMouseDown = doMouseDown;
+          holder.doMouseUp = doMouseUp;
+
+        }
+      }
+
+      HHgGame.doNewColorLoop();
+    }
+
+    if(HHgTestBodyData === "3" && HHgDoWebsiteDemoDeploy){
       //do game thing here maybe
       //temp copy of test 1
       console.log("DEMO 3");
@@ -426,7 +447,7 @@ console.log("TEST", HHgTestBodyData);
     }
 
 //============================ PERFORMANCE ROTATION TEST =====================
-    if(HHgTestBodyData === "1"){
+    if(HHgTestBodyData === "1" && HHgDoWebsiteDemoDeploy){
 
         //theOne.doActionFollowQuad({cx: 0, cy: 540, x: 800, y: -540, time: 10, easeIn: 25, easeOut: 25 })
         //theOne.doActionRotateBy({rotation:360,time: 30});

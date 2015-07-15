@@ -43,6 +43,14 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
     if(action.sequenceChain){
       action.sequenceChain();
     }
+
+    if(action.repeatF){
+      action.doRepeat();
+    }else if(action.repeatN > 0){
+      action.repeatN--;
+      action.doRepeat();
+    }
+    //should this still be removed if repeating?
     action.owner.doRemoveAction(action);
   };
 
