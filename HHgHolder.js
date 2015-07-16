@@ -973,13 +973,15 @@ var HHgHolder = function(props){
       return this.doActionCustom;
       case "playsound":
       return this.doActionPlaySound;
+      default:
+      throw new Error("ACTION NAME ERROR");
     }
   };
 
   //============= ACTION CLUSTERS AND SEQUENCES =============
 
   p.makeAction = p.makeStoredAction = p.storeAction = function(actionName, props){
-    return {actionCall: this.returnActionFunction(actionName), props: props, owner: this};
+    return {actionCall: this.returnActionFunction(actionName), props: props}; //removed owner: this
   };
 
   p.doStoredAction = p.callStoredAction = function(storedAction){
@@ -988,7 +990,8 @@ var HHgHolder = function(props){
     }else if(storedAction.isActionSequence){
       return this.doActionSequence(storedAction);
     }else{
-      return {owner: storedAction.props.owner, name: storedAction.actionCall.call(this, storedAction.props)};
+      console.log(storedAction);
+      return {owner: this, name: storedAction.actionCall.call(this, storedAction.props)};
     }
   };
 
@@ -1009,6 +1012,7 @@ var HHgHolder = function(props){
         longestTime = tempAction.props.time;
       }
     }
+    //TODO: examine if binding in here is going to mess with expectations of context changing to runner
     var func = function(){
       this.props.onComplete();
     };
@@ -1019,7 +1023,7 @@ var HHgHolder = function(props){
 
     finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: func.bind(finalActions), sequenceChain: sFunc.bind(finalActions)  } ) );
     finalActions.isActionCluster = true;
-    finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions, owner: this, onComplete: onComplete};
+    finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions, owner: this};
     return finalActions;
   };
 
@@ -1053,13 +1057,18 @@ var HHgHolder = function(props){
     for(i = 0; i < finalActions.length; i++){
       tempAction = finalActions[i];
       finalActions.props.time += tempAction.props.time;
+      finalActions[i] = HHg.copyActionShell(tempAction);
+    }
 
+    for(i = 0; i < finalActions.length; i++){
+      tempAction = finalActions[i];
       if(i < finalActions.length - 1){
         var newAction = finalActions[i+1];
         var func = function(sequence, nextAction){
           sequence.props.myActions.push(this.doStoredAction(nextAction));
         };
         tempAction.props.sequenceChain = func.bind(this,finalActions, newAction);
+
       }else{
         var func = function(){
           this.props.sequenceChain();
@@ -1067,6 +1076,7 @@ var HHgHolder = function(props){
         tempAction.props.sequenceChain = func.bind(finalActions);
       }
     }
+
     finalActions.isActionSequence = true;
     return finalActions;
   };

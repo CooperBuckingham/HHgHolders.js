@@ -23,6 +23,10 @@ var HHgInstallAll = function(){
 };
 
 
+//Prototype additions
+
+
+
 
   // console.log("window loaded");
   // var el;

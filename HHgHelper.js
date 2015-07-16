@@ -517,9 +517,36 @@ var HHg = {
     return Math.round(num * places)/places;
   },
 
+  copyActionShell: function(act){
+    var first = true;
+    var recurse = function(thing){
+      if(!first && thing === act) return "__PARENT__";
+      first = false;
+      var newThing;
+      // if(Array.isArray(thing)){
+      //   newThing = [];
+      //   for(var i = 0; i < thing.length; i++){
+      //     newThing[i] = recurse(thing[i]);
+      //   }
+      //   return newThing;
+      // }
+      if(typeof thing === 'object'){
+        newThing = Array.isArray(thing) ? [] : {};
+        for(var key in thing){
+          console.log("key", key);
+          newThing[key] = recurse(thing[key]);
+        }
+        return newThing;
+      }
+      return thing;
+    };
 
+    var newAct = recurse(act);
+    console.log("COPY", newAct);
+    return newAct;
+  },
 
-}
+};
 
 
 

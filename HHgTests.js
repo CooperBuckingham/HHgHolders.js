@@ -196,15 +196,17 @@ console.log("TEST", HHgTestBodyData);
    test.doMakeRectangle({borderRadius: 5, color:"red"});
    var grow = thing.makeAction("scaleBy", {scale: 2, time: 2});
    var move = thing.makeAction("moveBy", {x: 100, y: 100, time: 2});
-   var shrink = thing.makeAction("scaleTo", {scale: 1, time: 2});
-   //var seq = thing.makeActionSequence([grow, move, shrink]);
+   var shrink = thing.makeAction("scaleBy", {scale: 0.5, time: 2});
+   var grow2 = thing.makeAction("scaleBy", {scale: 2, time: 2});
+   var seq = thing.makeActionSequence([grow, move, grow, move]);
+   var seq2 = thing.makeActionSequence([seq, seq]);
    //var seq2 = thing.makeActionSequence([grow, move, shrink]);
    //var move2 = thing.makeAction("moveBy", {x: 100, y: 100, time: 2});
    //var seqAll = thing.makeActionSequence([grow, move, shrink, move2]);
-   //thing.doActionSequence(seqAll);
-   thing.doAction(grow);
-   setTimeout(thing.doAction.bind(thing, grow), 3000);
-   test.doAction(grow);
+   thing.doActionSequence(seq2);
+   // thing.doAction(grow);
+   // setTimeout(thing.doAction.bind(thing, grow), 3000);
+   // test.doAction(grow);
 
   }
 
