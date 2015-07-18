@@ -36,13 +36,24 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 
   var p = HHgAction.prototype;
 
+
+  p.sequenceChain = function(){
+    // console.log(this.mySequence);
+    if(this.myNextAction){
+      this.mySequence.props.myActions.push(this.owner.doStoredAction(this.myNextAction));
+    }else if(this.isSequenceFinalTimer){
+      this.mySequence.sequenceChain();
+    }else if(this.isClusterFinalTimer){
+      this.myCluster.sequenceChain();
+    }
+  };
+
   p.finalFrame = function(action){
     if(action.onComplete){
       action.onComplete();
     }
-    if(action.sequenceChain){
-      action.sequenceChain();
-    }
+
+    action.sequenceChain();
 
     if(action.repeatF){
       action.doRepeat();

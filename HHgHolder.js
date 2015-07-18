@@ -750,10 +750,22 @@ var HHgHolder = function(props){
 
   //============= ACTIONS ================
 
-  p.doFinalizeAction = function(action){
+  p.doFinalizeAction = function(action, props){
     this._actions = this._actions || {};
-    if(action.name){
+
+    if(props.mySequence){
+      action.myNextAction = props.myNextAction;
+      action.mySequence = props.mySequence;
+      action.isSequenceFinalTimer = props.isSequenceFinalTimer;
+    }
+    if(props.myCluster){
+      action.myCluster = props.myCluster;
+      action.isClusterFinalTimer = props.isClusterFinalTimer;
+    }
+    if(props.name){
+      action.name = props.name;
       if(this._actions.hasOwnProperty(action.name)){
+        //TODO this got weird once we started copying actions inside of sequences to rerun them
         console.log("WARNING: Action with name: " + action.name + " already exists on Holder");
         return;
       }
@@ -805,33 +817,29 @@ var HHgHolder = function(props){
   p.doActionMoveInScreenTo = function(props){
     var theAction;
     theAction = new HHgActionMoveBy(this, this._positionInScreenOriginal.subtractedFrom(HHg.returnPositionProps(props)), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionMoveInScreenBy = function(props){
     var theAction;
     theAction = new HHgActionMoveBy(this, HHg.returnPositionProps(props), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionMoveInScreenForever = function(props){
     var theAction;
     theAction = new HHgActionMoveForever(this, (HHg.returnPositionProps(props) || HHg.returnSpeedXYprops(props)), this._positionInScreenOriginal, HHg.returnEaseProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionRotateBy = function(props){
     var theAction;
     theAction = new HHgActionRotateBy(this, HHg.returnRotationProps(props), this._rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionRotateLeftTo = function(props){
@@ -848,9 +856,8 @@ var HHgHolder = function(props){
 
     var theAction;
     theAction = new HHgActionRotateBy(this, degrees, this._rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionRotateRightTo = function(props){
@@ -867,57 +874,50 @@ var HHgHolder = function(props){
 
     var theAction;
     theAction = new HHgActionRotateBy(this, degrees, this._rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionRotateForever = function(props){
     var theAction;
     theAction = new HHgActionRotateForever(this, (HHg.returnRotationProps(props) || HHg.returnSpeedNProps(props)), HHg.returnEaseProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionScaleBy = function(props){
     var theAction;
     theAction = new HHgActionScaleBy(this, HHg.returnScaleProps(props), this._scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionScaleTo = function(props){
     var theAction;
     theAction = new HHgActionScaleBy(this, HHg.returnScaleProps(props).timesInverse(this._scaleOriginal), this._scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionScaleForever = function(props){
     var theAction;
     theAction = new HHgActionScaleForever(this, (HHg.returnScaleProps(props) || HHg.returnSpeedXYProps(props)), this._scaleOriginal, HHg.returnEaseProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionFollowQuad = function(props){
     var theAction;
     theAction = new HHgActionFollowQuad(this, HHg.returnControlPositionProps(props), HHg.returnPositionProps(props), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), props.onComplete, HHg.returnOnCompleteProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionTimer = function(props){
     var theAction;
     theAction = new HHgActionTimer(this, HHg.returnTimeProps(props), HHg.returnOnCompleteProps(props));
-    theAction.name = props.name;
-    theAction.sequenceChain = props.sequenceChain;
-    return this.doFinalizeAction(theAction);
+
+    return this.doFinalizeAction(theAction, props);
   };
 
   p.doActionPlaySound = function(props){
@@ -990,7 +990,6 @@ var HHgHolder = function(props){
     }else if(storedAction.isActionSequence){
       return this.doActionSequence(storedAction);
     }else{
-      console.log(storedAction);
       return {owner: this, name: storedAction.actionCall.call(this, storedAction.props)};
     }
   };
@@ -1012,18 +1011,13 @@ var HHgHolder = function(props){
         longestTime = tempAction.props.time;
       }
     }
-    //TODO: examine if binding in here is going to mess with expectations of context changing to runner
-    var func = function(){
-      this.props.onComplete();
-    };
 
-    var sFunc = function(){
-      this.props.sequenceChain();
-    };
-
-    finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: func.bind(finalActions), sequenceChain: sFunc.bind(finalActions)  } ) );
+    finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: onComplete } ) );
+    finalActions[0].props.isClusterFinalTimer = true;
     finalActions.isActionCluster = true;
     finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions, owner: this};
+    //TODO: see note in sequence about use and eventual sub classing
+    finalActions.sequenceChain = HHgAction.prototype.sequenceChain;
     return finalActions;
   };
 
@@ -1033,7 +1027,7 @@ var HHgHolder = function(props){
       tempThing = cluster[i];
       cluster.props.myActions.push(this.doStoredAction(tempThing));
     }
-    return this.doFinalizeAction(cluster);
+    return this.doFinalizeAction(cluster, cluster.props);
   };
 
   p.doActionClusterForever = function(cluster){
@@ -1051,39 +1045,50 @@ var HHgHolder = function(props){
     }else{
       finalActions = storedActions;
     }
-    finalActions.props = {myActions: [], totalActions: finalActions.length, name: name, time: 0, onComplete: onComplete, sequenceChain: function(){}};
-    finalActions.push(this.makeAction("timer", {time: 0, onComplete: onComplete}));
+    finalActions.props = {myActions: [], totalActions: 0, name: name, time: 0};
+    //TODO: eventually this should all get sub classed and sequences should stop being arrayw with properties
+    //this system has grown beyond its original design, but for now, we just grab the prototype function we need
+    finalActions.sequenceChain = HHgAction.prototype.sequenceChain;
 
     for(i = 0; i < finalActions.length; i++){
       tempAction = finalActions[i];
       finalActions.props.time += tempAction.props.time;
       finalActions[i] = HHg.copyActionShell(tempAction);
+
     }
 
+    finalActions.push(this.makeAction("timer", {time: 0, procTimer: "me", onComplete: function(){console.log("SEQ END TIMER COMPLETE")}} ));
+    finalActions.props.totalActions = finalActions.length;
+
+//maybe the holder is getting pulled from the action manager at some point
+//he's calling a different timerAction, because we copied all of the actions at some point
     for(i = 0; i < finalActions.length; i++){
       tempAction = finalActions[i];
+
       if(i < finalActions.length - 1){
         var newAction = finalActions[i+1];
-        var func = function(sequence, nextAction){
-          sequence.props.myActions.push(this.doStoredAction(nextAction));
-        };
-        tempAction.props.sequenceChain = func.bind(this,finalActions, newAction);
 
+        if(tempAction.isActionSequence){
+          tempAction = tempAction[tempAction.length-1];
+        }else if(tempAction.isActionCluster){
+          tempAction = tempAction[0];
+        }
+        tempAction.props.myNextAction = newAction;
       }else{
-        var func = function(){
-          this.props.sequenceChain();
-        };
-        tempAction.props.sequenceChain = func.bind(finalActions);
+        tempAction.props.isSequenceFinalTimer = true;
       }
+      tempAction.props.mySequence = finalActions;
+      console.log("NXT", tempAction.props.myNextAction);
     }
 
     finalActions.isActionSequence = true;
+
     return finalActions;
   };
 
   p.doActionSequence = function(sequence){
     sequence.props.myActions.push(this.doStoredAction(sequence[0]));
-    return this.doFinalizeAction(sequence);
+    return this.doFinalizeAction(sequence, sequence.props);
   };
 
   p.doActionSequenceForever = function(sequence){

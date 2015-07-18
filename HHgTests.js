@@ -192,21 +192,30 @@ console.log("TEST", HHgTestBodyData);
    var test = HHgGetHolder({w:50, h:50});
    thing.doMoveToNewParent();
    thing.doMakeRectangle({borderRadius: 10, color:"green"});
-   test.doMoveToNewParent({x: -100, y: -100});
+   test.doMoveToNewParent({x: 100, y: 100});
    test.doMakeRectangle({borderRadius: 5, color:"red"});
-   var grow = thing.makeAction("scaleBy", {scale: 2, time: 2});
+   var grow = thing.makeAction("scaleBy", {scale: 2, time: 1, onComplete: function(){console.log("GROW DONE")}});
    var move = thing.makeAction("moveBy", {x: 100, y: 100, time: 2});
    var shrink = thing.makeAction("scaleBy", {scale: 0.5, time: 2});
    var grow2 = thing.makeAction("scaleBy", {scale: 2, time: 2});
-   var seq = thing.makeActionSequence([grow, move, grow, move]);
-   var seq2 = thing.makeActionSequence([seq, seq]);
+   var timer1 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER1 DONE")}});
+   var timer2 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER2 DONE")}});
+   var seq = thing.makeActionSequence([grow, move]);
+   var seq2 = thing.makeActionSequence([timer1, shrink]);
+   //var seq3 = thing.makeActionSequence([seq, seq2]);
+   //var seq3 = thing.makeActionSequence([seq, timer2]);
    //var seq2 = thing.makeActionSequence([grow, move, shrink]);
    //var move2 = thing.makeAction("moveBy", {x: 100, y: 100, time: 2});
    //var seqAll = thing.makeActionSequence([grow, move, shrink, move2]);
-   thing.doActionSequence(seq2);
-   // thing.doAction(grow);
-   // setTimeout(thing.doAction.bind(thing, grow), 3000);
+   //thing.doActionSequence(seq);
+    //thing.doActionSequence(seq);
+   //thing.doAction(seq2);
+   //setTimeout(thing.doAction.bind(thing, seq), 5000);
    // test.doAction(grow);
+
+   thing.doAction(seq);
+
+   //ITS JUST THAT SEQUENCES aren't triggering their sequenceChain --> next thing
 
   }
 

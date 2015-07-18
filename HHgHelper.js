@@ -520,29 +520,60 @@ var HHg = {
   copyActionShell: function(act){
     var first = true;
     var recurse = function(thing){
-      if(!first && thing === act) return "__PARENT__";
+      if(!thing) return thing;
+      if(!first && thing === act) return act;
       first = false;
-      var newThing;
-      // if(Array.isArray(thing)){
-      //   newThing = [];
-      //   for(var i = 0; i < thing.length; i++){
-      //     newThing[i] = recurse(thing[i]);
-      //   }
-      //   return newThing;
-      // }
+      var newThing, seqHolder, actHolder, clusHolder;
+
       if(typeof thing === 'object'){
         newThing = Array.isArray(thing) ? [] : {};
+
         for(var key in thing){
-          console.log("key", key);
+          console.log("KEY", key, thing[key]);
+          if(typeof thing[key] === "object"){
+            clusHolder = thing[key].myCluster;
+            seqHolder = thing[key].mySequence;
+            actHolder = thing[key].myNextAction;
+            thing[key].myCluster = undefined;
+            thing[key].mySequence = undefined;
+            thing[key].myNextAction = undefined;
+          }
+
           newThing[key] = recurse(thing[key]);
+
+          if(seqHolder){
+            newThing[key].mySequence = newThing;
+            thing[key].mySequence = thing;
+            seqHolder = undefined;
+          }
+          if(actHolder){
+            //will have to loop through all later to setup the nextActions again
+            //this is getting crazy, should have just subclassed all this, but go for now
+            thing[key].myNextAction = actHolder;
+            actHolder = undefined;
+          }
+          if(clusHolder){
+            newThing[key].myCluster = newThing;
+            thing[key].myCluster = thing;
+            clusHolder = undefined;
+          }
         }
+
+        if(thing.isActionSequence){
+          for(var i = 0; i < thing.length - 1; i++){
+            thing[i].myNextAction = thing[i]+1;
+            newThing[i].myNextAction = newThing[i+1].myNextAction;
+          }
+        }
+
+
         return newThing;
       }
       return thing;
     };
 
-    var newAct = recurse(act);
-    console.log("COPY", newAct);
+    var newAct = [];
+    newAct = recurse(act);
     return newAct;
   },
 

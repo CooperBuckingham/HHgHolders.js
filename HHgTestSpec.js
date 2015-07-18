@@ -1,8 +1,8 @@
 //HHgTestSpec.js
 
+//sequences need to be chainable
+//clusters need ot be able to spawn sequences, vice versa
 
-//sequences need to not modify actions, and instead wrap them in time blocks, or call next based on the id
-  //of the sequence chain or something crazy.
 
 
 //TODO tests
