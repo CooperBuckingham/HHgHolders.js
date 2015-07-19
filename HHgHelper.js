@@ -519,62 +519,67 @@ var HHg = {
 
   copyActionShell: function(act){
     var first = true;
-    var recurse = function(thing){
+
+    var recurse = function(thing, thingParent){
+      // debugger;
       if(!thing) return thing;
-      if(!first && thing === act) return act;
-      first = false;
-      var newThing, seqHolder, actHolder, clusHolder;
+      if(!first && thing === act){console.log("LOOP COPY ACTION SHELL"); return "LOOP_COPY";};
+
+      var newThing, seqHolder, actHolder, clusHolder, thingKey;
 
       if(typeof thing === 'object'){
         newThing = Array.isArray(thing) ? [] : {};
-
+        //the problem is that mySequence is stored on props, and so then we're setting the wrong thing as mySequence at the end maybe
         for(var key in thing){
-          console.log("KEY", key, thing[key]);
-          if(typeof thing[key] === "object"){
-            clusHolder = thing[key].myCluster;
-            seqHolder = thing[key].mySequence;
-            actHolder = thing[key].myNextAction;
-            thing[key].myCluster = undefined;
-            thing[key].mySequence = undefined;
-            thing[key].myNextAction = undefined;
+          thingKey = thing[key];
+          if(typeof thingKey === 'object'){
+            clusHolder = thingKey.myCluster;
+            seqHolder = thingKey.mySequence;
+            actHolder = thingKey.myNextAction;
+            if(thingKey.myCluster) thingKey.myCluster = undefined;
+            if(thingKey.mySequence) thingKey.mySequence = undefined;
+            if(thingKey.myNextAction) thingKey.myNextAction = undefined;
           }
 
-          newThing[key] = recurse(thing[key]);
+          newThing[key] = recurse(thingKey, newThing);
 
           if(seqHolder){
-            newThing[key].mySequence = newThing;
-            thing[key].mySequence = thing;
+            newThing[key].mySequence = thingParent;
+            thingKey.mySequence = seqHolder;
             seqHolder = undefined;
           }
           if(actHolder){
             //will have to loop through all later to setup the nextActions again
             //this is getting crazy, should have just subclassed all this, but go for now
-            thing[key].myNextAction = actHolder;
+            thingKey.myNextAction = actHolder;
             actHolder = undefined;
           }
           if(clusHolder){
-            newThing[key].myCluster = newThing;
-            thing[key].myCluster = thing;
+            newThing[key].myCluster = thingParent;
+            thingKey.myCluster = clusHolder;
             clusHolder = undefined;
           }
         }
-
+        //newThing is now a copy of thing, but nextActions were ignored, so add them back
         if(thing.isActionSequence){
           for(var i = 0; i < thing.length - 1; i++){
-            thing[i].myNextAction = thing[i]+1;
-            newThing[i].myNextAction = newThing[i+1].myNextAction;
+            newThing[i].props.myNextAction = newThing[i+1];
           }
         }
+
+        //TODO cluster will still need it's final action remapped to something? maybe not
 
 
         return newThing;
       }
+      // debugger;
       return thing;
     };
 
-    var newAct = [];
-    newAct = recurse(act);
+    var newAct = recurse(act, null);
+    console.log("NA", newAct);
     return newAct;
+
   },
 
 };

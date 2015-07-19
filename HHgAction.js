@@ -38,7 +38,8 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 
 
   p.sequenceChain = function(){
-    // console.log(this.mySequence);
+    console.log(this.name);
+    console.log(this);
     if(this.myNextAction){
       this.mySequence.props.myActions.push(this.owner.doStoredAction(this.myNextAction));
     }else if(this.isSequenceFinalTimer){

@@ -1048,40 +1048,50 @@ var HHgHolder = function(props){
     finalActions.props = {myActions: [], totalActions: 0, name: name, time: 0};
     //TODO: eventually this should all get sub classed and sequences should stop being arrayw with properties
     //this system has grown beyond its original design, but for now, we just grab the prototype function we need
+    finalActions.isActionSequence = true;
     finalActions.sequenceChain = HHgAction.prototype.sequenceChain;
+
 
     for(i = 0; i < finalActions.length; i++){
       tempAction = finalActions[i];
       finalActions.props.time += tempAction.props.time;
-      finalActions[i] = HHg.copyActionShell(tempAction);
+      //finalActions[i] = HHg.copyActionShell(tempAction);
+      tempAction.props.mySequence = finalActions;
 
     }
+    var finalTimer = this.makeAction("timer", {time: 0, onComplete: function(){console.log("SEQ END TIMER COMPLETE")}} );
+    finalTimer.props.isSequenceFinalTimer = true;
+    finalActions.push(finalTimer);
 
-    finalActions.push(this.makeAction("timer", {time: 0, procTimer: "me", onComplete: function(){console.log("SEQ END TIMER COMPLETE")}} ));
     finalActions.props.totalActions = finalActions.length;
+    finalActions = HHg.copyActionShell(finalActions);
+    //console.log("FA", finalActions);
+
 
 //maybe the holder is getting pulled from the action manager at some point
 //he's calling a different timerAction, because we copied all of the actions at some point
-    for(i = 0; i < finalActions.length; i++){
-      tempAction = finalActions[i];
+    // for(i = 0; i < finalActions.length; i++){
+    //   tempAction = finalActions[i];
 
-      if(i < finalActions.length - 1){
-        var newAction = finalActions[i+1];
+    //   if(i < finalActions.length - 1){
+    //     var newAction = finalActions[i+1];
 
-        if(tempAction.isActionSequence){
-          tempAction = tempAction[tempAction.length-1];
-        }else if(tempAction.isActionCluster){
-          tempAction = tempAction[0];
-        }
-        tempAction.props.myNextAction = newAction;
-      }else{
-        tempAction.props.isSequenceFinalTimer = true;
-      }
-      tempAction.props.mySequence = finalActions;
-      console.log("NXT", tempAction.props.myNextAction);
-    }
+    //     if(tempAction.isActionSequence){
+    //       tempAction = tempAction[tempAction.length-1];
 
-    finalActions.isActionSequence = true;
+    //     }else if(tempAction.isActionCluster){
+    //       tempAction = tempAction[0];
+    //     }else{
+    //       tempAction.props.myNextAction = newAction;
+    //     }
+
+    //   }
+
+    //   tempAction.props.mySequence = finalActions;
+    //   console.log("NXT", tempAction.props.myNextAction);
+    // }
+
+
 
     return finalActions;
   };
