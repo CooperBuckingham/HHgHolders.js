@@ -200,10 +200,12 @@ console.log("TEST", HHgTestBodyData);
    var grow2 = thing.makeAction("scaleBy", {scale: 2, time: 1});
    var timer1 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER1 DONE")}});
    var timer2 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER2 DONE")}});
+   var clus1 = thing.makeActionCluster(grow, grow, grow, grow);
+   var clus2 = thing.makeActionCluster(shrink, shrink);
    var seq1 = thing.makeActionSequence([grow, move, timer1], "SEQ 1");
    var seq2 = thing.makeActionSequence([grow, move, timer2], "SEQ 2");
-   var seq3 = thing.makeActionSequence([seq1, seq1, shrink], "SEQ 3");
-   //var clus1 = thing.makeActionCluster(grow, move, timer1);
+   var seq3 = thing.makeActionSequence([clus1, clus2], "SEQ 3");
+
    //var seq3 = thing.makeActionSequence([seq, timer2]);
    //var seq2 = thing.makeActionSequence([grow, move, shrink]);
    //var move2 = thing.makeAction("moveBy", {x: 100, y: 100, time: 2});

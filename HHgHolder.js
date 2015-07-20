@@ -767,7 +767,7 @@ var HHgHolder = function(props){
       if(this._actions.hasOwnProperty(action.name)){
         //TODO this got weird once we started copying actions inside of sequences to rerun them
         console.log("WARNING: Action with name: " + action.name + " already exists on Holder");
-        return;
+        console.log("New action will overwrite name access to previous action. You've been warned");
       }
     }else{
       action.name = "" + this._counterForNamingActions + HHg.returnRandomHash();
@@ -929,6 +929,7 @@ var HHgHolder = function(props){
   };
 
   p.doActionCustom = function(func, time, onComplete){
+    //todo, this should become a cluster, a custom action needs to return an actual action
     func.bind(this)();
     return this.doActionTimer({time: time, onComplete: onComplete});
   };
@@ -1002,6 +1003,8 @@ var HHgHolder = function(props){
       for(var i = 0; i < arguments.length; i++){
         finalActions.push(arguments[i]);
       }
+      onComplete = undefined;
+      name = undefined;
     }else if(storedActions.length !== +storedActions.length){
       for(key in storedActions){
         tempAction = storedActions[key];
@@ -1023,10 +1026,15 @@ var HHgHolder = function(props){
       if(tempAction.props.time > longestTime){
         longestTime = tempAction.props.time;
       }
+
+      tempAction.props.myCluster = finalActions;
     }
 
-    finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: onComplete } ) );
-    finalActions[0].props.isClusterFinalTimer = true;
+    var totalTimer = this.makeAction("timer", {time: longestTime, onComplete: function(){console.log("CLUS TIMER COMPLETE"); onComplete;} } );
+    totalTimer.props.isClusterFinalTimer = true;
+    totalTimer.props.myCluster = finalActions;
+    finalActions.push(totalTimer);
+
     finalActions.isActionCluster = true;
     finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: finalActions.length};
 
@@ -1058,6 +1066,8 @@ var HHgHolder = function(props){
      for(var i = 0; i < arguments.length; i++){
        finalActions.push(arguments[i]);
      }
+     name = undefined;
+     onComplete = undefined;
     }else if(storedActions.length !== +storedActions.length){
      for(key in storedActions){
        tempAction = storedActions[key];
@@ -1080,7 +1090,7 @@ var HHgHolder = function(props){
     finalActions.isActionSequence = true;
     finalActions.sequenceChain = HHgAction.prototype.sequenceChain;
 
-    var finalTimer = this.makeAction("timer", {time: 0, name:"END_SEQ_TIMER" + Math.random(), onComplete: function(){console.log("SEQ END TIMER COMPLETE")}} );
+    var finalTimer = this.makeAction("timer", {time: 0, onComplete: function(){console.log("SEQ END TIMER COMPLETE"); onComplete;}} );
     finalTimer.props.isSequenceFinalTimer = true;
     finalActions.push(finalTimer);
 
@@ -1154,7 +1164,7 @@ var HHgHolder = function(props){
         this.setPositionInScreenTo({x:xy,y:y});
       }
     }
-  }
+  };
 
   p.doHide = function(){
     this.setVisible(false);
