@@ -39,10 +39,12 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 
   p.sequenceChain = function(){
     console.log(this.name);
-    console.log(this);
+
     if(this.myNextAction){
+      //missing owner on "this";
       this.mySequence.props.myActions.push(this.owner.doStoredAction(this.myNextAction));
     }else if(this.isSequenceFinalTimer){
+      console.log("I am sequence final timer");
       this.mySequence.sequenceChain();
     }else if(this.isClusterFinalTimer){
       this.myCluster.sequenceChain();

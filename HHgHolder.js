@@ -1051,6 +1051,9 @@ var HHgHolder = function(props){
     finalActions.isActionSequence = true;
     finalActions.sequenceChain = HHgAction.prototype.sequenceChain;
 
+    var finalTimer = this.makeAction("timer", {time: 0, name:"END_SEQ_TIMER" + Math.random(), onComplete: function(){console.log("SEQ END TIMER COMPLETE")}} );
+    finalTimer.props.isSequenceFinalTimer = true;
+    finalActions.push(finalTimer);
 
     for(i = 0; i < finalActions.length; i++){
       tempAction = finalActions[i];
@@ -1059,9 +1062,6 @@ var HHgHolder = function(props){
       tempAction.props.mySequence = finalActions;
 
     }
-    var finalTimer = this.makeAction("timer", {time: 0, onComplete: function(){console.log("SEQ END TIMER COMPLETE")}} );
-    finalTimer.props.isSequenceFinalTimer = true;
-    finalActions.push(finalTimer);
 
     finalActions.props.totalActions = finalActions.length;
     finalActions = HHg.copyActionShell(finalActions);
@@ -1098,6 +1098,7 @@ var HHgHolder = function(props){
 
   p.doActionSequence = function(sequence){
     sequence.props.myActions.push(this.doStoredAction(sequence[0]));
+    sequence.owner = this;
     return this.doFinalizeAction(sequence, sequence.props);
   };
 
