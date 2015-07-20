@@ -995,18 +995,31 @@ var HHgHolder = function(props){
   };
 
   p.makeActionCluster = p.makeCluster = function(storedActions, name, onComplete){
-    var i, key, longestTime = 0, finalActions = [], tempAction,totalActions = 1;
-    if(storedActions.length !== +storedActions.length){
+    var i, key, longestTime = 0, finalActions = [], tempAction;
+
+    if(storedActions.props){
+      console.log("FOUND ONLY ACTIONS");
+      for(var i = 0; i < arguments.length; i++){
+        finalActions.push(arguments[i]);
+      }
+    }else if(storedActions.length !== +storedActions.length){
       for(key in storedActions){
-        finalAction.push(storedActions[key]);
+        tempAction = storedActions[key];
+        if(!tempAction.props){
+          console.log("ERROR: attemping to add non action to cluster");
+          return;
+        }
+        finalActions.push(tempAction);
       }
     }else{
-      finalActions = storedActions;
+      for(var i = 0; i < storedActions.length; i++){
+        finalActions.push(storedActions[i]);
+      }
     }
 
     for(i = 0; i < finalActions.length; i++){
       tempAction = finalActions[i];
-      totalActions++;
+
       if(tempAction.props.time > longestTime){
         longestTime = tempAction.props.time;
       }
@@ -1015,9 +1028,10 @@ var HHgHolder = function(props){
     finalActions.unshift(this.makeAction("timer", {time: longestTime, onComplete: onComplete } ) );
     finalActions[0].props.isClusterFinalTimer = true;
     finalActions.isActionCluster = true;
-    finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: totalActions, owner: this};
-    //TODO: see note in sequence about use and eventual sub classing
+    finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: finalActions.length};
+
     finalActions.sequenceChain = HHgAction.prototype.sequenceChain;
+    finalActions = HHg.copyActionShell(finalActions);
     return finalActions;
   };
 
@@ -1027,6 +1041,7 @@ var HHgHolder = function(props){
       tempThing = cluster[i];
       cluster.props.myActions.push(this.doStoredAction(tempThing));
     }
+    cluster.owner = this;
     return this.doFinalizeAction(cluster, cluster.props);
   };
 
@@ -1038,13 +1053,27 @@ var HHgHolder = function(props){
 
   p.makeActionSequence = function(storedActions, name, onComplete){
     var i, key, finalActions = [], finalSequence = [], tempAction, tempAction2, tempFunction;
-    if(storedActions.length !== +storedActions.length){
-      for(key in storedActions){
-        finalActions.push(storedActions[key]);
-      }
+    if(storedActions.props){
+     console.log("FOUND ONLY ACTIONS");
+     for(var i = 0; i < arguments.length; i++){
+       finalActions.push(arguments[i]);
+     }
+    }else if(storedActions.length !== +storedActions.length){
+     for(key in storedActions){
+       tempAction = storedActions[key];
+       if(!tempAction.props){
+         console.log("ERROR: attemping to add non action to cluster");
+         return;
+       }
+       finalActions.push(tempAction);
+     }
     }else{
-      finalActions = storedActions;
+     for(var i = 0; i < storedActions.length; i++){
+       finalActions.push(storedActions[i]);
+     }
     }
+
+
     finalActions.props = {myActions: [], totalActions: 0, name: name, time: 0};
     //TODO: eventually this should all get sub classed and sequences should stop being arrayw with properties
     //this system has grown beyond its original design, but for now, we just grab the prototype function we need
@@ -1058,40 +1087,13 @@ var HHgHolder = function(props){
     for(i = 0; i < finalActions.length; i++){
       tempAction = finalActions[i];
       finalActions.props.time += tempAction.props.time;
-      //finalActions[i] = HHg.copyActionShell(tempAction);
+
       tempAction.props.mySequence = finalActions;
 
     }
 
     finalActions.props.totalActions = finalActions.length;
     finalActions = HHg.copyActionShell(finalActions);
-    //console.log("FA", finalActions);
-
-
-//maybe the holder is getting pulled from the action manager at some point
-//he's calling a different timerAction, because we copied all of the actions at some point
-    // for(i = 0; i < finalActions.length; i++){
-    //   tempAction = finalActions[i];
-
-    //   if(i < finalActions.length - 1){
-    //     var newAction = finalActions[i+1];
-
-    //     if(tempAction.isActionSequence){
-    //       tempAction = tempAction[tempAction.length-1];
-
-    //     }else if(tempAction.isActionCluster){
-    //       tempAction = tempAction[0];
-    //     }else{
-    //       tempAction.props.myNextAction = newAction;
-    //     }
-
-    //   }
-
-    //   tempAction.props.mySequence = finalActions;
-    //   console.log("NXT", tempAction.props.myNextAction);
-    // }
-
-
 
     return finalActions;
   };

@@ -3,6 +3,10 @@
 //sequences need to be chainable
 //clusters need ot be able to spawn sequences, vice versa
 
+//NOW: make clusters work like sequences
+
+//sequences forever
+//sequences repeat n
 
 
 //TODO tests
