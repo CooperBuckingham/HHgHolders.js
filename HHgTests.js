@@ -194,17 +194,18 @@ console.log("TEST", HHgTestBodyData);
    thing.doMakeRectangle({borderRadius: 10, color:"green"});
    test.doMoveToNewParent({x: 100, y: 100});
    test.doMakeRectangle({borderRadius: 5, color:"red"});
-   var grow = thing.makeAction("scaleBy", {name: "grow", scale: 2, time: 1, onComplete: function(){console.log("GROW DONE")}});
+   var grow = thing.makeAction("scaleBy", {name: "grow", scale: 2, time: 2, onComplete: function(){console.log("GROW DONE")}});
    var move = thing.makeAction("moveBy", {name: "move", x: 100, y: 100, time: 1});
-   var shrink = thing.makeAction("scaleBy", {scale: 0.5, time: 1});
+   var shrink = thing.makeAction("scaleBy", {scale: 0.5, time: 2});
    var grow2 = thing.makeAction("scaleBy", {scale: 2, time: 1});
    var timer1 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER1 DONE")}});
    var timer2 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER2 DONE")}});
-   var clus1 = thing.makeActionCluster(grow, grow, grow, grow);
-   var clus2 = thing.makeActionCluster(shrink, shrink);
-   var seq1 = thing.makeActionSequence([grow, move, timer1], "SEQ 1");
-   var seq2 = thing.makeActionSequence([grow, move, timer2], "SEQ 2");
+   var clus1 = thing.makeActionCluster(grow, grow);
+   var clus2 = thing.makeActionCluster(shrink);
+   var seq1 = thing.makeActionSequence([grow, grow, grow, grow], "SEQ 1");
+   var seq2 = thing.makeActionSequence([shrink, shrink, shrink], "SEQ 2");
    var seq3 = thing.makeActionSequence([clus1, clus2], "SEQ 3");
+   var seq4 = thing.makeActionSequence([seq3, seq3, seq3]);
 
    //var seq3 = thing.makeActionSequence([seq, timer2]);
    //var seq2 = thing.makeActionSequence([grow, move, shrink]);
@@ -216,7 +217,7 @@ console.log("TEST", HHgTestBodyData);
    //setTimeout(thing.doAction.bind(thing, seq), 5000);
    // test.doAction(grow);
 
-   thing.doAction(seq3);
+   thing.doAction(seq4);
 
    //ITS JUST THAT SEQUENCES aren't triggering their sequenceChain --> next thing
 

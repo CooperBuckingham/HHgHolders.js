@@ -753,6 +753,7 @@ var HHgHolder = function(props){
   p.doFinalizeAction = function(action, props){
     this._actions = this._actions || {};
 
+
     if(props.mySequence){
       action.myNextAction = props.myNextAction;
       action.mySequence = props.mySequence;
@@ -764,10 +765,16 @@ var HHgHolder = function(props){
     }
     if(props.name){
       action.name = props.name;
-      if(this._actions.hasOwnProperty(action.name)){
+      if(this._actions[action.name] !== undefined){
+        var existingAction = this._actions[action.name];
+        var existingActionNewRandomName = "" + this._counterForNamingActions + HHg.returnRandomHash();
+        existingAction.name = existingActionNewRandomName;
+        this._actions[existingActionNewRandomName] = existingAction;
+
         //TODO this got weird once we started copying actions inside of sequences to rerun them
         console.log("WARNING: Action with name: " + action.name + " already exists on Holder");
-        console.log("New action will overwrite name access to previous action. You've been warned");
+        console.log("previous action's name changed to random name");
+
       }
     }else{
       action.name = "" + this._counterForNamingActions + HHg.returnRandomHash();
@@ -798,9 +805,11 @@ var HHgHolder = function(props){
         tempObject.owner.doRemoveActionByName(tempObject.name);
       }
       //TODO refactor to not use delete
+      //this._actions[action.name] = undefined;
       delete this._actions[action.name];
 
     }else{
+      //this._actions[action.name] = undefined;
       delete this._actions[action.name];
       this._actionsTotal--;
       if(this._actionsTotal <= 0){
