@@ -34,6 +34,7 @@
     //adding paragraph text doesn't check to see if p text already exists
 
   //rotation adding forever
+  //scaleBy .5 plus scale by 2.0 if run concurrently is equal to scale by 1.5, not sure if that's right, maybe it is, how else would it keep track?
 
 
 

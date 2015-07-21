@@ -2,9 +2,9 @@
 window.HHgTestsOverride = true; //change this to true and game will begin in start function below
 var HHgTestBodyData = null;
 
-var HHgTestDashSceneDiv = false;
+var HHgTestDashSceneDiv = true;
 
-var HHgShowTestGrid = false;
+var HHgShowTestGrid = true;
 var HHgTestBoxes = false;
 var HHgDoWebsiteDemoDeploy = false;
 var HHgActionDummy;
@@ -192,20 +192,24 @@ console.log("TEST", HHgTestBodyData);
    var test = HHgGetHolder({w:50, h:50});
    thing.doMoveToNewParent();
    thing.doMakeRectangle({borderRadius: 10, color:"green"});
-   test.doMoveToNewParent({x: 100, y: 100});
+   test.doMoveToNewParent({x: 0, y: 0});
    test.doMakeRectangle({borderRadius: 5, color:"red"});
-   var grow = thing.makeAction("scaleBy", {name: "grow", scale: 2, time: 2, onComplete: function(){console.log("GROW DONE")}});
-   var move = thing.makeAction("moveBy", {name: "move", x: 100, y: 100, time: 1});
+   var grow = thing.makeAction("scaleBy", {name: "grow", scale: 1.25, time: 2, onComplete: function(){console.log("GROW DONE")}});
+   var move = thing.makeAction("moveBy", {name: "move", x: 10, y: 10, time: 2});
    var shrink = thing.makeAction("scaleBy", {scale: 0.5, time: 2});
    var grow2 = thing.makeAction("scaleBy", {scale: 2, time: 1});
    var timer1 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER1 DONE")}});
    var timer2 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER2 DONE")}});
-   var clus1 = thing.makeActionCluster(grow, grow);
-   var clus2 = thing.makeActionCluster(shrink);
-   var seq1 = thing.makeActionSequence([grow, grow, grow, grow], "SEQ 1");
+   var clus1 = thing.makeActionCluster(grow);
+   var clus2 = thing.makeActionCluster(timer1);
+   var seq1 = thing.makeActionSequence([move], "SEQ 1");
    var seq2 = thing.makeActionSequence([shrink, shrink, shrink], "SEQ 2");
-   var seq3 = thing.makeActionSequence([clus1, clus2], "SEQ 3");
+   var seq3 = thing.makeActionSequence([seq1, clus1, clus2], "SEQ 3");
    var seq4 = thing.makeActionSequence([seq3, seq3, seq3]);
+   var up = thing.makeAction("scaleTo", {scale: 2, time: 1});
+   var down = thing.makeAction("scaleTo", {scale: 1, time: 1});
+   var beat = thing.makeActionSequence([up, down]);
+   var doubleBeat = thing.makeActionSequence([beat, beat]);
 
    //var seq3 = thing.makeActionSequence([seq, timer2]);
    //var seq2 = thing.makeActionSequence([grow, move, shrink]);
@@ -217,9 +221,8 @@ console.log("TEST", HHgTestBodyData);
    //setTimeout(thing.doAction.bind(thing, seq), 5000);
    // test.doAction(grow);
 
-   thing.doAction(seq4);
-
-   //ITS JUST THAT SEQUENCES aren't triggering their sequenceChain --> next thing
+   //***THIS ERRORS CURRENTLY if the sequences aren't wrapped in arrays
+   thing.doActionSequenceForever(doubleBeat);
 
   }
 

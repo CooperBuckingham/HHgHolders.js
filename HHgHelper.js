@@ -525,10 +525,12 @@ var HHg = {
       if(!thing) return thing;
       if(!first && thing === act){console.log("LOOP COPY ACTION SHELL"); return "LOOP_COPY";};
 
-      var newThing, seqHolder, actHolder, clusHolder, thingKey;
+      var newThing, seqHolder, actHolder, clusHolder, thingKey, originalHolder;
 
       if(typeof thing === 'object'){
         newThing = Array.isArray(thing) ? [] : {};
+        originalHolder = thing.original;
+        if(thing.original) thing.original = undefined;
         //the problem is that mySequence is stored on props, and so then we're setting the wrong thing as mySequence at the end maybe
         for(var key in thing){
           thingKey = thing[key];
@@ -569,7 +571,11 @@ var HHg = {
 
         //TODO cluster will still need it's final action remapped to something? maybe not
 
-
+        if(originalHolder){
+          thing.original = originalHolder;
+          newThing.original = originalHolder;
+          originalHolder = undefined;
+        }
         return newThing;
       }
       // debugger;
@@ -577,7 +583,7 @@ var HHg = {
     };
 
     var newAct = recurse(act, null);
-    console.log("NA", newAct);
+    // console.log("NA", newAct);
     return newAct;
 
   },

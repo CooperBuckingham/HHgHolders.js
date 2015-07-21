@@ -36,15 +36,45 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 
   var p = HHgAction.prototype;
 
+  p.repeatSelfF = function(){
+    var copySelf;
+    if(this.isActionSequence){
+      copySelf = this.owner.makeSequence.apply(this.owner, this.originalArguments);
+      this.owner.doActionSequenceForever(copySelf);
+    }else if(this.isActionCluster){
+      copySelf = this.owner.makeCluster.apply(this.owner, this.originalArguments);
+      this.owner.doActionClusterForever(copySelf);
+    }else{
+      console.log("ERROR: repeating single actions is not implemented");
+      return;
+      copySelf = this.copyActionShell(this.originalArguments);
+      this.owner.doStoredAction(copySelf);
+    }
+
+  };
+
+  p.repeatSelfN = function(){
+    this.repeatN--;
+    HHgAction.repeatSelfF.call(this);
+  };
 
   p.sequenceChain = function(){
 
     if(this.myNextAction){
       this.mySequence.props.myActions.push(this.owner.doStoredAction(this.myNextAction));
     }else if(this.isSequenceFinalTimer){
-
+      if(this.mySequence.repeatF){
+        this.mySequence.repeatSelfF();
+      }else if(this.mySequence.repeatN){
+        this.mySequence.repeatSelfN();
+      }
       this.mySequence.sequenceChain();
     }else if(this.isClusterFinalTimer){
+      if(this.myCluster.repeatF){
+        this.myCluster.repeatSelfF();
+      }else if(this.myCluster.repeatN){
+        this.myCluster.repeatSelfN();
+      }
       this.myCluster.sequenceChain();
     }
   };
@@ -56,13 +86,6 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 
     action.sequenceChain();
 
-    if(action.repeatF){
-      action.doRepeat();
-    }else if(action.repeatN > 0){
-      action.repeatN--;
-      action.doRepeat();
-    }
-    //should this still be removed if repeating?
     action.owner.doRemoveAction(action);
   };
 

@@ -1004,6 +1004,7 @@ var HHgHolder = function(props){
     }
   };
 
+
   p.makeActionCluster = p.makeCluster = function(storedActions, name, onComplete){
     var i, key, longestTime = 0, finalActions = [], tempAction;
 
@@ -1014,7 +1015,7 @@ var HHgHolder = function(props){
       }
       onComplete = undefined;
       name = undefined;
-    }else if(storedActions.length !== +storedActions.length){
+    }else if(!Array.isArray(storedActions)){
       for(key in storedActions){
         tempAction = storedActions[key];
         if(!tempAction.props){
@@ -1039,7 +1040,7 @@ var HHgHolder = function(props){
       tempAction.props.myCluster = finalActions;
     }
 
-    var totalTimer = this.makeAction("timer", {time: longestTime, onComplete: function(){console.log("CLUS TIMER COMPLETE"); onComplete;} } );
+    var totalTimer = this.makeAction("timer", {time: longestTime, onComplete: function(){console.log("Cluster Complete"); onComplete;} } );
     totalTimer.props.isClusterFinalTimer = true;
     totalTimer.props.myCluster = finalActions;
     finalActions.push(totalTimer);
@@ -1049,35 +1050,48 @@ var HHgHolder = function(props){
 
     finalActions.sequenceChain = HHgAction.prototype.sequenceChain;
     finalActions = HHg.copyActionShell(finalActions);
+    finalActions.originalArguments = arguments;
+
     return finalActions;
   };
 
-  p.doActionCluster = function(cluster){
+  p.doActionCluster = function(cluster, nOrForever){
     var i, tempThing, clusterName;
     for(i = 0; i < cluster.length; i++){
       tempThing = cluster[i];
       cluster.props.myActions.push(this.doStoredAction(tempThing));
     }
     cluster.owner = this;
+
+    if(nOrForever === 0 || nOrForever === true){
+      cluster.repeatF = true;
+      cluster.repeatSelfF = HHgAction.prototype.repeatSelfF;
+    }else if(nOrForever){
+      cluster.repeatN = nOrForever;
+      cluster.repeatSelfN = HHgAction.prototype.repeatSelfN;
+    }
+
     return this.doFinalizeAction(cluster, cluster.props);
   };
 
   p.doActionClusterForever = function(cluster){
-    //TODO: implement repeating clusters
-    cluster.repeatF = true;
-    //cluster.repeatN = {count}
-  }
+    this.doActionCluster(cluster, true);
+  };
 
-  p.makeActionSequence = function(storedActions, name, onComplete){
+  p.doActionClusterTimes = function(cluster, n){
+    this.doActionCluster(cluster, n);
+  };
+
+  p.makeActionSequence = p.makeSequence = function(storedActions, name, onComplete){
     var i, key, finalActions = [], finalSequence = [], tempAction, tempAction2, tempFunction;
     if(storedActions.props){
-     console.log("FOUND ONLY ACTIONS");
+     //console.log("FOUND ONLY ACTIONS");
      for(var i = 0; i < arguments.length; i++){
        finalActions.push(arguments[i]);
      }
      name = undefined;
      onComplete = undefined;
-    }else if(storedActions.length !== +storedActions.length){
+    }else if(!Array.isArray(storedActions)){
      for(key in storedActions){
        tempAction = storedActions[key];
        if(!tempAction.props){
@@ -1092,14 +1106,13 @@ var HHgHolder = function(props){
      }
     }
 
-
     finalActions.props = {myActions: [], totalActions: 0, name: name, time: 0};
     //TODO: eventually this should all get sub classed and sequences should stop being arrayw with properties
     //this system has grown beyond its original design, but for now, we just grab the prototype function we need
     finalActions.isActionSequence = true;
     finalActions.sequenceChain = HHgAction.prototype.sequenceChain;
 
-    var finalTimer = this.makeAction("timer", {time: 0, onComplete: function(){console.log("SEQ END TIMER COMPLETE"); onComplete;}} );
+    var finalTimer = this.makeAction("timer", {time: 0, onComplete: function(){console.log("Sequence Complete"); onComplete;}} );
     finalTimer.props.isSequenceFinalTimer = true;
     finalActions.push(finalTimer);
 
@@ -1108,28 +1121,38 @@ var HHgHolder = function(props){
       finalActions.props.time += tempAction.props.time;
 
       tempAction.props.mySequence = finalActions;
-
     }
 
     finalActions.props.totalActions = finalActions.length;
     finalActions = HHg.copyActionShell(finalActions);
+    finalActions.originalArguments = arguments;
 
     return finalActions;
   };
 
-  p.doActionSequence = function(sequence){
+  p.doActionSequence = function(sequence, nOrForever){
     sequence.props.myActions.push(this.doStoredAction(sequence[0]));
     sequence.owner = this;
+
+
+    if(nOrForever === 0 || nOrForever === true){
+      sequence.repeatF = true;
+      sequence.repeatSelfF = HHgAction.prototype.repeatSelfF;
+    }else if(nOrForever){
+      sequence.repeatN = nOrForever;
+      sequence.repeatSelfN = HHgAction.prototype.repeatSelfN;
+    }
+
     return this.doFinalizeAction(sequence, sequence.props);
   };
 
   p.doActionSequenceForever = function(sequence){
+    this.doActionSequence(sequence, true);
+  };
 
-    var storedSequence = sequence;
-    sequence.push(sequence);
-    //var customAct = this.makeAction("custom")
-    this.doActionSequence(sequence);
-  }
+  p.doActionSequenceTimes = function(sequence, n){
+    this.doActionSequence(sequence, n);
+  };
 
   //============= MOUSE =================
   //this will all be overridden for custom games
