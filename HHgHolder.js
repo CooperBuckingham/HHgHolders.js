@@ -1006,7 +1006,8 @@ var HHgHolder = function(props){
 
 
   p.makeActionCluster = p.makeCluster = function(storedActions, name, onComplete){
-    var i, key, longestTime = 0, finalActions = [], tempAction;
+    var i, key, longestTime = 0, finalActions = [], tempAction, args;
+    args = Array.prototype.slice.call(arguments, 0);
 
     if(storedActions.props){
       console.log("FOUND ONLY ACTIONS");
@@ -1050,7 +1051,7 @@ var HHgHolder = function(props){
 
     finalActions.sequenceChain = HHgAction.prototype.sequenceChain;
     finalActions = HHg.copyActionShell(finalActions);
-    finalActions.originalArguments = arguments;
+    finalActions.originalArguments = args;
 
     return finalActions;
   };
@@ -1083,7 +1084,8 @@ var HHgHolder = function(props){
   };
 
   p.makeActionSequence = p.makeSequence = function(storedActions, name, onComplete){
-    var i, key, finalActions = [], finalSequence = [], tempAction, tempAction2, tempFunction;
+    var i, key, finalActions = [], finalSequence = [], tempAction, tempAction2, tempFunction, args;
+    args = Array.prototype.slice.call(arguments, 0);
     if(storedActions.props){
      //console.log("FOUND ONLY ACTIONS");
      for(var i = 0; i < arguments.length; i++){
@@ -1125,7 +1127,7 @@ var HHgHolder = function(props){
 
     finalActions.props.totalActions = finalActions.length;
     finalActions = HHg.copyActionShell(finalActions);
-    finalActions.originalArguments = arguments;
+    finalActions.originalArguments = args;
 
     return finalActions;
   };

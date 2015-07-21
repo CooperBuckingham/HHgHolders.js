@@ -208,8 +208,8 @@ console.log("TEST", HHgTestBodyData);
    var seq4 = thing.makeActionSequence([seq3, seq3, seq3]);
    var up = thing.makeAction("scaleTo", {scale: 2, time: 1});
    var down = thing.makeAction("scaleTo", {scale: 1, time: 1});
-   var beat = thing.makeActionSequence([up, down]);
-   var doubleBeat = thing.makeActionSequence([beat, beat]);
+   var beat = thing.makeActionSequence(up, down);
+   var doubleBeat = thing.makeActionSequence(beat, beat);
 
    //var seq3 = thing.makeActionSequence([seq, timer2]);
    //var seq2 = thing.makeActionSequence([grow, move, shrink]);
@@ -221,7 +221,7 @@ console.log("TEST", HHgTestBodyData);
    //setTimeout(thing.doAction.bind(thing, seq), 5000);
    // test.doAction(grow);
 
-   //***THIS ERRORS CURRENTLY if the sequences aren't wrapped in arrays
+
    thing.doActionSequenceForever(doubleBeat);
 
   }
