@@ -233,21 +233,48 @@ console.log("TEST", HHgTestBodyData);
     var arcPos = new HHgVector2(0,270);
     var rightPos = new HHgVector2(960,0);
 
+
     var thing = HHgGetHolder({w: 200, h: 200});
-    thing.doMoveToNewParent(leftPos);
-    thing.doMakeRectangle({borderRadius: 10, color: "orange"});
-    thing.doAddBorder(2);
+    thing.doMoveToNewParent();
+    thing.doMakeRectangle({borderRadius: 20, color: "orange"});
+    thing.setMouseable(true);
+    thing.setIsDraggable(true);
+
+    var thing2 = HHgGetHolder({w: 100, h: 100});
+    thing2.doMoveToNewParent({parent: thing});
+    thing2.doMakeRectangle({borderRadius: 20, color: "blue"});
+
+    var thing3 = HHgGetHolder({w: 50, h: 50});
+    thing3.doMoveToNewParent({parent: thing2});
+    thing3.doMakeRectangle({borderRadius: 20, color: "red"});
+
+    var sizeUp = thing2.makeAction("scaleTo", {scale: 2, time: 1});
+    var sizeDown = thing2.makeAction("scaleTo", {scale: .5, time: 1});
+    var up = thing3.makeAction("moveBy", {x: 0, y: 100, time: 1});
+    var down = thing3.makeAction("moveBy", {x: 0, y: -100, time: 1});
     var right = thing.makeAction("followQuad", {control: arcPos, position: rightPos, time: 3});
     var left = thing.makeAction("followQuad", {control: arcPos, position: leftPos, time: 3});
+    var rotateR = thing.makeAction("rotateBy", {rotate: 90, time: 1});
+    var rotateL = thing.makeAction("rotateBy", {rotate: -90, time: .5});
     //var right = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER1 DONE")}});
     //var left = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER2 DONE")}});
 
 
-    thing.doStoredAction(right);
+    //TODO calling action sequence with the follow quad in it throws max stack error
+    //thing.doStoredAction(right);
+    //setTimeout(thing.doStoredAction.bind(thing, left), 3000);
 
-    //var bounce = thing.makeActionSequence([right, left]);
+    var bounce = thing.makeActionSequence([right, left]);
+    var scale2 = thing.makeActionSequence([sizeUp, sizeDown]);
+    var bob = thing.makeActionSequence([up, down]);
+    var rotateRSeq = thing.makeActionSequence([rotateR]);
+    var rotateLSeq = thing.makeActionSequence([rotateL]);
 
-    //thing.doActionSequenceForever(bounce);
+    thing.doActionSequenceForever(bounce);
+    thing.doActionSequenceForever(rotateRSeq);
+    thing2.doActionSequenceForever(rotateLSeq);
+    thing3.doActionSequenceForever(bob);
+
   }
 
   if(false){

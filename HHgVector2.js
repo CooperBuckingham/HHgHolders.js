@@ -2,7 +2,7 @@ function HHgVector2 (x,y){
   this._x = x;
   this._y = y;
   this.vBtemp;
-  this.that = this;
+  //this.that = this;
 };
 
 HHgVector2.prototype = Object.create(HHgVector2.prototype, {

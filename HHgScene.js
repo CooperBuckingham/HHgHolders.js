@@ -102,7 +102,7 @@ HHgSceneDoStart = function(){
       HHgSceneDiv.style.border = "2px dashed black";
     }
 
-    HHgScene.doAddChild(HHgGameHolder);
+    HHgScene._addToChildrenList(HHgGameHolder);
     div.classList.add("game-holder");
     div.classList.remove("mouseable");
     div.style.width = "" + HHgScreen.w * (HardwareScreen.w / HHgScreen.w) + "px";

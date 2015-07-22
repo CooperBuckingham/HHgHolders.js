@@ -529,6 +529,8 @@ var HHg = {
 
       var newThing, seqHolder, actHolder, clusHolder, thingKey, originalHolder;
 
+      if(thing.copy) return thing.copy();
+
       if(typeof thing === 'object'){
         newThing = Array.isArray(thing) ? [] : {};
         originalHolder = thing.original;

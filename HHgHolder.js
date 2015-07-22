@@ -687,7 +687,7 @@ var HHgHolder = function(props){
     HHgScene.doAddToDirtyList(this);
   };
 
-  p.doAddChild = function (child){
+  p._addToChildrenList = function (child){
     //this should be a private method
     this._children = this._children || [];
     if(child instanceof HHgHolder !== true){
@@ -697,10 +697,17 @@ var HHgHolder = function(props){
     this._children.push(child);
   };
 
-  p.doRemoveChild = function(child){
+  p._removeFromChildrenList = function(child){
     //this should be a private method
     return HHg.doRemoveThingFromArray(this._children, child);
   };
+
+  p.addChild = function(child){
+    child.doAddToNewParent({parent: this});
+  };
+
+  //TODO p.removeChild
+  //TODO p.removeFromScene / removeFromParent
 
   p.doMoveToNewParent = p.doAddToNewParent = function(props){
     if(this._parent === "stop"){
@@ -723,16 +730,17 @@ var HHgHolder = function(props){
     if(this._parent === undefined){
       HHgScene.doAddThisHolder(this);
     }else{
-      this._parent.doRemoveChild(this);
+      this._parent._removeFromChildrenList(this);
     }
 
     this._parent = props.parent || HHgGameHolder;
+    if(this === this._parent) throw("tried to add holder to itself");
 
     if(this._parent instanceof HHgHolder !== true){
       throw("tried to add child to a parent not of HHgHolder Class");
     }
 
-    this._parent.doAddChild(this);
+    this._parent._addToChildrenList(this);
 
     this.setRotationOriginalBy(this._rotationOriginal);
     this.setScaleOriginalBy(HHg1Vector);
