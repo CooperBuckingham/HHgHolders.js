@@ -187,25 +187,27 @@ console.log("TEST", HHgTestBodyData);
     }
 
   //==================== ACTION TESTS ==================
-  if(true){
+  if(false){
    var thing = HHgGetHolder({w:100,h:100});
+   thing.setMouseable(true);
+   thing.setIsDraggable(true);
    var test = HHgGetHolder({w:50, h:50});
    thing.doMoveToNewParent();
    thing.doMakeRectangle({borderRadius: 10, color:"green"});
    test.doMoveToNewParent({x: 0, y: 0});
    test.doMakeRectangle({borderRadius: 5, color:"red"});
-   var grow = thing.makeAction("scaleBy", {name: "grow", scale: 1.25, time: 2, onComplete: function(){console.log("GROW DONE")}});
-   var move = thing.makeAction("moveBy", {name: "move", x: 10, y: 10, time: 2});
+   var grow = thing.makeAction("scaleBy", {name: "grow", scale: 1.50, time: 2, onComplete: function(){console.log("GROW DONE")}});
+   var move = thing.makeAction("moveBy", {name: "move", x: 50, y: 50, time: 2});
    var shrink = thing.makeAction("scaleBy", {scale: 0.5, time: 2});
    var grow2 = thing.makeAction("scaleBy", {scale: 2, time: 1});
    var timer1 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER1 DONE")}});
    var timer2 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER2 DONE")}});
-   var clus1 = thing.makeActionCluster(grow);
-   var clus2 = thing.makeActionCluster(timer1);
-   var seq1 = thing.makeActionSequence([move], "SEQ 1");
-   var seq2 = thing.makeActionSequence([shrink, shrink, shrink], "SEQ 2");
-   var seq3 = thing.makeActionSequence([seq1, clus1, clus2], "SEQ 3");
-   var seq4 = thing.makeActionSequence([seq3, seq3, seq3]);
+   var clus1 = thing.makeActionCluster(grow, timer1);
+   var clus2 = thing.makeActionCluster(move, timer2);
+   var seq1 = thing.makeActionSequence(grow, move, shrink);
+   var seq2 = thing.makeActionSequence(shrink, move, move);
+   var finalSeq = thing.makeActionSequence(clus1, seq1, seq2, clus2);
+
    var up = thing.makeAction("scaleTo", {scale: 2, time: 1});
    var down = thing.makeAction("scaleTo", {scale: 1, time: 1});
    var beat = thing.makeActionSequence(up, down);
@@ -222,8 +224,30 @@ console.log("TEST", HHgTestBodyData);
    // test.doAction(grow);
 
 
-   thing.doActionSequenceForever(doubleBeat);
+   thing.doActionSequenceForever(finalSeq);
 
+  }
+
+  if(true){
+    var leftPos = new HHgVector2( -960,0);
+    var arcPos = new HHgVector2(0,270);
+    var rightPos = new HHgVector2(960,0);
+
+    var thing = HHgGetHolder({w: 200, h: 200});
+    thing.doMoveToNewParent(leftPos);
+    thing.doMakeRectangle({borderRadius: 10, color: "orange"});
+    thing.doAddBorder(2);
+    var right = thing.makeAction("followQuad", {control: arcPos, position: rightPos, time: 3});
+    var left = thing.makeAction("followQuad", {control: arcPos, position: leftPos, time: 3});
+    //var right = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER1 DONE")}});
+    //var left = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER2 DONE")}});
+
+
+    thing.doStoredAction(right);
+
+    //var bounce = thing.makeActionSequence([right, left]);
+
+    //thing.doActionSequenceForever(bounce);
   }
 
   if(false){

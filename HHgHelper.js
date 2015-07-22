@@ -423,6 +423,8 @@ var HHg = {
               case "blue":
               return new HHgColorRGBA(0,0,255);
               break;
+              case "orange":
+              return new HHgColorRGBA(255,102,0);
               case "white":
               return new HHgColorRGBA(255,255,255);
               break;

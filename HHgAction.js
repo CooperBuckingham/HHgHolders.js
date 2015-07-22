@@ -136,7 +136,8 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 
     if(this.isSpecial === true){
       this.tempXY = this.specialUpdateFunc(this.lastPercent, this);
-      this.deltaValue = this.tempXY.returnSubtract(this.lastValue);
+      //this.deltaValue = this.tempXY.returnSubtract(this.lastValue);
+      this.deltaValue = this.tempXY.minus(this.lastValue);
       this.lastValue = this.tempXY;
     }else if(this.isXY === true){
       this.deltaValue = this.totalDelta.times(this.lastPercent);
@@ -217,13 +218,13 @@ HHg.HHgActionCommands.makeChildOfAction(HHgActionScaleForever);
 function HHgActionFollowQuad(owner, controlXY, endXY, startValue, totalTime, ease, onComplete){
   HHgAction.call(this, owner, new HHgVector2(1,1), startValue, totalTime, ease, onComplete);
   this.endXY = endXY;
-  this.endX = endXY.getX();
-  this.endY = endXY.getY();
-  this.startX = this.startValue.getX();
-  this.startY = this.startValue.getY();
+  this.endX = endXY.x;
+  this.endY = endXY.y;
+  this.startX = this.startValue.x;
+  this.startY = this.startValue.y;
   this.controlXY = controlXY;
-  this.controlX = controlXY.getX();
-  this.controlY = controlXY.getY();
+  this.controlX = controlXY.x;
+  this.controlY = controlXY.y;
   this.tempXY = new HHgVector2(0,0);
   this.lastValue = this.startValue;
   this.isSpecial = true;

@@ -12,6 +12,7 @@
   //test text scaling
   //parent rotation and scale should change child movement actions/directions?
 
+
 //TODO features
   //add sound
   //add sprite map system
@@ -23,10 +24,12 @@
   //add physics
   //add server hook
   //add alignment system
+
     //maybe default "left edge, top edge" etc gets.
     //align to parent top, center bottom
   //9 slice
   //killing holders needs to clean up actions they are running
+  //add move in parent action
 
 //BUGS
   //fonts and font shadows now fuzzing on scale
