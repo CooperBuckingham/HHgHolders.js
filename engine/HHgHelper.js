@@ -66,9 +66,7 @@ var HHg = {
       return props;
     }
 
-    if(!isNaN(props)){
-      return new HHgVector2(props,props);
-    }
+
 
     if(props.x !== undefined){
       return new HHgVector2(props.x, props.y);
@@ -85,6 +83,12 @@ var HHg = {
     var check;
     if(props.position !== undefined){
       check = HHg.returnPositionProps(props.position);
+      if(check !== undefined) return check;
+    }
+
+    if(props.end !== undefined){
+      console.log("end", props.end);
+      check = HHg.returnPositionProps(props.end);
       if(check !== undefined) return check;
     }
 
@@ -129,6 +133,7 @@ var HHg = {
 
     if(props === undefined) return undefined;
 
+    if(!isNaN(props)) return new HHgVector2(props, props);
 
     if(props instanceof HHgVector2){
       return props;
@@ -340,7 +345,9 @@ var HHg = {
 
     if(props === undefined) return undefined;
 
-
+    if(props.removeOnComplete){
+      return function(){this.owner.remove()};
+    }
     if(props.onComplete){
       return props.onComplete;
     }
@@ -376,6 +383,8 @@ var HHg = {
       return props.controlXY;
     }else if(props.controlPosition instanceof HHgVector2){
       return props.controlPosition;
+    }else if(props.middle instanceof HHgVector2){
+      return props.middle;
     }
 
     if("control" in props){
@@ -592,6 +601,10 @@ var HHg = {
 
   },
 
+};
+
+var HHgRandomInt = function(low, high){
+  return HHg.returnRandomInt(low,high);
 };
 
 

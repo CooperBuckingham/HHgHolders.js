@@ -7,7 +7,7 @@ var HHgSprite = {
 	},
 	doAddSpriteToHolder : function(holder, name, whitePixelTintRGB){
 
-			HHgScene.setCanvasImageForHolder(holder, this.returnSprite(name), whitePixelTintRGB);
+			HHgScene.setCanvasImageForHolder(holder, this.returnSprite(name), HHg.returnColorProps(whitePixelTintRGB));
 	}
 };
 

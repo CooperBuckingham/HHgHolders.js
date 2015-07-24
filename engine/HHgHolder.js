@@ -506,7 +506,7 @@ var HHgHolder = function(props){
     this.framePositionAbsolute(HHg.returnPositionProps(props));
   };
 
-  p.getPositionInScreenOriginal = function(){
+  p.getPositionInScreenOriginal = p.getPosition = function(){
     return this._positionInScreenOriginal;
   };
 
@@ -708,8 +708,14 @@ var HHgHolder = function(props){
 
   //TODO p.removeChild
   //TODO p.removeFromScene / removeFromParent
+  p.removeFromParent = p.remove = function(){
+    //TODO eventually this needs to be back to the holder pool
+    if(!this._parent) return;
+    //this.doMoveToNewParent({parent: HHgHolderBucket})
+    HHgScene.doRemoveThisHolder(this);
+  };
 
-  p.doMoveToNewParent = p.doAddToNewParent = function(props){
+  p.doMoveToNewParent = p.doAddToNewParent = p.addToParent = function(props){
     if(this._parent === "stop"){
       return;
     }
@@ -1180,7 +1186,8 @@ var HHgHolder = function(props){
 
   //============= MOUSE =================
   //this will all be overridden for custom games
-  p.doMouseDown = function(){
+  p.doMouseDown  = function(){
+
     this.setScaleStored();
 
     //this.doActionScaleForever({scaleX:1.1, scaleY: 1.1, name: "mousedownscale"});
@@ -1188,8 +1195,10 @@ var HHgHolder = function(props){
     //this.doActionRotateForever({speed:-300, name: "mousemoverotate"});
   }
 
-  p.doMouseUp = function(mouseWasOverWhenReleased){
+  p.mouseClick = undefined;
 
+  p.doMouseUp = function(mouseWasOverWhenReleased){
+    if(mouseWasOverWhenReleased && this.mouseClick) this.mouseClick();
     //this.doRemoveActionByName("mousemoverotate");
     //this.doRemoveActionByName("mousedownscale");
     this.isBeingDragged = false;
@@ -1226,19 +1235,19 @@ var HHgHolder = function(props){
     this.setVisible(false);
   };
 
-  p.doAddSprite = function(name, whitePixelTintRGB){
+  p.doAddSprite = p.addSprite = function(name, whitePixelTintRGB){
     HHgSprite.doAddSpriteToHolder(this,name,whitePixelTintRGB);
   };
 
-  p.doAddParagraphText = function(props){
+  p.doAddParagraphText = p.addPText = function(props){
     HHgText.doAddTextParagraphToHolder(this,props);
   };
 
-  p.doAddCanvasText = p.doAddText = function(props){
+  p.doAddCanvasText = p.doAddText = p.addText = function(props){
     HHgText.doAddTextCanvasToHolder(this,props);
   };
 
-  p.doMakeRoundedRectangle = p.doMakeRectangle = function(props){
+  p.doMakeRoundedRectangle = p.doMakeRectangle = p.makeRectangle = function(props){
     HHgShape.addRectangle(this, props);
   };
 

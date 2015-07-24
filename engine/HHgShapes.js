@@ -110,6 +110,8 @@ var HHgShapeHelper = {
     }
 
     if(props.borderRadius !== undefined) return HHgShapeHelper.returnBorderRadiusProps(props.borderRadius);
+    if(props.radius !== undefined) return HHgShapeHelper.returnBorderRadiusProps(props.radius);
+    if(props.corner !== undefined) return HHgShapeHelper.returnBorderRadiusProps(props.corner);
 
 
   },

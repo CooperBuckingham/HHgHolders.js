@@ -2,7 +2,7 @@
 window.HHgTestsOverride = true; //change this to true and game will begin in start function below
 var HHgTestBodyData = null;
 
-var HHgTestDashSceneDiv = false;
+var HHgTestDashSceneDiv = true;
 
 var HHgShowTestGrid = false;
 var HHgTestBoxes = false;
@@ -59,6 +59,12 @@ console.log("TEST", HHgTestBodyData);
     innerLower.id = "WEBSITE_LOWER_BOX";
     lower.appendChild(innerLower);
 
+    // var info = document.createElement("div");
+    // info.id = "WEBSITE_INFO";
+    // var innerInfo = document.createElement('div');
+    // innerInfo.id = "WEBSITE_INFO_BOX";
+    // info.appendChild(innerInfo);
+
 
 
     var button;
@@ -98,6 +104,7 @@ console.log("TEST", HHgTestBodyData);
 
     document.body.appendChild(nav);
     document.body.appendChild(lower);
+    //document.body.appendChild(info);
 
   }
     //==================== TEXT TESTS ==================
@@ -334,52 +341,94 @@ console.log("TEST", HHgTestBodyData);
   }
     //END TEST
 
+  if(false){
+    var leftPos = new HHgVector2( -960,0);
+    var arcPos = new HHgVector2(0,270);
+    var rightPos = new HHgVector2(960,0);
+
+
+    var thing = HHgGetHolder({w: 200, h: 200});
+    thing.doMoveToNewParent();
+    thing.doAddSprite("soccer");
+    thing.setMouseable(true);
+    thing.setIsDraggable(true);
+
+    var thing2 = HHgGetHolder({w: 100, h: 100});
+    thing2.doMoveToNewParent({parent: thing});
+    thing2.doAddSprite("soccer");
+
+    var thing3 = HHgGetHolder({w: 50, h: 50});
+    thing3.doMoveToNewParent({parent: thing2});
+    thing3.doAddSprite("soccer");
+
+    var sizeUp = thing2.makeAction("scaleTo", {scale: 2, time: 1});
+    var sizeDown = thing2.makeAction("scaleTo", {scale: .5, time: 1});
+    var up = thing3.makeAction("moveBy", {x: 0, y: 100, time: 1});
+    var down = thing3.makeAction("moveBy", {x: 0, y: -100, time: 1});
+    var right = thing.makeAction("followQuad", {control: arcPos, position: rightPos, time: 3});
+    var left = thing.makeAction("followQuad", {control: arcPos, position: leftPos, time: 3});
+    var rotateR = thing.makeAction("rotateBy", {rotate: 90, time: 1});
+    var rotateL = thing.makeAction("rotateBy", {rotate: -90, time: .5});
+    //var right = thing.makeAction('moveTo', {time: 1, position: rightPos});
+    //var left = thing.makeAction('moveTo', {time: 1, position: leftPos });
+
+
+    //TODO calling action sequence with the follow quad in it throws max stack error
+    // thing.doStoredAction(right);
+    // setTimeout(thing.doStoredAction.bind(thing, left), 3000);
+
+    var bounce = thing.makeActionSequence([right, left]);
+    var scale2 = thing.makeActionSequence([sizeUp, sizeDown]);
+    var bob = thing.makeActionSequence([up, down]);
+    var rotateRSeq = thing.makeActionSequence([rotateR]);
+    var rotateLSeq = thing.makeActionSequence([rotateL]);
+
+    thing.doActionSequenceForever(bounce);
+    thing.doActionSequenceForever(rotateRSeq);
+    thing2.doActionSequenceForever(rotateLSeq);
+    thing3.doActionSequenceForever(bob);
+
+  }
+
     if(HHgTestBodyData === "4" && HHgDoWebsiteDemoDeploy){
-      var leftPos = new HHgVector2( -960,0);
-      var arcPos = new HHgVector2(0,270);
-      var rightPos = new HHgVector2(960,0);
 
+      var button1 = HHgGetHolder({w:200, h:80});
+      var button2 = HHgGetHolder({w:200, h:80});
+      var button3 = HHgGetHolder({w:200, h:80});
 
-      var thing = HHgGetHolder({w: 200, h: 200});
-      thing.doMoveToNewParent();
-      thing.doAddSprite("soccer");
-      thing.setMouseable(true);
-      thing.setIsDraggable(true);
+      button1.addToParent({x: -250, y: -440});
+      button2.addToParent({x: 0, y:-440});
+      button3.addToParent({x: 250, y:-440});
 
-      var thing2 = HHgGetHolder({w: 100, h: 100});
-      thing2.doMoveToNewParent({parent: thing});
-      thing2.doAddSprite("soccer");
+      button1.makeRectangle({radius: 20, color: "#44cccc"});
+      button2.makeRectangle({radius: 20, color: new HHgColorRGBA(120,220,76)});
+      button3.makeRectangle({radius: 20, R: 80, G: 50, B: 160});
 
-      var thing3 = HHgGetHolder({w: 50, h: 50});
-      thing3.doMoveToNewParent({parent: thing2});
-      thing3.doAddSprite("soccer");
+      button1.addText({text:"Click Me", shadow:{x:2,y:2}});
+      button2.addText({text:"Click Me", shadow:{x:2,y:2}});
+      button3.addText({text:"Click Me", shadow:{x:2,y:2}});
 
-      var sizeUp = thing2.makeAction("scaleTo", {scale: 2, time: 1});
-      var sizeDown = thing2.makeAction("scaleTo", {scale: .5, time: 1});
-      var up = thing3.makeAction("moveBy", {x: 0, y: 100, time: 1});
-      var down = thing3.makeAction("moveBy", {x: 0, y: -100, time: 1});
-      var right = thing.makeAction("followQuad", {control: arcPos, position: rightPos, time: 3});
-      var left = thing.makeAction("followQuad", {control: arcPos, position: leftPos, time: 3});
-      var rotateR = thing.makeAction("rotateBy", {rotate: 90, time: 1});
-      var rotateL = thing.makeAction("rotateBy", {rotate: -90, time: .5});
-      //var right = thing.makeAction('moveTo', {time: 1, position: rightPos});
-      //var left = thing.makeAction('moveTo', {time: 1, position: leftPos });
+      var fireBall = function(){
+        var randomSize = HHgRandomInt(50,250);
+        var randomFinish = HHgVector( HHgRandomInt(-960,960), HHgRandomInt(-540,540) );
+        var randomXControl = HHgVector(0,0);
+        var randomSpeed = HHgRandomInt(5,30)/10;
+        var aBall = HHgGetHolder({size: randomSize});
 
+        aBall.addToParent({position: this.getPosition()});
+        aBall.addSprite("soccer", this.getBackgroundColor());
+        aBall.doAction("followQuad", {middle: randomXControl, end: randomFinish, time: randomSpeed, easeOut: 5});
+        aBall.doAction("scaleTo", {scale: .3, time: randomSpeed, easeOut: 5});
+      }
 
-      //TODO calling action sequence with the follow quad in it throws max stack error
-      // thing.doStoredAction(right);
-      // setTimeout(thing.doStoredAction.bind(thing, left), 3000);
+      button1.setMouseable(true);
+      button2.setMouseable(true);
+      button3.setMouseable(true);
 
-      var bounce = thing.makeActionSequence([right, left]);
-      var scale2 = thing.makeActionSequence([sizeUp, sizeDown]);
-      var bob = thing.makeActionSequence([up, down]);
-      var rotateRSeq = thing.makeActionSequence([rotateR]);
-      var rotateLSeq = thing.makeActionSequence([rotateL]);
+      button1.mouseClick = fireBall;
+      button2.mouseClick = fireBall;
+      button3.mouseClick = fireBall;
 
-      thing.doActionSequenceForever(bounce);
-      thing.doActionSequenceForever(rotateRSeq);
-      thing2.doActionSequenceForever(rotateLSeq);
-      thing3.doActionSequenceForever(bob);
     }
 
     if(HHgTestBodyData === "2" && HHgDoWebsiteDemoDeploy){

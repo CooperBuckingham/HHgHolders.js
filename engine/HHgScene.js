@@ -323,6 +323,13 @@ function doAddFunctionsToScene(scene){
     HHgSceneDiv.appendChild(div);
   };
 
+  scene.doRemoveThisHolder = function(holder){
+    var div = holder.getDiv();
+    delete scene._holders[div.id];
+    delete scene._finalDirtyHolders[holder.getHash()];
+    HHgSceneDiv.removeChild(div);
+  }
+
   //====================================================
 
   scene.doAddTextDiv = function(owner, props){

@@ -1,6 +1,10 @@
 //HHgTestSpec.js
 
 //redo sequence and clusters to use less memory allocation
+//put ActionShells into a class, and sub class clusters and sequences
+
+//screen resizing, while not really part of the design, does bad things to mouse position offsets
+
 
 //test sequences repeat n
 

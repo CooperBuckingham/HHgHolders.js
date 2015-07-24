@@ -11,6 +11,12 @@ window.onload = function(){
 
 	HHgLoadingScreen.splashScreenFinish();
 
+  window.onresize = function(){
+    //TODO see if it makes sense to handle dynamically rescaling the game space here
+    //console.log("resize");
+    document.location.reload();
+  }
+
 }
 
 

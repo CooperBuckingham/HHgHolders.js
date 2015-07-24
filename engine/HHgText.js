@@ -72,9 +72,9 @@ var HHgDefaultShadowColor = new HHgColorRGBA(0,0,0,.36),
       props.shadow.color = HHg.returnColorProps(props.shadow.color);
 
       if(props.shadow.color === undefined){
-        props.shadow.color === HHgDefaultShadowColor;
+        props.shadow.color = HHgDefaultShadowColor;
       }
-
+      console.log(props.shadow.color);
       return props.shadow;
 
   }

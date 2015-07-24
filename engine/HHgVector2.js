@@ -6,8 +6,8 @@ function HHgVector2 (x,y){
 };
 
 //Global helper for vector creation, same as new HHgVector2(x,y)
-var HHgVector = function(props){
-  return HHg.returnPositionProps(props);
+var HHgVector = function(x,y){
+  return new HHgVector2(x,y);
 };
 
 HHgVector2.prototype = Object.create(HHgVector2.prototype, {
