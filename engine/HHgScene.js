@@ -99,7 +99,8 @@ HHgSceneDoStart = function(){
     //from here on out the game holder is now the scene div other holders are added to
     HHgSceneDiv = div;
     if(HHgTestDashSceneDiv){
-      HHgSceneDiv.style.border = "2px dashed black";
+      HHgSceneDiv.style.borderTop = "2px dashed black";
+      HHgSceneDiv.style.borderBottom = "2px dashed black";
     }
 
     HHgScene._addToChildrenList(HHgGameHolder);

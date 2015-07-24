@@ -13,7 +13,9 @@ window.onload = function(){
 
   window.onresize = function(){
     //TODO see if it makes sense to handle dynamically rescaling the game space here
-    //console.log("resize");
+
+    //could scale the scene, but might have to dynamically update the fixed hardware offset numbers, for mouse calculations and things
+
     document.location.reload();
   }
 

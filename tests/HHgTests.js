@@ -85,19 +85,19 @@ console.log("TEST", HHgTestBodyData);
         innerLower.innerHTML = "designed for games, but holders make anything";
       }else if(HHgTestBodyData === "4" && i === 5){
         button.classList.add("WEBSITE_BUTTON_ACTIVE");
-        innerLower.innerHTML = "more games with complex actions";
+        innerLower.innerHTML = "make games with complex actions";
       }
     }
 
     buttonList[1].innerHTML = "GITHUB";
     buttonList[1].setAttribute('href', "https://github.com/CHBDev/HHgHolders.js");
-    buttonList[2].innerHTML = "DEMO1";
+    buttonList[2].innerHTML = "DEMOCONE";
     buttonList[2].setAttribute('href', "./index.html");
-    buttonList[3].innerHTML = "DEMO2";
+    buttonList[3].innerHTML = "DEMOBALLS";
     buttonList[3].setAttribute('href', "./index2.html");
-    buttonList[4].innerHTML = "DEMO3";
+    buttonList[4].innerHTML = "DEMOBUTTONS";
     buttonList[4].setAttribute('href', "./index3.html");
-    buttonList[5].innerHTML = "DEMO4";
+    buttonList[5].innerHTML = "DEMOGRID";
     buttonList[5].setAttribute('href', "./index4.html");
     buttonList[6].innerHTML = "HHG";
     buttonList[6].setAttribute('href', "http://www.heavyhandedgames.com");
@@ -390,7 +390,7 @@ console.log("TEST", HHgTestBodyData);
 
   }
 
-    if(HHgTestBodyData === "4" && HHgDoWebsiteDemoDeploy){
+    if(HHgTestBodyData === "3" && HHgDoWebsiteDemoDeploy){
 
       var button1 = HHgGetHolder({w:200, h:80});
       var button2 = HHgGetHolder({w:200, h:80});
@@ -431,8 +431,8 @@ console.log("TEST", HHgTestBodyData);
 
     }
 
-    if(HHgTestBodyData === "2" && HHgDoWebsiteDemoDeploy){
-      var colorPicker = ["#111111", "#000000", "#110000", "#090909", "#151515","#000000", "#190009", "#190900", "#191105", "#222222", "#161616" ];
+    if(HHgTestBodyData === "4" && HHgDoWebsiteDemoDeploy){
+      var colorPicker = ["#111111", "#44bbbb", "#110000", "#090909", "#151515","#44cccc", "#190009", "#190900", "#191105", "#222222", "#161616" ];
       var colorPicker2 = ["#ffffff", "#ffffff", "#ffffff", "#ff6644", "#cccccc","#aaaaaa", "#ffffff", "#ffffff", "#gggggg", "#aaaaaa", "#bbbbbb" ];
 
 
@@ -519,7 +519,7 @@ console.log("TEST", HHgTestBodyData);
       HHgGame.doNewColorLoop();
     }
 
-    if(HHgTestBodyData === "3" && HHgDoWebsiteDemoDeploy){
+    if(HHgTestBodyData === "2" && HHgDoWebsiteDemoDeploy){
       //do game thing here maybe
       //temp copy of test 1
       console.log("DEMO 3");
