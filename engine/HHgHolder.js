@@ -781,13 +781,12 @@ var HHgHolder = function(props){
       action.name = props.name;
       if(this._actions[action.name] !== undefined){
         var existingAction = this._actions[action.name];
-        var existingActionNewRandomName = "" + this._counterForNamingActions + HHg.returnRandomHash();
+        var existingActionNewRandomName = action.name + "_" + this._counterForNamingActions + HHg.returnRandomHash();
         existingAction.name = existingActionNewRandomName;
         this._actions[existingActionNewRandomName] = existingAction;
 
-        //TODO this got weird once we started copying actions inside of sequences to rerun them
         console.log("WARNING: Action with name: " + action.name + " already exists on Holder");
-        console.log("previous action's name changed to random name");
+        console.log("adding hash to action")
 
       }
     }else{

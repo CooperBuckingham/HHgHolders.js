@@ -11,7 +11,7 @@ var HHgActionShell = function(name, props){
 }());
 
 
-var HHgActionCluster = function(actions, name, onComplete){
+var HHgActionClusterShell = function(actions, name, onComplete){
 
 };
 
@@ -20,7 +20,7 @@ var HHgActionCluster = function(actions, name, onComplete){
 
 }());
 
-var HHgActionSequence = function(actions, name, onComplete){
+var HHgActionSequenceShell = function(actions, name, onComplete){
 
 };
 

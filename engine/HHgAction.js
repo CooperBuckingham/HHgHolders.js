@@ -6,22 +6,24 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
     console.log("ERROR: no owner holder passed to Action");
     return;
   }
+
+  this.resetVals = {};
+  this.resetVals.owner = owner;
+  this.resetVals.totalDelta = totalDelta;
+  this.resetVals.startValue = startValue;
+  this.resetVals.totalTime = totalTime;
+
+
   this.owner = owner;
   this.onComplete = onComplete;
   this.ease = ease;
   this.totalTime = totalTime;
-  this.startTime = +new Date;
-  this.timeSoFar = 0;
   this.easeInPercent = 0;
   this.easeOutPercent = 0;
   this.easeAreaUnderCurveMod = .5; //this is a hack since everything is linear easing right now
   this.startValue = startValue;
   this.totalDelta = totalDelta;
   this.isXY = (totalDelta instanceof HHgVector2);
-  this.lastPercent = 0;
-  this.deltaPercent = 0;
-  this.deltaValue = this.isXY ? new HHgVector2(0,0) : 0;
-  this.lastValue = this.isXY ? new HHgVector2(0,0) : 0;
   this.paused = false;
 
   if(ease){
@@ -30,11 +32,23 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
     if(ease.easeIn !== undefined) this.easeInPercent = ease.easeIn;
     if(ease.easeOut !== undefined) this.easeOutPercent = ease.easeOut;
   }
+
+  this.resetToStartValues();
 };
 
 (function(){
 
   var p = HHgAction.prototype;
+
+  p.resetToStartValues = function(){
+    this.timeSoFar = 0;
+    this.startTime = +new Date;
+    this.lastPercent = 0;
+    this.deltaPercent = 0;
+    this.deltaValue = this.isXY ? new HHgVector2(0,0) : 0;
+    this.lastValue = this.isXY ? new HHgVector2(0,0) : 0;
+
+  }
 
   p.repeatSelfF = function(){
     var copySelf;
@@ -109,6 +123,7 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
   };
 
   p.whatShouldIDoThisFrame = function(deltaT){
+
     this.timeSoFar += deltaT;
     if(this.timeSoFar >= this.totalTime){
       if(this.isSpecial === true){
