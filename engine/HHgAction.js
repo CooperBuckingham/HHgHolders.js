@@ -48,48 +48,12 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
     this.deltaValue = this.isXY ? new HHgVector2(0,0) : 0;
     this.lastValue = this.isXY ? new HHgVector2(0,0) : 0;
 
-  }
-
-  p.repeatSelfF = function(){
-    var copySelf;
-    if(this.isActionSequence){
-      copySelf = this.owner.makeSequence.apply(this.owner, this.originalArguments);
-      this.owner.doActionSequenceForever(copySelf);
-    }else if(this.isActionCluster){
-      copySelf = this.owner.makeCluster.apply(this.owner, this.originalArguments);
-      this.owner.doActionClusterForever(copySelf);
-    }else{
-      console.log("ERROR: repeating single actions is not implemented");
-      return;
-      copySelf = this.copyActionShell(this.originalArguments);
-      this.owner.doStoredAction(copySelf);
-    }
-
   };
 
-  p.repeatSelfN = function(){
-    this.repeatN--;
-    HHgAction.repeatSelfF.call(this);
-  };
-
-  p.sequenceChain = function(){
-
-    if(this.myNextAction){
-      this.mySequence.props.myActions.push(this.owner.doStoredAction(this.myNextAction));
-    }else if(this.isSequenceFinalTimer){
-      if(this.mySequence.repeatF){
-        this.mySequence.repeatSelfF();
-      }else if(this.mySequence.repeatN){
-        this.mySequence.repeatSelfN();
-      }
-      this.mySequence.sequenceChain();
-    }else if(this.isClusterFinalTimer){
-      if(this.myCluster.repeatF){
-        this.myCluster.repeatSelfF();
-      }else if(this.myCluster.repeatN){
-        this.myCluster.repeatSelfN();
-      }
-      this.myCluster.sequenceChain();
+  p.beRemoved = function(){
+    //ignoring notifying parent clusters for now, unsure of design
+    if(this.mySequence){
+      this.mySequence.childRemoved(this);
     }
   };
 
@@ -98,7 +62,9 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
       action.onComplete();
     }
 
-    action.sequenceChain();
+    if(action.mySequence){
+      action.mySequence.childComplete(action);
+    }
 
     action.owner.doRemoveAction(action);
   };
@@ -270,6 +236,60 @@ function HHgActionTimer(owner, totalTime, onComplete){
   }
 }
 HHg.HHgActionCommands.makeChildOfAction(HHgActionTimer);
+
+function HHgActionCluster(owner, totalTime, onComplete){
+  HHgActionTimer.call(this, owner, totalTime, onComplete);
+  this.isCluster = true;
+  this.myActions = [];
+
+};
+HHgActionCluster.prototype = Object.create(HHgActionTimer.prototype);
+HHgActionCluster.prototype.constructor = HHgActionCluster;
+HHgActionCluster.prototype.beRemoved = function(){
+
+  for(var i = 0; i < this.myActions.length; i++){
+    var child = this.myActions[i];
+    child.myCluster = undefined; //this is to prevent the endless loop of parent>child>parent removing
+    child.owner.doRemoveAction(child);
+  }
+
+  this.myActions = undefined;
+  HHgAction.prototype.beRemoved.call(this);
+}
+
+function HHgActionSequence(owner, totalTime, onComplete){
+  HHgActionTimer.call(this, owner, totalTime, onComplete);
+  this.isSequence = true;
+  this.myActions = [];
+  this.currentIndex = 0;
+
+};
+HHgActionSequence.prototype = Object.create(HHgActionTimer.prototype);
+HHgActionSequence.prototype.constructor = HHgActionSequence;
+HHgActionSequence.prototype.beRemoved = function(){
+
+  if(this.currentIndex < 0) return;
+  var child = this.myActions[this.currentIndex];
+  child.mySequence = undefined; //this is to prevent the endless loop of parent>child>parent removing
+  child.owner.doRemoveAction(child);
+  this.myActions = undefined;
+  HHgAction.prototype.beRemoved.call(this);
+}
+HHgActionSequence.prototype.childRemoved = function(child){
+  if(this.myActions[this.currentIndex] === child){
+    this.currentIndex = -1; //child already removed, so don't want to loop again
+  }
+  this.owner.removeAction(this);
+}
+HHgActionSequence.prototype.childComplete = function(child){
+  this.currentIndex++;
+  if(this.currentIndex >= this.myActions.length){
+    //then done with all sequences
+  }else{
+    var nextChild = this.myActions[this.currentIndex];
+
+  }
+}
 
 //=======================
 

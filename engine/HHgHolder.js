@@ -767,27 +767,12 @@ var HHgHolder = function(props){
   p.doFinalizeAction = function(action, props){
     this._actions = this._actions || {};
 
-
-    if(props.mySequence){
-      action.myNextAction = props.myNextAction;
-      action.mySequence = props.mySequence;
-      action.isSequenceFinalTimer = props.isSequenceFinalTimer;
-    }
-    if(props.myCluster){
-      action.myCluster = props.myCluster;
-      action.isClusterFinalTimer = props.isClusterFinalTimer;
-    }
     if(props.name){
       action.name = props.name;
       if(this._actions[action.name] !== undefined){
-        var existingAction = this._actions[action.name];
-        var existingActionNewRandomName = action.name + "_" + this._counterForNamingActions + HHg.returnRandomHash();
-        existingAction.name = existingActionNewRandomName;
-        this._actions[existingActionNewRandomName] = existingAction;
-
+        action.name = action.name + "_" + this._counterForNamingActions + HHg.returnRandomHash();
         console.log("WARNING: Action with name: " + action.name + " already exists on Holder");
         console.log("adding hash to action")
-
       }
     }else{
       action.name = "" + this._counterForNamingActions + HHg.returnRandomHash();
@@ -795,15 +780,12 @@ var HHgHolder = function(props){
 
     this._counterForNamingActions++;
 
-    if(action.isActionCluster || action.isActionSequence){
-      this._actions[action.name] = action;
-      return {owner: action.props.owner, name: action.name};
-    }else{
-      this._actions[action.name] = action;
-      this._actionsTotal++;
-      HHgActionManager.doAddAction(this,action);
-      return action.name;
-    }
+    this._actions[action.name] = action;
+    this._actionsTotal++;
+    HHgActionManager.doAddAction(this,action);
+
+    return action;
+
   };
 
   p.getActions = function(){
@@ -811,25 +793,25 @@ var HHgHolder = function(props){
   };
 
   p.doRemoveAction = function(action){
-    var tempObject;
-    if(action.isActionCluster || action.isActionSequence){
-      for(var i = 0; i < action.props.myActions.length; i++){
-        tempObject = action.props.myActions[i];
-        tempObject.owner.doRemoveActionByName(tempObject.name);
-      }
-      //TODO refactor to not use delete
-      //this._actions[action.name] = undefined;
-      delete this._actions[action.name];
 
-    }else{
-      //this._actions[action.name] = undefined;
-      delete this._actions[action.name];
-      this._actionsTotal--;
-      if(this._actionsTotal <= 0){
-        this.actionTotal = 0;
-        HHgActionManager.doRemoveOwner(this);
-      }
+    if(this._actions[action.name] === undefined){
+      console.log("Trying to remove an action not listed on this holder")
+      return;
     }
+
+    if(this._actionsTotal <= 0){
+      console.log("error, this holder has this action, but total actions is ", this._actionsTotal);
+    }
+
+    this._actions[action.name] = undefined;
+    this._actionsTotal--;
+    if(this._actionsTotal <= 0){
+      this.actionTotal = 0;
+      HHgActionManager.doRemoveOwner(this);
+    }
+
+    action.beRemoved();
+
   };
   p.doRemoveActionByName = function(name){
     if(!this._actions) return;
@@ -840,28 +822,32 @@ var HHgHolder = function(props){
     var theAction;
     theAction = new HHgActionMoveBy(this, this._positionInScreenOriginal.subtractedFrom(HHg.returnPositionProps(props)), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionMoveInScreenBy = function(props){
     var theAction;
     theAction = new HHgActionMoveBy(this, HHg.returnPositionProps(props), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionMoveInScreenForever = function(props){
     var theAction;
     theAction = new HHgActionMoveForever(this, (HHg.returnPositionProps(props) || HHg.returnSpeedXYprops(props)), this._positionInScreenOriginal, HHg.returnEaseProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionRotateBy = function(props){
     var theAction;
     theAction = new HHgActionRotateBy(this, HHg.returnRotationProps(props), this._rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionRotateLeftTo = function(props){
@@ -879,7 +865,8 @@ var HHgHolder = function(props){
     var theAction;
     theAction = new HHgActionRotateBy(this, degrees, this._rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionRotateRightTo = function(props){
@@ -897,63 +884,58 @@ var HHgHolder = function(props){
     var theAction;
     theAction = new HHgActionRotateBy(this, degrees, this._rotationOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionRotateForever = function(props){
-    // props.time = 100;
-    // props.rotation = props.rotation * 100;
-    // var seq = this.makeActionSequence([this.makeAction("rotateBy", props)]);
-    // return this.doActionSequenceForever(seq);
 
     var theAction;
     theAction = new HHgActionRotateForever(this, (HHg.returnRotationProps(props) || HHg.returnSpeedNProps(props)), HHg.returnEaseProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionScaleBy = function(props){
     var theAction;
     theAction = new HHgActionScaleBy(this, HHg.returnScaleProps(props), this._scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionScaleTo = function(props){
     var theAction;
     theAction = new HHgActionScaleBy(this, HHg.returnScaleProps(props).timesInverse(this._scaleOriginal), this._scaleOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionScaleForever = function(props){
-    // props.time = 100;
-
-    // props.scale = props.scale * 100;
-    // props.scaleX = props.scaleX * 100;
-    // props.scaleY = props.scaleY * 100;
-    // var seq = this.makeActionSequence([this.makeAction("scaleBy", props)]);
-    // return this.doActionSequenceForever(seq);
-
 
     var theAction;
     theAction = new HHgActionScaleForever(this, (HHg.returnScaleProps(props) || HHg.returnSpeedXYProps(props)), this._scaleOriginal, HHg.returnEaseProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionFollowQuad = function(props){
     var theAction;
     theAction = new HHgActionFollowQuad(this, HHg.returnControlPositionProps(props), HHg.returnPositionProps(props), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), props.onComplete, HHg.returnOnCompleteProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionTimer = function(props){
     var theAction;
     theAction = new HHgActionTimer(this, HHg.returnTimeProps(props), HHg.returnOnCompleteProps(props));
 
-    return this.doFinalizeAction(theAction, props);
+    this.doFinalizeAction(theAction, props);
+    return theAction;
   };
 
   p.doActionPlaySound = function(props){
@@ -966,8 +948,12 @@ var HHgHolder = function(props){
 
   p.doActionCustom = function(func, time, onComplete){
     //todo, this should become a cluster, a custom action needs to return an actual action
+    //Removing for now;
+    console.log("Custom Actions are disabled");
+    return {};
     func.bind(this)();
-    return this.doActionTimer({time: time, onComplete: onComplete});
+    this.doActionTimer({time: time, onComplete: onComplete});
+
   };
 
   p.doAction = function(actionName, props){
@@ -1021,167 +1007,81 @@ var HHgHolder = function(props){
     return {actionCall: this.returnActionFunction(actionName), props: props}; //removed owner: this
   };
 
-  p.doStoredAction = p.callStoredAction = function(storedAction){
-    if(storedAction.isActionCluster){
-      return this.doActionCluster(storedAction);
-    }else if(storedAction.isActionSequence){
-      return this.doActionSequence(storedAction);
-    }else{
-      return {owner: this, name: storedAction.actionCall.call(this, storedAction.props)};
-    }
+  p.doStoredAction = p.callStoredAction = p.doAction = function(storedAction){
+    return storedAction.actionCall.call(this, storedAction.props);
   };
-
 
   p.makeActionCluster = p.makeCluster = function(storedActions, name, onComplete){
-    var i, key, longestTime = 0, finalActions = [], tempAction, args;
-    args = Array.prototype.slice.call(arguments, 0);
 
-    if(storedActions.props){
-      console.log("FOUND ONLY ACTIONS");
-      for(var i = 0; i < arguments.length; i++){
-        finalActions.push(arguments[i]);
-      }
-      onComplete = undefined;
-      name = undefined;
-    }else if(!Array.isArray(storedActions)){
-      for(key in storedActions){
-        tempAction = storedActions[key];
-        if(!tempAction.props){
-          console.log("ERROR: attemping to add non action to cluster");
-          return;
-        }
-        finalActions.push(tempAction);
-      }
-    }else{
-      for(var i = 0; i < storedActions.length; i++){
-        finalActions.push(storedActions[i]);
+    var tempTime;
+    var totalTime = 0;
+    var longestTime = 0;
+
+    for(var key in this.storedActions){
+
+      tempTime = this.storedActions[key].props.time;
+      totalTime += tempTime;
+      if(tempTime > longestTime){
+        longestTime = tempTime;
       }
     }
+    this.totalTime = totalTime;
+    this.longestTime = longestTime;
 
-    for(i = 0; i < finalActions.length; i++){
-      tempAction = finalActions[i];
+    return {actionCall: this.doActionCluster, props: {storedActions: storedActions, name: name, onComplete: onComplete, time: longestTime, isCluster: true}};
 
-      if(tempAction.props.time > longestTime){
-        longestTime = tempAction.props.time;
-      }
-
-      tempAction.props.myCluster = finalActions;
-    }
-
-    var totalTimer = this.makeAction("timer", {time: longestTime, onComplete: function(){console.log("Cluster Complete"); onComplete;} } );
-    totalTimer.props.isClusterFinalTimer = true;
-    totalTimer.props.myCluster = finalActions;
-    finalActions.push(totalTimer);
-
-    finalActions.isActionCluster = true;
-    finalActions.props = {time: longestTime, name: name, myActions: [], totalActions: finalActions.length};
-
-    finalActions.sequenceChain = HHgAction.prototype.sequenceChain;
-    finalActions = HHg.copyActionShell(finalActions);
-    finalActions.originalArguments = args;
-
-    return finalActions;
-  };
-
-  p.doActionCluster = function(cluster, nOrForever){
-    var i, tempThing, clusterName;
-    for(i = 0; i < cluster.length; i++){
-      tempThing = cluster[i];
-      cluster.props.myActions.push(this.doStoredAction(tempThing));
-    }
-    cluster.owner = this;
-
-    if(nOrForever === 0 || nOrForever === true){
-      cluster.repeatF = true;
-      cluster.repeatSelfF = HHgAction.prototype.repeatSelfF;
-    }else if(nOrForever){
-      cluster.repeatN = nOrForever;
-      cluster.repeatSelfN = HHgAction.prototype.repeatSelfN;
-    }
-
-    return this.doFinalizeAction(cluster, cluster.props);
-  };
-
-  p.doActionClusterForever = function(cluster){
-    return this.doActionCluster(cluster, true);
-  };
-
-  p.doActionClusterTimes = function(cluster, n){
-    return this.doActionCluster(cluster, n);
   };
 
   p.makeActionSequence = p.makeSequence = function(storedActions, name, onComplete){
-    var i, key, finalActions = [], finalSequence = [], tempAction, tempAction2, tempFunction, args;
-    args = Array.prototype.slice.call(arguments, 0);
-    if(storedActions.props){
-     //console.log("FOUND ONLY ACTIONS");
-     for(var i = 0; i < arguments.length; i++){
-       finalActions.push(arguments[i]);
-     }
-     name = undefined;
-     onComplete = undefined;
-    }else if(!Array.isArray(storedActions)){
-     for(key in storedActions){
-       tempAction = storedActions[key];
-       if(!tempAction.props){
-         console.log("ERROR: attemping to add non action to cluster");
-         return;
-       }
-       finalActions.push(tempAction);
-     }
-    }else{
-     for(var i = 0; i < storedActions.length; i++){
-       finalActions.push(storedActions[i]);
-     }
+    var tempTime;
+    var totalTime = 0;
+    var longestTime = 0;
+
+    for(var key in this.storedActions){
+
+      tempTime = this.storedActions[key].props.time;
+      totalTime += tempTime;
+      if(tempTime > longestTime){
+        longestTime = tempTime;
+      }
+    }
+    this.totalTime = totalTime;
+    this.longestTime = longestTime;
+
+    return {actionCall: this.doActionSequence, props: {storedActions: storedActions, name: name, onComplete: onComplete, time: totalTime, isSequence: true}};
+
+  };
+
+  p.doActionCluster = function(cluster, nOrForever){
+
+    var theCluster = new HHgActionCluster(this, HHg.returnTimeProps(props), HHg.returnOnCompleteProps(props));
+
+    var returnCluster = this.doFinalizeAction(theCluster, props);
+
+    var theChild;
+    var i = 0;
+    var length = cluster.props.storedActions.length;
+    for(i; i < length; i++){
+      theChild = this.doAction(cluster.props.storedActions[i]);
+      returnCluster.myActions.push(theChild);
+      theChild.myCluster = returnCluster;
     }
 
-    finalActions.props = {myActions: [], totalActions: 0, name: name, time: 0};
-    //TODO: eventually this should all get sub classed and sequences should stop being arrayw with properties
-    //this system has grown beyond its original design, but for now, we just grab the prototype function we need
-    finalActions.isActionSequence = true;
-    finalActions.sequenceChain = HHgAction.prototype.sequenceChain;
-
-    var finalTimer = this.makeAction("timer", {time: 0, onComplete: function(){console.log("Sequence Complete"); onComplete;}} );
-    finalTimer.props.isSequenceFinalTimer = true;
-    finalActions.push(finalTimer);
-
-    for(i = 0; i < finalActions.length; i++){
-      tempAction = finalActions[i];
-      finalActions.props.time += tempAction.props.time;
-
-      tempAction.props.mySequence = finalActions;
-    }
-
-    finalActions.props.totalActions = finalActions.length;
-    finalActions = HHg.copyActionShell(finalActions);
-    finalActions.originalArguments = args;
-
-    return finalActions;
+    return returnCluster;
   };
 
   p.doActionSequence = function(sequence, nOrForever){
-    sequence.props.myActions.push(this.doStoredAction(sequence[0]));
-    sequence.owner = this;
+    var theSequence = new HHgActionSequence(this, HHg.returnTimeProps(props), HHg.returnOnCompleteProps(props));
 
+    var returnSequence = this.doFinalizeAction(theSequence, props);
 
-    if(nOrForever === 0 || nOrForever === true){
-      sequence.repeatF = true;
-      sequence.repeatSelfF = HHgAction.prototype.repeatSelfF;
-    }else if(nOrForever){
-      sequence.repeatN = nOrForever;
-      sequence.repeatSelfN = HHgAction.prototype.repeatSelfN;
-    }
+    var theChild = this.doAction(sequence.props.storedActions[0]);
+    returnSequence.myActions.push(theChild);
 
-    return this.doFinalizeAction(sequence, sequence.props);
+    return returnSequence;
+
   };
 
-  p.doActionSequenceForever = function(sequence){
-    return this.doActionSequence(sequence, true);
-  };
-
-  p.doActionSequenceTimes = function(sequence, n){
-    return this.doActionSequence(sequence, n);
-  };
 
   //============= MOUSE =================
   //this will all be overridden for custom games

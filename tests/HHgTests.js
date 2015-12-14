@@ -6,7 +6,7 @@ var HHgTestDashSceneDiv = true;
 
 var HHgShowTestGrid = false;
 var HHgTestBoxes = false;
-var HHgDoWebsiteDemoDeploy = true;
+var HHgDoWebsiteDemoDeploy = false;
 var HHgActionDummy;
 
 
