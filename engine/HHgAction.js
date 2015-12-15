@@ -58,15 +58,20 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
   };
 
   p.finalFrame = function(action){
+    // if(action.name === "move2"){
+    //   debugger;
+    // }
     if(action.onComplete){
       action.onComplete();
     }
 
     if(action.mySequence){
       action.mySequence.childComplete(action);
+    }else{
+      action.owner.doRemoveAction(action);
     }
 
-    action.owner.doRemoveAction(action);
+
   };
 
   p.setEase = function(){
@@ -267,28 +272,47 @@ function HHgActionSequence(owner, totalTime, onComplete){
 HHgActionSequence.prototype = Object.create(HHgActionTimer.prototype);
 HHgActionSequence.prototype.constructor = HHgActionSequence;
 HHgActionSequence.prototype.beRemoved = function(){
+  console.log("Sequence Removed: ", this.name);
+  if(this.currentIndex > -1){
+    console.log("has index");
+    var child = this.myCurrentAction;
+    child.mySequence = undefined; //this is to prevent the endless loop of parent>child>parent removing
+    child.owner.doRemoveAction(child);
+  }
 
-  if(this.currentIndex < 0) return;
-  var child = this.myActions[this.currentIndex];
-  child.mySequence = undefined; //this is to prevent the endless loop of parent>child>parent removing
-  child.owner.doRemoveAction(child);
-  this.myActions = undefined;
+  this.myCurrentAction = undefined;
   HHgAction.prototype.beRemoved.call(this);
 }
 HHgActionSequence.prototype.childRemoved = function(child){
-  if(this.myActions[this.currentIndex] === child){
+  if(this.myCurrentAction === child){
     this.currentIndex = -1; //child already removed, so don't want to loop again
+    console.log("sequence child remove so removing sequence");
+    this.owner.doRemoveAction(this);
+  }else{
+    debugger;
+    console.log("removed child of sequence that was not current, possible error: ", child.name);
   }
-  this.owner.removeAction(this);
+
 }
 HHgActionSequence.prototype.childComplete = function(child){
-  this.currentIndex++;
-  if(this.currentIndex >= this.myActions.length){
-    //then done with all sequences
-  }else{
-    var nextChild = this.myActions[this.currentIndex];
 
+  child.mySequence = undefined;
+  child.owner.doRemoveAction(child);
+
+  this.currentIndex++;
+  if(this.currentIndex >= this.myStoredActions.length){
+    //then done with all sequences
+    console.log("final action just finished")
+    this.myCurrentAction = undefined;
+    this.currentIndex = -1;
+
+    this.finalFrame(this); //call final frame on self, as we avoid doing it in action manager, and wait for the final action to update.
+  }else{
+    var newChild = this.owner.doAction(this.myStoredActions[this.currentIndex]);
+    newChild.mySequence = this;
+    this.myCurrentAction = newChild;
   }
+
 }
 
 //=======================

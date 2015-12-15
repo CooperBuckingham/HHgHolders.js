@@ -795,6 +795,7 @@ var HHgHolder = function(props){
   p.doRemoveAction = function(action){
 
     if(this._actions[action.name] === undefined){
+      debugger;
       console.log("Trying to remove an action not listed on this holder")
       return;
     }
@@ -802,8 +803,8 @@ var HHgHolder = function(props){
     if(this._actionsTotal <= 0){
       console.log("error, this holder has this action, but total actions is ", this._actionsTotal);
     }
-
-    this._actions[action.name] = undefined;
+    console.log("removing action ", action.name);
+    delete this._actions[action.name];
     this._actionsTotal--;
     if(this._actionsTotal <= 0){
       this.actionTotal = 0;
@@ -1008,7 +1009,13 @@ var HHgHolder = function(props){
   };
 
   p.doStoredAction = p.callStoredAction = p.doAction = function(storedAction){
-    return storedAction.actionCall.call(this, storedAction.props);
+    if(storedAction.props.isCluster){
+      return this.doActionCluster(storedAction)
+    }else if(storedAction.props.isSequence){
+      return this.doActionSequence(storedAction);
+    }else{
+      return storedAction.actionCall.call(this, storedAction.props);
+    }
   };
 
   p.makeActionCluster = p.makeCluster = function(storedActions, name, onComplete){
@@ -1017,9 +1024,9 @@ var HHgHolder = function(props){
     var totalTime = 0;
     var longestTime = 0;
 
-    for(var key in this.storedActions){
+    for(var key in storedActions){
 
-      tempTime = this.storedActions[key].props.time;
+      tempTime = storedActions[key].props.time;
       totalTime += tempTime;
       if(tempTime > longestTime){
         longestTime = tempTime;
@@ -1037,9 +1044,9 @@ var HHgHolder = function(props){
     var totalTime = 0;
     var longestTime = 0;
 
-    for(var key in this.storedActions){
+    for(var key in storedActions){
 
-      tempTime = this.storedActions[key].props.time;
+      tempTime = storedActions[key].props.time;
       totalTime += tempTime;
       if(tempTime > longestTime){
         longestTime = tempTime;
@@ -1053,10 +1060,11 @@ var HHgHolder = function(props){
   };
 
   p.doActionCluster = function(cluster, nOrForever){
-
+    var props = cluster.props;
     var theCluster = new HHgActionCluster(this, HHg.returnTimeProps(props), HHg.returnOnCompleteProps(props));
 
     var returnCluster = this.doFinalizeAction(theCluster, props);
+    returnCluster.myStoredActions = props.storedActions;
 
     var theChild;
     var i = 0;
@@ -1071,13 +1079,15 @@ var HHgHolder = function(props){
   };
 
   p.doActionSequence = function(sequence, nOrForever){
+    var props = sequence.props;
     var theSequence = new HHgActionSequence(this, HHg.returnTimeProps(props), HHg.returnOnCompleteProps(props));
 
     var returnSequence = this.doFinalizeAction(theSequence, props);
+    returnSequence.myStoredActions = props.storedActions;
 
     var theChild = this.doAction(sequence.props.storedActions[0]);
-    returnSequence.myActions.push(theChild);
-
+    theChild.mySequence = returnSequence;
+    returnSequence.myCurrentAction = theChild;
     return returnSequence;
 
   };

@@ -4,7 +4,7 @@ var HHgForce5FPS = false;
 var HHgPaused = false;
 var HHgTempHolder;
 var HHgTempAction;
-var HHgTempActionObject;
+var HHgTempActionsObject;
 var HHgTempAction2;
 var HHgShowFPS = true;
 
@@ -21,12 +21,17 @@ var HHgActionManager = {
   doActionsForHolders: function(interval){
 
     for(HHgTempHolder in this._actionList){
-      HHgTempHolder= this._actionList[HHgTempHolder];
+      HHgTempHolder = this._actionList[HHgTempHolder];
       if(HHgTempHolder.getPaused() === true || HHgTempHolder.firstUpdate !== true) continue;
-      HHgTempActionObject = HHgTempHolder.getActions()
-      for(HHgTempAction in HHgTempActionObject){
-        HHgTempAction2 = HHgTempActionObject[HHgTempAction];
-        if(HHgTempAction2.isActionSequence || HHgTempAction2.isActionCluster || HHgTempAction2.paused === true) continue;
+      HHgTempActionsObject = HHgTempHolder.getActions()
+      for(HHgTempAction in HHgTempActionsObject){
+        HHgTempAction2 = HHgTempActionsObject[HHgTempAction];
+        if(!HHgTempAction2){
+          console.log("Undefined Action being processed");
+          continue;
+        }
+        if(HHgTempAction2.paused === true) continue; //TODO handle cluster or sequence pausing
+        if(HHgTempAction2.isSequence === true) continue; //hack around, even though sequences are timers (for length), to ensure it only completes when its final action completes.
         HHgTempAction2.whatShouldIDoThisFrame(interval);
       }
     }

@@ -240,8 +240,20 @@ console.log("TEST", HHgTestBodyData);
 
   }
 
-  if(false){
+  if(true){
+    var thing = HHgGetHolder({w:100, h:100});
+    thing.setMouseable(true);
+    thing.setIsDraggable(true);
+    thing.doMoveToNewParent();
+    thing.doMakeRectangle({borderRadius: 10, color: "green"});
 
+    var move = thing.makeAction('moveBy', {name: 'move1', x: 200, y: 100, time: 3, onComplete: function(){console.log("onComplete Function for Move") }} );
+    var moveAgain = thing.makeAction('moveBy', {name: 'move2', x: -200, y:100, time: 1, onComplete: function(){console.log("onComplete Function for MOVE2")}});
+    var grow = thing.makeAction("scaleBy", {name: "grow", scale: 1.50, time: 3, onComplete: function(){console.log("onComplete Function for Grow")}});
+    var shrink = thing.makeAction("scaleBy", {scale: 0.5, time: 2});
+    var grow2 = thing.makeAction("scaleBy", {scale: 2, time: 1});
+    var seq1 = thing.makeActionSequence([move, grow, moveAgain], 'seq1', function(){console.log('onComplete Function for SEQ1')});
+    thing.doActionSequence(seq1);
 
   }
 
