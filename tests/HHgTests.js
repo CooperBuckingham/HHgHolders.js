@@ -250,10 +250,17 @@ console.log("TEST", HHgTestBodyData);
     var move = thing.makeAction('moveBy', {name: 'move1', x: 200, y: 100, time: 3, onComplete: function(){console.log("onComplete Function for Move") }} );
     var moveAgain = thing.makeAction('moveBy', {name: 'move2', x: -200, y:100, time: 1, onComplete: function(){console.log("onComplete Function for MOVE2")}});
     var grow = thing.makeAction("scaleBy", {name: "grow", scale: 1.50, time: 3, onComplete: function(){console.log("onComplete Function for Grow")}});
-    var shrink = thing.makeAction("scaleBy", {scale: 0.5, time: 2});
+    var shrink = thing.makeAction("scaleBy", {name: "shrink", scale: 0.5, time: 2});
     var grow2 = thing.makeAction("scaleBy", {scale: 2, time: 1});
-    var seq1 = thing.makeActionSequence([move, grow, moveAgain], 'seq1', function(){console.log('onComplete Function for SEQ1')});
-    thing.doActionSequence(seq1);
+    var pause = thing.makeAction("timer", {name: 'timer', time: 2});
+    var seq1 = thing.makeActionSequence([move, moveAgain], 'seq1', function(){console.log('onComplete Function for SEQ1')});
+
+    var rot1 = thing.makeAction('rotateBy', {name: 'rot1', degrees: 900, time: 5});
+    var clus1 = thing.makeActionCluster([rot1, shrink], 'clus1', function(){console.log('onComplete Function for clus1')});
+    var seq2 = thing.makeActionSequence([move, pause, moveAgain], 'seq2', function(){console.log('onComplete Function for seq2')});
+    var seq3 = thing.makeActionSequence([clus1, seq2], 'seq3', function(){console.log('onComplete Function for SEQ3')});
+
+    thing.doAction(seq3);
 
   }
 

@@ -1060,6 +1060,10 @@ var HHgHolder = function(props){
   };
 
   p.doActionCluster = function(cluster, nOrForever){
+    if(!cluster.props.isCluster){
+      console.log("ERR: this is not a cluster");
+      return;
+    }
     var props = cluster.props;
     var theCluster = new HHgActionCluster(this, HHg.returnTimeProps(props), HHg.returnOnCompleteProps(props));
 
@@ -1079,6 +1083,10 @@ var HHgHolder = function(props){
   };
 
   p.doActionSequence = function(sequence, nOrForever){
+    if(!sequence.props.isSequence){
+      console.log("ERR: this is not a sequence");
+      return;
+    }
     var props = sequence.props;
     var theSequence = new HHgActionSequence(this, HHg.returnTimeProps(props), HHg.returnOnCompleteProps(props));
 
@@ -1088,6 +1096,7 @@ var HHgHolder = function(props){
     var theChild = this.doAction(sequence.props.storedActions[0]);
     theChild.mySequence = returnSequence;
     returnSequence.myCurrentAction = theChild;
+
     return returnSequence;
 
   };

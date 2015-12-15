@@ -225,6 +225,10 @@ var HHg = {
       return props.rotate;
     }
 
+    if(props.degrees !== undefined){
+      return props.degrees;
+    }
+
     return undefined;
 
   },

@@ -58,14 +58,17 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
   };
 
   p.finalFrame = function(action){
-    // if(action.name === "move2"){
-    //   debugger;
-    // }
+    if(action.name === "clus1"){
+
+    }
+
     if(action.onComplete){
       action.onComplete();
     }
 
-    if(action.mySequence){
+    if(action.myCluster){
+      action.myCluster.childComplete(action);
+    }else if(action.mySequence){
       action.mySequence.childComplete(action);
     }else{
       action.owner.doRemoveAction(action);
@@ -246,6 +249,7 @@ function HHgActionCluster(owner, totalTime, onComplete){
   HHgActionTimer.call(this, owner, totalTime, onComplete);
   this.isCluster = true;
   this.myActions = [];
+  this.actionsCompleted = 0;
 
 };
 HHgActionCluster.prototype = Object.create(HHgActionTimer.prototype);
@@ -254,12 +258,28 @@ HHgActionCluster.prototype.beRemoved = function(){
 
   for(var i = 0; i < this.myActions.length; i++){
     var child = this.myActions[i];
+    if(!child.myCluster) continue;
     child.myCluster = undefined; //this is to prevent the endless loop of parent>child>parent removing
     child.owner.doRemoveAction(child);
   }
 
   this.myActions = undefined;
+  this.actionsCompleted = 0;
   HHgAction.prototype.beRemoved.call(this);
+}
+
+HHgActionCluster.prototype.childComplete = function(child){
+
+  child.myCluster = undefined;
+  child.owner.doRemoveAction(child);
+
+  this.actionsCompleted++;
+  if(this.actionsCompleted >= this.myStoredActions.length){
+    console.log("final action just finished for cluster");
+
+    this.finalFrame(this); //call final frame on self, as we avoid doing it in action manager, and wait for the final action to update.
+  }
+
 }
 
 function HHgActionSequence(owner, totalTime, onComplete){

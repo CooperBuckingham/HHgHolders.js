@@ -32,6 +32,7 @@ var HHgActionManager = {
         }
         if(HHgTempAction2.paused === true) continue; //TODO handle cluster or sequence pausing
         if(HHgTempAction2.isSequence === true) continue; //hack around, even though sequences are timers (for length), to ensure it only completes when its final action completes.
+        if(HHgTempAction2.isCluster === true) continue;
         HHgTempAction2.whatShouldIDoThisFrame(interval);
       }
     }
