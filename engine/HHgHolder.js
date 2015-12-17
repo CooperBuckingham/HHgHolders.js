@@ -811,9 +811,12 @@ var HHgHolder = function(props){
   };
 
   p.doRemoveAction = function(action){
+    if(typeof action === 'string'){
+      this.doRemoveActionByName(action);
+      return;
+    }
 
     if(this._actions[action.name] === undefined){
-      debugger;
       console.log("Trying to remove an action not listed on this holder")
       return;
     }
@@ -821,8 +824,8 @@ var HHgHolder = function(props){
     if(this._actionsTotal <= 0){
       console.log("error, this holder has this action, but total actions is ", this._actionsTotal);
     }
-    console.log("removing action ", action.name);
-    delete this._actions[action.name];
+    // console.log("removing action ", action.name);
+    delete this._actions[action.name]; //some folks will tell you that delete is too slow, but otherwise we end up iterating over hundreds if not thousands of undefined entries in the obj
     this._actionsTotal--;
     if(this._actionsTotal <= 0){
       this.actionTotal = 0;
