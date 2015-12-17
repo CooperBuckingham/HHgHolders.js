@@ -84,6 +84,37 @@ var HHgHolder = function(props){
 
 (function(){
 
+  // HHgVector2.prototype = Object.create(HHgVector2.prototype, {
+  //   position: {
+  //     get: function(){
+  //       return this._positionInScreenNet;
+  //     },
+  //     set: function(valx, valy){
+  //       if(typeof valx === 'object' ){
+  //         this.setPositionInScreenTo(valx);
+  //       }else{
+  //         this.setPositionInScreenTo({x: valx, y: valy});
+  //       }
+  //     }
+  //   },
+  //   scale: {
+  //     get: function(){
+  //       return this._scaleNet;
+  //     },
+  //     set: function(val){
+  //       this.setScaleOriginalTo(val);
+  //     }
+  //   },
+  //   rotation: {
+  //     get: function(){
+  //       return this._rotationNet;
+  //     },
+  //     set: function(val){
+  //       this.setRotationOriginalTo(val);
+  //     }
+  //   }
+  // });
+
   var p = HHgHolder.prototype;
 
   p.resetChanges = function(){
@@ -817,7 +848,7 @@ var HHgHolder = function(props){
     }
 
     if(this._actions[action.name] === undefined){
-      console.log("Trying to remove an action not listed on this holder")
+      //console.log("Trying to remove an action not listed on this holder")
       return;
     }
 
@@ -850,6 +881,23 @@ var HHgHolder = function(props){
   };
 
   p.doActionMoveInScreenBy = function(props){
+    var theAction;
+    theAction = new HHgActionMoveBy(this, HHg.returnPositionProps(props), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
+
+    this.doFinalizeAction(theAction, props);
+    return theAction;
+  };
+
+
+  p.doActionMoveInParentTo = function(props){
+    var theAction;
+    theAction = new HHgActionMoveBy(this, this._positionInScreenOriginal.subtractedFrom(HHg.returnPositionProps(props)), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
+
+    this.doFinalizeAction(theAction, props);
+    return theAction;
+  };
+
+  p.doActionMoveInParentBy = function(props){
     var theAction;
     theAction = new HHgActionMoveBy(this, HHg.returnPositionProps(props), this._positionInScreenOriginal, HHg.returnTimeProps(props), HHg.returnEaseProps(props), HHg.returnOnCompleteProps(props));
 
@@ -979,7 +1027,7 @@ var HHgHolder = function(props){
 
   };
 
-  p.doAction = function(actionName, props){
+  p.doActionByName = function(actionName, props){
     if(typeof actionName === "object"){
       this.doStoredAction(actionName);
       return;
@@ -1013,6 +1061,10 @@ var HHgHolder = function(props){
       case "moveto":
       case "moveinscreento":
       return this.doActionMoveInScreenTo;
+      case "moveinparentto":
+      return this.doActionMoveInParentTo;
+      case "moveinparentby":
+      return this.doActionMoveInParentBy;
       case "moveinscreenforever":
       return this.doActionMoveInScreenForever;
       case "custom":
@@ -1030,7 +1082,11 @@ var HHgHolder = function(props){
     return {actionCall: this.returnActionFunction(actionName), props: props}; //removed owner: this
   };
 
-  p.doStoredAction = p.callStoredAction = function(storedAction){
+  p.doStoredAction = p.callStoredAction = p.doAction = function(storedAction){
+    if(storedAction.props === undefined){
+      console.log("Not a valid stored action");
+      return;
+    }
     if(storedAction.props.isCluster){
       return this.doActionCluster(storedAction)
     }else if(storedAction.props.isSequence){

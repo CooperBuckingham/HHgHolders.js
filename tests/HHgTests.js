@@ -460,8 +460,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
 
         aBall.addToParent({position: this.getPosition()});
         aBall.addSprite("soccer", this.getBackgroundColor());
-        aBall.doAction("followQuad", {middle: randomXControl, end: randomFinish, time: randomSpeed, easeOut: 5});
-        aBall.doAction("scaleTo", {scale: .3, time: randomSpeed, easeOut: 5});
+        aBall.doActionByName("followQuad", {middle: randomXControl, end: randomFinish, time: randomSpeed, easeOut: 5});
+        aBall.doActionByName("scaleTo", {scale: .3, time: randomSpeed, easeOut: 5});
       }
 
       button1.setMouseable(true);
