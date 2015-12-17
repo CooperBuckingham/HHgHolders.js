@@ -6,7 +6,7 @@ var HHgTestDashSceneDiv = true;
 
 var HHgShowTestGrid = true;
 var HHgTestBoxes = false;
-var HHgDoWebsiteDemoDeploy = false;
+var HHgDoWebsiteDemoDeploy = true;
 var HHgActionDummy;
 
 
@@ -16,8 +16,6 @@ var HHgGame = {doStart: function(){
 
 
 HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-demo');
-console.log("TEST", HHgTestBodyData);
-
 
   if(HHgShowTestGrid){
     var lineUp = HHgGetHolder({w:3,h:1080});
@@ -271,7 +269,7 @@ console.log("TEST", HHgTestBodyData);
   };
 
   //forever tests
-  if(true){
+  if(false){
     for(var i = 25; i < 200; i+=1){
       var thing = HHgGetHolder({w: 100 + i, h: 100 + i});
       thing.setMouseable(true);

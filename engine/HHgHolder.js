@@ -5,9 +5,13 @@ var HHgHolder = function(props){
 
   HHgHolderHashCount++;
   if(HHgHolderHashCount > 50000){
-    HHgHolderHashCount = 0;
+    //HHgHolderHashCount = 0;
     console.log("HASH passed 50000");
   }
+  this._hash = HHgHolderHashCount;
+  this._timeStamp = +new Date();
+  this._finalHash = "" + this._hash + "_" + this._timeStamp;
+
   this.that = this;
   var temp = HHg.returnSizeProps(props) || new HHgVector2(HHgGameHolder.getWidthOriginal(), HHgGameHolder.getHeightOriginal());
 
@@ -38,16 +42,13 @@ var HHgHolder = function(props){
 
   this._children;
   this._actions;
-  this._clusters =[];
-  this._sequences=[];
+  // this._clusters =[];
+  // this._sequences=[];
   this._paused = false;
 
   this._div;
   this._insideDiv;
 
-  this._hash = HHgHolderHashCount;
-  this._timeStamp = +new Date();
-  this._finalHash = "" + this._hash + "_" + this._timeStamp;
 
   this._mouseable = false;
   this._visible = true;
@@ -75,7 +76,17 @@ var HHgHolder = function(props){
 
   this.test = "no";
 
-  this.resetChanges = function(){
+  this.resetChanges();
+
+  this.resetFrameUpdates();
+
+};
+
+(function(){
+
+  var p = HHgHolder.prototype;
+
+  p.resetChanges = function(){
     this.changes = {
       scale: false,
       position: false,
@@ -89,9 +100,7 @@ var HHgHolder = function(props){
     }
   };
 
-  this.resetChanges();
-
-  this.resetFrameUpdates = function(){
+  p.resetFrameUpdates = function(){
     this.frameUpdates = {
       positionBy: undefined,
       rotationBy: undefined,
@@ -102,14 +111,6 @@ var HHgHolder = function(props){
       positionAbsolute: undefined,
     }
   };
-
-  this.resetFrameUpdates();
-
-};
-
-(function(){
-
-  var p = HHgHolder.prototype;
 
   p.getOriginalSize = function(){
     return this._sizeOriginal;
@@ -288,22 +289,37 @@ var HHgHolder = function(props){
   };
 
   p.framePositionTo = function(xy){
+    if(this.frameUpdates.positionTo){
+      if(this.frameUpdates.positionTo.isEqual(xy)){
+        return;
+      }
+    }
     this.frameUpdates.positionTo = xy;
     this.doNotifySceneOfUpdates();
   };
 
   p.frameRotationTo = function(val){
+    if(val === this.frameUpdates.rotationTo) return;
     this.frameUpdates.rotationTo = val;
     this.doNotifySceneOfUpdates();
   };
 
   p.frameScaleTo = function(xy){
-
+    if(this.frameUpdates.scaleTo){
+      if(this.frameUpdates.scaleTo.isEqual(xy)){
+        return;
+      }
+    }
     this.frameUpdates.scaleTo = xy;
     this.doNotifySceneOfUpdates();
   };
 
   p.framePositionAbsolute = function(xy){
+    if(this.frameUpdates.positionAbsolute){
+      if(this.frameUpdates.positionAbsolute.isEqual(xy)){
+        return;
+      }
+    }
     this.frameUpdates.positionAbsolute = xy;
     this.doNotifySceneOfUpdates();
   };
@@ -313,6 +329,7 @@ var HHgHolder = function(props){
   };
 
   p.setMouseable = function(mouseable){
+    if(this._mouseable === mouseable) return;
     this._mouseable = mouseable;
     this.changes.mouseable = true;
     if(this._div){
@@ -591,7 +608,7 @@ var HHgHolder = function(props){
   };
 
   p.getScaleNetForChildScale = function(){
-    this._scaleNet = this._scaleIgnoreParentScale ? this._scaleOriginal / this._parent.getScaleNetForChildPosition() : this._scaleNet;
+    this._scaleNet = this._scaleIgnoreParentScale ? this._scaleOriginal.dividedBy(this._parent.getScaleNetForChildPosition()) : this._scaleNet;
     if(this._scaleUniformOnly === true){
       var larger = (this._scaleNet.x > this._scaleNet.y) ? this._scaleNet.x : this._scaleNet.y;
       this._scaleNet = new HHgVector2(larger, larger);
@@ -618,6 +635,7 @@ var HHgHolder = function(props){
     if(this._parent !== undefined){
       this._scaleNet = this._parent.getScaleNetForChildScale().times(this._scaleNet);
     }
+    //TODO: this font and border stuff is a hack, kind of
     this.fontSizeScaled = this.fontSizeOriginal * this._scaleNet.x;
     this.borderWidthScaled = this.borderWidthOriginal * this._scaleNet.x;
 
@@ -1009,7 +1027,7 @@ var HHgHolder = function(props){
     return {actionCall: this.returnActionFunction(actionName), props: props}; //removed owner: this
   };
 
-  p.doStoredAction = p.callStoredAction = p.doAction = function(storedAction){
+  p.doStoredAction = p.callStoredAction = function(storedAction){
     if(storedAction.props.isCluster){
       return this.doActionCluster(storedAction)
     }else if(storedAction.props.isSequence){
