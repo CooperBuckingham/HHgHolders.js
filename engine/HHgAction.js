@@ -33,7 +33,7 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
     if(ease.easeOut !== undefined) this.easeOutPercent = ease.easeOut;
   }
 
-  this.resetToStartValues();
+  this.resetToStartValues(true);
 };
 
 (function(){
@@ -64,6 +64,17 @@ var HHgAction = function (owner, totalDelta, startValue, totalTime, ease, onComp
 
     if(action.onComplete){
       action.onComplete();
+    }
+
+    if(action.repeatForever === true){
+      action.resetToStartValues();
+      return;
+    }
+
+    if(action.repeatN > 1){
+      action.repeatN--;
+      action.resetToStartValues();
+      return;
     }
 
     if(action.myCluster){
@@ -280,20 +291,42 @@ HHgActionCluster.prototype.childComplete = function(child){
     this.finalFrame(this); //call final frame on self, as we avoid doing it in action manager, and wait for the final action to update.
   }
 
-}
+};
+
+HHgActionCluster.prototype.resetToStartValues = function(init){
+  //TODO: this still creates all new actions
+  //eventually, if a cluster or sequence is repeat, then it should be caching its actions
+  //and calling reset start values on them all below, but that's a bigger overhaul
+  this.timeSoFar = 0;
+  this.myActions = [];
+  this.actionsCompleted = 0;
+  this.myStoredActions = this.myStoredActions || [];
+  if(init)return;
+
+
+  var theChild;
+  var i = 0;
+  var length = this.myStoredActions.length;
+  for(i; i < length; i++){
+    theChild = this.owner.doAction(this.myStoredActions[i]);
+    this.myActions.push(theChild);
+    theChild.myCluster = this;
+  }
+
+};
 
 function HHgActionSequence(owner, totalTime, onComplete){
   HHgActionTimer.call(this, owner, totalTime, onComplete);
   this.isSequence = true;
   this.myActions = [];
-  this.currentIndex = 0;
+  this.myCurrentIndex = 0;
 
 };
 HHgActionSequence.prototype = Object.create(HHgActionTimer.prototype);
 HHgActionSequence.prototype.constructor = HHgActionSequence;
 HHgActionSequence.prototype.beRemoved = function(){
   console.log("Sequence Removed: ", this.name);
-  if(this.currentIndex > -1){
+  if(this.myCurrentIndex > -1){
     console.log("has index");
     var child = this.myCurrentAction;
     child.mySequence = undefined; //this is to prevent the endless loop of parent>child>parent removing
@@ -305,7 +338,7 @@ HHgActionSequence.prototype.beRemoved = function(){
 }
 HHgActionSequence.prototype.childRemoved = function(child){
   if(this.myCurrentAction === child){
-    this.currentIndex = -1; //child already removed, so don't want to loop again
+    this.myCurrentIndex = -1; //child already removed, so don't want to loop again
     console.log("sequence child remove so removing sequence");
     this.owner.doRemoveAction(this);
   }else{
@@ -319,20 +352,32 @@ HHgActionSequence.prototype.childComplete = function(child){
   child.mySequence = undefined;
   child.owner.doRemoveAction(child);
 
-  this.currentIndex++;
-  if(this.currentIndex >= this.myStoredActions.length){
+  this.myCurrentIndex++;
+  if(this.myCurrentIndex >= this.myStoredActions.length){
     //then done with all sequences
     console.log("final action just finished")
     this.myCurrentAction = undefined;
-    this.currentIndex = -1;
+    this.myCurrentIndex = -1;
 
     this.finalFrame(this); //call final frame on self, as we avoid doing it in action manager, and wait for the final action to update.
   }else{
-    var newChild = this.owner.doAction(this.myStoredActions[this.currentIndex]);
+    var newChild = this.owner.doAction(this.myStoredActions[this.myCurrentIndex]);
     newChild.mySequence = this;
     this.myCurrentAction = newChild;
   }
 
+};
+
+HHgActionSequence.prototype.resetToStartValues = function(init){
+  this.timeSoFar = 0;
+  this.myActions = [];
+  this.myStoredActions = this.myStoredActions || [];
+  this.myCurrentIndex = 0;
+  if(init) return;
+
+  var theChild = this.owner.doAction(this.myStoredActions[0]);
+  theChild.mySequence = this;
+  this.myCurrentAction = theChild;
 }
 
 //=======================

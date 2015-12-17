@@ -11,7 +11,7 @@
 HHgScreenSize = new HHgVector2(HHgScreen.w, HHgScreen.h);
 HHgScreenSizeHalf = HHgScreenSize.times(.5);
 
-HHgTopHolder = document.getElementById("all");
+HHgTopHolder = document.getElementById("HHgTopHolder");
 
 HHgTopHolder.style.width = "" + HardwareScreen.w +"px";
 HHgTopHolder.style.height = "" + HardwareScreen.h +"px";
@@ -19,24 +19,24 @@ HHgTopHolder.style.height = "" + HardwareScreen.h +"px";
 HHgSceneDoStart = function(){
   console.log("HHgScene Start NOW");
   HHg0Vector = new HHgVector2(0,0);
-  HHg0Vector.setX = function(){};
-  HHg0Vector.setY = function(){};
-  HHg0Vector.setXY = function(){};
+  HHg0Vector.setX = HHgNoOp;
+  HHg0Vector.setY = HHgNoOp;
+  HHg0Vector.setXY = HHgNoOp;
 
   HHg1Vector = new HHgVector2(1,1);
-  HHg1Vector.setX = function(){};
-  HHg1Vector.setY = function(){};
-  HHg1Vector.setXY = function(){};
+  HHg1Vector.setX = HHgNoOp;
+  HHg1Vector.setY = HHgNoOp;
+  HHg1Vector.setXY = HHgNoOp;
 
   HHgHalfVector = new HHgVector2(.5,.5);
-  HHgHalfVector.setX = function(){};
-  HHgHalfVector.setY = function(){};
-  HHgHalfVector.setXY = function(){};
+  HHgHalfVector.setX = HHgNoOp;
+  HHgHalfVector.setY = HHgNoOp;
+  HHgHalfVector.setXY = HHgNoOp;
 
   HHg10000Vector = new HHgVector2(10000,10000);
-  HHg10000Vector.setX = function(){};
-  HHg10000Vector.setY = function(){};
-  HHg10000Vector.setXY = function(){};
+  HHg10000Vector.setX = HHgNoOp;
+  HHg10000Vector.setY = HHgNoOp;
+  HHg10000Vector.setXY = HHgNoOp;
 
   HHgScreenDiff = new HHgVector2(0,0);
   HHgScene = new HHgHolder({w:HardwareScreen.w,h:HardwareScreen.h});
@@ -66,12 +66,12 @@ HHgSceneDoStart = function(){
 
     HHgTopHolder.appendChild(div);
 
-    HHgScene.setPositionInParentTo = function(){};
-    HHgScene.setPositionInScreenTo = function(){};
-    HHgScene.setPositionInScreenBy = function(){};
-    HHgScene.doNotifySceneOfUpdates = function(){};
-    HHgScene.doFrameDump = function(){};
-    HHgGameHolder.killHolder = function(){};
+    HHgScene.setPositionInParentTo = HHgNoOp;
+    HHgScene.setPositionInScreenTo = HHgNoOp;
+    HHgScene.setPositionInScreenBy = HHgNoOp;
+    HHgScene.doNotifySceneOfUpdates = HHgNoOp;
+    HHgScene.doFrameDump = HHgNoOp;
+    HHgGameHolder.killHolder = HHgNoOp;
     HHgScene.getPositionInScreenNet = function(){
       return HHg0Vector;
     }
@@ -114,12 +114,12 @@ HHgSceneDoStart = function(){
 
     HHgSceneDiv.style.top = "" + HHgScreenDiffPlus.y + "px";
 
-    HHgGameHolder.doNotifySceneOfUpdates = function(){};
-    HHgGameHolder.setPositionInParentTo = function(){};
-    HHgGameHolder.setPositionInScreenTo = function(){};
-    HHgGameHolder.setPositionInScreenBy = function(){};
-    HHgGameHolder.doFrameDump = function(){};
-    HHgGameHolder.killHolder = function(){};
+    HHgGameHolder.doNotifySceneOfUpdates = HHgNoOp;
+    HHgGameHolder.setPositionInParentTo = HHgNoOp;
+    HHgGameHolder.setPositionInScreenTo = HHgNoOp;
+    HHgGameHolder.setPositionInScreenBy = HHgNoOp;
+    HHgGameHolder.doFrameDump = HHgNoOp;
+    HHgGameHolder.killHolder = HHgNoOp;
 
     HHgGameHolder.getPositionInScreenNet = function(){return HHg0Vector;}
 
@@ -137,10 +137,12 @@ function doAddFunctionsToScene(scene){
   scene._holders = {};
   scene._dirtyHolders = {};
   scene._finalDirtyHolders = {};
+  scene.isDirty = false;
 
   //==== specific 1 off updates ====//
   scene.doAddToDirtyList = function(holder){
     scene._dirtyHolders[holder.getHash()] = holder;
+    scene.isDirty = true;
   };
   scene.doUpdateHolderMouseable = function(holder){
     holder.getMouseable() ? holder.getDiv().classList.add("mouseable") : holder.getDiv().classList.remove("mouseable");
@@ -154,7 +156,7 @@ function doAddFunctionsToScene(scene){
   };
 
   scene.doEndOfFrame = function(){
-    if(scene._dirtyHolders.length < 1){
+    if(!scene.isDirty){
       return;
     }
     var newList = scene._dirtyHolders;
@@ -168,11 +170,13 @@ function doAddFunctionsToScene(scene){
 
   scene.doUpdateHolders = function(){
     //this handles all visual udpates per frame for holders
-    if(scene._finalDirtyHolders.length < 1){
+
+    if(!scene.isDirty){
       return;
     }
     var newList = scene._finalDirtyHolders;
     scene._finalDirtyHolders = {};
+    scene.isDirty = false;
 
     var holder, div, insideDiv, changes, scaleX, scaleY, scaleString, insideScaleStringX, insideScaleStringY, insideSkewStringX, insideSkewStringY, insideSkewString, insideScaleString, insideTransformString, adjustedPosition, divTransformString;
 

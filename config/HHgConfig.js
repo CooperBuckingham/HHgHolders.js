@@ -1,5 +1,5 @@
 //======= GAME SPECIFIC SETTINGS ===========
-
+var HHgProduction = false;
 var HHgPathPrefix = "";
 var HHgImgFolder = "img/";
 
@@ -33,6 +33,14 @@ var HHgHoldCanvasUpresScaleBy = 2;
 //NOTE: but note that it will cause elements like "borders" and "fonts", to scale as rasterized images.
 //DISABLED FOR NOW
 var HHgForceHardwareRendering = false;
+
+
+
+
+// CALC
+if(HHgProduction){
+  console.log = function(){};
+}
 
 
 

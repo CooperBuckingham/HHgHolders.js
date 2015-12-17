@@ -814,6 +814,7 @@ var HHgHolder = function(props){
     action.beRemoved();
 
   };
+
   p.doRemoveActionByName = function(name){
     if(!this._actions) return;
     this.doRemoveAction(this._actions[name]);
@@ -1079,6 +1080,12 @@ var HHgHolder = function(props){
       theChild.myCluster = returnCluster;
     }
 
+    if(nOrForever === true){
+      returnCluster.repeatForever = true;
+    }else if(nOrForever > 0){
+      returnCluster.repeatN = nOrForever;
+    }
+
     return returnCluster;
   };
 
@@ -1096,6 +1103,12 @@ var HHgHolder = function(props){
     var theChild = this.doAction(sequence.props.storedActions[0]);
     theChild.mySequence = returnSequence;
     returnSequence.myCurrentAction = theChild;
+
+    if(nOrForever === true){
+      returnSequence.repeatForever = true;
+    }else if(nOrForever > 0){
+      returnSequence.repeatN = nOrForever;
+    }
 
     return returnSequence;
 

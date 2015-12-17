@@ -5,13 +5,13 @@ var HHgLoadingScreen = {};
   var splashScreen;
   var loadingScreen;
 
-  var theAll = document.getElementById("all");
+  var HHgTopHolder = document.getElementById("HHgTopHolder");
   var loadingDiv, insideLoadingDiv;
 
 
   HHgLoadingScreen.splashScreenStart = function(){
     loadingDiv = document.createElement('div');
-    theAll.appendChild(loadingDiv);
+    HHgTopHolder.appendChild(loadingDiv);
     loadingDiv.id = "loading-screen";
     insideLoadingDiv = document.createElement('div');
     var header = document.createElement("h1");

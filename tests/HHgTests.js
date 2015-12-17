@@ -4,7 +4,7 @@ var HHgTestBodyData = null;
 
 var HHgTestDashSceneDiv = true;
 
-var HHgShowTestGrid = false;
+var HHgShowTestGrid = true;
 var HHgTestBoxes = false;
 var HHgDoWebsiteDemoDeploy = false;
 var HHgActionDummy;
@@ -214,54 +214,80 @@ console.log("TEST", HHgTestBodyData);
    var grow2 = thing.makeAction("scaleBy", {scale: 2, time: 1});
    var timer1 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER1 DONE")}});
    var timer2 = thing.makeAction('timer', {time: 1, onComplete:function(){console.log("TIMER2 DONE")}});
-   var clus1 = thing.makeActionCluster(grow, timer1);
-   var clus2 = thing.makeActionCluster(move, timer2);
-   var seq1 = thing.makeActionSequence(grow, move, shrink);
-   var seq2 = thing.makeActionSequence(shrink, move, move);
-   var finalSeq = thing.makeActionSequence(clus1, seq1, seq2, clus2);
 
-   var up = thing.makeAction("scaleTo", {scale: 2, time: 1});
-   var down = thing.makeAction("scaleTo", {scale: 1, time: 1});
-   var beat = thing.makeActionSequence(up, down);
-   var doubleBeat = thing.makeActionSequence(beat, beat);
-
-   //var seq3 = thing.makeActionSequence([seq, timer2]);
-   //var seq2 = thing.makeActionSequence([grow, move, shrink]);
-   //var move2 = thing.makeAction("moveBy", {x: 100, y: 100, time: 2});
-   //var seqAll = thing.makeActionSequence([grow, move, shrink, move2]);
-   //thing.doActionSequence(seq);
-    //thing.doActionSequence(seq);
-   //thing.doAction(seq2);
-   //setTimeout(thing.doAction.bind(thing, seq), 5000);
-   // test.doAction(grow);
-
-
-   thing.doActionSequenceForever(finalSeq);
 
   }
 
-  if(true){
-    var thing = HHgGetHolder({w:100, h:100});
+  //Sequences
+  if(false){
+    var thing = HHgGetHolder({w:150, h:100});
     thing.setMouseable(true);
     thing.setIsDraggable(true);
     thing.doMoveToNewParent();
     thing.doMakeRectangle({borderRadius: 10, color: "green"});
 
-    var move = thing.makeAction('moveBy', {name: 'move1', x: 200, y: 100, time: 3, onComplete: function(){console.log("onComplete Function for Move") }} );
-    var moveAgain = thing.makeAction('moveBy', {name: 'move2', x: -200, y:100, time: 1, onComplete: function(){console.log("onComplete Function for MOVE2")}});
-    var grow = thing.makeAction("scaleBy", {name: "grow", scale: 1.50, time: 3, onComplete: function(){console.log("onComplete Function for Grow")}});
-    var shrink = thing.makeAction("scaleBy", {name: "shrink", scale: 0.5, time: 2});
-    var grow2 = thing.makeAction("scaleBy", {scale: 2, time: 1});
-    var pause = thing.makeAction("timer", {name: 'timer', time: 2});
-    var seq1 = thing.makeActionSequence([move, moveAgain], 'seq1', function(){console.log('onComplete Function for SEQ1')});
+    var move = thing.makeAction('moveBy', {name: 'move1', x: 480, y: 0, time: 1, onComplete: function(){console.log("onComplete Function for Move") }} );
+    var moveBack = thing.makeAction('moveBy', {name: 'move2', x: -480, y:0, time: 1, onComplete: function(){console.log("onComplete Function for MOveBack")}});
+    var grow = thing.makeAction("scaleTo", {name: "grow", scale: 1.50, time: 1, onComplete: function(){console.log("onComplete Function for Grow")}});
+    var shrink = thing.makeAction("scaleTo", {name: "shrink", scale: .5, time: 1});
 
-    var rot1 = thing.makeAction('rotateBy', {name: 'rot1', degrees: 900, time: 5});
-    var clus1 = thing.makeActionCluster([rot1, shrink], 'clus1', function(){console.log('onComplete Function for clus1')});
-    var seq2 = thing.makeActionSequence([move, pause, moveAgain], 'seq2', function(){console.log('onComplete Function for seq2')});
-    var seq3 = thing.makeActionSequence([clus1, seq2], 'seq3', function(){console.log('onComplete Function for SEQ3')});
+    var pause = thing.makeAction("timer", {name: 'timer', time: 1});
+    var moveThenBack = thing.makeActionSequence([move, moveBack], 'moveThenback', function(){console.log('onComplete Function for moveThenBack')});
 
-    thing.doAction(seq3);
+    var rotateRight = thing.makeAction('rotateBy', {name: 'rotateRight', degrees: 45, time: 1});
+    var rotateAndGrowCluster = thing.makeActionCluster([rotateRight, grow], 'clus1', function(){console.log('onComplete Function for clus1')});
+    var seq1 = thing.makeActionSequence([move, moveBack], 'seq1', function(){console.log('onComplete Function for seq1')});
+    //var seq3 = thing.makeActionSequence([seq2, clus1], 'seq3', function(){console.log('onComplete Function for SEQ3')});
 
+    thing.doActionSequence(seq1, true);
+
+  };
+
+  //clusters
+  if(false){
+    var thing = HHgGetHolder({w:150, h:100});
+    thing.setMouseable(true);
+    thing.setIsDraggable(true);
+    thing.doMoveToNewParent();
+    thing.doMakeRectangle({borderRadius: 10, color: "green"});
+
+    var move = thing.makeAction('moveBy', {name: 'move1', x: 480, y: 0, time: 1, onComplete: function(){console.log("onComplete Function for Move") }} );
+    var moveBack = thing.makeAction('moveBy', {name: 'move2', x: -480, y:0, time: 1, onComplete: function(){console.log("onComplete Function for MOveBack")}});
+    var grow = thing.makeAction("scaleTo", {name: "grow", scale: 1.50, time: 1, onComplete: function(){console.log("onComplete Function for Grow")}});
+    var shrink = thing.makeAction("scaleTo", {name: "shrink", scale: .5, time: 1});
+
+    var pause = thing.makeAction("timer", {name: 'timer', time: 1});
+    var moveThenBack = thing.makeActionSequence([move, moveBack], 'moveThenback', function(){console.log('onComplete Function for moveThenBack')});
+
+    var rotateRight = thing.makeAction('rotateBy', {name: 'rotateRight', degrees: 45, time: 1});
+    var rotateLeft = thing.makeAction('rotateBy', {name: 'rotateLeft', degrees: -45, time: 1});
+    var rotateAndGrowCluster = thing.makeActionCluster([rotateRight, grow], 'clus1', function(){console.log('onComplete Function for clus1')});
+    var rotateAndShrinkCluster = thing.makeActionCluster([rotateLeft, shrink], 'clus2');
+    var seq1 = thing.makeActionSequence([move, moveBack, rotateAndGrowCluster, ], 'seq1', function(){console.log('onComplete Function for seq1')});
+    //var seq3 = thing.makeActionSequence([seq2, clus1], 'seq3', function(){console.log('onComplete Function for SEQ3')});
+
+    thing.doActionSequence(seq1, true);
+
+  };
+
+  //forever tests
+  if(true){
+    for(var i = 25; i < 200; i+=1){
+      var thing = HHgGetHolder({w: 100 + i, h: 100 + i});
+      thing.setMouseable(true);
+      thing.setIsDraggable(true);
+      thing.doMoveToNewParent();
+      thing.doMakeRectangle({borderRadius: 10, color: new HHgColorRGBA(i, i, i, 1)});
+      var moveX = thing.makeAction('moveBy', {x: 1 + i, y: 0, time: 1 + 1});
+      var moveY = thing.makeAction('moveBy', {y: 1 + i, x: 0, time: 1 + 1});
+      var moveBackX = thing.makeAction('moveBy', {x: -1 - i, y: 0, time: 1 + 1});
+      var moveBackY = thing.makeAction('moveBy', {y: -1 - i, x: 0, time: 1 + 1});
+      var clusterMove = thing.makeActionCluster([moveX, moveY]);
+      var clusterMoveBack = thing.makeActionCluster([moveBackX, moveBackY]);
+      var sequence = thing.makeActionSequence([clusterMove, clusterMoveBack]);
+
+      thing.doActionSequence(sequence, true);
+    }
   }
 
   if(false){

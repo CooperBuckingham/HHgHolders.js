@@ -1,4 +1,6 @@
 function HHgVector2 (x,y){
+  x = x || 0;
+  y = y || 0;
   this._x = x;
   this._y = y;
   this.vBtemp;
