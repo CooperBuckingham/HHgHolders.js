@@ -109,40 +109,40 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
   if(false){
       var textOne = HHgGetHolder({w:400,h:400});
       textOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-600,400), isScreenPos: true});
-      textOne.setMouseable(true);
-      textOne.setIsDraggable(true);
+      textOne.mouseable = true;
+      textOne.draggable = true;
       textOne.doAddSprite("pool");
       textOne.doAddParagraphText({text: "X\nX\nX", color: "#cccccc", vAlign: "top", hAlign: "right", fontSize: "50", shadow: {x: 5, y: 5, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       textOne.doAddBorder(5);
 
       var textOne = HHgGetHolder({w:400,h:400});
       textOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-600,0), isScreenPos: true});
-      textOne.setMouseable(true);
-      textOne.setIsDraggable(true);
+      textOne.mouseable = true;
+      textOne.draggable = true;
       textOne.doAddSprite("pool");
       textOne.doAddParagraphText({text: "WWWWWXWWWWW\nWWWWWWWWWWXWWWWWWWWWW\nWWWWWXWWWWW", color: "#cccccc", vAlign: "center", hAlign: "right", fontSize: "50", shadow: {x: 5, y: 5, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       textOne.doAddBorder(5);
 
       var textOne = HHgGetHolder({w:400,h:400});
       textOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(600,400), isScreenPos: true});
-      textOne.setMouseable(true);
-      textOne.setIsDraggable(true);
+      textOne.mouseable = true;
+      textOne.draggable = true;
       textOne.doAddSprite("pool");
       textOne.doAddCanvasText({text: "X\nX\nX", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 5, y: 5, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       textOne.doAddBorder(5);
 
        var textOne = HHgGetHolder({w:400,h:400});
       textOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(0,0), isScreenPos: true});
-      textOne.setMouseable(true);
-      textOne.setIsDraggable(true);
+      textOne.mouseable = true;
+      textOne.draggable = true;
       textOne.doAddSprite("pool");
       textOne.doAddCanvasText({text: "11111111111X11111111111\n2222X2222\n3333333333X3333333333", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 5, y: 5, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
       textOne.doAddBorder(5);
 
     // var theOne = HHgGetHolder({w:100,h:100});
     //   theOne.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(0,0), isScreenPos: true});
-    //   theOne.setMouseable(true);
-    //   theOne.setIsDraggable(true);
+    //   theOne.mouseable = true;
+    //   theOne.draggable = true;
     //   theOne.doAddParagraphText({text: "WWWWWXWWWWW\nWWWWWWWWWWXWWWWWWWWWW\nWWWWWXWWWWW", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
     //   theOne.test = "testOne";
     //   theOne.doMakeRectangle({borderRadius: 15, color: "green"});
@@ -156,8 +156,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
 
     //   var theTwo = HHgGetHolder({w:100,h:100, test: "testTwo"});
     //   theTwo.doMoveToNewParent({parent: theOne,position: new HHgVector2(0,0), isScreenPos: true});
-    //   theTwo.setMouseable(true);
-    //   theTwo.setIsDraggable(true);
+    //   theTwo.mouseable = true;
+    //   theTwo.draggable = true;
     //   theTwo.doAddParagraphText({text: "WWWWWXWWWWW\nWWWWWWWWWWXWWWWWWWWWW\nWWWWWXWWWWW", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
     //   theTwo.test = "testTwo";
     //   //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
@@ -171,8 +171,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
 
     //   var theThree = HHgGetHolder({w:100,h:100, test: "testThree"});
     //   theThree.doMoveToNewParent({parent: theTwo,position: new HHgVector2(0,100), isScreenPos: false});
-    //   theThree.setMouseable(true);
-    //   theThree.setIsDraggable(true);
+    //   theThree.mouseable = true;
+    //   theThree.draggable = true;
     //   theTwo.doAddParagraphText({text: "WWWWWXWWWWW\nWWWWWWWWWWXWWWWWWWWWW\nWWWWWXWWWWW", color: "#cccccc", vAlign: "center", hAlign: "center", fontSize: "50", shadow: {x: 1, y: 1, color: new HHgColorRGBA(0,0,0,.37), blur: 0}});
     //   theThree.test = "testThree";
     //   //theTwo.doMakeRectangle({borderRadius: 15, color: "red"});
@@ -199,8 +199,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
   //==================== ACTION TESTS ==================
   if(false){
    var thing = HHgGetHolder({w:100,h:100});
-   thing.setMouseable(true);
-   thing.setIsDraggable(true);
+   thing.mouseable = true;
+   thing.draggable = true;
    var test = HHgGetHolder({w:50, h:50});
    thing.doMoveToNewParent();
    thing.doMakeRectangle({borderRadius: 10, color:"green"});
@@ -219,8 +219,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
   //Sequences
   if(false){
     var thing = HHgGetHolder({w:150, h:100});
-    thing.setMouseable(true);
-    thing.setIsDraggable(true);
+    thing.mouseable = true;
+    thing.draggable = true;
     thing.doMoveToNewParent();
     thing.doMakeRectangle({borderRadius: 10, color: "green"});
 
@@ -244,8 +244,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
   //clusters
   if(false){
     var thing = HHgGetHolder({w:150, h:100});
-    thing.setMouseable(true);
-    thing.setIsDraggable(true);
+    thing.mouseable = true;
+    thing.draggable = true;
     thing.doMoveToNewParent();
     thing.doMakeRectangle({borderRadius: 10, color: "green"});
 
@@ -272,8 +272,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
   if(false){
     for(var i = 25; i < 200; i+=1){
       var thing = HHgGetHolder({w: 100 + i, h: 100 + i});
-      thing.setMouseable(true);
-      thing.setIsDraggable(true);
+      thing.mouseable = true;
+      thing.draggable = true;
       thing.doMoveToNewParent();
       thing.doMakeRectangle({borderRadius: 10, color: new HHgColorRGBA(i, i, i, 1)});
       var moveX = thing.makeAction('moveBy', {x: 1 + i, y: 0, time: 1 + 1});
@@ -286,6 +286,36 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
 
       thing.doActionSequence(sequence, true);
     }
+  };
+
+  if(false){
+    var parent = HHgGetHolder({w:500, h:500});
+    parent.mouseable = true;
+    parent.draggable = true;
+    parent.doMoveToNewParent();
+    parent.doMakeRectangle({borderRadius:10, color: "green"});
+
+    var child = HHgGetHolder({w:250, h:250});
+    child.mouseable = true;
+    child.draggable = true;
+    child.doMoveToNewParent(parent);
+    child.doMakeRectangle({borderRadius:50, color: "red"});
+
+    child.mouseClick = function(){
+
+
+      console.log("Position", this.position);
+      console.log("Scale", this.scale);
+      console.log("Rotation", this.rotation);
+
+      this.scale = 1.25;
+    };
+
+    parent.mouseClick = function(){
+
+      this.scale = 1.25;
+    }
+
   }
 
   if(false){
@@ -293,8 +323,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
     parMoving.doMoveToNewParent({parent: HHgGameHolder,position: new HHgVector2(-960,540), isScreenPos: true});
     parMoving.doMakeRectangle({borderRadius: 10, color: "green"});
     //parMoving.doAddBorder(4);
-    parMoving.setMouseable(true);
-      parMoving.setIsDraggable(true);
+    parMoving.mouseable = true;
+      parMoving.draggable = true;
     parMoving.doAddParagraphText({fontSize: "50", text: "10", color: "black"});
     var rotate1 = parMoving.makeAction("rotateBy", {rotation: 360, time: 5});
     var move1 = parMoving.makeAction("moveBy", {positionX: 960, positionY: -540 , time: 5});
@@ -320,8 +350,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
     parMoving.doMakeRectangle({borderRadius: 20, color: "green"});
     //parMoving.doAddBorder(4);
     parMoving.doAddParagraphText({fontSize: "200", text: "20", color: "black"});
-    parMoving.setMouseable(true);
-      parMoving.setIsDraggable(true);
+    parMoving.mouseable = true;
+      parMoving.draggable = true;
     var rotate1 = parMoving.makeAction("rotateBy", {rotation: -360, time: 5});
     var move1 = parMoving.makeAction("moveBy", {positionX: -960, positionY: 540 , time: 5});
     var scale1 = parMoving.makeAction("scaleBy", {scaleX:.5, scaleY: .5, time: 5});
@@ -346,8 +376,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
     parMoving.doMakeRectangle({borderRadius: 5, color: "green"});
     //parMoving.doAddBorder(4);
     parMoving.doAddParagraphText({fontSize: "50", text: "5", color: "black"});
-    parMoving.setMouseable(true);
-      parMoving.setIsDraggable(true);
+    parMoving.mouseable = true;
+      parMoving.draggable = true;
     var rotate1 = parMoving.makeAction("rotateBy", {rotation: -360, time: 5});
     var move1 = parMoving.makeAction("moveBy", {positionX: 960, positionY: 540 , time: 5});
     var scale1 = parMoving.makeAction("scaleBy", {scaleX:2, scaleY: 2, time: 5});
@@ -393,8 +423,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
     var thing = HHgGetHolder({w: 200, h: 200});
     thing.doMoveToNewParent();
     thing.doAddSprite("soccer");
-    thing.setMouseable(true);
-    thing.setIsDraggable(true);
+    thing.mouseable = true;
+    thing.draggable = true;
 
     var thing2 = HHgGetHolder({w: 100, h: 100});
     thing2.doMoveToNewParent({parent: thing});
@@ -464,9 +494,9 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
         aBall.doActionByName("scaleTo", {scale: .3, time: randomSpeed, easeOut: 5});
       }
 
-      button1.setMouseable(true);
-      button2.setMouseable(true);
-      button3.setMouseable(true);
+      button1.mouseable = true;
+      button2.mouseable = true;
+      button3.mouseable = true;
 
       button1.mouseClick = fireBall;
       button2.mouseClick = fireBall;
@@ -551,8 +581,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
           HHgGame.demoDivs.push(holder);
           holder.doAddToNewParent({x:leftPos,y:topPos});
           holder.doMakeRectangle({color:colorPicker[colorRandom()] });
-          holder.setIsDraggable( true);
-          holder.setMouseable(true);
+          holder.draggable( true);
+          holder.mouseable = true;
           holder.doMouseDown = doMouseDown;
           holder.doMouseUp = doMouseUp;
 
@@ -570,8 +600,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
         theOne.doMoveToNewParent({position: new HHgVector2(0,800), isScreenPos: false});
         theOne.doAddSprite("pool");
         theOne.test = "pool";
-        theOne.setMouseable(true);
-        theOne.setIsDraggable(true);
+        theOne.mouseable = true;
+        theOne.draggable = true;
 
         var listOfHolders = [];
         listOfHolders.push(theOne);
@@ -601,8 +631,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
 
           testBall.doMoveToNewParent( {parent: listOfHolders[ HHg.returnRandomInt(0, listOfHolders.length) ] , position: new HHgVector2(posx, posy) });
           randomSprite(testBall);
-          testBall.setMouseable(true);
-          testBall.setIsDraggable(true);
+          testBall.mouseable = true;
+          testBall.draggable = true;
 
           //testBall.doAddCSSClass("testDiv");
 
@@ -661,8 +691,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
           var seq = testBall.makeActionSequence([act1, act2] );
 
           testBall.doActionSequence(seq);
-          testBall.setMouseable(true);
-          testBall.setIsDraggable(true);
+          testBall.mouseable = true;
+          testBall.draggable = true;
           testBall.doMouseDown = doMouseDown;
             testBall.doMouseUp = doMouseUp;
 
@@ -678,8 +708,8 @@ HHgTestBodyData = document.getElementsByTagName("body")[0].getAttribute('data-de
             var seq = testBall.makeActionSequence([act1, act2] );
             testBall.doActionSequence(seq);
             randomColor(testBall);
-            testBall.setMouseable(true);
-            testBall.setIsDraggable(true);
+            testBall.mouseable = true;
+            testBall.draggable = true;
             testBall.doActionRotateForever({rotation: 12});
             testBall.doMouseDown = doMouseDown;
             testBall.doMouseUp = doMouseUp;

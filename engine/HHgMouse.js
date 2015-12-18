@@ -4,126 +4,126 @@ var HHgMouse = {};
 
 (function(){
 
-  var that = HHgMouse;
+  var mouse = HHgMouse;
 
-  that.clickedDownOn;
-  that.draggingOriginalPosXY;
-  that.draggingMouseOriginalPosXY;
-  that.draggingOffsetXY;
+  mouse.clickedDownOn;
+  mouse.draggingOriginalPosXY;
+  mouse.draggingMouseOriginalPosXY;
+  mouse.draggingOffsetXY;
 
-  that.dragging;
-  that.lastMousePosXY;
-  that.thisMousePosXY;
+  mouse.dragging;
+  mouse.lastMousePosXY;
+  mouse.thisMousePosXY;
 
-  that.lastFrameTime;
-  that.thisFrameTime;
-  that.mouseCircle;
+  mouse.lastFrameTime;
+  mouse.thisFrameTime;
+  mouse.mouseCircle;
 
-  that.doStart = function(){
+  mouse.doStart = function(){
 
-    that.mouseCircle = HHgGetHolder({w:25,h:25,zIndex: 100});
-    that.mouseCircle.doMoveToNewParent({parent: HHgGameHolder, position: HHg0Vector, isScreenPos: true});
-    that.mouseCircle.doAddSprite("mouse");
-    that.mouseCircle.setVisible(false);
-    that.mouseCircle.setMouseable(false);
+    mouse.mouseCircle = HHgGetHolder({w:25,h:25,zIndex: 100});
+    mouse.mouseCircle.doMoveToNewParent({parent: HHgGameHolder, position: HHg0Vector, isScreenPos: true});
+    mouse.mouseCircle.doAddSprite("mouse");
+    mouse.mouseCircle.setVisible(false);
+    mouse.mouseCircle.setMouseable(false);
     HHgScene.doAddMouseDownAndUpListeners();
   }
 
-  that.doResetVars = function(){
-    that.clickedDownOn = undefined;
-    that.lastMousePosXY = undefined;
+  mouse.doResetVars = function(){
+    mouse.clickedDownOn = undefined;
+    mouse.lastMousePosXY = undefined;
 
-    that.thisMousePosXY = undefined;
+    mouse.thisMousePosXY = undefined;
 
-    that.lastFrameTime = undefined;
-    that.thisFrameTime = undefined;
-    that.dragging = undefined;
-    that.draggingOriginalPosXY = undefined;
-    that.draggingMouseOriginalPosXY = undefined;
-    that.draggingOffsetXY = undefined;
+    mouse.lastFrameTime = undefined;
+    mouse.thisFrameTime = undefined;
+    mouse.dragging = undefined;
+    mouse.draggingOriginalPosXY = undefined;
+    mouse.draggingMouseOriginalPosXY = undefined;
+    mouse.draggingOffsetXY = undefined;
 
 
   }
 
-  that.doSetVars = function(holder, xy){
+  mouse.doSetVars = function(holder, xy){
 
-    that.clickedDownOn = holder;
-    that.lastMousePosXY = xy;
+    mouse.clickedDownOn = holder;
+    mouse.lastMousePosXY = xy;
 
-    that.thisMousePosXY = xy;
-    that.thisFrameTime = window.performance.now();
-    that.lastFrameTime = that.thisFrameTime;
+    mouse.thisMousePosXY = xy;
+    mouse.thisFrameTime = window.performance.now();
+    mouse.lastFrameTime = mouse.thisFrameTime;
 
-    if(holder.isDraggable){
-      that.dragging = holder;
-      that.draggingOriginalPosXY = holder.getPositionInScreenOriginal();
-      that.draggingMouseOriginalPosXY = xy;
-      that.draggingOffsetXY = xy.subtractedFrom(that.draggingOriginalPosXY);
+    if(holder.draggable){
+      mouse.dragging = holder;
+      mouse.draggingOriginalPosXY = holder.getPositionInScreenOriginal();
+      mouse.draggingMouseOriginalPosXY = xy;
+      mouse.draggingOffsetXY = xy.subtractedFrom(mouse.draggingOriginalPosXY);
     }
 
   }
 
-  that.doUpdateVars = function(xy){
-    that.lastMousePosXY = that.thisMousePosXY;
-    that.thisMousePosXY = xy;
-    that.lastFrameTime = that.thisFrameTime;
-    that.thisFrameTime = window.performance.now();
+  mouse.doUpdateVars = function(xy){
+    mouse.lastMousePosXY = mouse.thisMousePosXY;
+    mouse.thisMousePosXY = xy;
+    mouse.lastFrameTime = mouse.thisFrameTime;
+    mouse.thisFrameTime = window.performance.now();
 
   }
 
-  that.testIfInScene = function(xy){
+  mouse.testIfInScene = function(xy){
     if(xy.y < HHgScreen.maxh / -2 || xy.y > HHgScreen.maxh / 2){
       return false;
     }
     return true;
   }
 
-  that.doMouseMove = function (xy){
-    if(!that.testIfInScene(xy)){
-      that.doMouseCancel(undefined, xy);
+  mouse.doMouseMove = function (xy){
+    if(!mouse.testIfInScene(xy)){
+      mouse.doMouseCancel(undefined, xy);
       return;
     }
-    that.mouseCircle.doHide();
+    mouse.mouseCircle.doHide();
 
-    if(that.dragging){
-      that.doUpdateVars(xy);
-      that.dragging.doMouseMove();
+    if(mouse.dragging){
+      mouse.doUpdateVars(xy);
+      mouse.dragging.doMouseMove();
     }
   }
 
-  that.doMouseDown = function (holders, xy){
-    if(!that.testIfInScene(xy)){
-      that.doMouseCancel(undefined, xy);
+  mouse.doMouseDown = function (holders, xy){
+    if(!mouse.testIfInScene(xy)){
+      mouse.doMouseCancel(undefined, xy);
       return;
     }
-    that.mouseCircle.doShow(xy);
+    mouse.mouseCircle.doShow(xy);
 
     if(!holders || holders.length < 1){
       return;
     }
 
-      that.doSetVars(holders[0], xy);
-      that.clickedDownOn.doMouseDown();
+      mouse.doSetVars(holders[0], xy);
+      mouse.clickedDownOn.doMouseDown();
 
-      if(that.clickedDownOn.isDraggable){
-        that.clickedDownOn.doStartMouseMove();
+      if(mouse.clickedDownOn.draggable){
+        mouse.clickedDownOn.doStartMouseMove();
       }
 
   }
   var isOverClickedDown = false;
 
-  that.doMouseUp = function (holders, xy){
+  mouse.doMouseUp = function (holders, xy){
 
-    that.mouseCircle.doHide();
-    that.doUpdateVars(xy);
+    mouse.mouseCircle.doHide();
+    mouse.doUpdateVars(xy);
 
-    if(that.clickedDownOn === undefined){
+    if(mouse.clickedDownOn === undefined){
       return;
     }
 
     if(holders ){
       for(var i = 0; i < holders.length; i++){
-        if(holders[i] === that.clickedDownOn){
+        if(holders[i] === mouse.clickedDownOn){
 
           isOverClickedDown = true;
           break;
@@ -131,21 +131,21 @@ var HHgMouse = {};
       }
     }
 
-    that.clickedDownOn.doMouseUp(isOverClickedDown);
+    mouse.clickedDownOn.doMouseUp(isOverClickedDown);
 
-    if(that.dragging){
-      that.dragging.doEndMouseMove();
+    if(mouse.dragging){
+      mouse.dragging.doEndMouseMove();
     }
 
     isOverClickedDown = false;
 
-    that.doResetVars();
+    mouse.doResetVars();
 
   }
 
-  that.doMouseCancel = function(holders, xy){
+  mouse.doMouseCancel = function(holders, xy){
 
-    that.doMouseUp(holders, xy);
+    mouse.doMouseUp(holders, xy);
   }
 
 

@@ -174,6 +174,7 @@ function doAddFunctionsToScene(scene){
     if(!scene.isDirty){
       return;
     }
+    console.log("scene is dirty");
     var newList = scene._finalDirtyHolders;
     scene._finalDirtyHolders = {};
     scene.isDirty = false;

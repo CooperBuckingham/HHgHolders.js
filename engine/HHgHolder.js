@@ -42,8 +42,6 @@ var HHgHolder = function(props){
 
   this._children;
   this._actions;
-  // this._clusters =[];
-  // this._sequences=[];
   this._paused = false;
 
   this._div;
@@ -51,6 +49,7 @@ var HHgHolder = function(props){
 
 
   this._mouseable = false;
+  this._draggable = false;
   this._visible = true;
   this._classList = {};
   this._soundList = {};
@@ -71,8 +70,7 @@ var HHgHolder = function(props){
   this.borderWidthOriginal = 0;
 
   this.isScene = false,
-  this.isDraggable = false;
-  this.isBeingDragged = false;
+  this._beingDragged = false;
 
   this.test = "no";
 
@@ -82,38 +80,65 @@ var HHgHolder = function(props){
 
 };
 
+HHgHolder.prototype = Object.create(HHgHolder.prototype, {
+  position: {
+    get: function(){
+      return this._positionInScreenOriginal;
+    },
+    set: function(val){
+      if(Array.isArray(val) ){
+        this.setPositionInScreenTo({x: val[0], y: val[1]});
+      }else{
+        this.setPositionInScreenTo(val);
+      }
+    }
+  },
+  scale: {
+    get: function(){
+      return this._scaleOriginal;
+    },
+    set: function(val){
+      this.setScaleOriginalTo(val);
+    }
+  },
+  rotation: {
+    get: function(){
+      return this._rotationNet;
+    },
+    set: function(val){
+      this.setRotationOriginalTo(val);
+    }
+  },
+  paused: {
+    get: function(){
+      return this._paused;
+    },
+    set: function(val){
+      this.setPaused(val);
+    }
+  },
+  mouseable: {
+    get: function(){
+      return this._mouseable;
+    },
+    set: function(val){
+
+      this.setMouseable(val);
+    }
+  },
+  draggable: {
+    get: function(){
+      return this._draggable;
+    },
+    set: function(val){
+      this._draggable = val;
+    }
+  }
+});
+
+
 (function(){
 
-  // HHgVector2.prototype = Object.create(HHgVector2.prototype, {
-  //   position: {
-  //     get: function(){
-  //       return this._positionInScreenNet;
-  //     },
-  //     set: function(valx, valy){
-  //       if(typeof valx === 'object' ){
-  //         this.setPositionInScreenTo(valx);
-  //       }else{
-  //         this.setPositionInScreenTo({x: valx, y: valy});
-  //       }
-  //     }
-  //   },
-  //   scale: {
-  //     get: function(){
-  //       return this._scaleNet;
-  //     },
-  //     set: function(val){
-  //       this.setScaleOriginalTo(val);
-  //     }
-  //   },
-  //   rotation: {
-  //     get: function(){
-  //       return this._rotationNet;
-  //     },
-  //     set: function(val){
-  //       this.setRotationOriginalTo(val);
-  //     }
-  //   }
-  // });
 
   var p = HHgHolder.prototype;
 
@@ -151,14 +176,6 @@ var HHgHolder = function(props){
     this.frameUpdates.positionBy = undefined;
     this.frameUpdates.positionTo = undefined;
     this.frameUpdates.positionAbsolute = undefined;
-  };
-
-  p.setIsDraggable = function(bool){
-    this.isDraggable = bool;
-  };
-
-  p.getIsDraggable = function(){
-    return this.isDraggable;
   };
 
   p.setPaused = function(bool){
@@ -221,7 +238,7 @@ var HHgHolder = function(props){
     if(this.frameDumpRotation()){
       this.doRecalcRotation();
     }
-    if(this.frameDumpPosition() || this.isBeingDragged === true){
+    if(this.frameDumpPosition() || this._beingDragged === true){
       this.doRecalcPosition();
     }else{
       this.updatePositionFromParentMove();
@@ -244,7 +261,7 @@ var HHgHolder = function(props){
     if(this.frameUpdates.positionAbsolute !== undefined){
       this._positionInScreenOriginal = this.frameUpdates.positionAbsolute;
       returnVal = true;
-    }else if(this.isBeingDragged === true){
+    }else if(this._beingDragged === true){
     //won't allow other types of position updates
     }else if(this.frameUpdates.positionTo !== undefined){
       this._positionInScreenOriginal = this.frameUpdates.positionTo;
@@ -578,7 +595,7 @@ var HHgHolder = function(props){
   };
 
   p.updatePositionFromParentMove = function(){
-    if(this.isBeingDragged === true){
+    if(this._beingDragged === true){
       return;
     }
     this._positionInScreenOriginal = this._positionInParentOriginal;
@@ -767,6 +784,9 @@ var HHgHolder = function(props){
   p.doMoveToNewParent = p.doAddToNewParent = p.addToParent = function(props){
     if(this._parent === "stop"){
       return;
+    }
+    if(props instanceof HHgHolder){
+      props = {parent: props};
     }
     if(props === undefined){
       props = {};
@@ -1206,15 +1226,16 @@ var HHgHolder = function(props){
   p.mouseClick = undefined;
 
   p.doMouseUp = function(mouseWasOverWhenReleased){
+    //TODO: add timing to negate mouse up if too long of a delay
     if(mouseWasOverWhenReleased && this.mouseClick) this.mouseClick();
     //this.doRemoveActionByName("mousemoverotate");
     //this.doRemoveActionByName("mousedownscale");
-    this.isBeingDragged = false;
+    this._beingDragged = false;
   };
 
   p.doStartMouseMove = function(){
     this.setPositionStored();
-    this.isBeingDragged = true;
+    this._beingDragged = true;
     //console.log("MOUSE START");
   };
 
@@ -1224,7 +1245,7 @@ var HHgHolder = function(props){
 
   p.doEndMouseMove = function(){
     this.setPositionInScreenAbsolute(HHgMouse.thisMousePosXY.plus(HHgMouse.draggingOffsetXY));
-    this.isBeingDragged = false;
+    this._beingDragged = false;
   };
 
   //======visibility =========
