@@ -1,0 +1,15 @@
+{
+  "name": "shining-silence",
+  "private": "true",
+  "version": "0.0.1",
+  "author": "CHBDev",
+  "license": "UNLICENSED",
+  "scripts": {
+    "builder": "node ./builderServer.js"
+  },
+  "devDependencies": {
+    "express": "4.14.0",
+    "http-server": "0.9.0",
+    "socket.io": "1.7.2"
+  }
+}

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.heavyhandedgames.shiningsilence" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>shiningsilence</name>
+    <description>
+        Shining Silent World
+    </description>
+    <author email="cooper.buckingham.dev@gmail.com" href="http://heavyhandedgames.com">
+        CHBDev
+    </author>
+
+    <preference name="orientation" value="landscape" />
+    <preference name="fullscreen" value="true" />
+
+    <!-- iOS Only -->
+    <preference name="target-device" value="universal" />
+    <!-- iOS End -->
+
+    <!-- Android Only -->
+    <preference name="android-installLocation" value="auto" />
+    <!-- Android End -->
+
+    <content src="index.html" />
+    <access origin="*" />
+</widget>

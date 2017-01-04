@@ -1,0 +1,259 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    cursor: default;
+
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/*----group clear fix ------*/
+
+.group:before,
+.group:after {
+    content: "";
+    display: table;
+}
+
+.group:after {
+    clear: both;
+}
+
+.group {
+    clear: both;
+    *zoom: 1;
+}
+
+/*----=====   GRID =======-------*/
+*,
+*:before,
+*:after {
+    /*-webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+     box-sizing: border-box;*/
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+html {
+    font-family: Helvetica, Arial, SansSerif;
+    text-align: center;
+    color: white;
+}
+
+body {
+    background-color: black;
+}
+
+body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+div {
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    text-align: center;
+    vertical-align: middle;
+    background-position: center;
+}
+
+#HHgTopHolder {
+    position: relative;
+    overflow: hidden;
+}
+
+body .spriteNoScale {
+    background-size: contain;
+}
+
+body .canvasAsSprite {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+body .canvasAsText {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+html body img {
+    width: 100%;
+    height: 100%;
+}
+
+html body .scene {
+    overflow: hidden;
+}
+
+html body .game-holder {
+    overflow: visible;
+}
+
+html body #all {
+    display: inline-block;
+    position: relative;
+    top: 0;
+    left: 0;
+    background-color: black;
+    overflow: hidden;
+}
+
+#loading-screen {
+    display: inline-block;
+    background-color: white;
+    color: white;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    text-align: center;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+}
+
+#inside-loading-screen {
+    font-family: helvetica, sans-serif;
+    display: inline-block;
+    width: 50%;
+    height: 50%;
+    text-align: center;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+#inside-loading-screen h1 {
+    font-size: 2em;
+    margin-top: .5em;
+    margin-bottom: .5em;
+}
+
+.tintDiv {
+    background-blend-mode: lighten;
+    mix-blend-mode: lighten;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.textDiv {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    cursor: default;
+    -webkit-transform-style: flat;
+    -moz-transform-style: flat;
+    transform-style: flat;
+}
+
+.textDiv.textCenter {
+    left: 50%;
+}
+
+.textDiv.textRight {
+    left: 100%;
+}
+
+.textDiv.textMiddle {
+    top: 50%;
+}
+
+.textDiv.textBottom {
+    top: 100%;
+}
+
+.textDiv pre {
+    position: relative;
+    display: inline-block;
+    left: 0px;
+    top: 0px;
+    cursor: default;
+    white-space: pre-wrap;
+    -webkit-transform-style: flat;
+    -moz-transform-style: flat;
+    transform-style: flat;
+}
+
+.textDiv.textCenter pre {
+    left: -50%;
+}
+
+.textDiv.textRight pre {
+    left: -100%;
+}
+
+html .textDiv.textMiddle pre {
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+html .textDiv.textBottom pre {
+    -webkit-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+    transform: translateY(-100%);
+}
+
+
+
